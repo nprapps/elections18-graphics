@@ -18,9 +18,9 @@
     {% include '_fonts.html' %}
 
     <!-- CSS -->
-    {{ CSS.push('less/app.less') }}
+    {{ CSS.push('less/%s.less' % slug) }}
     {% block extra_css %}{% endblock extra_css %}
-    {{ CSS.render('css/rendered/app.min.css') }}
+    {{ CSS.render('css/rendered/%s.min.css' % slug) }}
 
     {% include '_social_tags.html' %}
 
@@ -28,12 +28,12 @@
     {% endblock extra_head %}
 </head>
 <body>
-    <script src="js/app_config.js"></script>
+    <script src="{{ S3_BASE_URL }}/js/app_config.js"></script>
     <!-- ANALYTICS JAVASCRIPT -->
     {% if DEPLOYMENT_TARGET %}
-    <script src="js/analytics.min.js"></script>
+    <script src="{{ S3_BASE_URL }}/js/rendered/analytics.min.js"></script>
     {% else %}
-    <script src="js/analytics.js"></script>
+    <script src="{{ S3_BASE_URL }}/js/rendered/analytics.js"></script>
     {% endif %}
 
     {% block content %}
@@ -41,9 +41,9 @@
 
     <script src="//pym.nprapps.org/pym.v1.min.js" type="text/javascript"></script>
     {% if DEPLOYMENT_TARGET %}
-    <script src="js/rendered/{{ slug }}.min.js"></script>
+    <script src="{{ S3_BASE_URL }}/js/rendered/{{ slug }}.min.js"></script>
     {% else %}
-    <script src="js/rendered/{{ slug }}.js"></script>
+    <script src="{{ S3_BASE_URL }}/js/rendered/{{ slug }}.js"></script>
     {% endif %}
 
 </body>

@@ -107,21 +107,18 @@ def app(port='8000'):
         local('concurrently "%s" "npm start"' % gunicorn)
 
 @task
-def public_app(port='8001'):
-    """
-    Serve public_app.py.
-    """
-    if env.get('settings'):
-        local("DEPLOYMENT_TARGET=%s bash -c 'gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --log-file=logs/public_app.log public_app:wsgi_app'" % (env.settings, port))
-    else:
-        local('gunicorn -b 0.0.0.0:%s --timeout 3600 --debug --reload --log-file=logs/public_app.log public_app:wsgi_app' % port)
-
-@task
 def tests():
     """
     Run Python unit tests.
     """
     local('nosetests')
+
+@task
+def add_graphic(slug):
+    local('cp templates/graphics/_child_template.html templates/graphics/%s.html' % slug)
+    local('touch www/js/%s.js' % slug)
+    local('touch less/%s.less' % slug)
+    local('npm run build_once')
 
 """
 Deployment
