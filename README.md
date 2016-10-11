@@ -3,7 +3,7 @@ Copyright 2015 NPR.  All rights reserved.  No part of these materials may be rep
 (Want to use this code? Send an email to nprapps@npr.org!)
 
 
-elections16graphics
+Elections 2016 Graphics
 ========================
 
 * [What is this?](#what-is-this)
@@ -19,21 +19,13 @@ elections16graphics
 * [Open Linked Google Spreadsheet](#open-linked-google-spreadsheet)
 * [Generating custom font](#generating-custom-font)
 * [Arbitrary Google Docs](#arbitrary-google-docs)
-* [Run Python tests](#run-python-tests)
-* [Run Javascript tests](#run-javascript-tests)
-* [Compile static assets](#compile-static-assets)
-* [Test the rendered app](#test-the-rendered-app)
 * [Deploy to S3](#deploy-to-s3)
-* [Deploy to EC2](#deploy-to-ec2)
-* [Install cron jobs](#install-cron-jobs)
-* [Install web services](#install-web-services)
-* [Run a remote fab command](#run-a-remote-fab-command)
-* [Report analytics](#report-analytics)
 
 What is this?
 -------------
 
-**TKTK: Describe elections16graphics here.**
+Contains code for all graphics related to the 2016 General Election Results.
+
 
 Assumptions
 -----------
@@ -52,11 +44,9 @@ What's in here?
 
 The project contains the following folders and important files:
 
-* ``confs`` -- Server configuration files for nginx and uwsgi. Edit the templates then ``fab <ENV> servers.render_confs``, don't edit anything in ``confs/rendered`` directly.
 * ``data`` -- Data files, such as those used to generate HTML.
 * ``fabfile`` -- [Fabric](http://docs.fabfile.org/en/latest/) commands for automating setup, deployment, data processing, etc.
 * ``etc`` -- Miscellaneous scripts and metadata for project bootstrapping.
-* ``jst`` -- Javascript ([Underscore.js](http://documentcloud.github.com/underscore/#template)) templates.
 * ``less`` -- [LESS](http://lesscss.org/) files, will be compiled to CSS and concatenated for deployment.
 * ``templates`` -- HTML ([Jinja2](http://jinja.pocoo.org/docs/)) templates, to be compiled locally.
 * ``tests`` -- Python unit tests.
@@ -66,9 +56,6 @@ The project contains the following folders and important files:
 * ``www/test`` -- Javascript tests and supporting files.
 * ``app.py`` -- A [Flask](http://flask.pocoo.org/) app for rendering the project locally.
 * ``app_config.py`` -- Global project configuration for scripts, deployment, etc.
-* ``copytext.py`` -- Code supporting the [Editing workflow](#editing-workflow)
-* ``crontab`` -- Cron jobs to be installed as part of the project.
-* ``public_app.py`` -- A [Flask](http://flask.pocoo.org/) app for running server-side code.
 * ``render_utils.py`` -- Code supporting template rendering.
 * ``requirements.txt`` -- Python requirements.
 * ``static.py`` -- Static Flask views used in both ``app.py`` and ``public_app.py``.
@@ -118,19 +105,44 @@ Syncing these assets requires running a couple different commands at the right t
 
 Unfortunantely, there is no automatic way to know when a file has been intentionally deleted from the server or your local directory. When you want to simultaneously remove a file from the server and your local environment (i.e. it is not needed in the project any longer), run ```fab assets.rm:"www/assets/file_name_here.jpg"```
 
-Adding a page to the site
+Adding a graphic
 -------------------------
 
-A site can have any number of rendered pages, each with a corresponding template and view. To create a new one:
+Run `fab add_graphic:slug`.
 
-* Add a template to the ``templates`` directory. Ensure it extends ``_base.html``.
-* Add a corresponding view function to ``app.py``. Decorate it with a route to the page name, i.e. ``@app.route('/filename.html')``
-* By convention only views that end with ``.html`` and do not start with ``_``  will automatically be rendered when you call ``fab render``.
+This will generate:
+
+* a Jinja template at `templates/graphics/{{ slug }}.html
+* a JavaScript file at `www/js/{{ slug }}.html`
+* a LESS file at `less/{{ slug }}.less`
+
+And trigger the webpack build once to generate the necessary rendered files.
+
+
+Managing Javascript Dependencies
+---------------------------------
+
+To manage JS dependencies, we use `npm`. To install a new JS library that will be used in client-side code, run `npm install --save name-of-library`. Then, in the JS file for the particular graphic you are developing, use ES6 imports to get the library in your file; for example, to import superagent and make the library available as `request`:
+
+```
+import request from 'superagent';
+
+// yr graphic
+
+request.get(URL)
+    .set('If-Modified-Since', lastRequestTime)
+    .end(function(err, res) {
+        // callback code
+    });
+```
+
+If you need to add libraries to the build process (webpack, babel, etc.), you install the same way except you use `npm install --save-dev name-of-library`.
+
 
 Run the project
 ---------------
 
-A flask app is used to run the project locally. It will automatically recompile templates and assets on demand.
+A flask app is used to run the project locally. It will automatically recompile templates and assets on demand. This command also turns webpack into watch mode.
 
 ```
 workon $PROJECT_SLUG
@@ -138,6 +150,8 @@ fab app
 ```
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
+
+
 
 COPY configuration
 ------------------
@@ -279,41 +293,6 @@ fab utils.open_font
 Now edit the font, download the font pack, copy the new config.json into this
 project's `fontello` directory, and run `fab utils.install_font:true` again.
 
-Arbitrary Google Docs
-----------------------
-
-Sometimes, our projects need to read data from a Google Doc that's not involved with the COPY rig. In this case, we've got a helper function for you to download an arbitrary Google spreadsheet.
-
-This solution will download the uncached version of the document, unlike those methods which use the "publish to the Web" functionality baked into Google Docs. Published versions can take up to 15 minutes up update!
-
-Make sure you're authenticated, then call `oauth.get_document(key, file_path)`.
-
-Here's an example of what you might do:
-
-```
-from copytext import Copy
-from oauth import get_document
-
-def read_my_google_doc():
-    file_path = 'data/extra_data.xlsx'
-    get_document('1Rs2qSw00DYECHummasktOa6zLfrifusJWh-uP-GFgvc', file_path)
-    data = Copy(file_path)
-
-    for row in data['example_list']:
-        print '%s: %s' % (row['term'], row['definition'])
-
-read_my_google_doc()
-```
-
-Run Python tests
-----------------
-
-Python unit tests are stored in the ``tests`` directory. Run them with ``fab tests``.
-
-Run Javascript tests
---------------------
-
-With the project running, visit [localhost:8000/test/SpecRunner.html](http://localhost:8000/test/SpecRunner.html).
 
 Compile static assets
 ---------------------
@@ -327,102 +306,9 @@ fab render
 
 (This is done automatically whenever you deploy to S3.)
 
-Test the rendered app
----------------------
-
-If you want to test the app once you've rendered it out, just use the Python webserver:
-
-```
-cd www
-python -m SimpleHTTPServer
-```
-
 Deploy to S3
 ------------
 
 ```
 fab staging master deploy
 ```
-
-Deploy to EC2
--------------
-
-You can deploy to EC2 for a variety of reasons. We cover two cases: Running a dynamic web application (`public_app.py`) and executing cron jobs (`crontab`).
-
-Servers capable of running the app can be setup using our [servers](https://github.com/nprapps/servers) project.
-
-For running a Web application:
-
-* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
-* Also in ``app_config.py`` set ``DEPLOY_WEB_SERVICES`` to ``True``.
-* Run ``fab staging master servers.setup`` to configure the server.
-* Run ``fab staging master deploy`` to deploy the app.
-
-For running cron jobs:
-
-* In ``app_config.py`` set ``DEPLOY_TO_SERVERS`` to ``True``.
-* Also in ``app_config.py``, set ``INSTALL_CRONTAB`` to ``True``
-* Run ``fab staging master servers.setup`` to configure the server.
-* Run ``fab staging master deploy`` to deploy the app.
-
-You can configure your EC2 instance to both run Web services and execute cron jobs; just set both environment variables in the fabfile.
-
-Install cron jobs
------------------
-
-Cron jobs are defined in the file `crontab`. Each task should use the `cron.sh` shim to ensure the project's virtualenv is properly activated prior to execution. For example:
-
-```
-* * * * * ubuntu bash /home/ubuntu/apps/elections16graphics/repository/cron.sh fab $DEPLOYMENT_TARGET cron_jobs.test
-```
-
-To install your crontab set `INSTALL_CRONTAB` to `True` in `app_config.py`. Cron jobs will be automatically installed each time you deploy to EC2.
-
-The cron jobs themselves should be defined in `fabfile/cron_jobs.py` whenever possible.
-
-Install web services
----------------------
-
-Web services are configured in the `confs/` folder.
-
-Running ``fab servers.setup`` will deploy your confs if you have set ``DEPLOY_TO_SERVERS`` and ``DEPLOY_WEB_SERVICES`` both to ``True`` at the top of ``app_config.py``.
-
-To check that these files are being properly rendered, you can render them locally and see the results in the `confs/rendered/` directory.
-
-```
-fab servers.render_confs
-```
-
-You can also deploy only configuration files by running (normally this is invoked by `deploy`):
-
-```
-fab servers.deploy_confs
-```
-
-Run a  remote fab command
--------------------------
-
-Sometimes it makes sense to run a fabric command on the server, for instance, when you need to render using a production database. You can do this with the `fabcast` fabric command. For example:
-
-```
-fab staging master servers.fabcast:deploy
-```
-
-If any of the commands you run themselves require executing on the server, the server will SSH into itself to run them.
-
-Analytics
----------
-
-The Google Analytics events tracked in this application are:
-
-|Category|Action|Label|Value|
-|--------|------|-----|-----|
-|elections16graphics|tweet|`location`||
-|elections16graphics|facebook|`location`||
-|elections16graphics|email|`location`||
-|elections16graphics|new-comment||
-|elections16graphics|open-share-discuss||
-|elections16graphics|close-share-discuss||
-|elections16graphics|summary-copied||
-|elections16graphics|featured-tweet-action|`action`|
-|elections16graphics|featured-facebook-action|`action`|
