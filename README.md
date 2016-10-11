@@ -82,6 +82,17 @@ fab update
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
 
+#### Terminal shortcut
+
+Do you use [iTerm2](http://iterm2.com)? Here's [a sample AppleScript](blob/master/etc/iterm_elections16graphics.scpt) to automatically launch a two-paned terminal window (one for the graphics machine, one for the local webserver).
+
+You can save this locally, customize it to match your own configuration and add an alias for it to your `.bash_profile`.
+
+```
+alias elexgfx="osascript ~/PATH-TO-FILE/iterm_elections16graphics.scpt"
+```
+
+
 Hide project secrets
 --------------------
 
