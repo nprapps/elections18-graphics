@@ -112,7 +112,7 @@ Run `fab add_graphic:slug`.
 
 This will generate:
 
-* a Jinja template at `templates/graphics/{{ slug }}.html
+* a Jinja template at `templates/graphics/{{ slug }}.html`
 * a JavaScript file at `www/js/{{ slug }}.html`
 * a LESS file at `less/{{ slug }}.less`
 
@@ -122,7 +122,7 @@ And trigger the webpack build once to generate the necessary rendered files.
 Managing Javascript Dependencies
 ---------------------------------
 
-To manage JS dependencies, we use `npm`. To install a new JS library that will be used in client-side code, run `npm install --save name-of-library`. Then, in the JS file for the particular graphic you are developing, use ES6 imports to get the library in your file; for example, to import superagent and make the library available as `request`:
+To manage JS dependencies, we use `npm`. To install a new JS library that will be used in client-side code, run `npm install --save name-of-library`. Then, in the JS file for the particular graphic you are developing, use ES6 imports to get the library in your file; for example, to import superagent and make it available as `request`:
 
 ```
 import request from 'superagent';
