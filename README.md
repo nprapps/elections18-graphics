@@ -113,7 +113,7 @@ Run `fab add_graphic:slug`.
 This will generate:
 
 * a Jinja template at `templates/graphics/{{ slug }}.html`
-* a JavaScript file at `www/js/{{ slug }}.html`
+* a JavaScript file at `www/js/{{ slug }}.js`
 * a LESS file at `less/{{ slug }}.less`
 
 And trigger the webpack build once to generate the necessary rendered files.
