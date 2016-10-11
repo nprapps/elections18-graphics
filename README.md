@@ -84,13 +84,20 @@ fab update
 
 #### Terminal shortcut
 
-Do you use [iTerm2](http://iterm2.com)? Here's [a sample AppleScript](blob/master/etc/iterm_elections16graphics.scpt) to automatically launch a two-paned terminal window (one for the graphics machine, one for the local webserver).
+Do you use [iTerm2](http://iterm2.com)? Here's [a sample AppleScript](https://github.com/nprapps/elections16graphics/blob/master/etc/iterm_elections16graphics.scpt) to automatically launch a two-paned terminal window (one for the graphics machine, one for the local webserver).
 
 You can save this locally, customize it to match your own configuration and add an alias for it to your `.bash_profile`.
 
 ```
 alias elexgfx="osascript ~/PATH-TO-FILE/iterm_elections16graphics.scpt"
+
+# kill gunicorn
+function killport() {
+        lsof -i TCP:$1 | grep LISTEN | awk '{print $2}' | xargs kill -9
+}
 ```
+
+(The `killport()` function is used to automatically kill a gunicorn webserver instance that might be running in the background -- say, if you closed your terminal without explicitly stopping the webserver.)
 
 
 Hide project secrets
