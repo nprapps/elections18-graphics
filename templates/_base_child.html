@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- CHARTBEAT -->
+    <script type="text/javascript">
+        var _sf_startpt=(new Date()).getTime();
+    </script>
+
+    <title></title>
+
+    <base target="_blank">
+
+    <!-- META TAGS -->
+    {% include '_meta.html' %}
+
+    <!-- FONTS -->
+    {% include '_fonts.html' %}
+
+    <!-- CSS -->
+    {{ CSS.push('less/app.less') }}
+    {% block extra_css %}{% endblock extra_css %}
+    {{ CSS.render('css/rendered/app.min.css') }}
+
+    {% include '_social_tags.html' %}
+
+    {% block extra_head %}
+    {% endblock extra_head %}
+</head>
+<body>
+    <script src="js/app_config.js"></script>
+    <!-- ANALYTICS JAVASCRIPT -->
+    {% if DEPLOYMENT_TARGET %}
+    <script src="js/analytics.min.js"></script>
+    {% else %}
+    <script src="js/analytics.js"></script>
+    {% endif %}
+
+    {% block content %}
+    {% endblock content %}
+
+    <script src="//pym.nprapps.org/pym.v1.min.js" type="text/javascript"></script>
+    {% if DEPLOYMENT_TARGET %}
+    <script src="js/rendered/{{ slug }}.min.js"></script>
+    {% else %}
+    <script src="js/rendered/{{ slug }}.js"></script>
+    {% endif %}
+
+</body>
+</html>

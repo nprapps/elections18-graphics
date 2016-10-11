@@ -26,15 +26,27 @@ logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
 logger.setLevel(app_config.LOG_LEVEL)
 
-@app.route('/')
+@app.route('/<slug>/')
 @oauth.oauth_required
-def index():
+def parent(slug):
     """
     Example view demonstrating rendering a simple HTML page.
     """
     context = make_context()
+    context['slug'] = slug
 
-    return make_response(render_template('index.html', **context))
+    return make_response(render_template('parent.html', **context))
+
+@app.route('/<slug>/child.html')
+@oauth.oauth_required
+def child(slug):
+    """
+    Example view demonstrating rendering a simple HTML page.
+    """
+    context = make_context()
+    context['slug'] = slug
+
+    return make_response(render_template('/graphics/%s.html' % slug, **context))
 
 app.register_blueprint(static.static)
 app.register_blueprint(oauth.oauth)
