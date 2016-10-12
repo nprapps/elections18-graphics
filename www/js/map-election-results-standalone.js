@@ -1,11 +1,12 @@
 /* TODO
 - account for NE and ME split votes
 - tooltips
-- legend (mobile)
 - electoral totals
 - last updated (overall)
 - pct reporting
 - poll closing times
+- link states to state pages
+- for mobile: dropdown to state pages
 */
 
 // npm libraries
@@ -141,9 +142,6 @@ var init = function() {
     mapElement.call(tRLead);
     mapElement.call(tILead);
 
-    // render legend
-    renderLegend();
-
     // position map labels
     positionMapLabels();
 
@@ -179,6 +177,9 @@ var render = function(containerWidth) {
         isMobile = false;
     }
 
+    // render legend
+    renderLegend();
+
     // Render the map!
     renderElectoralMap({
         container: '.map',
@@ -200,9 +201,19 @@ var renderLegend = function() {
     console.log('render legend');
 
     var containerElement = d3.select('.map');
+    containerElement.select('.legend').remove();
+
+    var legendWidth = 75;
+    var legendHeight = 125;
+
+    if (isMobile) {
+        legendWidth = 300;
+        legendHeight = 45;
+    }
+
     var legendElement = containerElement.append('svg')
-        .attr('width', 75)
-        .attr('height', 145)
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
         .attr('class', 'legend');
 
     legendElement.call(tDLead);
@@ -212,13 +223,28 @@ var renderLegend = function() {
     var blockSize = 13;
     var blockGap = 2;
     var blockTextGap = 6;
+    var col = 0;
+    var row = 0;
     _.each(colorScale.domain(), function(d, i) {
+        var xPos = 0;
+        var yPos = ((blockSize + blockGap) * i);
+        if (isMobile) {
+            xPos = (legendWidth / 4) * col;
+            yPos = ((blockSize + blockGap) * row);
+            row++;
+            if (row == 3) {
+                row = 0;
+                col++;
+            }
+        }
+
         var l = legendElement.append('g')
-            .attr('class', classify(d));
+            .attr('class', classify(d))
+            .attr('transform', 'translate(' + xPos + ',' + yPos + ')');
         l.append('rect')
             .attr('x', 0)
             .attr('width', blockSize)
-            .attr('y', (blockSize + blockGap) * i)
+            .attr('y', 0)
             .attr('height', blockSize)
             .attr('fill', function() {
                 var f = colorScale(d)
@@ -238,7 +264,7 @@ var renderLegend = function() {
         l.append('text')
             .text(d)
             .attr('x', (blockSize + blockTextGap))
-            .attr('y', (blockSize + blockGap) * i)
+            .attr('y', 0)
             .attr('dy', (blockSize / 2) + 4);
     });
 };
@@ -251,8 +277,6 @@ var positionMapLabels = function() {
     console.log('positionMapLabels');
 
     _.each(electoralData, function(d,i) {
-        console.log(i, d);
-
         var stBox = mapElement.select('.' + classify(i));
         var stRect = stBox.select('rect');
         var stLabel = stBox.select('text');
