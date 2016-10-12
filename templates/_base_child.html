@@ -22,8 +22,6 @@
     {% block extra_css %}{% endblock extra_css %}
     {{ CSS.render('css/rendered/%s.min.css' % slug) }}
 
-    {% include '_social_tags.html' %}
-
     {% block extra_head %}
     {% endblock extra_head %}
 </head>
@@ -40,6 +38,7 @@
     {% endblock content %}
 
     <script src="//pym.nprapps.org/pym.v1.min.js" type="text/javascript"></script>
+    <script src="{{ S3_BASE_URL }}/js/helpers.js"></script>
     {% if DEPLOYMENT_TARGET %}
     <script src="{{ S3_BASE_URL }}/js/rendered/{{ slug }}.min.js"></script>
     {% else %}

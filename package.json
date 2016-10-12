@@ -9,9 +9,11 @@
     "preinstall": "npm install -g concurrently"
   },
   "dependencies": {
+    "d3": "^3.5.17",
     "moment": "^2.15.0",
     "moment-timezone": "^0.5.5",
     "superagent": "^2.2.0",
+    "underscore": "^1.8.3",
     "url-parse": "^1.1.3",
     "virtual-dom": "^2.1.1"
   },
