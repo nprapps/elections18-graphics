@@ -28,6 +28,7 @@ var electoralData = [];
 var colorScale = null;
 var districtStates = [ { 'abbr': 'ME', 'votes': 4 },
                        { 'abbr': 'NE', 'votes': 5 } ];
+var mapElement = null;
 var timestamp = null;
 var tooltip = null;
 var tDLead = null;
@@ -42,6 +43,7 @@ var onWindowLoaded = function() {
     // cache elements
     timestamp = d3.select('.footer .timestamp');
     tooltip = d3.select('#tooltip');
+    mapElement = d3.select('.map svg')
 
     // load data
     loadData(DATA_URL);
@@ -133,9 +135,15 @@ var init = function() {
         .strokeWidth(2)
         .stroke(colorScale('I-Leading'))
         .background('#bbb');
+    mapElement.call(tDLead);
+    mapElement.call(tRLead);
+    mapElement.call(tILead);
 
     // render legend
     renderLegend();
+
+    // position map labels
+    positionMapLabels();
 
     // disable loading css
     d3.select('#graphic')
@@ -231,50 +239,69 @@ var renderLegend = function() {
             .attr('y', (blockSize + blockGap) * i)
             .attr('dy', (blockSize / 2) + 4);
     });
-
-
-    // // Create legend
-    // var legendElement = d3.select(config['container']);
-    //
-    // var legendSequence = [ 1, 2, 3, 4, 5 ];
-    // // different key sort order on mobile
-    // if (isMobile) {
-    //     legendSequence = [ 1, 2, 3, 5, 4 ];
-    // }
-    // _.each(legendSequence, function(d, i) {
-    //     var keyData = LEGEND[d];
-    //     var keyItem = legendElement.append('li')
-    //         .classed('key-item', true)
-    //
-    //     keyItem.append('b')
-    //         .style('background', colorScale(keyData['text']));
-    //
-    //     keyItem.append('label')
-    //         .text(keyData['text']);
-    // });
 };
+
+
+/*
+ * Position map labels
+ */
+var positionMapLabels = function() {
+    console.log('positionMapLabels');
+
+    _.each(electoralData, function(d,i) {
+        console.log(i, d);
+
+        var stBox = mapElement.select('.' + classify(i));
+        var stRect = stBox.select('rect');
+        var stLabel = stBox.select('text');
+
+        if (d['electtotal'] < 6) {
+            stLabel.classed('small', true);
+        }
+
+        if (stLabel[0][0] != null && i != 'ME' && i != 'NE') {
+            stLabel.attr('x', function() {
+                    var boxX = Number(stRect.attr('x'));
+                    var boxWidth = Number(stRect.attr('width'));
+
+                    return (boxX + (boxWidth / 2));
+                })
+                .attr('y', function() {
+                    var boxY = Number(stRect.attr('y'));
+                    var boxHeight = Number(stRect.attr('height'));
+                    var labelBbox = stLabel[0][0].getBBox();
+
+                    return (boxY + (boxHeight / 2) + (labelBbox.height / 3));
+                })
+                .attr('class', 'state-abbr');
+
+            stBox.append('text')
+                .attr('class', 'votes')
+                .text(d['electtotal'])
+                .attr('x', stLabel.attr('x'))
+                .attr('y', Number(stLabel.attr('y')) + 5);
+        }
+    });
+
+    // address the states w/ districts
+    _.each(districtStates, function(d,i) {
+        var stBox = mapElement.select('.' + classify(d['abbr']));
+        stBox.select('.votes').remove();
+        var stLabel = stBox.select('text')
+            .classed('small', true);
+    });
+}
 
 
 /*
  * Render an electoral map
  */
 var renderElectoralMap = function(config) {
-    var dataColumn = 'category';
-
-    // Copy map template
-    var containerElement = d3.select(config['container']);
-    var mapElement = containerElement.select('svg');
-
-    mapElement.call(tDLead);
-    mapElement.call(tRLead);
-    mapElement.call(tILead);
-
-    var scaleFactor = 30;
-    console.log(config['data']);
     _.each(config['data'], function(d,i) {
         var st = i;
-        var stCategory = null;
 
+        // define category
+        var stCategory = null;
         if (d['winner']) {
             switch(d['winner']) {
                 case 'Dem':
@@ -305,6 +332,7 @@ var renderElectoralMap = function(config) {
             stCategory = colorScale.domain()[8];
         }
 
+        // color in state
         var stCategoryClass = classify(stCategory);
 
         var stBox = mapElement.select('.' + classify(st))
@@ -326,56 +354,32 @@ var renderElectoralMap = function(config) {
                 break;
         }
 
+        // tooltips
         stBox.on('mouseover', onStateMouseover);
         stBox.on('mouseout', onStateMouseout);
 
-        if (d['flag'] != null) {
-            stRect.classed(classify(d['flag']), true);
-        }
-
-        var stLabel = stBox.select('text');
-        if (d['electtotal'] < 6) {
-            stLabel.classed('small', true);
-        }
-
+        // show electoral votes on desktop; hide on mobile
+        var stLabel = stBox.select('text.state-abbr');
         if (stLabel[0][0] != null && st != 'ME' && st != 'NE') {
-            stLabel.attr('x', function() {
-                    var boxX = Number(stRect.attr('x'));
-                    var boxWidth = Number(stRect.attr('width'));
-
-                    return (boxX + (boxWidth / 2));
-                })
-                .attr('y', function() {
-                    var boxY = Number(stRect.attr('y'));
-                    var boxHeight = Number(stRect.attr('height'));
-                    var labelBbox = stLabel[0][0].getBBox();
-
-                    return (boxY + (boxHeight / 2) + (labelBbox.height / 3));
-                })
-                .attr('class', 'state-abbr');
-
             if (!isMobile) {
-                stLabel.attr('y', Number(stLabel.attr('y')) - 5);
-                stBox.append('text')
-                    .attr('class', 'votes')
-                    .text(d['electtotal'])
-                    .attr('x', stLabel.attr('x'))
-                    .attr('y', Number(stLabel.attr('y')) + 10);
+                stLabel.attr('dy', -5);
+                stBox.select('.votes')
+                    .classed('active', true);
+            } else {
+                stLabel.attr('dy', 0);
+                stBox.select('.votes')
+                    .classed('active', false);
             }
         }
     });
 
-    // address the states w/ districts
-    districtStates.forEach(function(d,i) {
+    _.each(districtStates, function(d,i) {
         var stBox = mapElement.select('.' + classify(d['abbr']));
-        stBox.select('.votes').remove();
-        console.log(stBox);
-        var stLabel = stBox.select('text')
-            .classed('small', true);
+        var stLabel = stBox.select('text');
         if (!isMobile) {
-            stLabel.text(function() {
-                return d['abbr'] + ' (' + d['votes'] + ')';
-            });
+            stLabel.text(d['abbr'] + ' (' + d['votes'] + ')');
+        } else {
+            stLabel.text(d['abbr']);
         }
     });
 }

@@ -28,7 +28,12 @@ text {
         fill-opacity: 0.9;
         text-anchor: middle;
 
-        &.votes { fill-opacity: 0.65; }
+        &.votes {
+            fill-opacity: 0.65;
+            display: none;
+
+            &.active { display: block; }
+        }
     }
 
     .me &,
