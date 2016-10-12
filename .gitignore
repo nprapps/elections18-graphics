@@ -55,3 +55,5 @@ www/live-data/*
 
 #Logs
 logs/*.log
+
+www/map-election-results-standalone
