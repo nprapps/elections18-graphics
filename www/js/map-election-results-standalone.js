@@ -9,23 +9,124 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
+var DATA_URL = '/data/presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
 var pymChild = null;
 var isMobile = false;
 var lastUpdated = '';
 var electoralData = [];
-var categories = [];
-var categoryLabels = [];
 var colorScale = null;
 var districtStates = [ { 'abbr': 'ME', 'votes': 4 },
                        { 'abbr': 'NE', 'votes': 5 } ];
+var tooltip = null;
+var tDLead = null;
+var tRLead = null;
+var tILead = null;
+
 
 /*
 * Initialize the graphic.
 */
 var onWindowLoaded = function() {
-    formatData();
+    loadData(DATA_URL);
+}
+
+
+/*
+ * Load data
+ */
+var loadData = function(url) {
+    d3.json(url, function(error, data) {
+        if (error) {
+            console.warn(error);
+        }
+
+        electoralData = data;
+        formatData();
+    });
+}
+
+
+/*
+ * Format data for D3.
+ */
+var formatData = function() {
+    console.log('formatData');
+
+    _.each(electoralData, function(s) {
+        s = s.sort(function(a, b){
+            return d3.descending(a['votecount'], b['votecount']);
+        });
+
+        s['precinctsreporting'] = s[0]['precinctsreporting'];
+        s['precinctsreportingpct'] = s[0]['precinctsreportingpct'];
+        s['precinctstotal'] = s[0]['precinctstotal'];
+        s['electtotal'] = s[0]['electtotal'];
+        s['winner'] = null;
+
+        _.each(s, function(c) {
+            if (c['winner']) {
+                s['winner'] = c['party'];
+            }
+            // console.log(c);
+        })
+    });
+
+    if (!pymChild) {
+        init();
+    }
+}
+
+
+/*
+ * Initialization
+ */
+var init = function() {
+    console.log('init');
+
+    // Extract categories from data
+    var categories = [];
+    var colorRange = [];
+
+    _.each(LEGEND, function(key) {
+        categories.push(key['label']);
+        colorRange.push(eval(key['color']));
+    });
+
+    colorScale = d3.scale.ordinal()
+        .domain(categories)
+        .range(colorRange);
+
+    console.log(colorScale.domain());
+    console.log(colorScale.range());
+
+    // define textures
+    tDLead = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('D-Leading'))
+        .background('#bbb');
+
+    tRLead = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('R-Leading'))
+        .background('#bbb');
+
+    tILead = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('I-Leading'))
+        .background('#bbb');
+
+    renderLegend();
+
+    tooltip = d3.select('#graphic').append('div')
+        .attr('id', 'tooltip');
+
+    d3.select('#graphic')
+        .classed('loading', false);
 
     pymChild = new pym.Child({
         renderCallback: render
@@ -37,31 +138,6 @@ var onWindowLoaded = function() {
     pymChild.onMessage('scroll-depth', function(data) {
         ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
     });
-}
-
-
-/*
- * Format data for D3.
- */
-var formatData = function() {
-    _.each(DATA, function(d) {
-        d['electoral_votes'] = +d['electoral_votes'];
-    });
-
-    // Extract categories from data
-    var colorRange = [];
-    _.each(LEGEND, function(key) {
-        categories.push(key['text']);
-        if (key['text'] == 'Tossup') {
-            colorRange.push(key['color']);
-        } else {
-            colorRange.push(eval(key['color']));
-        }
-    });
-
-    colorScale = d3.scale.ordinal()
-        .domain(categories)
-        .range(colorRange);
 }
 
 
@@ -82,29 +158,16 @@ var render = function(containerWidth) {
     // Render the chart!
     // Clear existing graphic (for redraw)
     var containerElement = d3.select('#graphic');
-    containerElement.html('');
-
-    var legendContainer = containerElement.append('ul')
-        .attr('class', 'key');
-
-    renderLegend({
-        container: '.key'
-    })
-
-    var mapContainer = containerElement.append('div')
-        .attr('class', 'map');
+    // containerElement.html('');
 
     renderElectoralMap({
         container: '.map',
         width: containerWidth,
-        data: DATA
+        data: electoralData
     });
 
-    // renderBoxes({
-    //     container: '#graphic',
-    //     width: containerWidth,
-    //     data: DATA
-    // });
+    var legendContainer = containerElement.append('ul')
+        .attr('class', 'key');
 
     // Update iframe
     if (pymChild) {
@@ -116,26 +179,28 @@ var render = function(containerWidth) {
 /*
  * Draw legend
  */
-var renderLegend = function(config) {
-    // Create legend
-    var legendElement = d3.select(config['container']);
+var renderLegend = function() {
+    console.log('render legend');
 
-    var legendSequence = [ 1, 2, 3, 4, 5 ];
-    // different key sort order on mobile
-    if (isMobile) {
-        legendSequence = [ 1, 2, 3, 5, 4 ];
-    }
-    _.each(legendSequence, function(d, i) {
-        var keyData = LEGEND[d];
-        var keyItem = legendElement.append('li')
-            .classed('key-item', true)
-
-        keyItem.append('b')
-            .style('background', colorScale(keyData['text']));
-
-        keyItem.append('label')
-            .text(keyData['text']);
-    });
+    // // Create legend
+    // var legendElement = d3.select(config['container']);
+    //
+    // var legendSequence = [ 1, 2, 3, 4, 5 ];
+    // // different key sort order on mobile
+    // if (isMobile) {
+    //     legendSequence = [ 1, 2, 3, 5, 4 ];
+    // }
+    // _.each(legendSequence, function(d, i) {
+    //     var keyData = LEGEND[d];
+    //     var keyItem = legendElement.append('li')
+    //         .classed('key-item', true)
+    //
+    //     keyItem.append('b')
+    //         .style('background', colorScale(keyData['text']));
+    //
+    //     keyItem.append('label')
+    //         .text(keyData['text']);
+    // });
 };
 
 
@@ -146,60 +211,83 @@ var renderElectoralMap = function(config) {
     var dataColumn = 'category';
 
     // Copy map template
-    var containerElement = d3.select(config['container'])
-        .append('div')
-        .attr('class', 'map-wrapper');
-    var template = d3.select('#electoral-map');
-    containerElement.html(template.html());
+    var containerElement = d3.select(config['container']);
     var mapElement = containerElement.select('svg');
 
-    var tDLean = textures.lines()
-        .size(8)
-        .strokeWidth(2)
-        .stroke(colorScale('D-Lean'))
-        .background('#bbb');
-
-    var tRLean = textures.lines()
-        .size(8)
-        .strokeWidth(2)
-        .stroke(colorScale('R-Lean'))
-        .background('#bbb');
-
-    mapElement.call(tDLean);
-    mapElement.call(tRLean);
+    mapElement.call(tDLead);
+    mapElement.call(tRLead);
+    mapElement.call(tILead);
 
     var scaleFactor = 30;
-    config['data'].forEach(function(d,i) {
-        var st = d['usps'];
-        var stCategory = LEGEND[d[dataColumn]]['text'];
+    console.log(config['data']);
+    _.each(config['data'], function(d,i) {
+        var st = i;
+        var stCategory = null;
+
+        if (d['winner']) {
+            switch(d['winner']) {
+                case 'Dem':
+                    stCategory = colorScale.domain()[0];
+                    break;
+                case 'GOP':
+                    stCategory = colorScale.domain()[1];
+                    break;
+                case 'Ind':
+                    stCategory = colorScale.domain()[2];
+                    break;
+            }
+        } else if (d[0]['votecount'] > d[0]['votecount']) {
+            switch(d[0]['party']) {
+                case 'Dem':
+                    stCategory = colorScale.domain()[4];
+                    break;
+                case 'GOP':
+                    stCategory = colorScale.domain()[5];
+                    break;
+                case 'Ind':
+                    stCategory = colorScale.domain()[6];
+                    break;
+            }
+        } else if (d[0]['votecount'] > 0) {
+            stCategory = colorScale.domain()[7];
+        } else {
+            stCategory = colorScale.domain()[8];
+        }
+
         var stCategoryClass = classify(stCategory);
 
         var stBox = mapElement.select('.' + classify(st))
             .classed(stCategoryClass, true);
 
-        var stRect = stBox.select('rect');
+        var stRect = stBox.selectAll('rect');
         switch(stCategory) {
-            case 'D-Lean':
-                stRect.attr('fill', tDLean.url());
+            case colorScale.domain()[4]:
+                stRect.attr('fill', tDLead.url());
                 break;
-            case 'R-Lean':
-                stRect.attr('fill', tRLean.url());
+            case colorScale.domain()[5]:
+                stRect.attr('fill', tRLead.url());
+                break;
+            case colorScale.domain()[6]:
+                stRect.attr('fill', tILead.url());
                 break;
             default:
                 stRect.attr('fill', colorScale(stCategory));
                 break;
         }
 
+        stBox.on('mouseover', onStateMouseover);
+        stBox.on('mouseout', onStateMouseout);
+
         if (d['flag'] != null) {
             stRect.classed(classify(d['flag']), true);
         }
 
         var stLabel = stBox.select('text');
-        if (d['electoral_votes'] < 6) {
+        if (d['electtotal'] < 6) {
             stLabel.classed('small', true);
         }
 
-        if (stLabel[0][0] != null) {
+        if (stLabel[0][0] != null && st != 'ME' && st != 'NE') {
             stLabel.attr('x', function() {
                     var boxX = Number(stRect.attr('x'));
                     var boxWidth = Number(stRect.attr('width'));
@@ -219,7 +307,7 @@ var renderElectoralMap = function(config) {
                 stLabel.attr('y', Number(stLabel.attr('y')) - 5);
                 stBox.append('text')
                     .attr('class', 'votes')
-                    .text(d['electoral_votes'])
+                    .text(d['electtotal'])
                     .attr('x', stLabel.attr('x'))
                     .attr('y', Number(stLabel.attr('y')) + 10);
             }
@@ -229,6 +317,8 @@ var renderElectoralMap = function(config) {
     // address the states w/ districts
     districtStates.forEach(function(d,i) {
         var stBox = mapElement.select('.' + classify(d['abbr']));
+        stBox.select('.votes').remove();
+        console.log(stBox);
         var stLabel = stBox.select('text')
             .classed('small', true);
         if (!isMobile) {
@@ -237,6 +327,25 @@ var renderElectoralMap = function(config) {
             });
         }
     });
+}
+
+
+var onStateMouseover = function() {
+    d3.event.preventDefault();
+    var t = d3.select(this);
+    t.classed('active', true);
+
+    var st = t[0][0]['classList'][0];
+
+    tooltip.classed('active', true);
+    console.log(st, electoralData[st.toUpperCase()]);
+}
+
+var onStateMouseout = function() {
+    d3.event.preventDefault();
+    var t = d3.select(this);
+    t.classed('active', false);
+    tooltip.classed('active', false);
 }
 
 

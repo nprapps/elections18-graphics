@@ -1,10 +1,14 @@
 @import "graphics-base";
 
+.loading { visibility: hidden; }
+
+.map { position: relative; }
+
 rect {
-    // &.changed {
-    //     stroke: #121212;
-    //     stroke-width: 2px;
-    // }
+    .active & {
+        stroke: #121212;
+        stroke-width: 2px;
+    }
 }
 
 text {
@@ -12,6 +16,7 @@ text {
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    pointer-events: none;
 
     .map & {
         font-family: 'Knockout 31 4r';
@@ -23,9 +28,7 @@ text {
         fill-opacity: 0.9;
         text-anchor: middle;
 
-        &.votes {
-            fill-opacity: 0.65;
-        }
+        &.votes { fill-opacity: 0.65; }
     }
 
     .me &,
@@ -35,33 +38,36 @@ text {
     }
 }
 
-// key
 
+// key
 .key {
-    margin: 11px 0 0 0;
-    padding: 0;
-    list-style-type: none;
+    margin: 0;
 }
-.key .key-item {
-    display: inline-block;
-    margin: 0 18px 0 0;
-    padding: 0;
-    line-height: 15px;
-}
-.key .key-item b {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    margin-right: 6px;
-    float: left;
-}
-.key .key-item label {
-    white-space: nowrap;
-    font-size: 12px;
-    color: #666;
-    font-weight: normal;
-    -webkit-font-smoothing: antialiased;
-}
+// .key {
+//     margin: 11px 0 0 0;
+//     padding: 0;
+//     list-style-type: none;
+// }
+// .key .key-item {
+//     display: inline-block;
+//     margin: 0 18px 0 0;
+//     padding: 0;
+//     line-height: 15px;
+// }
+// .key .key-item b {
+//     display: inline-block;
+//     width: 15px;
+//     height: 15px;
+//     margin-right: 6px;
+//     float: left;
+// }
+// .key .key-item label {
+//     white-space: nowrap;
+//     font-size: 12px;
+//     color: #666;
+//     font-weight: normal;
+//     -webkit-font-smoothing: antialiased;
+// }
 
 
 // screen size-specific
@@ -73,24 +79,22 @@ text {
         &.votes { font-size: 75%; }
     }
 
-    .annotations .candidate { font-size: 18px; }
-    .bar-labels { font-size: 12px; }
-    .key {
-        display: -webkit-flex;
-        display: flex;
-        -webkit-justify-content: space-between;
-        justify-content: space-between;
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 500px;
-        margin-bottom: 0;
-
-        .key-item { margin-right: 0; }
-    }
+    // .key {
+    //     display: -webkit-flex;
+    //     display: flex;
+    //     -webkit-justify-content: space-between;
+    //     justify-content: space-between;
+    //     margin-left: auto;
+    //     margin-right: auto;
+    //     max-width: 500px;
+    //     margin-bottom: 0;
+    //
+    //     .key-item { margin-right: 0; }
+    // }
 }
 
 @media screen and (min-width: 601px) {
-    .key { margin-bottom: -30px; }
+    // .key { margin-bottom: -30px; }
 }
 
 @media screen and (max-width: 500px) {
@@ -99,14 +103,14 @@ text {
 
         &.small { font-size: 15px; }
     }
-    rect.changed { stroke-width: 3px; }
+    .active rect { stroke-width: 3px; }
 
-    .key {
-        margin-bottom: 11px;
-
-        .key-item {
-            margin-right: 0;
-            width: 33%;
-        }
-    }
+    // .key {
+    //     margin-bottom: 11px;
+    //
+    //     .key-item {
+    //         margin-right: 0;
+    //         width: 33%;
+    //     }
+    // }
 }
