@@ -32,6 +32,8 @@ var colorScale = null;
 var districtStates = [ { 'abbr': 'ME', 'votes': 4 },
                        { 'abbr': 'NE', 'votes': 5 } ];
 var mapElement = null;
+var mapWidth = null;
+var mapScale = null;
 var timestamp = null;
 var tooltip = null;
 var tDLead = null;
@@ -173,6 +175,8 @@ var render = function(containerWidth) {
         containerWidth = DEFAULT_WIDTH;
     }
 
+    mapWidth = containerWidth;
+
     if (containerWidth <= MOBILE_THRESHOLD) {
         isMobile = true;
     } else {
@@ -185,7 +189,7 @@ var render = function(containerWidth) {
     // Render the map!
     renderElectoralMap({
         container: '.map',
-        width: containerWidth,
+        width: mapWidth,
         data: electoralData
     });
 
@@ -325,6 +329,9 @@ var positionMapLabels = function() {
  * Render an electoral map
  */
 var renderElectoralMap = function(config) {
+    // reset map scale (relevant to tooltip positioning)
+    mapScale = config['width'] / 720;
+
     _.each(config['data'], function(d,i) {
         var st = i;
 
@@ -418,10 +425,9 @@ var renderElectoralMap = function(config) {
 var onStateMouseover = function() {
     d3.event.preventDefault();
     var t = d3.select(this);
-    t.classed('active', true);
-
     var coords = d3.mouse(this);
     var st = t[0][0]['classList'][0].toUpperCase();
+    var ttWidth = 150;
 
     var ttText = '';
     ttText += '<h3>' + electoralData[st]['statename'] + ' <span>(' + electoralData[st]['electtotal'] + ')</span></h3>';
@@ -441,13 +447,20 @@ var onStateMouseover = function() {
 
     tooltip.html(ttText)
         .attr('style', function() {
+            var leftPos = (coords[0] * mapScale) + 5;
+            if (leftPos + ttWidth > mapWidth) {
+                leftPos = leftPos - ttWidth;
+            }
+            var topPos = (coords[1] * mapScale) + 5;
+
             var s = '';
-            s += 'left: ' + coords[0] + 'px; ';
-            s += 'top: ' + coords[1] + 'px;';
+            s += 'left: ' + leftPos + 'px; ';
+            s += 'top: ' + topPos + 'px;';
             return s;
         })
         .classed('active', true);
-    console.log(st, electoralData[st]);
+
+    t.classed('active', true);
 }
 
 var onStateMouseout = function() {
