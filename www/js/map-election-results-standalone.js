@@ -1,6 +1,7 @@
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
+import textures from 'textures';
 
 // D3 formatters
 var fmtComma = d3.format(',');
@@ -43,7 +44,7 @@ var onWindowLoaded = function() {
  * Format data for D3.
  */
 var formatData = function() {
-    DATA.forEach(function(d) {
+    _.each(DATA, function(d) {
         d['electoral_votes'] = +d['electoral_votes'];
     });
 
@@ -51,7 +52,11 @@ var formatData = function() {
     var colorRange = [];
     _.each(LEGEND, function(key) {
         categories.push(key['text']);
-        colorRange.push(eval(key['color']));
+        if (key['text'] == 'Tossup') {
+            colorRange.push(key['color']);
+        } else {
+            colorRange.push(eval(key['color']));
+        }
     });
 
     colorScale = d3.scale.ordinal()
@@ -148,6 +153,21 @@ var renderElectoralMap = function(config) {
     containerElement.html(template.html());
     var mapElement = containerElement.select('svg');
 
+    var tDLean = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('D-Lean'))
+        .background('#bbb');
+
+    var tRLean = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('R-Lean'))
+        .background('#bbb');
+
+    mapElement.call(tDLean);
+    mapElement.call(tRLean);
+
     var scaleFactor = 30;
     config['data'].forEach(function(d,i) {
         var st = d['usps'];
@@ -157,8 +177,18 @@ var renderElectoralMap = function(config) {
         var stBox = mapElement.select('.' + classify(st))
             .classed(stCategoryClass, true);
 
-        var stRect = stBox.select('rect')
-            .attr('fill', colorScale(stCategory));
+        var stRect = stBox.select('rect');
+        switch(stCategory) {
+            case 'D-Lean':
+                stRect.attr('fill', tDLean.url());
+                break;
+            case 'R-Lean':
+                stRect.attr('fill', tRLean.url());
+                break;
+            default:
+                stRect.attr('fill', colorScale(stCategory));
+                break;
+        }
 
         if (d['flag'] != null) {
             stRect.classed(classify(d['flag']), true);
