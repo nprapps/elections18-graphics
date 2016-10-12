@@ -7,6 +7,7 @@
 - poll closing times
 - link states to state pages
 - for mobile: dropdown to state pages
+- modernizr support? disable tooltips on touch devices.
 */
 
 // npm libraries
@@ -81,6 +82,7 @@ var formatData = function() {
         s['precinctsreportingpct'] = s[0]['precinctsreportingpct'];
         s['precinctstotal'] = s[0]['precinctstotal'];
         s['electtotal'] = s[0]['electtotal'];
+        s['statename'] = s[0]['statename'];
         s['winner'] = null;
 
         _.each(s, function(c) {
@@ -418,10 +420,30 @@ var onStateMouseover = function() {
     var t = d3.select(this);
     t.classed('active', true);
 
-    var st = t[0][0]['classList'][0];
+    var coords = d3.mouse(this);
+    var st = t[0][0]['classList'][0].toUpperCase();
 
-    tooltip.classed('active', true);
-    console.log(st, electoralData[st.toUpperCase()]);
+    var ttText = '';
+    ttText += '<h3>' + electoralData[st]['statename'] + ' <span>(' + electoralData[st]['electtotal'] + ')</span></h3>';
+    ttText += '<table>';
+    _.each(electoralData[st], function(c, k) {
+        ttText += '<tr>';
+        ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'] + '</td>';
+        ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
+        ttText += '</tr>';
+    });
+    ttText += '</table>';
+    ttText += '<p class="precincts">' + (electoralData[st]['precinctsreportingpct'] * 100).toFixed(0) + '% reporting</p>';
+
+    tooltip.html(ttText)
+        .attr('style', function() {
+            var s = '';
+            s += 'left: ' + coords[0] + 'px; ';
+            s += 'top: ' + coords[1] + 'px;';
+            return s;
+        })
+        .classed('active', true);
+    console.log(st, electoralData[st]);
 }
 
 var onStateMouseout = function() {

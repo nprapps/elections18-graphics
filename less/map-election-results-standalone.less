@@ -43,7 +43,6 @@ text {
     }
 }
 
-// legend
 .legend {
     text {
         font-size: 10.5px;
@@ -58,6 +57,54 @@ text {
             fill: #666;
             letter-spacing: 0.05em;
         }
+    }
+}
+
+#tooltip {
+    position: absolute;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #eee;
+
+    h3 {
+        font-size: 12px;
+        margin: 0 0 5px 0;
+
+        span { color: #666; }
+    }
+    table {
+        width: 100%;
+        min-width: 110px;
+        padding: 0;
+        border-collapse: collapse;
+        font-size: 12px;
+
+        tr { vertical-align: top; }
+        td {
+            border-top: 1px solid #eee;
+            padding: 5px 0 5px 0;
+        }
+    }
+    .amt { text-align: right; }
+    .precincts {
+        margin: 0;
+        padding-top: 3px;
+        font-size: 10px;
+        color: #999;
+        font-style: italic;
+        border-top: 1px solid #eee;
+    }
+    b {
+        display: block;
+        float: left;
+        height: 6px;
+        width: 6px;
+        margin-right: 4px;
+        margin-top: 5px;
+
+        &.dem { background-color: @blue2; }
+        &.gop { background-color: @red2; }
+        &.ind { background-color: @yellow3; }
     }
 }
 
