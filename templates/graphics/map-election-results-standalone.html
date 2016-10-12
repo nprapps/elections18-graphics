@@ -2,12 +2,16 @@
 
 {% block content %}
 
-<h1>{{ COPY.content.project_name }}</h1>
-
 <div id="graphic" class="loading">
     <div class="map">
         {% include 'electoral-cartogram.svg' %}
     </div>
+    <div id="tooltip"></div>
+</div>
+
+<div class="footer">
+    {% if COPY.map.source %}<p>Source: {{ COPY.map.source|smarty }}</p>{% endif %}
+    {% if COPY.map.credit %}<p>Credit: {{ COPY.map.credit|smarty }}</p>{% endif %}
 </div>
 
 <script type="text/javascript">

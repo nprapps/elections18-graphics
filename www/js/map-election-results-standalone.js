@@ -1,3 +1,12 @@
+/* TODO
+- account for NE and ME split votes
+- tooltips
+- legend
+- electoral totals
+- last updated (overall)
+- pct reporting
+*/
+
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
@@ -19,6 +28,7 @@ var electoralData = [];
 var colorScale = null;
 var districtStates = [ { 'abbr': 'ME', 'votes': 4 },
                        { 'abbr': 'NE', 'votes': 5 } ];
+var timestamp = null;
 var tooltip = null;
 var tDLead = null;
 var tRLead = null;
@@ -29,6 +39,11 @@ var tILead = null;
 * Initialize the graphic.
 */
 var onWindowLoaded = function() {
+    // cache elements
+    timestamp = d3.select('.footer .timestamp');
+    tooltip = d3.select('#tooltip');
+
+    // load data
     loadData(DATA_URL);
 }
 
@@ -52,8 +67,7 @@ var loadData = function(url) {
  * Format data for D3.
  */
 var formatData = function() {
-    console.log('formatData');
-
+    // format data
     _.each(electoralData, function(s) {
         s = s.sort(function(a, b){
             return d3.descending(a['votecount'], b['votecount']);
@@ -69,10 +83,13 @@ var formatData = function() {
             if (c['winner']) {
                 s['winner'] = c['party'];
             }
-            // console.log(c);
-        })
+        });
     });
 
+    // update timestamp
+    timestamp.html('(as of TKTKTK)');
+
+    // init map (only once)
     if (!pymChild) {
         init();
     }
@@ -98,9 +115,6 @@ var init = function() {
         .domain(categories)
         .range(colorRange);
 
-    console.log(colorScale.domain());
-    console.log(colorScale.range());
-
     // define textures
     tDLead = textures.lines()
         .size(8)
@@ -120,14 +134,14 @@ var init = function() {
         .stroke(colorScale('I-Leading'))
         .background('#bbb');
 
+    // render legend
     renderLegend();
 
-    tooltip = d3.select('#graphic').append('div')
-        .attr('id', 'tooltip');
-
+    // disable loading css
     d3.select('#graphic')
         .classed('loading', false);
 
+    // init pym and render callback
     pymChild = new pym.Child({
         renderCallback: render
     });
@@ -155,19 +169,12 @@ var render = function(containerWidth) {
         isMobile = false;
     }
 
-    // Render the chart!
-    // Clear existing graphic (for redraw)
-    var containerElement = d3.select('#graphic');
-    // containerElement.html('');
-
+    // Render the map!
     renderElectoralMap({
         container: '.map',
         width: containerWidth,
         data: electoralData
     });
-
-    var legendContainer = containerElement.append('ul')
-        .attr('class', 'key');
 
     // Update iframe
     if (pymChild) {
@@ -181,6 +188,50 @@ var render = function(containerWidth) {
  */
 var renderLegend = function() {
     console.log('render legend');
+
+    var containerElement = d3.select('.map');
+    var legendElement = containerElement.append('svg')
+        .attr('width', 75)
+        .attr('height', 145)
+        .attr('class', 'legend');
+
+    legendElement.call(tDLead);
+    legendElement.call(tRLead);
+    legendElement.call(tILead);
+
+    var blockSize = 15;
+    var blockGap = 3;
+    var blockTextGap = 6;
+    _.each(colorScale.domain(), function(d, i) {
+        var l = legendElement.append('g')
+            .attr('class', classify(d));
+        l.append('rect')
+            .attr('x', 0)
+            .attr('width', blockSize)
+            .attr('y', (blockSize + blockGap) * i)
+            .attr('height', blockSize)
+            .attr('fill', function() {
+                var f = colorScale(d)
+                switch(i) {
+                    case 3:
+                        f = tDLead.url();
+                        break;
+                    case 4:
+                        f = tRLead.url();
+                        break;
+                    case 5:
+                        f = tILead.url();
+                        break;
+                }
+                return f;
+            });
+        l.append('text')
+            .text(d)
+            .attr('x', (blockSize + blockTextGap))
+            .attr('y', (blockSize + blockGap) * i)
+            .attr('dy', (blockSize / 2) + 4);
+    });
+
 
     // // Create legend
     // var legendElement = d3.select(config['container']);

@@ -18,7 +18,7 @@ text {
     user-select: none;
     pointer-events: none;
 
-    .map & {
+    .cartogram & {
         font-family: 'Knockout 31 4r';
         font-weight: normal;
         text-transform: uppercase;
@@ -38,79 +38,37 @@ text {
     }
 }
 
+// legend
+.legend {
+    position: absolute;
+    bottom: 0;
+    right: 0;
 
-// key
-.key {
-    margin: 0;
+    text {
+        font-size: 11px;
+        fill: #999;
+    }
 }
-// .key {
-//     margin: 11px 0 0 0;
-//     padding: 0;
-//     list-style-type: none;
-// }
-// .key .key-item {
-//     display: inline-block;
-//     margin: 0 18px 0 0;
-//     padding: 0;
-//     line-height: 15px;
-// }
-// .key .key-item b {
-//     display: inline-block;
-//     width: 15px;
-//     height: 15px;
-//     margin-right: 6px;
-//     float: left;
-// }
-// .key .key-item label {
-//     white-space: nowrap;
-//     font-size: 12px;
-//     color: #666;
-//     font-weight: normal;
-//     -webkit-font-smoothing: antialiased;
-// }
 
 
 // screen size-specific
 @media screen and (min-width: 501px) {
-    .map text {
+    .cartogram text {
         font-size: 13px;
 
         &.small { font-size: 10px; }
         &.votes { font-size: 75%; }
     }
-
-    // .key {
-    //     display: -webkit-flex;
-    //     display: flex;
-    //     -webkit-justify-content: space-between;
-    //     justify-content: space-between;
-    //     margin-left: auto;
-    //     margin-right: auto;
-    //     max-width: 500px;
-    //     margin-bottom: 0;
-    //
-    //     .key-item { margin-right: 0; }
-    // }
 }
 
 @media screen and (min-width: 601px) {
-    // .key { margin-bottom: -30px; }
 }
 
 @media screen and (max-width: 500px) {
-    .map text {
+    .cartogram text {
         font-size: 17px;
 
         &.small { font-size: 15px; }
     }
     .active rect { stroke-width: 3px; }
-
-    // .key {
-    //     margin-bottom: 11px;
-    //
-    //     .key-item {
-    //         margin-right: 0;
-    //         width: 33%;
-    //     }
-    // }
 }
