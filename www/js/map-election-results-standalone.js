@@ -1,10 +1,11 @@
 /* TODO
 - account for NE and ME split votes
 - tooltips
-- legend
+- legend (mobile)
 - electoral totals
 - last updated (overall)
 - pct reporting
+- poll closing times
 */
 
 // npm libraries
@@ -121,20 +122,21 @@ var init = function() {
     tDLead = textures.lines()
         .size(8)
         .strokeWidth(2)
-        .stroke(colorScale('D-Leading'))
-        .background('#bbb');
+        .stroke(colorScale('D-Ahead'))
+        .background(COLORS['gray5']);
 
     tRLead = textures.lines()
         .size(8)
         .strokeWidth(2)
-        .stroke(colorScale('R-Leading'))
-        .background('#bbb');
+        .stroke(colorScale('R-Ahead'))
+        .background(COLORS['gray5']);
 
     tILead = textures.lines()
         .size(8)
         .strokeWidth(2)
-        .stroke(colorScale('I-Leading'))
-        .background('#bbb');
+        .stroke(colorScale('I-Ahead'))
+        .background(COLORS['gray5']);
+
     mapElement.call(tDLead);
     mapElement.call(tRLead);
     mapElement.call(tILead);
@@ -207,8 +209,8 @@ var renderLegend = function() {
     legendElement.call(tRLead);
     legendElement.call(tILead);
 
-    var blockSize = 15;
-    var blockGap = 3;
+    var blockSize = 13;
+    var blockGap = 2;
     var blockTextGap = 6;
     _.each(colorScale.domain(), function(d, i) {
         var l = legendElement.append('g')
@@ -384,7 +386,9 @@ var renderElectoralMap = function(config) {
     });
 }
 
-
+/*
+ * Tooltips / mouseovers
+ */
 var onStateMouseover = function() {
     d3.event.preventDefault();
     var t = d3.select(this);
