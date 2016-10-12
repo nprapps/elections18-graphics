@@ -429,22 +429,26 @@ var onStateMouseover = function() {
     var st = t[0][0]['classList'][0].toUpperCase();
     var ttWidth = 150;
 
+    // define tooltip text
     var ttText = '';
     ttText += '<h3>' + electoralData[st]['statename'] + ' <span>(' + electoralData[st]['electtotal'] + ')</span></h3>';
     ttText += '<table>';
     _.each(electoralData[st], function(c, k) {
-        ttText += '<tr>';
-        ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
-        if (c['winner']) {
-            ttText += '<i class="icon icon-ok"></i>';
+        if ((_.contains([ 'ME', 'NE' ], st) && c['reportingunitname'] == 'At Large') || !_.contains([ 'ME', 'NE' ], st)) {
+            ttText += '<tr>';
+            ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
+            if (c['winner']) {
+                ttText += '<i class="icon icon-ok"></i>';
+            }
+            ttText += '</td>';
+            ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
+            ttText += '</tr>';
         }
-        ttText += '</td>';
-        ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
-        ttText += '</tr>';
     });
     ttText += '</table>';
     ttText += '<p class="precincts">' + (electoralData[st]['precinctsreportingpct'] * 100).toFixed(0) + '% reporting</p>';
 
+    // position the tooltip
     tooltip.html(ttText)
         .attr('style', function() {
             var leftPos = (coords[0] * mapScale) + 5;
@@ -460,6 +464,7 @@ var onStateMouseover = function() {
         })
         .classed('active', true);
 
+    // highlight the active state box
     t.classed('active', true);
 }
 
