@@ -115,7 +115,7 @@ def tests():
 
 @task
 def add_graphic(slug):
-    local('cp templates/graphics/_child_template.html templates/graphics/%s.html' % slug)
+    local('cp templates/_child_template.html templates/graphics/%s.html' % slug)
     local('touch www/js/%s.js' % slug)
     local('touch less/%s.less' % slug)
     local('npm run build_once')
@@ -138,37 +138,14 @@ def update():
     data.update()
 
 @task
-def deploy(remote='origin', reload=False):
+def deploy(slug=''):
     """
     Deploy the latest app to S3 and, if configured, to our servers.
     """
     require('settings', provided_by=[production, staging])
 
-    if app_config.DEPLOY_TO_SERVERS:
-        require('branch', provided_by=[stable, master, branch])
-
-        if (app_config.DEPLOYMENT_TARGET == 'production' and env.branch != 'stable'):
-            utils.confirm(
-                colored("You are trying to deploy the '%s' branch to production.\nYou should really only deploy a stable branch.\nDo you know what you're doing?" % env.branch, "red")
-            )
-
-        servers.checkout_latest(remote)
-
-        servers.fabcast('text.update')
-        servers.fabcast('assets.sync')
-        servers.fabcast('data.update')
-
-        if app_config.DEPLOY_CRONTAB:
-            servers.install_crontab()
-
-        if app_config.DEPLOY_SERVICES:
-            servers.deploy_confs()
-
     update()
-    render.render_all()
-
-    # Clear files that should never be deployed
-    local('rm -rf www/live-data')
+    render.render(slug)
 
     flat.deploy_folder(
         app_config.S3_BUCKET,
@@ -188,13 +165,6 @@ def deploy(remote='origin', reload=False):
             'Cache-Control': 'max-age=%i' % app_config.ASSETS_MAX_AGE
         }
     )
-
-    if reload:
-        reset_browsers()
-
-    if not check_timestamp():
-        reset_browsers()
-
 
 @task
 def check_timestamp():

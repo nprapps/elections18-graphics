@@ -9,6 +9,7 @@ import logging
 import os
 
 from fabric.api import local, task
+from fabric.state import env
 
 import app
 import app_config
@@ -91,58 +92,54 @@ def copytext_js():
         f.write(response.data)
 
 @task(default=True)
-def render_all():
+def render(slug):
     """
     Render HTML templates and compile assets.
     """
+    if slug:
+        _render_graphics(['templates/graphics/%s' % slug])
+    else:
+        _render_graphics(glob('templates/graphics/*'))
+
+def _render_graphics(paths):
+    """
+    Render a set of graphics
+    """
     from flask import g
 
-    less()
-    jst()
+    # Fake out deployment target
+    app_config.configure_targets(env.get('settings', None))
+
+    for path in paths:
+        filename = os.path.split(path)[-1]
+        slug = os.path.splitext(filename)[0]
+
+        with app.app.test_request_context(path='%s/' % slug):
+            g.compile_includes = True
+            g.compiled_includes = {}
+            
+            view = app.__dict__['parent']
+            content = view(slug).data
+
+        if not os.path.exists('www/%s' % slug):
+            os.makedirs('www/%s' % slug)
+
+        with open('www/%s/index.html' % slug, 'w') as writefile:
+            writefile.write(content)
+
+        with app.app.test_request_context(path='%s/child.html' % slug):
+            g.compile_includes = True
+            g.compiled_includes = {}
+
+            view = app.__dict__['child']
+            content = view(slug).data
+
+        with open('www/%s/child.html' % slug, 'w') as writefile:
+            writefile.write(content)
+
     app_config_js()
     copytext_js()
+    local('npm run build')
 
-    compiled_includes = {}
-
-    # Loop over all views in the app
-    for rule in app.app.url_map.iter_rules():
-        rule_string = rule.rule
-        name = rule.endpoint
-
-        # Skip utility views
-        if name == 'static' or name.startswith('_'):
-            logger.info('Skipping %s' % name)
-            continue
-
-        # Convert trailing slashes to index.html files
-        if rule_string.endswith('/'):
-            filename = 'www' + rule_string + 'index.html'
-        elif rule_string.endswith('.html'):
-            filename = 'www' + rule_string
-        else:
-            logger.info('Skipping %s' % name)
-            continue
-
-        # Create the output path
-        dirname = os.path.dirname(filename)
-
-        if not (os.path.exists(dirname)):
-            os.makedirs(dirname)
-
-        logger.info('Rendering %s' % (filename))
-
-        # Render views, reusing compiled assets
-        with _fake_context(rule_string):
-            g.compile_includes = True
-            g.compiled_includes = compiled_includes
-
-            view = _view_from_name(name)
-
-            content = view().data
-
-            compiled_includes = g.compiled_includes
-
-        # Write rendered view
-        # NB: Flask response object has utf-8 encoded the data
-        with open(filename, 'w') as f:
-            f.write(content)
+    # Un-fake-out deployment target
+    app_config.configure_targets(app_config.DEPLOYMENT_TARGET)
