@@ -9,6 +9,12 @@
     <div id="tooltip"></div>
 </div>
 
+{% if COPY.map.footnote %}
+<div class="footnotes">
+    <p><strong>Note:</strong> {{ COPY.map.footnote|smarty }}</p>
+</div>
+{% endif %}
+
 <div class="footer">
     {% if COPY.map.source %}<p>Source: {{ COPY.map.source|smarty }}</p>{% endif %}
     {% if COPY.map.credit %}<p>Credit: {{ COPY.map.credit|smarty }}</p>{% endif %}
