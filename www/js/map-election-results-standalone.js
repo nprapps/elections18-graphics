@@ -428,7 +428,11 @@ var onStateMouseover = function() {
     ttText += '<table>';
     _.each(electoralData[st], function(c, k) {
         ttText += '<tr>';
-        ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'] + '</td>';
+        ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
+        if (c['winner']) {
+            ttText += '<i class="icon icon-ok"></i>';
+        }
+        ttText += '</td>';
         ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
         ttText += '</tr>';
     });

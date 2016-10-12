@@ -62,7 +62,7 @@ text {
 
 #tooltip {
     position: absolute;
-    padding: 5px;
+    padding: 8px 8px 5px 8px;
     background-color: #fff;
     border: 1px solid #eee;
 
@@ -74,7 +74,7 @@ text {
     }
     table {
         width: 100%;
-        min-width: 110px;
+        min-width: 120px;
         padding: 0;
         border-collapse: collapse;
         font-size: 12px;
@@ -83,6 +83,7 @@ text {
         td {
             border-top: 1px solid #eee;
             padding: 5px 0 5px 0;
+            white-space: nowrap;
         }
     }
     .amt { text-align: right; }
@@ -105,6 +106,10 @@ text {
         &.dem { background-color: @blue2; }
         &.gop { background-color: @red2; }
         &.ind { background-color: @yellow3; }
+    }
+    .icon-ok {
+        margin-left: 3px;
+        color: #666;
     }
 }
 
