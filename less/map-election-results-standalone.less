@@ -66,6 +66,11 @@ text {
 }
 
 #tooltip {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
     position: absolute;
     padding: 8px 8px 5px 8px;
     background-color: #fff;
@@ -136,6 +141,8 @@ text {
         bottom: 0;
         right: 0;
     }
+
+    #county-selector { display: none; }
 }
 
 @media screen and (min-width: 601px) {
@@ -148,4 +155,6 @@ text {
         &.small { font-size: 15px; }
     }
     .active rect { stroke-width: 3px; }
+
+    #county-selector { display: block; }
 }

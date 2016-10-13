@@ -1,13 +1,11 @@
 /* TODO
-- account for NE and ME split votes
-- tooltips
+- account for NE and ME split votes in color blocks
 - electoral totals
-- last updated (overall)
-- pct reporting
+- popular vote
+- last updated timestamp (overall)
 - poll closing times
-- link states to state pages
-- for mobile: dropdown to state pages
 - modernizr support? disable tooltips on touch devices.
+- load updated json on an interval
 */
 
 // npm libraries
@@ -25,10 +23,12 @@ var DATA_URL = '../data/presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
 var pymChild = null;
+var isInitialized = false;
 var isMobile = false;
 var lastUpdated = '';
 var electoralData = [];
 var colorScale = null;
+var countySelector = null;
 var districtStates = [ { 'abbr': 'ME', 'votes': 4 },
                        { 'abbr': 'NE', 'votes': 5 } ];
 var mapElement = null;
@@ -46,9 +46,10 @@ var tILead = null;
 */
 var onWindowLoaded = function() {
     // cache elements
+    countySelector = d3.select('#county-selector select');
+    mapElement = d3.select('.map svg');
     timestamp = d3.select('.footer .timestamp');
     tooltip = d3.select('#tooltip');
-    mapElement = d3.select('.map svg')
 
     // load data
     loadData(DATA_URL);
@@ -97,9 +98,55 @@ var formatData = function() {
     // update timestamp
     timestamp.html('(as of TKTKTK)');
 
+    // init pym and render callback
+    pymChild = new pym.Child({
+        renderCallback: render
+    });
+
+    pymChild.onMessage('on-screen', function(bucket) {
+        ANALYTICS.trackEvent('on-screen', bucket);
+    });
+    pymChild.onMessage('scroll-depth', function(data) {
+        ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
+    });
+}
+
+
+/*
+ * Render the graphic.
+ */
+var render = function(containerWidth) {
+    if (!containerWidth) {
+        containerWidth = DEFAULT_WIDTH;
+    }
+
+    if (containerWidth <= MOBILE_THRESHOLD) {
+        isMobile = true;
+    } else {
+        isMobile = false;
+    }
+
     // init map (only once)
-    if (!pymChild) {
+    if (!isInitialized) {
         init();
+    }
+
+    // render legend
+    renderLegend();
+
+    // adjust map measurements
+    mapWidth = containerWidth;
+    mapElement.attr('width', mapWidth);
+
+    // reset map scale (relevant to tooltip positioning)
+    mapScale = mapWidth / 720;
+
+    // color in the map!
+    updateElectoralMap();
+
+    // Update iframe
+    if (pymChild) {
+        pymChild.sendHeight();
     }
 }
 
@@ -149,54 +196,14 @@ var init = function() {
     // position map labels
     positionMapLabels();
 
+    // county selector dropdown
+    countySelector.on('change', onCountySelected);
+
     // disable loading css
     d3.select('#graphic')
         .classed('loading', false);
 
-    // init pym and render callback
-    pymChild = new pym.Child({
-        renderCallback: render
-    });
-
-    pymChild.onMessage('on-screen', function(bucket) {
-        ANALYTICS.trackEvent('on-screen', bucket);
-    });
-    pymChild.onMessage('scroll-depth', function(data) {
-        ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
-    });
-}
-
-
-/*
- * Render the graphic.
- */
-var render = function(containerWidth) {
-    if (!containerWidth) {
-        containerWidth = DEFAULT_WIDTH;
-    }
-
-    mapWidth = containerWidth;
-
-    if (containerWidth <= MOBILE_THRESHOLD) {
-        isMobile = true;
-    } else {
-        isMobile = false;
-    }
-
-    // render legend
-    renderLegend();
-
-    // Render the map!
-    renderElectoralMap({
-        container: '.map',
-        width: mapWidth,
-        data: electoralData
-    });
-
-    // Update iframe
-    if (pymChild) {
-        pymChild.sendHeight();
-    }
+    isInitialized = true;
 }
 
 
@@ -277,6 +284,164 @@ var renderLegend = function() {
 
 
 /*
+ * Update the electoral map
+ */
+var updateElectoralMap = function() {
+    _.each(electoralData, function(d,i) {
+        var st = i;
+        if (st != 'US') {
+            // define category
+            var stCategory = null;
+            if (d['winner']) {
+                switch(d['winner']) {
+                    case 'Dem':
+                        stCategory = colorScale.domain()[0];
+                        break;
+                    case 'GOP':
+                        stCategory = colorScale.domain()[1];
+                        break;
+                    case 'Ind':
+                        stCategory = colorScale.domain()[2];
+                        break;
+                }
+            } else if (d[0]['votecount'] > d[0]['votecount']) {
+                switch(d[0]['party']) {
+                    case 'Dem':
+                        stCategory = colorScale.domain()[4];
+                        break;
+                    case 'GOP':
+                        stCategory = colorScale.domain()[5];
+                        break;
+                    case 'Ind':
+                        stCategory = colorScale.domain()[6];
+                        break;
+                }
+            } else if (d[0]['votecount'] > 0) {
+                stCategory = colorScale.domain()[7];
+            } else {
+                stCategory = colorScale.domain()[8];
+            }
+
+            // color in state
+            var stCategoryClass = classify(stCategory);
+
+            var stBox = mapElement.select('.' + classify(st))
+                .classed(stCategoryClass, true);
+
+            var stRect = stBox.selectAll('rect');
+
+            switch(stCategory) {
+                case colorScale.domain()[4]:
+                    stRect.attr('fill', tDLead.url());
+                    break;
+                case colorScale.domain()[5]:
+                    stRect.attr('fill', tRLead.url());
+                    break;
+                case colorScale.domain()[6]:
+                    stRect.attr('fill', tILead.url());
+                    break;
+                default:
+                    stRect.attr('fill', colorScale(stCategory));
+                    break;
+            }
+
+            // tooltips
+            if (!isMobile) {
+                stBox.on('mouseover', onStateMouseover);
+                stBox.on('mouseout', onStateMouseout);
+                stBox.attr('xlink:href', COUNTY_DATA[st]['url']);
+            } else {
+                stBox.on('mouseover', undefined);
+                stBox.on('mouseout', undefined);
+                stBox.attr('xlink:href', null);
+            }
+
+            // show electoral votes on desktop; hide on small screens
+            var stLabel = stBox.select('text.state-abbr');
+            if (stLabel[0][0] != null && st != 'ME' && st != 'NE') {
+                if (!isMobile) {
+                    stLabel.attr('dy', -5);
+                    stBox.select('.votes')
+                        .classed('active', true);
+                } else {
+                    stLabel.attr('dy', 0);
+                    stBox.select('.votes')
+                        .classed('active', false);
+                }
+            }
+        }
+    });
+
+    _.each(districtStates, function(d,i) {
+        var stBox = mapElement.select('.' + classify(d['abbr']));
+        var stLabel = stBox.select('text');
+        if (!isMobile) {
+            stLabel.text(d['abbr'] + ' (' + d['votes'] + ')');
+        } else {
+            stLabel.text(d['abbr']);
+        }
+    });
+}
+
+
+/*
+ * Tooltips / mouseovers
+ */
+var onStateMouseover = function() {
+    // d3.event.preventDefault();
+    var t = d3.select(this);
+    var coords = d3.mouse(this);
+    var st = t[0][0]['classList'][0].toUpperCase();
+    var ttWidth = 150;
+
+    // define tooltip text
+    var ttText = '';
+    ttText += '<h3>' + electoralData[st]['statename'] + ' <span>(' + electoralData[st]['electtotal'] + ')</span></h3>';
+    ttText += '<table>';
+    _.each(electoralData[st], function(c, k) {
+        if ((_.contains([ 'ME', 'NE' ], st) && c['reportingunitname'] == 'At Large') || !_.contains([ 'ME', 'NE' ], st)) {
+            ttText += '<tr>';
+            ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
+            if (c['winner']) {
+                ttText += '<i class="icon icon-ok"></i>';
+            }
+            ttText += '</td>';
+            ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
+            ttText += '</tr>';
+        }
+    });
+    ttText += '</table>';
+    ttText += '<p class="precincts">' + (electoralData[st]['precinctsreportingpct'] * 100).toFixed(0) + '% reporting</p>';
+
+    // position the tooltip
+    tooltip.html(ttText)
+        .attr('style', function() {
+            var leftPos = (coords[0] * mapScale) + 5;
+            if (leftPos + ttWidth > mapWidth) {
+                leftPos = leftPos - ttWidth;
+            }
+            var topPos = (coords[1] * mapScale) + 5;
+
+            var s = '';
+            s += 'left: ' + leftPos + 'px; ';
+            s += 'top: ' + topPos + 'px;';
+            return s;
+        })
+        .classed('active', true);
+
+    // highlight the active state box
+    t.classed('active', true);
+}
+
+var onStateMouseout = function() {
+    // d3.event.preventDefault();
+    var t = d3.select(this);
+    t.classed('active', false);
+    tooltip.classed('active', false);
+}
+
+
+/*
  * Position map labels
  */
 var positionMapLabels = function() {
@@ -326,153 +491,11 @@ var positionMapLabels = function() {
 
 
 /*
- * Render an electoral map
+ * county selector dropdown
  */
-var renderElectoralMap = function(config) {
-    // reset map scale (relevant to tooltip positioning)
-    mapScale = config['width'] / 720;
-
-    _.each(config['data'], function(d,i) {
-        var st = i;
-
-        // define category
-        var stCategory = null;
-        if (d['winner']) {
-            switch(d['winner']) {
-                case 'Dem':
-                    stCategory = colorScale.domain()[0];
-                    break;
-                case 'GOP':
-                    stCategory = colorScale.domain()[1];
-                    break;
-                case 'Ind':
-                    stCategory = colorScale.domain()[2];
-                    break;
-            }
-        } else if (d[0]['votecount'] > d[0]['votecount']) {
-            switch(d[0]['party']) {
-                case 'Dem':
-                    stCategory = colorScale.domain()[4];
-                    break;
-                case 'GOP':
-                    stCategory = colorScale.domain()[5];
-                    break;
-                case 'Ind':
-                    stCategory = colorScale.domain()[6];
-                    break;
-            }
-        } else if (d[0]['votecount'] > 0) {
-            stCategory = colorScale.domain()[7];
-        } else {
-            stCategory = colorScale.domain()[8];
-        }
-
-        // color in state
-        var stCategoryClass = classify(stCategory);
-
-        var stBox = mapElement.select('.' + classify(st))
-            .classed(stCategoryClass, true);
-
-        var stRect = stBox.selectAll('rect');
-        switch(stCategory) {
-            case colorScale.domain()[4]:
-                stRect.attr('fill', tDLead.url());
-                break;
-            case colorScale.domain()[5]:
-                stRect.attr('fill', tRLead.url());
-                break;
-            case colorScale.domain()[6]:
-                stRect.attr('fill', tILead.url());
-                break;
-            default:
-                stRect.attr('fill', colorScale(stCategory));
-                break;
-        }
-
-        // tooltips
-        stBox.on('mouseover', onStateMouseover);
-        stBox.on('mouseout', onStateMouseout);
-
-        // show electoral votes on desktop; hide on mobile
-        var stLabel = stBox.select('text.state-abbr');
-        if (stLabel[0][0] != null && st != 'ME' && st != 'NE') {
-            if (!isMobile) {
-                stLabel.attr('dy', -5);
-                stBox.select('.votes')
-                    .classed('active', true);
-            } else {
-                stLabel.attr('dy', 0);
-                stBox.select('.votes')
-                    .classed('active', false);
-            }
-        }
-    });
-
-    _.each(districtStates, function(d,i) {
-        var stBox = mapElement.select('.' + classify(d['abbr']));
-        var stLabel = stBox.select('text');
-        if (!isMobile) {
-            stLabel.text(d['abbr'] + ' (' + d['votes'] + ')');
-        } else {
-            stLabel.text(d['abbr']);
-        }
-    });
-}
-
-/*
- * Tooltips / mouseovers
- */
-var onStateMouseover = function() {
-    d3.event.preventDefault();
-    var t = d3.select(this);
-    var coords = d3.mouse(this);
-    var st = t[0][0]['classList'][0].toUpperCase();
-    var ttWidth = 150;
-
-    // define tooltip text
-    var ttText = '';
-    ttText += '<h3>' + electoralData[st]['statename'] + ' <span>(' + electoralData[st]['electtotal'] + ')</span></h3>';
-    ttText += '<table>';
-    _.each(electoralData[st], function(c, k) {
-        if ((_.contains([ 'ME', 'NE' ], st) && c['reportingunitname'] == 'At Large') || !_.contains([ 'ME', 'NE' ], st)) {
-            ttText += '<tr>';
-            ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
-            if (c['winner']) {
-                ttText += '<i class="icon icon-ok"></i>';
-            }
-            ttText += '</td>';
-            ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
-            ttText += '</tr>';
-        }
-    });
-    ttText += '</table>';
-    ttText += '<p class="precincts">' + (electoralData[st]['precinctsreportingpct'] * 100).toFixed(0) + '% reporting</p>';
-
-    // position the tooltip
-    tooltip.html(ttText)
-        .attr('style', function() {
-            var leftPos = (coords[0] * mapScale) + 5;
-            if (leftPos + ttWidth > mapWidth) {
-                leftPos = leftPos - ttWidth;
-            }
-            var topPos = (coords[1] * mapScale) + 5;
-
-            var s = '';
-            s += 'left: ' + leftPos + 'px; ';
-            s += 'top: ' + topPos + 'px;';
-            return s;
-        })
-        .classed('active', true);
-
-    // highlight the active state box
-    t.classed('active', true);
-}
-
-var onStateMouseout = function() {
-    d3.event.preventDefault();
-    var t = d3.select(this);
-    t.classed('active', false);
-    tooltip.classed('active', false);
+var onCountySelected = function() {
+    var url = d3.select(this).property('value');
+    window.open(url, '_top');
 }
 
 

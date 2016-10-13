@@ -7,6 +7,14 @@
         {% include 'electoral-cartogram.svg' %}
     </div>
     <div id="tooltip"></div>
+    <div id="county-selector">
+        <select>
+            <option selected>Get county-level results...</option>
+            {% for state in COPY.county_data %}
+            <option value="{{ state.url }}">{{ state.fullname }}</option>
+            {% endfor %}
+        </select>
+    </div>
 </div>
 
 {% if COPY.map.footnote %}
@@ -21,7 +29,8 @@
 </div>
 
 <script type="text/javascript">
+    var COUNTY_DATA = {{ COPY.county_data.json()|safe }};
     var LEGEND = {{ COPY.legend.json()|safe }};
-    var POLLS = {{ COPY.polls.json()|safe }};
+    var POLL_TIMES = {{ COPY.poll_times.json()|safe }};
 </script>
 {% endblock %}
