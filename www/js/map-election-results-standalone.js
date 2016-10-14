@@ -1,5 +1,4 @@
 /* TODO
-- account for NE and ME split votes in color blocks
 - electoral totals
 - popular vote
 - last updated timestamp (overall)
@@ -63,6 +62,29 @@ var onWindowLoaded = function() {
         .domain(categories)
         .range(colorRange);
 
+    // define textures for "leading/ahead"
+    tDLead = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('D-Ahead'))
+        .background(COLORS['gray3']);
+
+    tRLead = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('R-Ahead'))
+        .background(COLORS['gray3']);
+
+    tILead = textures.lines()
+        .size(8)
+        .strokeWidth(2)
+        .stroke(colorScale('I-Ahead'))
+        .background(COLORS['gray3']);
+
+    mapElement.call(tDLead);
+    mapElement.call(tRLead);
+    mapElement.call(tILead);
+
     // load data
     loadData(DATA_URL);
 }
@@ -72,6 +94,7 @@ var onWindowLoaded = function() {
  * Load data
  */
 var loadData = function(url) {
+    console.log('loadData: ' + url);
     d3.json(url, function(error, data) {
         if (error) {
             console.warn(error);
@@ -87,8 +110,8 @@ var loadData = function(url) {
  * Format data for D3.
  */
 var formatData = function() {
-    // format data
-    _.each(electoralData, function(s) {
+    console.log('formatData');
+    _.each(electoralData, function(s, i) {
         s = s.sort(function(a, b){
             return d3.descending(a['votecount'], b['votecount']);
         });
@@ -96,13 +119,35 @@ var formatData = function() {
         s['winner'] = null;
         s['category'] = null;
         s['category_class'] = null;
+        s['has_districts'] = true;
+
+        var districts = null;
+        if (_.contains([ 'ME', 'NE' ], i)) {
+            s['districts'] = [];
+            districts = _.pluck(s, 'reportingunitname');
+            districts = d3.set(districts).values()
+                .filter(function(dist) {
+                    return dist != 'null';
+                });
+            _.each(districts, function(dist) {
+                s['districts'][dist] = [];
+                s['districts'][dist]['winner'] = null;
+            });
+        };
 
         _.each(s, function(c) {
             if (!_.contains([ 'Dem', 'GOP' ], c['party'])) {
                 c['party'] = 'Ind';
             }
-            if (c['npr_winner']) {
+            if (c['npr_winner'] && c['level'] == 'state') {
                 s['winner'] = c['party'];
+            }
+            if (c['level'] == 'district') {
+                s['districts'][c['reportingunitname']].push(c);
+
+                if (c['npr_winner']) {
+                    s['districts'][c['reportingunitname']]['winner'] = c['party'];
+                }
             }
         });
 
@@ -116,36 +161,15 @@ var formatData = function() {
             s['poll_closing'] = s[0]['meta']['poll_closing'] + ' ET';
 
             // define which legend category this fits with
-            if (s['winner']) {
-                switch(s['winner']) {
-                    case 'Dem':
-                        s['category'] = colorScale.domain()[0];
-                        break;
-                    case 'GOP':
-                        s['category'] = colorScale.domain()[1];
-                        break;
-                    case 'Ind':
-                        s['category'] = colorScale.domain()[2];
-                        break;
-                }
-            } else if (s[0]['votecount'] > s[1]['votecount']) {
-                switch(s[0]['party']) {
-                    case 'Dem':
-                        s['category'] = colorScale.domain()[3];
-                        break;
-                    case 'GOP':
-                        s['category'] = colorScale.domain()[4];
-                        break;
-                    case 'Ind':
-                        s['category'] = colorScale.domain()[5];
-                        break;
-                }
-            } else if (s[0]['votecount'] > 0) {
-                s['category'] = colorScale.domain()[6];
-            } else {
-                s['category'] = colorScale.domain()[7];
+            s['category'] = assignCategory(s);
+            s['color'] = assignColor(s['category']);
+
+            if (districts) {
+                _.each(districts, function(dist, k) {
+                    s['districts'][dist]['category'] = assignCategory(s['districts'][dist]);
+                    s['districts'][dist]['color'] = assignColor(s['districts'][dist]['category']);
+                });
             }
-            s['category_class'] = classify(s['category']);
         }
     });
 
@@ -163,6 +187,67 @@ var formatData = function() {
     pymChild.onMessage('scroll-depth', function(data) {
         ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
     });
+}
+
+
+/*
+ * Assign categories
+ */
+var assignCategory = function(data) {
+    var category = null;
+
+    if (data['winner']) {
+        switch(data['winner']) {
+            case 'Dem':
+                category = colorScale.domain()[0];
+                break;
+            case 'GOP':
+                category = colorScale.domain()[1];
+                break;
+            case 'Ind':
+                category = colorScale.domain()[2];
+                break;
+        }
+    } else if (data[0]['votecount'] > data[1]['votecount']) {
+        switch(data[0]['party']) {
+            case 'Dem':
+                category = colorScale.domain()[3];
+                break;
+            case 'GOP':
+                category = colorScale.domain()[4];
+                break;
+            case 'Ind':
+                category = colorScale.domain()[5];
+                break;
+        }
+    } else if (data[0]['votecount'] > 0) {
+        category = colorScale.domain()[6];
+    } else {
+        category = colorScale.domain()[7];
+    }
+
+    return category;
+}
+
+
+/*
+ * Assign state color/pattern
+ */
+var assignColor = function(category) {
+    switch(category) {
+        case colorScale.domain()[3]:
+            return tDLead.url();
+            break;
+        case colorScale.domain()[4]:
+            return tRLead.url();
+            break;
+        case colorScale.domain()[5]:
+            return tILead.url();
+            break;
+        default:
+            return colorScale(category);
+            break;
+    }
 }
 
 
@@ -210,29 +295,6 @@ var render = function(containerWidth) {
  */
 var init = function() {
     console.log('init');
-
-    // define textures
-    tDLead = textures.lines()
-        .size(8)
-        .strokeWidth(2)
-        .stroke(colorScale('D-Ahead'))
-        .background(COLORS['gray3']);
-
-    tRLead = textures.lines()
-        .size(8)
-        .strokeWidth(2)
-        .stroke(colorScale('R-Ahead'))
-        .background(COLORS['gray3']);
-
-    tILead = textures.lines()
-        .size(8)
-        .strokeWidth(2)
-        .stroke(colorScale('I-Ahead'))
-        .background(COLORS['gray3']);
-
-    mapElement.call(tDLead);
-    mapElement.call(tRLead);
-    mapElement.call(tILead);
 
     // position map labels
     positionMapLabels();
@@ -584,29 +646,37 @@ var updateElectoralMap = function() {
     _.each(electoralData, function(d,i) {
         var st = i;
         if (st != 'US') {
-            // define category
-            var stCategory = d['category'];
-            var stCategoryClass = d['category_class'];
+            var stBox = mapElement.select('.' + classify(st));
 
-            // color in state
-            var stBox = mapElement.select('.' + classify(st))
-                .classed(stCategoryClass, true);
-
-            var stRect = stBox.selectAll('rect');
-
-            switch(stCategory) {
-                case colorScale.domain()[3]:
-                    stRect.attr('fill', tDLead.url());
-                    break;
-                case colorScale.domain()[4]:
-                    stRect.attr('fill', tRLead.url());
-                    break;
-                case colorScale.domain()[5]:
-                    stRect.attr('fill', tILead.url());
-                    break;
-                default:
-                    stRect.attr('fill', colorScale(stCategory));
-                    break;
+            if (electoralData[st]['districts']) {
+                var distData = electoralData[st]['districts'];
+                switch(st) {
+                    case 'ME':
+                        stBox.select('.me-1 rect')
+                            .attr('fill', distData['District 1']['color']);
+                        stBox.select('.me-2 rect')
+                            .attr('fill', distData['District 2']['color']);
+                        stBox.select('.me-3 rect')
+                            .attr('fill', distData['At Large']['color']);
+                        stBox.select('.me-4 rect')
+                            .attr('fill', distData['At Large']['color']);
+                        break;
+                    case 'NE':
+                        stBox.select('.ne-2 rect')
+                            .attr('fill', distData['District 1']['color']);
+                        stBox.select('.ne-3 rect')
+                            .attr('fill', distData['District 2']['color']);
+                        stBox.select('.ne-5 rect')
+                            .attr('fill', distData['District 3']['color']);
+                        stBox.select('.ne-1 rect')
+                            .attr('fill', distData['At Large']['color']);
+                        stBox.select('.ne-4 rect')
+                            .attr('fill', distData['At Large']['color']);
+                        break;
+                }
+            } else {
+                stBox.select('rect')
+                    .attr('fill', electoralData[st]['color']);
             }
 
             // tooltips
@@ -663,20 +733,19 @@ var onStateMouseover = function() {
     var ttText = '';
     ttText += '<h3>' + stateData['statename'] + ' <span>(' + stateData['electtotal'] + ')</span></h3>';
     if (stateData['category'] == colorScale.domain()[7]) {
-        console.log(stateData);
         ttText += '<p class="poll-closing">Polls close at ' + stateData['poll_closing'] + '</p>';
     } else {
         ttText += '<table>';
         _.each(electoralData[st], function(c, k) {
-            if ((_.contains([ 'ME', 'NE' ], st) && c['reportingunitname'] == 'At Large') || !_.contains([ 'ME', 'NE' ], st)) {
+            if (c['level'] == 'state') {
                 ttText += '<tr>';
                 ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
                 if (c['winner']) {
                     ttText += '<i class="icon icon-ok"></i>';
                 }
                 ttText += '</td>';
-                ttText += '<td class="amt">' + fmtComma(c['votecount']) + '</td>';
-                // ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
+                // ttText += '<td class="amt">' + fmtComma(c['votecount']) + '</td>';
+                ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
                 ttText += '</tr>';
             }
         });
