@@ -101,7 +101,7 @@ var formatData = function() {
             if (!_.contains([ 'Dem', 'GOP' ], c['party'])) {
                 c['party'] = 'Ind';
             }
-            if (c['winner']) {
+            if (c['npr_winner']) {
                 s['winner'] = c['party'];
             }
         });
