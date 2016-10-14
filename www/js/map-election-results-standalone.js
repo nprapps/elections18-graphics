@@ -3,7 +3,6 @@
 - electoral totals
 - popular vote
 - last updated timestamp (overall)
-- poll closing times
 - modernizr support? disable tooltips on touch devices.
 - load updated json on an interval
 */
@@ -51,6 +50,19 @@ var onWindowLoaded = function() {
     timestamp = d3.select('.footer .timestamp');
     tooltip = d3.select('#tooltip');
 
+    // Extract categories from data
+    var categories = [];
+    var colorRange = [];
+
+    _.each(LEGEND, function(key) {
+        categories.push(key['label']);
+        colorRange.push(eval(key['color']));
+    });
+
+    colorScale = d3.scale.ordinal()
+        .domain(categories)
+        .range(colorRange);
+
     // load data
     loadData(DATA_URL);
 }
@@ -81,18 +93,60 @@ var formatData = function() {
             return d3.descending(a['votecount'], b['votecount']);
         });
 
+        s['winner'] = null;
+        s['category'] = null;
+        s['category_class'] = null;
+
+        _.each(s, function(c) {
+            if (!_.contains([ 'Dem', 'GOP' ], c['party'])) {
+                c['party'] = 'Ind';
+            }
+            if (c['winner']) {
+                s['winner'] = c['party'];
+            }
+        });
+
         s['precinctsreporting'] = s[0]['precinctsreporting'];
         s['precinctsreportingpct'] = s[0]['precinctsreportingpct'];
         s['precinctstotal'] = s[0]['precinctstotal'];
         s['electtotal'] = s[0]['electtotal'];
         s['statename'] = s[0]['statename'];
-        s['winner'] = null;
 
-        _.each(s, function(c) {
-            if (c['winner']) {
-                s['winner'] = c['party'];
+        if (s['statename'] != 'National') {
+            s['poll_closing'] = s[0]['meta']['poll_closing'] + ' ET';
+
+            // define which legend category this fits with
+            if (s['winner']) {
+                switch(s['winner']) {
+                    case 'Dem':
+                        s['category'] = colorScale.domain()[0];
+                        break;
+                    case 'GOP':
+                        s['category'] = colorScale.domain()[1];
+                        break;
+                    case 'Ind':
+                        s['category'] = colorScale.domain()[2];
+                        break;
+                }
+            } else if (s[0]['votecount'] > s[1]['votecount']) {
+                switch(s[0]['party']) {
+                    case 'Dem':
+                        s['category'] = colorScale.domain()[3];
+                        break;
+                    case 'GOP':
+                        s['category'] = colorScale.domain()[4];
+                        break;
+                    case 'Ind':
+                        s['category'] = colorScale.domain()[5];
+                        break;
+                }
+            } else if (s[0]['votecount'] > 0) {
+                s['category'] = colorScale.domain()[6];
+            } else {
+                s['category'] = colorScale.domain()[7];
             }
-        });
+            s['category_class'] = classify(s['category']);
+        }
     });
 
     // update timestamp
@@ -157,37 +211,24 @@ var render = function(containerWidth) {
 var init = function() {
     console.log('init');
 
-    // Extract categories from data
-    var categories = [];
-    var colorRange = [];
-
-    _.each(LEGEND, function(key) {
-        categories.push(key['label']);
-        colorRange.push(eval(key['color']));
-    });
-
-    colorScale = d3.scale.ordinal()
-        .domain(categories)
-        .range(colorRange);
-
     // define textures
     tDLead = textures.lines()
         .size(8)
         .strokeWidth(2)
         .stroke(colorScale('D-Ahead'))
-        .background(COLORS['gray5']);
+        .background(COLORS['gray3']);
 
     tRLead = textures.lines()
         .size(8)
         .strokeWidth(2)
         .stroke(colorScale('R-Ahead'))
-        .background(COLORS['gray5']);
+        .background(COLORS['gray3']);
 
     tILead = textures.lines()
         .size(8)
         .strokeWidth(2)
         .stroke(colorScale('I-Ahead'))
-        .background(COLORS['gray5']);
+        .background(COLORS['gray3']);
 
     mapElement.call(tDLead);
     mapElement.call(tRLead);
@@ -538,57 +579,29 @@ var renderStackedBarChart = function(config) {
  * Update the electoral map
  */
 var updateElectoralMap = function() {
+    console.log('updateElectoralMap');
+
     _.each(electoralData, function(d,i) {
         var st = i;
         if (st != 'US') {
             // define category
-            var stCategory = null;
-            if (d['winner']) {
-                switch(d['winner']) {
-                    case 'Dem':
-                        stCategory = colorScale.domain()[0];
-                        break;
-                    case 'GOP':
-                        stCategory = colorScale.domain()[1];
-                        break;
-                    case 'Ind':
-                        stCategory = colorScale.domain()[2];
-                        break;
-                }
-            } else if (d[0]['votecount'] > d[0]['votecount']) {
-                switch(d[0]['party']) {
-                    case 'Dem':
-                        stCategory = colorScale.domain()[4];
-                        break;
-                    case 'GOP':
-                        stCategory = colorScale.domain()[5];
-                        break;
-                    case 'Ind':
-                        stCategory = colorScale.domain()[6];
-                        break;
-                }
-            } else if (d[0]['votecount'] > 0) {
-                stCategory = colorScale.domain()[7];
-            } else {
-                stCategory = colorScale.domain()[8];
-            }
+            var stCategory = d['category'];
+            var stCategoryClass = d['category_class'];
 
             // color in state
-            var stCategoryClass = classify(stCategory);
-
             var stBox = mapElement.select('.' + classify(st))
                 .classed(stCategoryClass, true);
 
             var stRect = stBox.selectAll('rect');
 
             switch(stCategory) {
-                case colorScale.domain()[4]:
+                case colorScale.domain()[3]:
                     stRect.attr('fill', tDLead.url());
                     break;
-                case colorScale.domain()[5]:
+                case colorScale.domain()[4]:
                     stRect.attr('fill', tRLead.url());
                     break;
-                case colorScale.domain()[6]:
+                case colorScale.domain()[5]:
                     stRect.attr('fill', tILead.url());
                     break;
                 default:
@@ -643,26 +656,33 @@ var onStateMouseover = function() {
     var t = d3.select(this);
     var coords = d3.mouse(this);
     var st = t[0][0]['classList'][0].toUpperCase();
+    var stateData = electoralData[st];
     var ttWidth = 150;
 
     // define tooltip text
     var ttText = '';
-    ttText += '<h3>' + electoralData[st]['statename'] + ' <span>(' + electoralData[st]['electtotal'] + ')</span></h3>';
-    ttText += '<table>';
-    _.each(electoralData[st], function(c, k) {
-        if ((_.contains([ 'ME', 'NE' ], st) && c['reportingunitname'] == 'At Large') || !_.contains([ 'ME', 'NE' ], st)) {
-            ttText += '<tr>';
-            ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
-            if (c['winner']) {
-                ttText += '<i class="icon icon-ok"></i>';
+    ttText += '<h3>' + stateData['statename'] + ' <span>(' + stateData['electtotal'] + ')</span></h3>';
+    if (stateData['category'] == colorScale.domain()[7]) {
+        console.log(stateData);
+        ttText += '<p class="poll-closing">Polls close at ' + stateData['poll_closing'] + '</p>';
+    } else {
+        ttText += '<table>';
+        _.each(electoralData[st], function(c, k) {
+            if ((_.contains([ 'ME', 'NE' ], st) && c['reportingunitname'] == 'At Large') || !_.contains([ 'ME', 'NE' ], st)) {
+                ttText += '<tr>';
+                ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
+                if (c['winner']) {
+                    ttText += '<i class="icon icon-ok"></i>';
+                }
+                ttText += '</td>';
+                ttText += '<td class="amt">' + fmtComma(c['votecount']) + '</td>';
+                // ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
+                ttText += '</tr>';
             }
-            ttText += '</td>';
-            ttText += '<td class="amt">' + (c['votepct'] * 100).toFixed(1) + '%</td>';
-            ttText += '</tr>';
-        }
-    });
-    ttText += '</table>';
-    ttText += '<p class="precincts">' + (electoralData[st]['precinctsreportingpct'] * 100).toFixed(0) + '% reporting</p>';
+        });
+        ttText += '</table>';
+        ttText += '<p class="precincts">' + (stateData['precinctsreportingpct'] * 100).toFixed(0) + '% reporting</p>';
+    }
 
     // position the tooltip
     tooltip.html(ttText)
