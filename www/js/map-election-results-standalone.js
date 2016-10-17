@@ -114,7 +114,7 @@ var loadData = function() {
  * Format data for D3.
  */
 var formatData = function() {
-    console.log('formatData');
+    // console.log('formatData');
     _.each(electoralData, function(s, i) {
         s = s.sort(function(a, b){
             return d3.descending(a['votecount'], b['votecount']);
@@ -263,7 +263,19 @@ var assignColor = function(category) {
  * Initialization
  */
 var init = function() {
-    console.log('init');
+    // console.log('init');
+
+    // position map labels
+    positionMapLabels();
+
+    // county selector dropdown
+    countySelector.on('change', onCountySelected);
+
+    // disable loading css
+    d3.select('#graphic')
+        .classed('loading', false);
+
+    isInitialized = true;
 
     // init pym and render callback
     pymChild = new pym.Child({
@@ -277,17 +289,6 @@ var init = function() {
         ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
     });
 
-    // position map labels
-    positionMapLabels();
-
-    // county selector dropdown
-    countySelector.on('change', onCountySelected);
-
-    // disable loading css
-    d3.select('#graphic')
-        .classed('loading', false);
-
-    isInitialized = true;
 }
 
 
@@ -329,7 +330,7 @@ var render = function(containerWidth) {
  * Draw legend
  */
 var renderLegend = function() {
-    console.log('render legend');
+    // console.log('render legend');
 
     var containerElement = d3.select('.map');
     containerElement.select('.legend').remove();
@@ -656,7 +657,7 @@ var renderStackedBarChart = function(config) {
  * Update the electoral map
  */
 var updateElectoralMap = function() {
-    console.log('updateElectoralMap');
+    // console.log('updateElectoralMap');
 
     _.each(electoralData, function(d,i) {
         var st = i;
@@ -743,8 +744,6 @@ var onStateMouseover = function() {
     var st = t[0][0]['classList'][0].toUpperCase();
     var stateData = electoralData[st];
     var ttWidth = 150;
-
-    console.log(stateData);
 
     // define tooltip text
     var ttText = '';
