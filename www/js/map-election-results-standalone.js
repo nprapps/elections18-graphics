@@ -3,7 +3,7 @@
 - popular vote
 - last updated timestamp (overall)
 - modernizr support? disable tooltips on touch devices.
-- load updated json on an interval
+- refresh counter
 */
 
 // npm libraries
@@ -18,8 +18,10 @@ var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
 var DATA_URL = '../data/presidential-national.json';
+// var DATA_URL = '/elections16/data/presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
+var LOAD_INTERVAL = 20000;
 var pymChild = null;
 var isInitialized = false;
 var isMobile = false;
@@ -32,6 +34,7 @@ var districtStates = [ { 'abbr': 'ME', 'votes': 4 },
 var mapElement = null;
 var mapWidth = null;
 var mapScale = null;
+var reloadData = null;
 var timestamp = null;
 var tooltip = null;
 var tDLead = null;
@@ -86,16 +89,17 @@ var onWindowLoaded = function() {
     mapElement.call(tILead);
 
     // load data
-    loadData(DATA_URL);
+    loadData();
 }
 
 
 /*
  * Load data
  */
-var loadData = function(url) {
-    console.log('loadData: ' + url);
-    d3.json(url, function(error, data) {
+var loadData = function() {
+    clearInterval(reloadData);
+    console.log('loadData: ' + DATA_URL);
+    d3.json(DATA_URL, function(error, data) {
         if (error) {
             console.warn(error);
         }
@@ -133,6 +137,22 @@ var formatData = function() {
                 s['districts'][dist] = [];
                 s['districts'][dist]['winner'] = null;
             });
+
+            var stateLevel = s.filter(function(c) {
+                return c.level == 'state';
+            });
+
+            s['precinctsreporting'] = stateLevel[0]['precinctsreporting'];
+            s['precinctsreportingpct'] = stateLevel[0]['precinctsreportingpct'];
+            s['precinctstotal'] = stateLevel[0]['precinctstotal'];
+            s['electtotal'] = stateLevel[0]['electtotal'];
+            s['statename'] = stateLevel[0]['statename'];
+        } else {
+            s['precinctsreporting'] = s[0]['precinctsreporting'];
+            s['precinctsreportingpct'] = s[0]['precinctsreportingpct'];
+            s['precinctstotal'] = s[0]['precinctstotal'];
+            s['electtotal'] = s[0]['electtotal'];
+            s['statename'] = s[0]['statename'];
         };
 
         _.each(s, function(c) {
@@ -150,12 +170,6 @@ var formatData = function() {
                 }
             }
         });
-
-        s['precinctsreporting'] = s[0]['precinctsreporting'];
-        s['precinctsreportingpct'] = s[0]['precinctsreportingpct'];
-        s['precinctstotal'] = s[0]['precinctstotal'];
-        s['electtotal'] = s[0]['electtotal'];
-        s['statename'] = s[0]['statename'];
 
         if (s['statename'] != 'National') {
             s['poll_closing'] = s[0]['meta']['poll_closing'] + ' ET';
@@ -176,17 +190,11 @@ var formatData = function() {
     // update timestamp
     timestamp.html('(as of TKTKTK)');
 
-    // init pym and render callback
-    pymChild = new pym.Child({
-        renderCallback: render
-    });
+    reloadData = setInterval(loadData, LOAD_INTERVAL);
 
-    pymChild.onMessage('on-screen', function(bucket) {
-        ANALYTICS.trackEvent('on-screen', bucket);
-    });
-    pymChild.onMessage('scroll-depth', function(data) {
-        ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
-    });
+    if (!isInitialized) {
+        init();
+    }
 }
 
 
@@ -252,6 +260,38 @@ var assignColor = function(category) {
 
 
 /*
+ * Initialization
+ */
+var init = function() {
+    console.log('init');
+
+    // init pym and render callback
+    pymChild = new pym.Child({
+        renderCallback: render
+    });
+
+    pymChild.onMessage('on-screen', function(bucket) {
+        ANALYTICS.trackEvent('on-screen', bucket);
+    });
+    pymChild.onMessage('scroll-depth', function(data) {
+        ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
+    });
+
+    // position map labels
+    positionMapLabels();
+
+    // county selector dropdown
+    countySelector.on('change', onCountySelected);
+
+    // disable loading css
+    d3.select('#graphic')
+        .classed('loading', false);
+
+    isInitialized = true;
+}
+
+
+/*
  * Render the graphic.
  */
 var render = function(containerWidth) {
@@ -263,11 +303,6 @@ var render = function(containerWidth) {
         isMobile = true;
     } else {
         isMobile = false;
-    }
-
-    // init map (only once)
-    if (!isInitialized) {
-        init();
     }
 
     // render legend
@@ -287,26 +322,6 @@ var render = function(containerWidth) {
     if (pymChild) {
         pymChild.sendHeight();
     }
-}
-
-
-/*
- * Initialization
- */
-var init = function() {
-    console.log('init');
-
-    // position map labels
-    positionMapLabels();
-
-    // county selector dropdown
-    countySelector.on('change', onCountySelected);
-
-    // disable loading css
-    d3.select('#graphic')
-        .classed('loading', false);
-
-    isInitialized = true;
 }
 
 
@@ -729,6 +744,8 @@ var onStateMouseover = function() {
     var stateData = electoralData[st];
     var ttWidth = 150;
 
+    console.log(stateData);
+
     // define tooltip text
     var ttText = '';
     ttText += '<h3>' + stateData['statename'] + ' <span>(' + stateData['electtotal'] + ')</span></h3>';
@@ -740,7 +757,7 @@ var onStateMouseover = function() {
             if (c['level'] == 'state') {
                 ttText += '<tr>';
                 ttText += '<td><b class="' + classify(c['party']) +  '"></b>' + c['last'];
-                if (c['winner']) {
+                if (c['npr_winner']) {
                     ttText += '<i class="icon icon-ok"></i>';
                 }
                 ttText += '</td>';
