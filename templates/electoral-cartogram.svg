@@ -53,7 +53,7 @@
 		<text>HI</text>
 	</a>
 	<a class="id">
-		<rect x="127.1" y="200.5" width="28" height="28"/>
+		<rect x="127.1" y="198" width="28" height="28"/>
 		<text>ID</text>
 	</a>
 	<a class="il">
@@ -178,7 +178,7 @@
 		<text>OK</text>
 	</a>
 	<a class="or">
-		<rect x="76.6" y="191.5" width="37" height="37"/>
+		<rect x="76.6" y="189" width="37" height="37"/>
 		<text>OR</text>
 	</a>
 	<a class="pa">
@@ -230,7 +230,7 @@
 		<text>WI</text>
 	</a>
 	<a class="wy">
-		<rect x="168.6" y="204.5" width="24" height="24"/>
+		<rect x="168.6" y="202.0" width="24" height="24"/>
 		<text>WY</text>
 	</a>
 </svg>
