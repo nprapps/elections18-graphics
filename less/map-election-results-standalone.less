@@ -1,5 +1,76 @@
 @import "graphics-base";
 
+#electoral-totals {
+    width: 50%;
+    margin: 0 auto -60px auto;
+    font-size: 12px;
+    .clearfix();
+
+    h3 {
+        margin: 0 0 5px 0;
+        font-size: 110%;
+        line-height: 1;
+    }
+
+    h4 {
+        clear: both;
+        color: #999;
+        font-size: 95%;
+        font-style: italic;
+        font-weight: normal;
+        text-align: center;
+        margin: 0;
+        padding-top: 6px;
+    }
+
+    h5 {
+        margin: 0;
+        padding: 0;
+        font-family: 'Gotham SSm',Helvetica,Arial,sans-serif;
+        line-height: 1;
+        font-weight: 700;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .clinton,
+    .trump {
+        display: table-cell;
+        vertical-align: top;
+        text-align: center;
+        width: 50%;
+
+        img { width: 32%; }
+    }
+
+    .clinton {
+        padding-right: 11px;
+        border-right: 1px solid #eee;
+
+        img {
+            float: left;
+            margin-right: 11px;
+        }
+
+        h5 { color: @blue2; }
+    }
+
+    .trump {
+        padding-left: 11px;
+
+        img {
+            float: right;
+            margin-left: 11px;
+        }
+
+        h5 { color: @red2; }
+    }
+
+    .electoral {
+        h5 { font-size: 300%; }
+    }
+}
+
+
 .footnotes {
     margin-top: 11px;
     margin-bottom: 3px;
@@ -135,6 +206,8 @@ text {
 
 // screen size-specific
 @media screen and (min-width: 501px) {
+    #electoral-totals { font-size: 10px; }
+
     .cartogram text {
         font-size: 13px;
 
@@ -152,6 +225,7 @@ text {
 }
 
 @media screen and (min-width: 601px) {
+    #electoral-totals { font-size: 12px; }
 }
 
 @media screen and (max-width: 500px) {
@@ -163,4 +237,12 @@ text {
     .active rect { stroke-width: 3px; }
 
     #county-selector { display: block; }
+
+    #electoral-totals {
+        font-size: 9px;
+        margin-bottom: -25px;
+        width: 150px;
+
+        img { display: none; }
+    }
 }

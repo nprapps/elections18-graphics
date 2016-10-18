@@ -41,6 +41,12 @@ var tDLead = null;
 var tRLead = null;
 var tILead = null;
 
+var electoralTotals = null;
+var clintonTitle = null;
+var clintonElectoral = null;
+var trumpTitle = null;
+var trumpElectoral = null;
+
 
 /*
 * Initialize the graphic.
@@ -51,6 +57,12 @@ var onWindowLoaded = function() {
     mapElement = d3.select('.map svg');
     timestamp = d3.select('.footer .timestamp');
     tooltip = d3.select('#tooltip');
+
+    electoralTotals = d3.select('#electoral-totals');
+    clintonTitle = electoralTotals.select('.clinton h3');
+    clintonElectoral = electoralTotals.select('.clinton-electoral');
+    trumpTitle = electoralTotals.select('.trump h3');
+    trumpElectoral = electoralTotals.select('.trump-electoral');
 
     // Extract categories from data
     var categories = [];
@@ -184,6 +196,30 @@ var formatData = function() {
                     s['districts'][dist]['color'] = assignColor(s['districts'][dist]['category']);
                 });
             }
+        }
+    });
+
+    // update overall totals
+    _.each(electoralData['US'], function(c) {
+        switch(c['last']) {
+            case 'Trump':
+                var votePct = c['votepct'] * 100;
+                trumpElectoral.html(c['npr_electwon']);
+                if (c['npr_winner']) {
+                    trumpTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
+                } else {
+                    trumpTitle.html(c['last']);
+                }
+                break;
+            case 'Clinton':
+                var votePct = c['votepct'] * 100;
+                clintonElectoral.html(c['npr_electwon']);
+                if (c['npr_winner']) {
+                    clintonTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
+                } else {
+                    clintonTitle.html(c['last']);
+                }
+                break;
         }
     });
 
