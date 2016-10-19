@@ -229,7 +229,8 @@ var formatData = function() {
         }
     });
 
-    console.log(electoralData['NY'][0]['last'], electoralData['NY'][0]['votecount']);
+    console.log(electoralData['US'][0]['last'] + ': ' + electoralData['US'][0]['npr_electwon'] + ' | ' + electoralData['US'][1]['last'] + ': ' + electoralData['US'][1]['npr_electwon']);
+    console.log('TX:', electoralData['TX'][0]['last'], electoralData['TX'][0]['votecount'], electoralData['TX'][0]['npr_winner']);
 
     // update timestamp
     timestamp.html('(as of TKTKTK)');
