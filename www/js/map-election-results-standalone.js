@@ -10,6 +10,7 @@
 import d3 from 'd3';
 import * as _ from 'underscore';
 import textures from 'textures';
+import navbar from '../js/includes/navbar.js';
 
 // D3 formatters
 var fmtComma = d3.format(',');
@@ -205,7 +206,7 @@ var formatData = function() {
             case 'Trump':
                 var votePct = c['votepct'] * 100;
                 trumpElectoral.html(c['npr_electwon']);
-                if (c['npr_winner']) {
+                if (c['npr_electwon'] >= 270) {
                     trumpTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
                 } else {
                     trumpTitle.html(c['last']);
@@ -214,7 +215,7 @@ var formatData = function() {
             case 'Clinton':
                 var votePct = c['votepct'] * 100;
                 clintonElectoral.html(c['npr_electwon']);
-                if (c['npr_winner']) {
+                if (c['npr_electwon'] >= 270) {
                     clintonTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
                 } else {
                     clintonTitle.html(c['last']);
