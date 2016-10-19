@@ -1,0 +1,436 @@
+{% extends '_base_child.html' %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="results-wrapper senate">
+    <div class="results-header">
+		<h1>Senate</h1>
+	</div>
+
+    <div class="leaderboard">
+        <div class="results-header-group dem">
+            <h2 class="party">Dem.</h2>
+            <p class="total"><span class="percentage">44</span> <span class="change">-8</span></p>
+            <p class="seats-needed">Needs <span class="count">6</span></p>
+        </div>
+        <div class="results-header-group gop">
+            <h2 class="party">GOP</h2>
+            <p class="total"><span class="percentage">53</span> <span class="change">+8</span></p>
+            <p class="seats-needed">Needs <span class="count">0</span></p>
+        </div>
+        <div class="results-header-group other">
+            <h2 class="party">Ind.</h2>
+            <p class="total"><span class="percentage">2</span> <span class="change">+0</span></p>
+        </div>
+        <div class="results-header-group not-called">
+            <h2>Not Called</h2>
+            <p class="total"><span class="count">0</span></p>
+        </div>
+    </div>
+
+    <div class="results">
+
+        <div class="column first">
+            <h2 class="poll-closing-group"><span class="time"> 7:00 EST</span></h2>
+            <table class="races">
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">GA</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-19893-GA"><span class="fname">Michelle</span> <span class="lname">Nunn</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">45</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">53</span></td>
+                    <td class="candidate gop id-19900-GA winner"><span class="fname">David</span> <span class="lname">Perdue</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">KY</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-5083-KY"><span class="fname">Alison Lundergan</span> <span class="lname">Grimes</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">41</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">56</span></td>
+                    <td class="candidate gop id-5079-KY winner incumbent"><span class="fname">Mitch</span> <span class="lname">McConnell</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td><td class="state gop ">SC</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-47655-SC"><span class="fname">Brad</span> <span class="lname">Hutto</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">39</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">54</span></td>
+                    <td class="candidate gop id-47652-SC winner incumbent"><span class="fname">Lindsey</span> <span class="lname">Graham</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td><td class="state gop ">SC</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-47831-SC"><span class="fname">Joyce</span> <span class="lname">Dickerson</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">37</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">61</span></td>
+                    <td class="candidate gop id-47833-SC winner incumbent"><span class="fname">Tim</span> <span class="lname">Scott</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">VA</td>
+                    <td class="results-status called">&gt;99</td>
+                    <td class="candidate dem id-51278-VA winner incumbent"><span class="fname">Mark</span> <span class="lname">Warner</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">49</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">48</span></td>
+                    <td class="candidate gop id-51338-VA"><span class="fname">Ed</span> <span class="lname">Gillespie</span></td>
+                </tr>
+            </table>
+
+            <h2 class="poll-closing-group"><span class="time"> 7:30 EST</span></h2>
+            <table class="races">
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">NC</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-42433-NC incumbent"><span class="fname">Kay</span> <span class="lname">Hagan</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">47</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">49</span></td>
+                    <td class="candidate gop id-42858-NC winner"><span class="fname">Thom</span> <span class="lname">Tillis</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">WV</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-56729-WV"><span class="fname">Natalie</span> <span class="lname">Tennant</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">34</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">62</span></td>
+                    <td class="candidate gop id-56730-WV winner"><span class="fname">Shelley Moore</span> <span class="lname">Capito</span></td>
+                </tr>
+            </table>
+
+            <h2 class="poll-closing-group"><span class="time"> 8:00 EST</span></h2>
+            <table class="races">
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">AL</td>
+                    <td class="results-status called">0</td>
+                    <td class="candidate uncontested">Uncontested</td>
+                    <td class="candidate-total"><span class="candidate-total-wrapper"></span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent"><span class="candidate-total-wrapper">—</span></td>
+                    <td class="candidate gop id-4432-AL winner incumbent"><span class="fname">Jeff</span> <span class="lname">Sessions</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">DE</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-10214-DE winner incumbent"><span class="fname">Christopher</span> <span class="lname">Coons</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">56</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">42</span></td>
+                    <td class="candidate gop id-10372-DE"><span class="fname">Kevin</span> <span class="lname">Wade</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">IL</td>
+                    <td class="results-status called">&gt;99</td>
+                    <td class="candidate dem id-25721-IL winner incumbent"><span class="fname">Dick</span> <span class="lname">Durbin</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">53</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">43</span></td>
+                    <td class="candidate gop id-25722-IL"><span class="fname">Jim</span> <span class="lname">Oberweis</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">MA</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-32598-MA winner incumbent"><span class="fname">Ed</span> <span class="lname">Markey</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">62</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">38</span></td>
+                    <td class="candidate gop id-32599-MA"><span class="fname">Brian</span> <span class="lname">Herr</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">ME</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-28665-ME"><span class="fname">Shenna</span> <span class="lname">Bellows</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">32</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">68</span></td>
+                    <td class="candidate gop id-28666-ME winner incumbent"><span class="fname">Susan</span> <span class="lname">Collins</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">MS</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-31327-MS"><span class="fname">Travis</span> <span class="lname">Childers</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">37</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">60</span></td>
+                    <td class="candidate gop id-31122-MS winner incumbent"><span class="fname">Thad</span> <span class="lname">Cochran</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">NH</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-44274-NH winner incumbent"><span class="fname">Jeanne</span> <span class="lname">Shaheen</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">52</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">48</span></td>
+                    <td class="candidate gop id-44477-NH"><span class="fname">Scott</span> <span class="lname">Brown</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">NJ</td>
+                    <td class="results-status called">&gt;99</td>
+                    <td class="candidate dem id-38236-NJ winner incumbent"><span class="fname">Cory</span> <span class="lname">Booker</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">56</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">42</span></td>
+                    <td class="candidate gop id-38283-NJ"><span class="fname">Jeff</span> <span class="lname">Bell</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">OK</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-44631-OK"><span class="fname">Matt</span> <span class="lname">Silverstein</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">29</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">68</span></td>
+                    <td class="candidate gop id-44233-OK winner incumbent"><span class="fname">Jim</span> <span class="lname">Inhofe</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">OK</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-44646-OK"><span class="fname">Connie</span> <span class="lname">Johnson</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">29</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">68</span></td>
+                    <td class="candidate gop id-44647-OK winner"><span class="fname">James</span> <span class="lname">Lankford</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">RI</td>
+                    <td class="results-status called">&gt;99</td>
+                    <td class="candidate dem id-45299-RI winner incumbent"><span class="fname">Jack</span> <span class="lname">Reed</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">71</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">29</span></td>
+                    <td class="candidate gop id-45423-RI"><span class="fname">Mark</span> <span class="lname">Zaccaria</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">TN</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-48966-TN"><span class="fname">Gordon</span> <span class="lname">Ball</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">32</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">62</span></td>
+                    <td class="candidate gop id-48771-TN winner incumbent"><span class="fname">Lamar</span> <span class="lname">Alexander</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="column last">
+
+            <h2 class="poll-closing-group"><span class="time"> 8:30 EST</span></h2>
+             <table class="races">
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">AR</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-11959-AR incumbent"><span class="fname">Mark</span> <span class="lname">Pryor</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">39</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">57</span></td>
+                    <td class="candidate gop id-12493-AR winner"><span class="fname">Tom</span> <span class="lname">Cotton</span></td>
+                </tr>
+            </table>
+
+            <h2 class="poll-closing-group"><span class="time"> 9:00 EST</span></h2>
+            <table class="races">
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">CO</td>
+                    <td class="results-status called">99</td>
+                    <td class="candidate dem id-12201-CO incumbent"><span class="fname">Mark</span> <span class="lname">Udall</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">46</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">49</span></td>
+                    <td class="candidate gop id-12203-CO winner"><span class="fname">Cory</span> <span class="lname">Gardner</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">KS</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate other id-6081-KS"><span class="fname">Greg</span> <span class="lname">Orman</span> <span class="party">IND</span></td>
+                    <td class="candidate-total other reporting"><span class="candidate-total-wrapper">42</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">53</span></td>
+                    <td class="candidate gop id-5662-KS winner incumbent"><span class="fname">Pat</span> <span class="lname">Roberts</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  None"><img class="img-responsive" src="/assets/runoff.svg"></td>
+                    <td class="state None ">LA</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-23579-LA incumbent"><span class="fname">Mary</span> <span class="lname">Landrieu</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">42</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">41</span></td>
+                    <td class="candidate gop id-23859-LA"><span class="fname">Bill</span> <span class="lname">Cassidy</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">MI</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-34481-MI winner"><span class="fname">Gary</span> <span class="lname">Peters</span></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">55</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">41</span></td>
+                    <td class="candidate gop id-34480-MI"><span class="fname">Terri Lynn</span> <span class="lname">Land</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">MN</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-31870-MN winner incumbent"><span class="fname">Al</span> <span class="lname">Franken</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">53</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">43</span></td>
+                    <td class="candidate gop id-32314-MN"><span class="fname">Mike</span> <span class="lname">McFadden</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">NE</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-31426-NE"><span class="fname">Dave</span> <span class="lname">Domina</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">31</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">65</span></td>
+                    <td class="candidate gop id-31293-NE winner"><span class="fname">Ben</span> <span class="lname">Sasse</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">NM</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-37931-NM winner incumbent"><span class="fname">Tom</span> <span class="lname">Udall</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">55</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">45</span></td>
+                    <td class="candidate gop id-38129-NM"><span class="fname">Allen</span> <span class="lname">Weh</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">SD</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-47392-SD"><span class="fname">Rick</span> <span class="lname">Weiland</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">30</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">50</span></td>
+                    <td class="candidate gop id-47394-SD winner"><span class="fname">Mike</span> <span class="lname">Rounds</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">TX</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-58710-TX"><span class="fname">David</span> <span class="lname">Alameel</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">34</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">62</span></td>
+                    <td class="candidate gop id-58308-TX winner incumbent"><span class="fname">John</span> <span class="lname">Cornyn</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">WY</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-54634-WY"><span class="fname">Charlie</span> <span class="lname">Hardy</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">18</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">72</span></td>
+                    <td class="candidate gop id-54525-WY winner incumbent"><span class="fname">Mike</span> <span class="lname">Enzi</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+            </table>
+
+            <h2 class="poll-closing-group"><span class="time">10:00 EST</span></h2>
+            <table class="races">
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">IA</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-22080-IA"><span class="fname">Bruce</span> <span class="lname">Braley</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">44</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">52</span></td>
+                    <td class="candidate gop id-22082-IA winner"><span class="fname">Joni</span> <span class="lname">Ernst</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">MT</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-34306-MT"><span class="fname">Amanda</span> <span class="lname">Curtis</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">40</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">58</span></td>
+                    <td class="candidate gop id-33960-MT winner"><span class="fname">Steve</span> <span class="lname">Daines</span></td>
+                </tr>
+            </table>
+
+            <h2 class="poll-closing-group"><span class="time">11:00 EST</span></h2>
+            <table class="races">
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">HI</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-18740-HI winner incumbent"><span class="fname">Brian</span> <span class="lname">Schatz</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">70</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">28</span></td>
+                    <td class="candidate gop id-18741-HI"><span class="fname">Cam</span> <span class="lname">Cavasso</span></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  gop"></td>
+                    <td class="state gop ">ID</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-18241-ID"><span class="fname">Nels</span> <span class="lname">Mitchell</span></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">35</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner incumbent reporting"><span class="candidate-total-wrapper">65</span></td>
+                    <td class="candidate gop id-18205-ID winner incumbent"><span class="fname">Jim</span> <span class="lname">Risch</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                </tr>
+                <tr class="race">
+                    <td class="pickup  dem"></td>
+                    <td class="state dem ">OR</td>
+                    <td class="results-status called">94</td>
+                    <td class="candidate dem id-4633-OR winner incumbent"><span class="fname">Jeff</span> <span class="lname">Merkley</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem winner reporting"><span class="candidate-total-wrapper">56</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop reporting"><span class="candidate-total-wrapper">37</span></td>
+                    <td class="candidate gop id-4832-OR"><span class="fname">Monica</span> <span class="lname">Wehby</span></td>
+                </tr>
+            </table>
+
+            <h2 class="poll-closing-group"><span class="time">12:00 EST</span></h2>
+            <table class="races">
+                <tr class="race">
+                    <td class="pickup  party-change gop"></td>
+                    <td class="state gop ">AK</td>
+                    <td class="results-status called">100</td>
+                    <td class="candidate dem id-6022-AK incumbent"><span class="fname">Mark</span> <span class="lname">Begich</span><img src="/assets/incumbent.svg" alt="Incumbent"></td>
+                    <td class="candidate-total dem reporting"><span class="candidate-total-wrapper">46</span></td>
+                    <td class="candidate-total-spacer"></td>
+                    <td class="candidate-total gop winner reporting"><span class="candidate-total-wrapper">49</span></td>
+                    <td class="candidate gop id-6373-AK winner"><span class="fname">Dan</span> <span class="lname">Sullivan</span></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="ap-credit">
+        Source: AP&nbsp;&nbsp;|&nbsp;&nbsp;As of <span class="timestamp">Nov. 20, 2014 at 12:02 EST</span>.
+    </div>
+
+</div>
+{% endblock %}
