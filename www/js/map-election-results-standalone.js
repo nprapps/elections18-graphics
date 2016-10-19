@@ -18,8 +18,9 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
-var DATA_URL = '../data/presidential-national.json';
-// var DATA_URL = '/elections16/data/presidential-national.json';
+// var DATA_URL = '../data/presidential-national-test.json';
+// var DATA_URL = '../data/presidential-national.json';
+var DATA_URL = '/elections16/data/presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
 var LOAD_INTERVAL = 20000;
@@ -185,7 +186,11 @@ var formatData = function() {
         });
 
         if (s['statename'] != 'National') {
-            s['poll_closing'] = s[0]['meta']['poll_closing'] + ' ET';
+            if (typeof s[0]['meta'] != 'undefined') {
+                s['poll_closing'] = s[0]['meta']['poll_closing'] + ' ET';
+            } else {
+                s['poll_closing'] = null;
+            }
 
             // define which legend category this fits with
             s['category'] = assignCategory(s);
@@ -786,7 +791,11 @@ var onStateMouseover = function() {
     var ttText = '';
     ttText += '<h3>' + stateData['statename'] + ' <span>(' + stateData['electtotal'] + ')</span></h3>';
     if (stateData['category'] == colorScale.domain()[7]) {
-        ttText += '<p class="poll-closing">Polls close at ' + stateData['poll_closing'] + '</p>';
+        if (stateData['poll_closing']) {
+            ttText += '<p class="poll-closing">Polls close at ' + stateData['poll_closing'] + '</p>';
+        } else {
+            ttText += '<p class="poll-closing">No data available.</p>';
+        }
     } else {
         ttText += '<table>';
         _.each(electoralData[st], function(c, k) {
