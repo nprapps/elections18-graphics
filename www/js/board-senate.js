@@ -13,7 +13,7 @@ let boardvDOM = null;
 let boardDOM = null;
 let lastRequestTime = null;
 
-const boardWrapper = document.querySelector('.results-wrapper')
+const boardWrapper = document.querySelector('body')
 const FIRST_COLUMN_KEYS = ['6:00 PM', '7:00 PM', '7:30 PM', '8:00 PM']
 const SECOND_COLUMN_KEYS = ['8:30 PM', '9:00 PM', '10:00 PM', '11:00 PM', '1:00 AM']
 
@@ -79,11 +79,49 @@ const updateBoard = function(data) {
 }
 
 const renderBoardvDOM = function(data) {
-    return h('div', [
+    return h('div.results-wrapper', [
         h('div.results-header', [
-            h('h1', 'Senate')
-        ]),
-        h('div.leaderboard', [
+            h('h1', 'Senate'),
+            h('div.leaderboard', [
+                h('div.results-header-group.dem', [
+                    h('h2.party', 'Dem.'),
+                    h('p.total', [
+                        h('span.percentage', '54'),
+                        ' ',
+                        h('span.change', '+10')
+                    ]),
+                    h('p.seats-needed', [
+                        'Needs ',
+                        h('span.count', '0')
+                    ])
+                ]),
+                h('div.results-header-group.gop', [
+                    h('h2.party', 'GOP'),
+                    h('p.total', [
+                        h('span.percentage', '42'),
+                        ' ',
+                        h('span.change', '-10')
+                    ]),
+                    h('p.seats-needed', [
+                        'Needs ',
+                        h('span.count', '8')
+                    ])
+                ]),
+                h('div.results-header-group.dem', [
+                    h('h2.party', 'Ind.'),
+                    h('p.total', [
+                        h('span.percentage', '2'),
+                        ' ',
+                        h('span.change', '+0')
+                    ]),
+                ]),
+                h('div.results-header-group.not-called', [
+                    h('h2', 'Not Called'),
+                    h('p.total', [
+                        h('span.count', '2')
+                    ])
+                ])
+            ]),
         ]),
         h('div.results', [
             renderResultsColumn(data, FIRST_COLUMN_KEYS, 'first'),
