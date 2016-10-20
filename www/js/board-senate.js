@@ -107,7 +107,7 @@ const renderBoardvDOM = function(data) {
                         h('span.count', '8')
                     ])
                 ]),
-                h('div.results-header-group.dem', [
+                h('div.results-header-group.other', [
                     h('h2.party', 'Ind.'),
                     h('p.total', [
                         h('span.percentage', '2'),
