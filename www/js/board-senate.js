@@ -1,9 +1,10 @@
 // npm libraries
 import navbar from '../js/includes/navbar.js';
-import h from 'virtual-dom/h';
-import diff from 'virtual-dom/diff';
-import patch from 'virtual-dom/patch';
-import createElement from 'virtual-dom/create-element';
+// import h from 'virtual-dom/h';
+// import diff from 'virtual-dom/diff';
+// import patch from 'virtual-dom/patch';
+// import createElement from 'virtual-dom/create-element';
+import maquette from 'maquette';
 import request from 'superagent';
 
 // global vars
@@ -12,11 +13,13 @@ let dataURL = null;
 let boardvDOM = null;
 let boardDOM = null;
 let lastRequestTime = null;
+let data = null;
 
 const boardWrapper = document.querySelector('body')
 const FIRST_COLUMN_KEYS = ['6:00 PM', '7:00 PM', '7:30 PM', '8:00 PM']
 const SECOND_COLUMN_KEYS = ['8:30 PM', '9:00 PM', '10:00 PM', '11:00 PM', '1:00 AM']
-
+const projector = maquette.createProjector();
+const h = maquette.h;
 /*
 * Initialize the graphic.
 */
@@ -26,16 +29,11 @@ var onWindowLoaded = function() {
         renderCallback: updateIFrame
     });
 
-    boardvDOM = renderInitialBoardvDOM();
-    boardDOM = createElement(boardvDOM);
-    boardWrapper.appendChild(boardDOM);
     dataURL = buildDataURL();
     getData();
-}
+    projector.append(boardWrapper, renderMaquette);
 
-
-const renderInitialBoardvDOM = function() {
-    return h('div.init', h('p', 'Waiting for data...'));
+    setInterval(getData, 5000);
 }
 
 const buildDataURL = function() {
@@ -54,13 +52,14 @@ const getData = function() {
         .end(function(err, res) {
             if (res.status === 200) {
                 lastRequestTime = new Date().toUTCString();
-                updateBoard(res.body);
-                updateIFrame();
+                data = sortData(res.body)
+                projector.scheduleRender();
+                setTimeout(updateIFrame, 1);
             }
         });
 }
 
-const updateBoard = function(data) {
+const sortData = function(data) {
     // sort each race
     for (var time in data) {
         for (var race in data[time]) {
@@ -69,16 +68,10 @@ const updateBoard = function(data) {
             })
         }
     }
-
-    const newBoardvDOM = renderBoardvDOM(data);
-    console.log(boardvDOM, newBoardvDOM);
-    const patches = diff(boardvDOM, newBoardvDOM);
-    boardDOM = patch(boardDOM, patches);
-    console.log(boardDOM);
-    boardvDOM = newBoardvDOM;
+    return data
 }
 
-const renderBoardvDOM = function(data) {
+const renderMaquette = function() {
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', 'Senate'),
@@ -124,19 +117,26 @@ const renderBoardvDOM = function(data) {
             ]),
         ]),
         h('div.results', [
-            renderResultsColumn(data, FIRST_COLUMN_KEYS, 'first'),
-            renderResultsColumn(data, SECOND_COLUMN_KEYS, 'last')
+            renderResultsColumn(FIRST_COLUMN_KEYS, 'first'),
+            renderResultsColumn(SECOND_COLUMN_KEYS, 'last')
         ])
     ]);
 }
 
-const renderResultsColumn = function(data, keys, orderClass) {
+const renderResultsColumn = function(keys, orderClass) {
     var className = 'column ' + orderClass;
-    return h('div', {
-        className: className
-    }, [
-        keys.map(key => renderResultsTable(data, key))
-    ])
+    if (data) {
+        return h('div', {
+            key: orderClass,
+            class: className
+        }, [
+            keys.map(key => renderResultsTable(data, key))
+        ])
+    } else {
+        return h('div', {
+            key: 'init'
+        });
+    }
 }
 
 const renderResultsTable = function(data, key) {
@@ -190,12 +190,11 @@ const renderRace = function(race) {
     }
 
     classList.push(change, called, reporting);
-
-    return h('tr.race', {
-        className: classList.join(' ')
+    return h('tr', {
+        class: 'race ' + classList.join(' ')
     }, [
         h('td.pickup', [
-            insertRunoffImage(race)
+            // insertRunoffImage(race)
         ]),
         h('td.state', [
             race1['statepostal']
@@ -204,7 +203,7 @@ const renderRace = function(race) {
             Math.round(race1['precinctsreportingpct'] * 100) 
         ]),
         h('td.candidate', {
-            className: race1['party'].toLowerCase()
+            class: race1['party'].toLowerCase()
         }, [
             h('span.fname', [
                 race1['first'] + ' '
@@ -215,7 +214,7 @@ const renderRace = function(race) {
             insertIncumbentImage(race1['incumbent'])
         ]),
         h('td.candidate-total', {
-            className: race1['party'].toLowerCase()
+            class: race1['party'].toLowerCase()
         }, [
             h('span.candidate-total-wrapper', [
                 Math.round(race1['votepct'] * 100)
@@ -223,14 +222,14 @@ const renderRace = function(race) {
         ]),
         h('td.candidate-total-spacer'),
         h('td.candidate-total', {
-            className: race2['party'].toLowerCase()
+            class: race2['party'].toLowerCase()
         }, [
             h('span.candidate-total-wrapper', [
                 race2 ? Math.round(race2['votepct'] * 100) : 0
             ])
         ]),
         h('td.candidate', {
-            className: race2['party'].toLowerCase()
+            class: race2['party'].toLowerCase()
         }, [
             h('span.fname', [
                 race2 ? race2['first'] : ''
