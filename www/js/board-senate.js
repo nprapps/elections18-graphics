@@ -194,7 +194,7 @@ const renderRace = function(race) {
         class: 'race ' + classList.join(' ')
     }, [
         h('td.pickup', [
-            // insertRunoffImage(race)
+            insertRunoffImage(race)
         ]),
         h('td.state', [
             race1['statepostal']
