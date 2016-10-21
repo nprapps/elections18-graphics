@@ -54,7 +54,7 @@ const getData = function() {
                 lastRequestTime = new Date().toUTCString();
                 data = sortData(res.body)
                 projector.scheduleRender();
-                setTimeout(updateIFrame, 1);
+                setTimeout(updateIFrame, 10);
             }
         });
 }
@@ -191,6 +191,7 @@ const renderRace = function(race) {
 
     classList.push(change, called, reporting);
     return h('tr', {
+        key: race1['last'],
         class: 'race ' + classList.join(' ')
     }, [
         h('td.pickup', [
@@ -216,7 +217,9 @@ const renderRace = function(race) {
         h('td.candidate-total', {
             class: race1['party'].toLowerCase()
         }, [
-            h('span.candidate-total-wrapper', [
+            h('span.candidate-total-wrapper', {
+                updateAnimation: onUpdateAnimation
+            }, [
                 Math.round(race1['votepct'] * 100)
             ])
         ]),
@@ -224,7 +227,9 @@ const renderRace = function(race) {
         h('td.candidate-total', {
             class: race2['party'].toLowerCase()
         }, [
-            h('span.candidate-total-wrapper', [
+            h('span.candidate-total-wrapper', {
+                updateAnimation: onUpdateAnimation
+            }, [
                 race2 ? Math.round(race2['votepct'] * 100) : 0
             ])
         ]),
@@ -278,6 +283,26 @@ const findGOPResult = function(result) {
 
 const findDemResult = function(result) {
     return result.party === 'Dem';
+}
+
+const onUpdateAnimation = function(domNode, properties, previousProperties) {
+    const parent = domNode.parentNode;
+    let party = '';
+    if (parent.classList.contains('dem')) {
+        party = 'dem';
+    } else if (parent.classList.contains('gop')) {
+        party = 'gop';
+    }
+    const sibling = domNode.parentNode.parentNode.querySelector('.candidate.' + party)
+    console.log(party, sibling);
+    
+    parent.classList.add('lighten');
+    sibling.classList.add('lighten');
+    
+    setTimeout(function() { 
+        parent.classList.remove('lighten')
+        sibling.classList.remove('lighten');
+    }, 2000);
 }
 
 const updateIFrame = function() {
