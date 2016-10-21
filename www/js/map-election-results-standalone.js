@@ -1,5 +1,4 @@
 /* TODO
-- electoral totals
 - popular vote
 - last updated timestamp (overall)
 - modernizr support? disable tooltips on touch devices.
