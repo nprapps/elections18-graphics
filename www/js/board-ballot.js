@@ -15,7 +15,7 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
-    bigboard.initBigBoard('senate-national.json');
+    bigboard.initBigBoard('ballot-measures-national.json');
 }
 
 

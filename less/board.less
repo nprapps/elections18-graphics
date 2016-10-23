@@ -1,0 +1,559 @@
+@import "variables";
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+// Mixins
+.clearfix() {
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+    &:after { clear: both; }
+}
+
+.unselectable {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.results-wrapper {
+    font: 14px/1.4 Helvetica, Arial, sans-serif;
+
+    h1, h2, h3, h4, h5, h6, p { margin: 0; }
+
+    table {
+        font-weight: 400;
+        color: @gray;
+        border-collapse: separate;
+        font-size: 1.0rem;
+    }
+
+    .results-header {
+        font-size: 1.1rem;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+
+        h1 {
+            font: 700 2.8rem @gotham;
+            text-transform: uppercase;
+            color: @gray-darker;
+            float: left;
+        }
+
+        h4 {
+        	text-transform: uppercase;
+        	font-weight: normal;
+        	color: @gray-medium;
+        	font-size: 1.3rem;
+        	font-family: @gotham;
+        	margin-bottom: .5rem;
+        }
+
+        .leaderboard {
+            float: right;
+            display: table;
+        }
+    }
+
+    .results  {
+        font-size: 0.9rem;
+        height: 100%;
+        .clearfix();
+
+        .column {
+            box-sizing: border-box;
+            padding: 0 1%;
+            float: left;
+            width: 50%;
+
+            &.first {
+                padding-left: 0;
+            }
+
+            &.last {
+                padding-right: 0;
+            }
+        }
+
+        .poll-closing-group {
+            font: normal 0.8rem/1.2 @knockout;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: @gray-light;
+            padding-bottom: 3px;
+            border-bottom: 2px solid @gray-light;
+        }
+
+        .races {
+            width: 100%;
+            border-spacing: 0 0.2rem;
+
+            td {
+                padding: 0.2rem 0.4rem;
+                line-height: 1.1;
+            }
+
+            // .results-status {
+            //     width: 12%;
+            //     white-space: nowrap;
+
+            //     &:after {
+            //         content: "% in";
+            //         font-size: 80%;
+            //         vertical-align: top;
+            //         margin-left:-.1rem;
+            //     }
+
+            //     &.reporting { color: @gray; }
+            //     &.called { color: @gray-light; }
+            // }
+
+            // .pickup{
+            //     width: 4%;
+            //     vertical-align: middle;
+            //     img {
+            //         width: 100%;
+            //         height: auto;
+            //     }
+            // }
+
+            // .party-change{
+            //     &:after{
+            //         font-weight: 500;
+            //         content: "+1";
+            //         font-style: italic;
+            //         font-size: 65%;
+            //     }
+            //     &.dem { color: @dem; }
+            //     &.gop { color: @gop; }
+            //     &.other { color: @ind; }
+            // }
+
+            // .state {
+            //     text-align: center;
+            //     width: 10%;
+            //     &.dem { color: @dem; }
+            //     &.gop { color: @gop; }
+            //     &.other { color: @yellow; }
+            // }
+
+            // .description { width: 48%; }
+
+            // .choice {
+            //     width: 10%;
+
+            //     &.no { background: @gopDim; }
+            //     &.yes { background: @indDim; }
+            // }
+
+            // .candidate {
+            //     width: 30%;
+            //     &.dem { background: @demDim; }
+            //     &.gop { background: @gopDim; }
+            //     &.other { background: @indDim; }
+
+            //     .party {
+            //         font-size: 75%;
+            //         font-weight: normal;
+            //         letter-spacing: 0.05rem;
+            //         margin-left: 0.25rem;
+            //     }
+
+            //     &.incumbent {
+            //         img {
+            //             width:.55rem;
+            //             height: 1rem;
+            //             vertical-align: top;
+            //             margin-left: 0.5rem;
+            //         }
+            //     }
+            // }
+
+            // .candidate-total-spacer {
+            //     width: 0;
+            //     padding: 1px;
+            // }
+
+            // .candidate-total {
+            //     width: 7%;
+            //     text-align: right;
+            //     background: transparent;
+            //     position: relative;
+
+            //     &.dem { background: @demDim; }
+            //     &.gop,
+            //     &.no { background: @gopDim; }
+            //     &.other,
+            //     &.yes { background: @indDim; }
+            //     &.reporting {
+            //         &:after{
+            //             content:"%";
+            //             font-size: 80%;
+            //             vertical-align: top;
+            //         }
+            //     }
+            // }
+
+            // .candidate,
+            // .candidate-total {
+            //     // text-shadow: rgba(0,0,0, 0.8) 0 0 2px;
+            // }
+
+            // .winner {
+            //     color: #fff;
+
+            //     &.dem { background: @dem; }
+            //     &.gop,
+            //     &.no { background: @gop; }
+            //     &.other,
+            //     &.yes { background: @ind; }
+
+            //     &.candidate-total {
+            //         background: transparent;
+
+            //         &.dem { background: @dem; }
+            //         &.gop,
+            //         &.no { background: @gop; }
+            //         &.other,
+            //         &.yes { background: @ind; }
+            //     }
+            // }
+
+            // .candidate-total-spacer + .candidate-total {
+            //     text-align: left;
+            // }
+
+            // .id-22097-IA,
+            // .id-5083-KY {
+            //     letter-spacing: -0.05rem;
+            // }
+        }
+
+        td{
+            &:nth-child(4){
+                border-radius: 0.5rem 0 0 0.5rem;
+            }
+            &:nth-child(5){
+                border-radius: 0 0.5rem 0.5rem 0;
+            }
+            &:nth-child(7){
+                border-radius: 0.5rem 0 0 0.5rem;
+            }
+            &:nth-child(8){
+                border-radius: 0 0.5rem 0.5rem 0;
+            }
+        }
+    }
+
+    .state-slide {
+        .header {
+            font-size:30px;
+            padding-top:20px;
+        }
+    }
+}
+
+.ballot-measures .results .races {
+    .description { width: 46%; }
+    .choice { width: 11%; }
+    .state { width: 6%; }
+
+    td {
+        vertical-align: top;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+
+tr {
+    .results-status {
+        color: @white;
+        width: 12%;
+        white-space: nowrap;
+        &:after{
+            content: "% in";
+            font-size: 80%;
+            vertical-align: top;
+            margin-left:-.1rem;
+        }
+    }
+
+    &.reporting .results-status {
+        color: @gray;
+    }
+    &.called .results-status {
+        color: @gray-light;
+    }
+
+    .pickup{
+        width: 4%;
+        vertical-align: middle;
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    &.party-change .pickup{
+        &:after{
+            font-weight: 500;
+            content: "+1";
+            font-style: italic;
+            font-size: 65%;
+        }
+    }
+    &.dem.party-change .pickup { color: @dem; }
+    &.gop.party-change .pickup { color: @gop; }
+    &.other.party-change .pickup { color: @ind; }
+
+    .state {
+        color: #000;
+        text-align: center;
+        width: 10%;
+        // &.party-change {
+        //     color: #fff;
+        //     &.dem { background-color: @dem; }
+        //     &.gop { background-color: @gop; }
+        //     &.ind { background-color: @ind; }
+
+        // }
+    }
+    &.dem .state { color: @dem; }
+    &.gop .state  { color: @gop; }
+    &.other .state { color: @ind; }
+
+    .description {
+        width: 48%;
+    }
+
+    .choice {
+        width: 10%;
+
+        &.no { background: @gopDim; }
+        &.yes { background: @indDim; }
+    }
+
+    .candidate {
+        transition: all 2s ease;
+        &.lighten {
+            background-color: @ind !important;
+        }
+        width: 30%;
+        &.dem { background: @demDim; }
+        &.gop { background: @gopDim; }
+        &.other { background: @indDim; }
+
+        .party {
+            font-size: 75%;
+            font-weight: normal;
+            letter-spacing: 0.05rem;
+            margin-left: 0.25rem;
+        }
+
+        &.incumbent {
+            img {
+                width:.55rem;
+                height: 1rem;
+                vertical-align: top;
+                margin-left: 0.5rem;
+            }
+        }
+    }
+
+    .candidate-total-spacer {
+        width: 0;
+        padding: 1px;
+    }
+
+    .candidate-total {
+        transition: all 2s ease;
+        &.lighten {
+            background-color: @ind !important;
+        }
+        width: 7%;
+        text-align: right;
+        // padding: 0;
+        background: transparent;
+        position: relative;
+        // .candidate-total-wrapper {
+        //     // display: block;
+        //     padding: 0.2rem 0.4rem;
+        //     margin-right: 1px;
+        //     // top: 0;
+        //     // bottom: 0;
+        //     // left: 0;
+        //     // right: 0;
+        //     // position: absolute;
+        //     height: 100%;
+        //     width: 100%;
+        //     min-height: 100%;
+        // }
+
+        &.dem { background: @demDim; }
+        &.gop,
+        &.no { background: @gopDim; }
+        &.other,
+        &.yes { background: @indDim; }
+
+        // + .candidate-total .candidate-total-wrapper {
+        //     margin-left: 1px;
+        //     margin-right: 0;
+        // }
+    }
+
+    .candidate,
+    .candidate-total {
+        // text-shadow: rgba(0,0,0, 0.8) 0 0 2px;
+    }
+
+    &.dem .candidate.dem, &.dem .candidate-total.dem { color: #fff; background: @dem; }
+    &.gop .candidate.gop, &.gop .candidate-total.gop { color: #fff; background: @gop; }
+    &.reporting .candidate-total {
+        &:after{
+            content:"%";
+            font-size: 80%;
+            vertical-align: top;
+        }
+    }
+
+
+    .candidate-total-spacer + .candidate-total {
+        text-align: left;
+    }
+
+    // .id-5083, .id-19638, .id-18556{
+    //     letter-spacing: -0.07rem;
+    // }
+
+    .id-22097-IA,
+    .id-5083-KY {
+        letter-spacing: -0.05rem;
+    }
+}
+
+/*
+ * LEADERBOARD
+ */
+.results-header-group {
+	white-space: nowrap;
+	padding: 0 0.75rem 0.07rem;
+	display: inline-block;
+	overflow: hidden;
+	box-sizing: border-box;
+
+	.footer-container & { padding: 0 0.25rem 0.07rem; }
+
+	&:last-child {
+		margin-right: 0;
+		padding-right: 0;
+	}
+
+	.party,
+	.seats-needed,
+	.total {
+		display: inline;
+	}
+
+	h2,
+	p {
+		margin: 0;
+		font-size: 1.4rem;
+	}
+
+	h2 { font-weight: 500; }
+
+	.change {
+		font-size: 1.4rem;
+		font-weight: 500;
+	}
+
+	.seats,
+	.needed {
+		border: 0.1rem solid transparent;
+
+		@media screen and (min-width: @screen-sm){
+			border-width: 2px;
+		}
+
+		display: inline-block;
+		box-sizing: border-box;
+		min-width: 3rem;
+		height: 3rem;
+		border-radius: 2rem;
+		margin-top: 0;
+		padding: 0 0.5rem;
+		// color: @white;
+		font-size: 1.5rem;
+		text-align: center;
+		line-height: 2.8rem;
+	}
+    .seats {
+        color: @white;
+    }
+
+	.seats-needed,
+	.total {
+		white-space: nowrap;
+	}
+
+	.seats-needed {
+		padding-left: 1rem;
+
+		.needed,
+        .seats { display: inline-block; }
+	}
+
+	&.dem {
+		color: fadeout(@dem, 15%);
+
+		.seats { background: fadeout(@dem, 25%); }
+        .needed { background: @demDim; }
+	}
+
+	&.gop {
+		color: fadeout(@gop, 25%);
+
+		.seats { background: fadeout(@gop, 25%); }
+        .needed { background: @gopDim; }
+	}
+
+	&.other {
+		color: fadeout(@ind, 25%);
+
+		.seats { background: fadeout(@ind, 25%); }
+		.total { padding: 0; }
+	}
+
+	&.not-called {
+		color: fadeout(@gray, 25%);
+
+		h2 { display: inline; }
+
+		.seats {
+			border-color: fadeout(@gray-light, 25%);
+			color: fadeout(@gray, 25%);
+		}
+	}
+}
+
+
+/*
+ * FOOTER / CREDIT
+ */
+.footer {
+    margin-top: 11px;
+
+    p {
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.7;
+        color: #999;
+        font-style: italic;
+    }
+}
