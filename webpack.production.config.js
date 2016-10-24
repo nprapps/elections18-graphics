@@ -20,6 +20,12 @@ module.exports = {
         }]
     },
     plugins: [
-        new webpack.optimize.UglifyJsPlugin()
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                join_vars: false,
+                dead_code: false,
+                unused: false
+            }
+        })
     ]
 }

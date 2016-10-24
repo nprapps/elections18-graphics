@@ -7,9 +7,9 @@ let dataURL = null;
 let boardvDOM = null;
 let boardDOM = null;
 let lastRequestTime = null;
-let data = null;
+var data = null;
 
-const boardWrapper = document.querySelector('body')
+const boardWrapper = document.querySelector('.board')
 const FIRST_COLUMN_KEYS = ['6:00 PM', '7:00 PM', '7:30 PM', '8:00 PM']
 const SECOND_COLUMN_KEYS = ['8:30 PM', '9:00 PM', '10:00 PM', '11:00 PM', '1:00 AM']
 const projector = maquette.createProjector();
@@ -41,7 +41,7 @@ const getData = function() {
     request.get(dataURL)
         .set('If-Modified-Since', lastRequestTime)
         .end(function(err, res) {
-            if (res.status === 200) {
+            if (res.body) {
                 lastRequestTime = new Date().toUTCString();
                 data = sortData(res.body)
                 projector.scheduleRender();
@@ -180,6 +180,8 @@ const renderRace = function(race) {
     let reporting = ''
     if (race1['precinctsreporting'] > 0) {
         reporting = 'reporting';
+    } else {
+        reporting = 'no-data';
     }
 
     if (winner) {
@@ -187,6 +189,7 @@ const renderRace = function(race) {
     }
 
     classList.push(change, called, reporting);
+
     return h('tr', {
         key: race1['last'],
         class: 'race ' + classList.join(' ')

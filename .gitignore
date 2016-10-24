@@ -44,6 +44,8 @@ www/test/test.html
 www/comments/index.html
 confs/rendered/*
 www/js/rendered/*.js*
+www/board*
+www/bop*
 
 # Local data
 data/gdoc*.csv

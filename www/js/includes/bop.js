@@ -19,7 +19,9 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
-var DATA_URL = '../data/top-level-results.json';
+// var DATA_URL = '../data/top-level-results.json';
+var DATA_URL = '/elections16/data/top-level-results.json';
+
 var CONGRESS = {
     'senate': {
         'total': 100,
