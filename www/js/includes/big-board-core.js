@@ -7,6 +7,7 @@ let dataURL = null;
 let boardvDOM = null;
 let boardDOM = null;
 let lastRequestTime = null;
+let boardTitle = null;
 var data = null;
 
 const boardWrapper = document.querySelector('.board')
@@ -19,7 +20,8 @@ var exports = module.exports = {};
 /*
 * Initialize the graphic.
 */
-exports.initBigBoard = function(filename) {
+exports.initBigBoard = function(filename, boardName) {
+    boardTitle = boardName;
     dataURL = buildDataURL(filename);
     getData();
     projector.append(boardWrapper, renderMaquette);
@@ -64,7 +66,7 @@ const sortData = function(data) {
 const renderMaquette = function() {
     return h('div.results-wrapper', [
         h('div.results-header', [
-            h('h1', 'Senate'),
+            h('h1', boardTitle),
             h('div.leaderboard', [
                 h('div.results-header-group.dem', [
                     h('h2.party', 'Dem.'),

@@ -15,7 +15,7 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
-    bigboard.initBigBoard('ballot-measures-national.json');
+    bigboard.initBigBoard('ballot-measures-national.json', 'Key Ballot Initiatives');
 }
 
 

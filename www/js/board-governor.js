@@ -15,7 +15,7 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
-    bigboard.initBigBoard('governor-national.json');
+    bigboard.initBigBoard('governor-national.json', 'Governor');
 }
 
 
