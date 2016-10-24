@@ -230,7 +230,7 @@ const renderRace = function(race) {
     }
 
     let change = false
-    if (winningResult && winningResult['party'] !== race1['meta']['current_party']) {
+    if (winningResult && race1['meta']['current_party'] && winningResult['party'] !== race1['meta']['current_party']) {
         change = true
     }
 
