@@ -164,7 +164,6 @@ const renderRace = function(race) {
     } else if (race2['npr_winner']) {
         winningResult = race2;
     }
-    console.log(winningResult);
 
     let demWinner = false;
     let gopWinner = false;
