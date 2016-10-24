@@ -291,17 +291,13 @@ const determineResults = function(race) {
 
     let race1;
     let race2;
-    let foundDem = false;
-    let foundGOP = false;
     for (var i = 0; i <= 1; i++) {
         var results = [race[0], race[1]];
         var result = results[i];
-        if (result['party'] === 'Dem' && result['party'] && !foundDem) {
+        if (result['party'] === 'Dem' && !race1) {
             race1 = race[i];
-            foundDem = true;
-        } else if (result['party'] === 'GOP' && !foundGOP) {
+        } else if (result['party'] === 'GOP' && !race2) {
             race2 = race[i];
-            foundGOP = true;
         }
     }
 
