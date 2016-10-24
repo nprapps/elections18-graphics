@@ -4,11 +4,11 @@ import request from 'superagent';
 
 // global vars
 let dataURL = null;
-let boardvDOM = null;
-let boardDOM = null;
+let bopDataURL = null;
 let lastRequestTime = null;
 let boardTitle = null;
-var data = null;
+let resultsData = null;
+let bopData = null;
 
 const boardWrapper = document.querySelector('.board')
 const FIRST_COLUMN_KEYS = ['6:00 PM', '7:00 PM', '7:30 PM', '8:00 PM']
@@ -20,10 +20,14 @@ var exports = module.exports = {};
 /*
 * Initialize the graphic.
 */
-exports.initBigBoard = function(filename, boardName) {
+exports.initBigBoard = function(filename, boardName, boardClass) {
     boardTitle = boardName;
+    boardWrapper.classList.add(boardClass);
+
     dataURL = buildDataURL(filename);
+    bopDataURL = buildDataURL('top-level-results.json')
     getData();
+    getBopData();
     projector.append(boardWrapper, renderMaquette);
 
     setInterval(getData, 5000);
@@ -45,68 +49,39 @@ const getData = function() {
         .end(function(err, res) {
             if (res.body) {
                 lastRequestTime = new Date().toUTCString();
-                data = sortData(res.body)
+                resultsData = sortData(res.body)
                 projector.scheduleRender();
             }
         });
 }
 
-const sortData = function(data) {
+const getBopData = function() {
+    request.get(bopDataURL)
+        .end(function(err, res) {
+            if (res.body) {
+                bopData = res.body;
+                projector.scheduleRender();
+            }
+        });
+}
+
+const sortData = function(resultsData) {
     // sort each race
-    for (var time in data) {
-        for (var race in data[time]) {
-            data[time][race].sort(function(a, b) {
+    for (var time in resultsData) {
+        for (var race in resultsData[time]) {
+            resultsData[time][race].sort(function(a, b) {
                 return b.votecount - a.votecount;
             })
         }
     }
-    return data
+    return resultsData
 }
 
 const renderMaquette = function() {
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', boardTitle),
-            h('div.leaderboard', [
-                h('div.results-header-group.dem', [
-                    h('h2.party', 'Dem.'),
-                    h('p.total', [
-                        h('span.percentage', '54'),
-                        ' ',
-                        h('span.change', '+10')
-                    ]),
-                    h('p.seats-needed', [
-                        'Needs ',
-                        h('span.count', '0')
-                    ])
-                ]),
-                h('div.results-header-group.gop', [
-                    h('h2.party', 'GOP'),
-                    h('p.total', [
-                        h('span.percentage', '42'),
-                        ' ',
-                        h('span.change', '-10')
-                    ]),
-                    h('p.seats-needed', [
-                        'Needs ',
-                        h('span.count', '8')
-                    ])
-                ]),
-                h('div.results-header-group.other', [
-                    h('h2.party', 'Ind.'),
-                    h('p.total', [
-                        h('span.percentage', '2'),
-                        ' ',
-                        h('span.change', '+0')
-                    ]),
-                ]),
-                h('div.results-header-group.not-called', [
-                    h('h2', 'Not Called'),
-                    h('p.total', [
-                        h('span.count', '2')
-                    ])
-                ])
-            ]),
+            bopData ? renderLeaderboard() : ''
         ]),
         h('div.results', [
             renderResultsColumn(FIRST_COLUMN_KEYS, 'first'),
@@ -115,14 +90,74 @@ const renderMaquette = function() {
     ]);
 }
 
+const renderLeaderboard = function() {
+    let bop = {};
+    if (boardTitle.indexOf('House') !== -1) {
+        bop = bopData['house_bop'];
+    } else if (boardTitle.indexOf('Senate') !== -1) {
+        bop = bopData['senate_bop'];
+    } else {
+        return h('div.leaderboard', '');
+    }
+
+    const demSeats = bop['Dem']['seats'];
+    const gopSeats = bop['GOP']['seats'];
+    const indSeats = bop['Other']['seats'];
+
+    const demPickups = bop['Dem']['pickups'];
+    const gopPickups = bop['GOP']['pickups'];
+    const indPickups = bop['Other']['pickups'];
+
+    const demNeed = bop['Dem']['needed'];
+    const gopNeed = bop['GOP']['needed'];
+
+    const uncalledRaces = bop['uncalled_races']
+
+    return h('div.leaderboard', [
+        h('div.results-header-group.dem', [
+            h('h2.party', 'Dem.'),
+            h('p.total', [
+                h('span.percentage', demSeats),
+                h('span.change', demPickups >= 0 ? '+' + demPickups : demPickups)
+            ]),
+            h('p.seats-needed', [
+                h('span.count', demNeed)
+            ])
+        ]),
+        h('div.results-header-group.gop', [
+            h('h2.party', 'GOP'),
+            h('p.total', [
+                h('span.percentage', gopSeats),
+                h('span.change', gopPickups >= 0 ? '+' + gopPickups : gopPickups)
+            ]),
+            h('p.seats-needed', [
+                h('span.count', gopNeed)
+            ])
+        ]),
+        h('div.results-header-group.other', [
+            h('h2.party', 'Ind.'),
+            h('p.total', [
+                h('span.percentage', indSeats),
+                h('span.change', indPickups >= 0 ? '+' + indPickups : indPickups)
+            ]),
+        ]),
+        h('div.results-header-group.not-called', [
+            h('h2', 'Not Called'),
+            h('p.total', [
+                h('span.count', uncalledRaces)
+            ])
+        ])
+    ])
+}
+
 const renderResultsColumn = function(keys, orderClass) {
     var className = 'column ' + orderClass;
-    if (data) {
+    if (resultsData) {
         return h('div', {
             key: orderClass,
             class: className
         }, [
-            keys.map(key => renderResultsTable(data, key))
+            keys.map(key => renderResultsTable(key))
         ])
     } else {
         return h('div', {
@@ -131,10 +166,10 @@ const renderResultsColumn = function(keys, orderClass) {
     }
 }
 
-const renderResultsTable = function(data, key) {
+const renderResultsTable = function(key) {
     let races = '';
-    if (data.hasOwnProperty(key)) {
-        races = data[key];    
+    if (resultsData.hasOwnProperty(key)) {
+        races = resultsData[key];    
     }
     if (races) {
         return [
@@ -170,11 +205,17 @@ const renderRace = function(race) {
     let demWinner = false;
     let gopWinner = false;
     let indWinner = false;
+    let yesWinner = false;
+    let noWinner = false;
     if (winningResult) {
         if (winningResult['party'] === 'Dem') {
             demWinner = true;
         } else if (winningResult['party'] === 'GOP') {
             gopWinner = true;
+        } else if (winningResult['party'] === 'Yes') {
+            yesWinner = true;
+        } else if (winningResult['party'] === 'No') {
+            noWinner = true;
         } else {
             indWinner = true;
         }
@@ -187,7 +228,7 @@ const renderRace = function(race) {
     }
 
     let change = false
-    if (winningResult && winningResult['party'] !== race1['meta']['current_party']) {
+    if (winningResult && race1['meta']['current_party'] && winningResult['party'] !== race1['meta']['current_party']) {
         change = true
     }
 
@@ -202,6 +243,8 @@ const renderRace = function(race) {
             'dem': demWinner,
             'gop': gopWinner,
             'ind': indWinner,
+            'yes': yesWinner,
+            'no': noWinner,
             'called': called,
             'party-change': change,
             'reporting': reporting
@@ -220,7 +263,7 @@ const renderRace = function(race) {
             class: race1['party'].toLowerCase()
         }, [
             h('span.fname', [
-                race1['first'] + ' '
+                race1['first'] ? race1['first'] + ' ' : ''
             ]),
             h('span.lname', [
                 race1['last'] + ' '
@@ -265,8 +308,8 @@ const renderRace = function(race) {
 const decideLabel = function(race) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
-    } else {
-        return race['statepostal'];
+    } else if (race['is_ballot_measure'] === true) {
+        return race['statepostal'] + '-' + race['seatname']; 
     }
 }
 
