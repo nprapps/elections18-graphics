@@ -147,8 +147,6 @@ const renderResultsTable = function(data, key) {
 }
 
 const renderRace = function(race) {
-    let classList = [];
-
     let race1 = race.find(findDemResult);
     let race2 = race.find(findGOPResult);
 
@@ -160,39 +158,53 @@ const renderRace = function(race) {
         race2 = race[1];
     }
 
-    let winner = '';
+    let winningResult = '';
     if (race1['npr_winner']) {
-        winner = race1;
+        winningResult = race1;
     } else if (race2['npr_winner']) {
-        winner = race2;
+        winningResult = race2;
+    }
+    console.log(winningResult);
+
+    let demWinner = false;
+    let gopWinner = false;
+    let indWinner = false;
+    if (winningResult) {
+        if (winningResult['party'] === 'Dem') {
+            demWinner = true;
+        } else if (winningResult['party'] === 'GOP') {
+            gopWinner = true;
+        } else {
+            indWinner = true;
+        }
     }
 
-    let called = ''
-    if (winner) {
-        called = 'called'
+
+    let called = false;
+    if (race1['npr_winner'] || race2['npr_winner']) {
+        called = true;
     }
 
-    let change = ''
-    if (winner && winner['party'] !== race1['meta']['current_party']) {
-        change = 'party-change';
+    let change = false
+    if (winningResult && winningResult['party'] !== race1['meta']['current_party']) {
+        change = true
     }
 
-    let reporting = ''
+    let reporting = false;
     if (race1['precinctsreporting'] > 0) {
-        reporting = 'reporting';
-    } else {
-        reporting = 'no-data';
+        reporting = true;
     }
-
-    if (winner) {
-        classList.push(winner['party'].toLowerCase())
-    }
-
-    classList.push(change, called, reporting);
 
     return h('tr', {
         key: race1['last'],
-        class: 'race ' + classList.join(' ')
+        classes: { 
+            'dem': demWinner,
+            'gop': gopWinner,
+            'ind': indWinner,
+            'called': called,
+            'change': change,
+            'reporting': reporting
+        }
     }, [
         h('td.pickup', [
             insertRunoffImage(race)
