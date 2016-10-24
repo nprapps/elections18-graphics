@@ -202,7 +202,7 @@ const renderRace = function(race) {
             'gop': gopWinner,
             'ind': indWinner,
             'called': called,
-            'change': change,
+            'party-change': change,
             'reporting': reporting
         }
     }, [
