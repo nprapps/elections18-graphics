@@ -19,13 +19,14 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
-// var DATA_URL = '../data/top-level-results.json';
-var DATA_URL = '/elections16/data/top-level-results.json';
+var DATA_URL = '../data/top-level-results.json';
+// var DATA_URL = '/elections16/data/top-level-results.json';
 
 var CONGRESS = {
     'senate': {
         'total': 100,
         'majority': 51,
+        'half': 50,
         'Dem': 34,
         'GOP': 30,
         'Other': 2
@@ -33,6 +34,7 @@ var CONGRESS = {
     'house': {
         'total': 435,
         'majority': 218,
+        'half': 217.5,
         'Dem': 0,
         'GOP': 0,
         'Other': 0
@@ -221,6 +223,7 @@ var renderStackedBarChart = function(config) {
     };
 
     var majority = CONGRESS[config['chart']]['majority'];
+    var half = CONGRESS[config['chart']]['half'];
     var ticksX = 4;
     var roundTicksFactor = 1;
 
@@ -265,25 +268,6 @@ var renderStackedBarChart = function(config) {
         .append('g')
         .attr('transform', 'translate(' + margins['left'] + ',' + margins['top'] + ')');
 
-    // /*
-    //  * Create D3 axes.
-    //  */
-    // var xAxis = d3.svg.axis()
-    //     .scale(xScale)
-    //     .orient('top')
-    //     .tickValues([ majority ])
-    //     .tickFormat(function(d) {
-    //         return d + ' needed for majority';
-    //     });
-    //
-    // /*
-    //  * Render axes to chart.
-    //  */
-    // chartElement.append('g')
-    //     .attr('class', 'x axis')
-    //     .attr('transform', makeTranslate(0, 0))
-    //     .call(xAxis);
-
     /*
      * Render bars to chart.
      */
@@ -326,12 +310,12 @@ var renderStackedBarChart = function(config) {
     var majorityMarker = chartElement.append('g')
         .attr('class', 'majority-marker');
     majorityMarker.append('line')
-        .attr('x1', xScale(majority))
-        .attr('x2', xScale(majority))
+        .attr('x1', xScale(half))
+        .attr('x2', xScale(half))
         .attr('y1', -valueGap)
         .attr('y2', chartHeight);
     majorityMarker.append('text')
-        .attr('x', xScale(majority))
+        .attr('x', xScale(half))
         .attr('y', 0)
         .attr('dy', -10)
         .text(majority + ' needed for majority');
