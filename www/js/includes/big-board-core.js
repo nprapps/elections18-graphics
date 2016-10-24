@@ -79,7 +79,7 @@ const renderMaquette = function() {
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', boardTitle),
-            renderLeaderboard()
+            bopData ? renderLeaderboard() : ''
         ]),
         h('div.results', [
             renderResultsColumn(FIRST_COLUMN_KEYS, 'first'),
@@ -89,73 +89,63 @@ const renderMaquette = function() {
 }
 
 const renderLeaderboard = function() {
-    if (bopData) {
-        let bop = {};
-        let totalSeats = 0;
-        let majority = 0;
-        if (boardTitle.indexOf('House') !== -1) {
-            bop = bopData['house_bop'];
-            totalSeats = 435;
-            majority = 218;
-        } else if (boardTitle.indexOf('Senate') !== -1) {
-            bop = bopData['senate_bop'];
-            totalSeats = 100;
-            majority = 51;
-        } else {
-            return h('div.leaderboard', '');
-        }
-
-        const demSeats = bop['Dem']['seats'];
-        const gopSeats = bop['GOP']['seats'];
-        const indSeats = bop['Other']['seats'];
-
-        const demPickups = bop['Dem']['pickups'];
-        const gopPickups = bop['GOP']['pickups'];
-        const indPickups = bop['Other']['pickups'];
-
-        const demNeed = (majority - demSeats) > 0 ? (majority - demSeats) : 0;
-        const gopNeed = (majority - gopSeats) > 0 ? (majority - gopSeats) : 0;
-
-        const notCalled = totalSeats - (demSeats + gopSeats + indSeats);
-
-        return h('div.leaderboard', [
-            h('div.results-header-group.dem', [
-                h('h2.party', 'Dem.'),
-                h('p.total', [
-                    h('span.percentage', demSeats),
-                    h('span.change', demPickups >= 0 ? '+' + demPickups : demPickups)
-                ]),
-                h('p.seats-needed', [
-                    h('span.count', demNeed)
-                ])
-            ]),
-            h('div.results-header-group.gop', [
-                h('h2.party', 'GOP'),
-                h('p.total', [
-                    h('span.percentage', gopSeats),
-                    h('span.change', gopPickups >= 0 ? '+' + gopPickups : gopPickups)
-                ]),
-                h('p.seats-needed', [
-                    h('span.count', gopNeed)
-                ])
-            ]),
-            h('div.results-header-group.other', [
-                h('h2.party', 'Ind.'),
-                h('p.total', [
-                    h('span.percentage', indSeats),
-                    h('span.change', indPickups >= 0 ? '+' + indPickups : indPickups)
-                ]),
-            ]),
-            h('div.results-header-group.not-called', [
-                h('h2', 'Not Called'),
-                h('p.total', [
-                    h('span.count', notCalled)
-                ])
-            ])
-        ])
+    let bop = {};
+    if (boardTitle.indexOf('House') !== -1) {
+        bop = bopData['house_bop'];
+    } else if (boardTitle.indexOf('Senate') !== -1) {
+        bop = bopData['senate_bop'];
     } else {
         return h('div.leaderboard', '');
     }
+
+    const demSeats = bop['Dem']['seats'];
+    const gopSeats = bop['GOP']['seats'];
+    const indSeats = bop['Other']['seats'];
+
+    const demPickups = bop['Dem']['pickups'];
+    const gopPickups = bop['GOP']['pickups'];
+    const indPickups = bop['Other']['pickups'];
+
+    const demNeed = bop['Dem']['needed'];
+    const gopNeed = bop['GOP']['needed'];
+
+    const uncalledRaces = bop['uncalled_races']
+
+    return h('div.leaderboard', [
+        h('div.results-header-group.dem', [
+            h('h2.party', 'Dem.'),
+            h('p.total', [
+                h('span.percentage', demSeats),
+                h('span.change', demPickups >= 0 ? '+' + demPickups : demPickups)
+            ]),
+            h('p.seats-needed', [
+                h('span.count', demNeed)
+            ])
+        ]),
+        h('div.results-header-group.gop', [
+            h('h2.party', 'GOP'),
+            h('p.total', [
+                h('span.percentage', gopSeats),
+                h('span.change', gopPickups >= 0 ? '+' + gopPickups : gopPickups)
+            ]),
+            h('p.seats-needed', [
+                h('span.count', gopNeed)
+            ])
+        ]),
+        h('div.results-header-group.other', [
+            h('h2.party', 'Ind.'),
+            h('p.total', [
+                h('span.percentage', indSeats),
+                h('span.change', indPickups >= 0 ? '+' + indPickups : indPickups)
+            ]),
+        ]),
+        h('div.results-header-group.not-called', [
+            h('h2', 'Not Called'),
+            h('p.total', [
+                h('span.count', uncalledRaces)
+            ])
+        ])
+    ])
 }
 
 const renderResultsColumn = function(keys, orderClass) {
