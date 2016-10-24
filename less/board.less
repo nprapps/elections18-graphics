@@ -260,9 +260,9 @@ body {
 }
 
 .ballot-measures .results .races {
-    .description { width: 46%; }
-    .choice { width: 11%; }
-    .state { width: 6%; }
+    .state { width: 46%; text-align: left; }
+    .candidate { width: 11%; }
+    // .state { width: 6%; }
 
     td {
         vertical-align: top;
@@ -346,8 +346,9 @@ tr {
         }
         width: 30%;
         &.dem { background: @demDim; }
-        &.gop { background: @gopDim; }
-        &.other { background: @indDim; }
+        &.gop, &.no { background: @gopDim; }
+        &.other, &.yes { background: @indDim; }
+
 
         .party {
             font-size: 75%;
@@ -414,6 +415,8 @@ tr {
 
     &.dem .candidate.dem, &.dem .candidate-total.dem { color: #fff; background: @dem; }
     &.gop .candidate.gop, &.gop .candidate-total.gop { color: #fff; background: @gop; }
+    &.no .candidate.no, &.no .candidate-total.no { color: #fff; background: @gop; }
+    &.yes .candidate.yes, &.yes .candidate-total.yes { color: #fff; background: @ind; }
     &.reporting .candidate-total {
         &:after{
             content:"%";

@@ -20,8 +20,10 @@ var exports = module.exports = {};
 /*
 * Initialize the graphic.
 */
-exports.initBigBoard = function(filename, boardName) {
+exports.initBigBoard = function(filename, boardName, boardClass) {
     boardTitle = boardName;
+    boardWrapper.classList.add(boardClass);
+
     dataURL = buildDataURL(filename);
     bopDataURL = buildDataURL('top-level-results.json')
     getData();
@@ -203,11 +205,17 @@ const renderRace = function(race) {
     let demWinner = false;
     let gopWinner = false;
     let indWinner = false;
+    let yesWinner = false;
+    let noWinner = false;
     if (winningResult) {
         if (winningResult['party'] === 'Dem') {
             demWinner = true;
         } else if (winningResult['party'] === 'GOP') {
             gopWinner = true;
+        } else if (winningResult['party'] === 'Yes') {
+            yesWinner = true;
+        } else if (winningResult['party'] === 'No') {
+            noWinner = true;
         } else {
             indWinner = true;
         }
@@ -235,6 +243,8 @@ const renderRace = function(race) {
             'dem': demWinner,
             'gop': gopWinner,
             'ind': indWinner,
+            'yes': yesWinner,
+            'no': noWinner,
             'called': called,
             'party-change': change,
             'reporting': reporting
@@ -253,7 +263,7 @@ const renderRace = function(race) {
             class: race1['party'].toLowerCase()
         }, [
             h('span.fname', [
-                race1['first'] + ' '
+                race1['first'] ? race1['first'] + ' ' : ''
             ]),
             h('span.lname', [
                 race1['last'] + ' '
@@ -298,8 +308,8 @@ const renderRace = function(race) {
 const decideLabel = function(race) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
-    } else {
-        return race['statepostal'];
+    } else if (race['is_ballot_measure'] === true) {
+        return race['statepostal'] + '-' + race['seatname']; 
     }
 }
 

@@ -15,7 +15,7 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
-    bigboard.initBigBoard('house-national.json', 'Key House Races');
+    bigboard.initBigBoard('house-national.json', 'Key House Races', 'house');
 }
 
 
