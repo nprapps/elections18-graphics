@@ -209,7 +209,7 @@ const renderRace = function(race) {
             insertRunoffImage(race)
         ]),
         h('td.state', [
-            race1['statepostal']
+            decideLabel(race1)
         ]),
         h('td.results-status', [
             Math.round(race1['precinctsreportingpct'] * 100) 
@@ -258,6 +258,14 @@ const renderRace = function(race) {
             insertIncumbentImage(race2['incumbent'])
         ])
     ])
+}
+
+const decideLabel = function(race) {
+    if (race['officename'] == 'U.S. House') {
+        return race['statepostal'] + '-' + race['seatnum'];
+    } else {
+        return race['statepostal'];
+    }
 }
 
 const insertRunoffImage = function(race) {
