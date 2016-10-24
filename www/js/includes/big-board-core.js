@@ -175,7 +175,7 @@ const renderResultsTable = function(key) {
         return [
             h('h2.poll-closing-group', h('span.time', key)),
             h('table.races', [
-                Object.keys(races).map(key => renderRace(races[key]))
+                Object.keys(races).map(key => renderRace(races[key], key))
             ])
         ]
     } else {
@@ -183,84 +183,55 @@ const renderResultsTable = function(key) {
     }
 }
 
-const renderRace = function(race) {
-    let race1 = race.find(findDemResult);
-    let race2 = race.find(findGOPResult);
+const renderRace = function(race, key) {
+    const results = determineResults(race, key);
+    const race1 = results[0];
+    const race2 = results[1];
 
-    if (!race1) {
-        race1 = race[0]
-    }
-
-    if (!race2) {
-        race2 = race[1];
-    }
-
-    let winningResult = '';
     if (race1['npr_winner']) {
-        winningResult = race1;
+        var winningResult = race1;
     } else if (race2['npr_winner']) {
-        winningResult = race2;
+        var winningResult = race2;
     }
 
-    let demWinner = false;
-    let gopWinner = false;
-    let indWinner = false;
-    let yesWinner = false;
-    let noWinner = false;
     if (winningResult) {
-        if (winningResult['party'] === 'Dem') {
-            demWinner = true;
-        } else if (winningResult['party'] === 'GOP') {
-            gopWinner = true;
-        } else if (winningResult['party'] === 'Yes') {
-            yesWinner = true;
-        } else if (winningResult['party'] === 'No') {
-            noWinner = true;
-        } else {
-            indWinner = true;
-        }
+        var called = true;
     }
 
-
-    let called = false;
-    if (race1['npr_winner'] || race2['npr_winner']) {
-        called = true;
-    }
-
-    let change = false
     if (winningResult && race1['meta']['current_party'] && winningResult['party'] !== race1['meta']['current_party']) {
-        change = true
+        var change = true
     }
 
-    let reporting = false;
     if (race1['precinctsreporting'] > 0) {
-        reporting = true;
+        var reporting = true;
     }
 
     return h('tr', {
         key: race1['last'],
         classes: { 
-            'dem': demWinner,
-            'gop': gopWinner,
-            'ind': indWinner,
-            'yes': yesWinner,
-            'no': noWinner,
             'called': called,
             'party-change': change,
             'reporting': reporting
         }
     }, [
-        h('td.pickup', [
+        h('td.pickup', {
+            class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
+        }[
             insertRunoffImage(race)
         ]),
-        h('td.state', [
+        h('td.state', {
+            class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
+        }, [
             decideLabel(race1)
         ]),
         h('td.results-status', [
             Math.round(race1['precinctsreportingpct'] * 100) 
         ]),
         h('td.candidate', {
-            class: race1['party'].toLowerCase()
+            class: race1['party'].toLowerCase(),
+            classes: {
+                'winner': race1['npr_winner']
+            }
         }, [
             h('span.fname', [
                 race1['first'] ? race1['first'] + ' ' : ''
@@ -271,7 +242,10 @@ const renderRace = function(race) {
             insertIncumbentImage(race1['incumbent'])
         ]),
         h('td.candidate-total', {
-            class: race1['party'].toLowerCase()
+            class: race1['party'].toLowerCase(),
+            classes: {
+                'winner': race1['npr_winner']
+            }
         }, [
             h('span.candidate-total-wrapper', {
                 updateAnimation: onUpdateAnimation
@@ -281,7 +255,10 @@ const renderRace = function(race) {
         ]),
         h('td.candidate-total-spacer'),
         h('td.candidate-total', {
-            class: race2['party'].toLowerCase()
+            class: race2['party'].toLowerCase(),
+            classes: {
+                'winner': race2['npr_winner']
+            }
         }, [
             h('span.candidate-total-wrapper', {
                 updateAnimation: onUpdateAnimation
@@ -290,7 +267,10 @@ const renderRace = function(race) {
             ])
         ]),
         h('td.candidate', {
-            class: race2['party'].toLowerCase()
+            class: race2['party'].toLowerCase(),
+            classes: {
+                'winner': race2['npr_winner']
+            }
         }, [
             h('span.fname', [
                 race2 ? race2['first'] : ''
@@ -305,11 +285,44 @@ const renderRace = function(race) {
     ])
 }
 
+const determineResults = function(race) {
+    const leading = race[0];
+    const trailing = race[1];
+
+    let race1;
+    let race2;
+    let foundDem = false;
+    let foundGOP = false;
+    for (var i = 0; i <= 1; i++) {
+        var results = [race[0], race[1]];
+        var result = results[i];
+        if (result['party'] === 'Dem' && result['party'] && !foundDem) {
+            race1 = race[i];
+            foundDem = true;
+        } else if (result['party'] === 'GOP' && !foundGOP) {
+            race2 = race[i];
+            foundGOP = true;
+        }
+    }
+
+    if (!race1) {
+        race1 = race[0]
+    }
+
+    if (!race2) {
+        race2 = race[1];
+    }
+
+    return [race1, race2];
+}
+
 const decideLabel = function(race) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
     } else if (race['is_ballot_measure'] === true) {
         return race['statepostal'] + '-' + race['seatname']; 
+    } else {
+        return race['statepostal'];
     }
 }
 
@@ -339,7 +352,6 @@ const insertIncumbentImage = function(incumbency) {
         return ''
     }
 }
-
 
 const findGOPResult = function(result) {
     return result.party === 'GOP';
