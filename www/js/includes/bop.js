@@ -1,7 +1,6 @@
 console.log('loading bop');
 
 /* TODO
-- refresh data on an interval
 - highlight existing senate seats differently?
 - last updated timestamp
 - refresh counter
@@ -42,6 +41,7 @@ var CONGRESS = {
 }
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
+var LOAD_INTERVAL = 20000;
 
 var pymChild = null;
 var isInitialized = false;
@@ -50,6 +50,7 @@ var charts = d3.keys(CONGRESS);
 var skipLabels = [ 'label', 'values' ];
 var bopData = [];
 var reloadData = null;
+var graphicWidth = null;
 
 /*
  * Initialize the graphic.
@@ -141,7 +142,11 @@ var formatData = function() {
 
     if (!isInitialized) {
         init();
+    } else {
+        redrawChart();
     }
+
+    reloadData = setInterval(loadData, LOAD_INTERVAL);
 }
 
 
@@ -179,6 +184,13 @@ var render = function(containerWidth) {
         isMobile = false;
     }
 
+    graphicWidth = containerWidth;
+
+    redrawChart();
+}
+
+//
+var redrawChart = function() {
     // Clear existing graphic (for redraw)
     var containerElement = d3.select('#bop');
     containerElement.html('');
@@ -190,7 +202,7 @@ var render = function(containerWidth) {
         // Render the chart!
         renderStackedBarChart({
             container: '#bop .chart.' + classify(d),
-            width: containerWidth,
+            width: graphicWidth,
             data: [ bopData[classify(d) + '_bop'] ],
             chart: d
         });
