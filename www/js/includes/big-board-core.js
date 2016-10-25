@@ -78,14 +78,60 @@ const sortData = function(resultsData) {
 }
 
 const renderMaquette = function() {
+    let numberOfRaces = 0;
+
+    let times = [];
+    for (let time in resultsData) {
+        times.push(time);
+        const group = resultsData[time];
+        numberOfRaces += Object.keys(group).length;
+    }
+    const sortedTimes = times.sort(function(a, b) {
+        var aHour = parseInt(a.split(':')[0]);
+        var bHour = parseInt(b.split(':')[0]);
+
+        if (a.slice(-2) === 'AM') return 1;
+        if (b.slice(-2) === 'AM') return -1;
+        if (aHour === bHour && a.indexOf('30') !== -1) {
+            return 1;
+        }
+        if (aHour === bHour && b.indexOf('30') !== -1) {
+            return -1;
+        }
+
+        else return aHour - bHour;        
+    });
+
+    const breakingIndex = Math.ceil(numberOfRaces / 2)
+    let raceIndex = 0;
+    let firstColumn = {};
+    let secondColumn = {};
+    let selectedColumn = firstColumn
+
+    for (let time of sortedTimes) {
+        const group = resultsData[time];
+        for (let race in group) {
+            raceIndex += 1
+
+            if (!selectedColumn[time]) {
+                selectedColumn[time] = {};
+            }
+            selectedColumn[time][race] = group[race]
+
+            if (raceIndex === breakingIndex) {
+                selectedColumn = secondColumn
+            }
+        }
+    }
+
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', boardTitle),
             bopData ? renderLeaderboard() : ''
         ]),
         h('div.results', [
-            renderResultsColumn(FIRST_COLUMN_KEYS, 'first'),
-            renderResultsColumn(SECOND_COLUMN_KEYS, 'last')
+            renderResultsColumn(firstColumn, 'first'),
+            renderResultsColumn(secondColumn, 'last')
         ])
     ]);
 }
@@ -149,14 +195,14 @@ const renderLeaderboard = function() {
     ])
 }
 
-const renderResultsColumn = function(keys, orderClass) {
+const renderResultsColumn = function(column, orderClass) {
     const className = 'column ' + orderClass;
     if (resultsData) {
         return h('div', {
             key: orderClass,
             class: className
         }, [
-            keys.map(key => renderResultsTable(key))
+            Object.keys(column).map(key => renderResultsTable(key, column))
         ])
     } else {
         return h('div', {
@@ -165,9 +211,9 @@ const renderResultsColumn = function(keys, orderClass) {
     }
 }
 
-const renderResultsTable = function(key) {
-    if (resultsData.hasOwnProperty(key)) {
-        var races = resultsData[key];    
+const renderResultsTable = function(key, column) {
+    if (column.hasOwnProperty(key)) {
+        var races = column[key];    
     }
 
     var sortedRaces = [];
