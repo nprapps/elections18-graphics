@@ -37,9 +37,56 @@ const getData = function() {
 const renderMaquette = function() {
     if (data) {
         console.log(data);
-        return h('div.results', 'Results loaded');
+        return h('div.results', ['Loaded',
+          h('div.overall-state', [
+            h('h3', 'Overall State Results'),
+            h('p', 'Lorem Ipsum dolemoar usted.'),
+            h('h4', '2016'),
+            h('table', [
+              h('tr', [
+                h('th', 'Candidate'),
+                h('th', 'Party'),
+                h('th', 'Votes'),
+                h('th', 'Pct')
+              ]),
+              h('tr', [
+                h('td', 'Donald Trump'),
+                h('td', 'Republican'),
+                h('td', 'Number'),
+                h('td', 'Percent')
+              ]),
+              h('tr', [
+                h('td', 'Hillary Clinton'),
+                h('td', 'Democrat'),
+                h('td', 'Number'),
+                h('td', 'Percent')
+              ])
+            ]),
+            h('h4', '2012'),
+            h('table', [
+              h('tr', [
+                h('th', 'Candidate'),
+                h('th', 'Party'),
+                h('th', 'Votes'),
+                h('th', 'Pct')
+              ]),
+              h('tr', [
+                h('td', 'Mitt Romney'),
+                h('td', 'Republican'),
+                h('td', 'Number'),
+                h('td', 'Percent')
+              ]),
+              h('tr', [
+                h('td', 'Barack Obama'),
+                h('td', 'Democrat'),
+                h('td', 'Number'),
+                h('td', 'Percent')
+              ])
+            ])
+          ]),
+        ]);
     } else {
-        return h('div.results');    
+        return h('div.results');
     }
 }
 
