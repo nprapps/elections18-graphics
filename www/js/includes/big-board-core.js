@@ -47,7 +47,6 @@ const getData = function() {
     request.get(dataURL)
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
-            console.log(res, lastRequestTime);
             if (res.body) {
                 lastRequestTime = new Date().toUTCString();
                 resultsData = sortData(res.body)
