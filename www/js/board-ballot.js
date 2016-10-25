@@ -4,7 +4,7 @@ import bigboard from '../js/includes/big-board-core.js'
 import request from 'superagent';
 
 // global vars
-let pymChild = null;
+window.pymChild = null;
 let dataURL = null;
 let data = null;
 /*

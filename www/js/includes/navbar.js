@@ -1,19 +1,16 @@
-
-
 var resultsMenu = document.querySelector(".small-screen-nav-label");
 var stateMenu = document.querySelector(".state-nav-label");
-var pymChild = null;
 
 resultsMenu.addEventListener("click", function () {
     // Update iframe
     if (pymChild) {
-        pymChild.sendHeight();
+        setTimeout(pymChild.sendHeight, 0);
     }
 });
 
 stateMenu.addEventListener("click", function () {
     // Update iframe
     if (pymChild) {
-        pymChild.sendHeight();
+        setTimeout(pymChild.sendHeight, 0)
     }
 });

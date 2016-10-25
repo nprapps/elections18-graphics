@@ -39,7 +39,7 @@ var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
 var LOAD_INTERVAL = 20000;
 
-var pymChild = null;
+window.pymChild = null;
 var isInitialized = false;
 var isMobile = false;
 var charts = d3.keys(CONGRESS);
