@@ -114,12 +114,9 @@
         font-size: 12px;
 
         &:hover {
-            color: @link-blue-hover;
-
-            // .no-touchevents & {
-            //     background-color: #000;
-            //     color: #fff;
-            // }
+            .no-touchevents & {
+                color: @link-blue-hover;
+            }
         }
 
         &:after {
@@ -200,12 +197,9 @@
         }
 
         &:hover {
-            color: @link-blue-hover;
-
-            // .no-touchevents & {
-            //     background-color: #000;
-            //     color: #fff;
-            // }
+            .no-touchevents & {
+                color: @link-blue-hover;
+            }
         }
     }
 
@@ -259,7 +253,9 @@
             cursor: pointer;
 
             &:hover {
-                color: @link-blue-hover;
+                .no-touchevents & {
+                    color: @link-blue-hover;
+                }
             }
 
             &::after {
