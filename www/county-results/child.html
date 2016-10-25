@@ -1,7 +1,77 @@
-{% extends '_base_child.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-{% include 'navbar.html' %}
+<head>
+    <!-- CHARTBEAT -->
+    <script type="text/javascript">
+        var _sf_startpt=(new Date()).getTime();
+    </script>
+
+    <title></title>
+
+    <base target="_blank">
+
+    <!-- META TAGS -->
+    <meta name="description" content="">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="shortcut icon" href="http://media.npr.org/favicon.ico" />
+
+    <!-- FONTS -->
+    <!-- Fonts -->
+<script src="http://stage-apps.npr.org/elections16graphics/js/lib/webfont.js"></script>
+<script>
+    var urls = [
+        'http://s.npr.org/templates/css/fonts/GothamSSm.css',
+        'http://s.npr.org/templates/css/fonts/Gotham.css',
+        'http://s.npr.org/templates/css/fonts/Knockout.css',
+        'http://apps.npr.org/dailygraphics/graphics/fonts/assets/stateface.css'
+    ];
+
+    if (window.location.protocol == "https:") {
+        urls = [
+            'https://secure.npr.org/templates/css/fonts/GothamSSm.css',
+            'https://secure.npr.org/templates/css/fonts/Gotham.css',
+            'https://secure.npr.org/templates/css/fonts/Knockout.css',
+            'https://apps.npr.org/dailygraphics/graphics/fonts/assets/stateface.css'
+        ];
+    }
+
+    WebFont.load({
+         custom: {
+             families: [
+                 'Gotham SSm:n4,n7',
+                 'Gotham:n4,n7',
+                 'Knockout 31 4r:n4',
+                 'StateFaceRegular'
+             ],
+             urls: urls
+         },
+         timeout: 10000
+    });
+</script>
+
+
+    <!-- CSS -->
+    
+    
+    <link rel="stylesheet" type="text/css" href="../css/rendered/county-results.min.css?1477407648" />
+
+    
+    
+</head>
+<body>
+    <script src="http://stage-apps.npr.org/elections16graphics/js/app_config.js"></script>
+    <!-- ANALYTICS JAVASCRIPT -->
+    
+    <script src="http://stage-apps.npr.org/elections16graphics/js/rendered/analytics.min.js"></script>
+    
+
+    
+<div id="navbar">
+    This is my Navbar.
+</div>
 
 <div id="county-results">
     <h1>Arizona <i class="stateface stateface-az"></i></h1>
@@ -9,8 +79,6 @@
 
     <div class="results-statwide">
         <h2>Statewide Results</h2>
-
-        <p>Arizona has gone Republican in every presidential election but one since 1952. It last went Democratic in 1996 during Bill Clinton's reelection &mdash; and only by a point. So what makes this year different? Demographics and Trump. Arizona's high &mdash; and growing &mdash; Hispanic population (30% overall but just 18% of voters in 2012) has made Democrats think it's a state it could eventually pick off. With Trump's rhetoric toward Latinos and immigrants, they are organizing to try and make this the year it flips. Polls have shown a close race, and both of the state's senators &mdash; John McCain and Jeff Flake &mdash; are not backing Trump. Still, this is the state where conservatives won controversial battles over immigration and is home to a strong tea party contingent and Maricopa County Sheriff Joe Arpaio, who has continued his conspiracy quest falsely questioning President Obama's birth. (For the record, Obama was born in Hawaii.)</p>
 
         <table>
             <thead>
@@ -49,6 +117,8 @@
     <div class="results-counties">
 
         <h2>Counties To Watch</h2>
+
+        <!-- <p>Arizona has gone Republican in every presidential election but one since 1952. It last went Democratic in 1996 during Bill Clinton's reelection &mdash; and only by a point. So what makes this year different? Demographics and Trump. Arizona's high &mdash; and growing &mdash; Hispanic population (30% overall but just 18% of voters in 2012) has made Democrats think it's a state it could eventually pick off. With Trump's rhetoric toward Latinos and immigrants, they are organizing to try and make this the year it flips. Polls have shown a close race, and both of the state's senators &mdash; John McCain and Jeff Flake &mdash; are not backing Trump. Still, this is the state where conservatives won controversial battles over immigration and is home to a strong tea party contingent and Maricopa County Sheriff Joe Arpaio, who has continued his conspiracy quest falsely questioning President Obama's birth. (For the record, Obama was born in Hawaii.)</p> -->
 
         <p>In the past three presidential elections, Arizona has consistently had four Democratic counties (Apache, Coconino, Pima and Santa Cruz) and 11 Republican ones (Cochise, Gila, Graham, Greenlee, La Paz, Maricopa, Mohave, Navajo, Pinal, Yavapai and Yuma). The main county to watch is <strong>Maricopa (Phoenix)</strong> and the most populous county in the state by far. 60% of the state’s voters live there, and it had more than 455,000 voters in it in 2012 than every other county combined. It went for Romney 54%-43%, nearly reflecting the overall margin. If Clinton is to win Arizona, she’d have to do better than Obama did in Maricopa. Also watch: <strong>Pima (Tucson)</strong>. Obama won it 53%-46%.</p>
 
@@ -205,4 +275,13 @@
     </div>
 
 </div>
-{% endblock %}
+
+
+    <script src="//pym.nprapps.org/pym.v1.min.js" type="text/javascript"></script>
+    <script src="http://stage-apps.npr.org/elections16graphics/js/includes/helpers.js"></script>
+    
+    <script src="http://stage-apps.npr.org/elections16graphics/js/rendered/county-results.min.js"></script>
+    
+
+</body>
+</html>
