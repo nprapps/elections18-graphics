@@ -195,29 +195,29 @@ const renderResultsTable = function(key) {
 
 const renderRace = function(race, key) {
     const results = determineResults(race, key);
-    const race1 = results[0];
-    const race2 = results[1];
+    const result1 = results[0];
+    const result2 = results[1];
 
-    if (race1['npr_winner']) {
-        var winningResult = race1;
-    } else if (race2['npr_winner']) {
-        var winningResult = race2;
+    if (result1['npr_winner']) {
+        var winningResult = result1;
+    } else if (result2['npr_winner']) {
+        var winningResult = result2;
     }
 
     if (winningResult) {
         var called = true;
     }
 
-    if (winningResult && race1['meta']['current_party'] && winningResult['party'] !== race1['meta']['current_party']) {
+    if (winningResult && result1['meta']['current_party'] && winningResult['party'] !== result1['meta']['current_party']) {
         var change = true
     }
 
-    if (race1['precinctsreporting'] > 0) {
+    if (result1['precinctsreporting'] > 0) {
         var reporting = true;
     }
 
     return h('tr', {
-        key: race1['last'],
+        key: result1['last'],
         classes: { 
             'called': called,
             'party-change': change,
@@ -232,65 +232,65 @@ const renderRace = function(race, key) {
         h('td.state', {
             class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
         }, [
-            decideLabel(race1, key)
+            decideLabel(result1, key)
         ]),
         h('td.results-status', [
-            Math.round(race1['precinctsreportingpct'] * 100) 
+            Math.round(result1['precinctsreportingpct'] * 100) 
         ]),
         h('td.candidate', {
-            class: race1['party'].toLowerCase(),
+            class: result1['party'].toLowerCase(),
             classes: {
-                'winner': race1['npr_winner']
+                'winner': result1['npr_winner']
             }
         }, [
             h('span.fname', [
-                race1['first'] ? race1['first'] + ' ' : ''
+                result1['first'] ? result1['first'] + ' ' : ''
             ]),
             h('span.lname', [
-                race1['last'] + ' '
+                result1['last'] + ' '
             ]),
-            insertIncumbentImage(race1['incumbent'])
+            insertIncumbentImage(result1['incumbent'])
         ]),
         h('td.candidate-total', {
-            class: race1['party'].toLowerCase(),
+            class: result1['party'].toLowerCase(),
             classes: {
-                'winner': race1['npr_winner']
+                'winner': result1['npr_winner']
             }
         }, [
             h('span.candidate-total-wrapper', {
                 updateAnimation: onUpdateAnimation
             }, [
-                Math.round(race1['votepct'] * 100)
+                Math.round(result1['votepct'] * 100)
             ])
         ]),
         h('td.candidate-total-spacer'),
         h('td.candidate-total', {
-            class: race2['party'].toLowerCase(),
+            class: result2['party'].toLowerCase(),
             classes: {
-                'winner': race2['npr_winner']
+                'winner': result2['npr_winner']
             }
         }, [
             h('span.candidate-total-wrapper', {
                 updateAnimation: onUpdateAnimation
             }, [
-                race2 ? Math.round(race2['votepct'] * 100) : 0
+                result2 ? Math.round(result2['votepct'] * 100) : 0
             ])
         ]),
         h('td.candidate', {
-            class: race2['party'].toLowerCase(),
+            class: result2['party'].toLowerCase(),
             classes: {
-                'winner': race2['npr_winner']
+                'winner': result2['npr_winner']
             }
         }, [
             h('span.fname', [
-                race2 ? race2['first'] : ''
+                result2 ? result2['first'] : ''
             ]),
             ' ',
             h('span.lname', [
-                race2 ? race2['last'] : ''
+                result2 ? result2['last'] : ''
             ]),
             ' ',
-            insertIncumbentImage(race2['incumbent'])
+            insertIncumbentImage(result2['incumbent'])
         ])
     ])
 }
@@ -299,27 +299,27 @@ const determineResults = function(race) {
     const leading = race[0];
     const trailing = race[1];
 
-    let race1;
-    let race2;
+    let result1;
+    let result2;
     for (var i = 0; i <= 1; i++) {
         var results = [race[0], race[1]];
         var result = results[i];
-        if (result['party'] === 'Dem' && !race1) {
-            race1 = race[i];
-        } else if (result['party'] === 'GOP' && !race2) {
-            race2 = race[i];
+        if (result['party'] === 'Dem' && !result1) {
+            result1 = race[i];
+        } else if (result['party'] === 'GOP' && !result2) {
+            result2 = race[i];
         }
     }
 
-    if (!race1) {
-        race1 = race[0]
+    if (!result1) {
+        result1 = race[0]
     }
 
-    if (!race2) {
-        race2 = race[1];
+    if (!result2) {
+        result2 = race[1];
     }
 
-    return [race1, race2];
+    return [result1, result2];
 }
 
 const decideLabel = function(race, key) {
