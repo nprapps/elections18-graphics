@@ -91,11 +91,10 @@ const renderMaquette = function() {
 }
 
 const renderLeaderboard = function() {
-    let bop = {};
     if (boardTitle.indexOf('House') !== -1) {
-        bop = bopData['house_bop'];
+        var bop = bopData['house_bop'];
     } else if (boardTitle.indexOf('Senate') !== -1) {
-        bop = bopData['senate_bop'];
+        var bop = bopData['senate_bop'];
     } else {
         return h('div.leaderboard', '');
     }
@@ -151,7 +150,7 @@ const renderLeaderboard = function() {
 }
 
 const renderResultsColumn = function(keys, orderClass) {
-    var className = 'column ' + orderClass;
+    const className = 'column ' + orderClass;
     if (resultsData) {
         return h('div', {
             key: orderClass,
@@ -167,15 +166,26 @@ const renderResultsColumn = function(keys, orderClass) {
 }
 
 const renderResultsTable = function(key) {
-    let races = '';
     if (resultsData.hasOwnProperty(key)) {
-        races = resultsData[key];    
+        var races = resultsData[key];    
     }
+
+    var sortedRaces = [];
+    for (var race in races) {
+        sortedRaces.push([race, races[race][0]['statepostal']]);
+    }
+
+    sortedRaces.sort(function(a, b) {
+        if (a[1] < b[1]) return -1;
+        if (a[1] > b[1]) return 1;
+        return 0;
+    });
+
     if (races) {
         return [
             h('h2.poll-closing-group', h('span.time', key)),
             h('table.races', [
-                Object.keys(races).map(key => renderRace(races[key], key))
+                sortedRaces.map(sortedKey => renderRace(races[sortedKey[0]], sortedKey[0]))
             ])
         ]
     } else {
@@ -222,7 +232,7 @@ const renderRace = function(race, key) {
         h('td.state', {
             class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
         }, [
-            decideLabel(race1)
+            decideLabel(race1, key)
         ]),
         h('td.results-status', [
             Math.round(race1['precinctsreportingpct'] * 100) 
@@ -312,9 +322,11 @@ const determineResults = function(race) {
     return [race1, race2];
 }
 
-const decideLabel = function(race) {
+const decideLabel = function(race, key) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
+    } else if (race['officename'] === 'President') {
+        return key; 
     } else if (race['is_ballot_measure'] === true) {
         return race['statepostal'] + '-' + race['seatname']; 
     } else {
