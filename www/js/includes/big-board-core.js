@@ -92,13 +92,8 @@ const renderMaquette = function() {
 
         if (a.slice(-2) === 'AM') return 1;
         if (b.slice(-2) === 'AM') return -1;
-        if (aHour === bHour && a.indexOf('30') !== -1) {
-            return 1;
-        }
-        if (aHour === bHour && b.indexOf('30') !== -1) {
-            return -1;
-        }
-
+        if (aHour === bHour && a.indexOf('30') !== -1) return 1;
+        if (aHour === bHour && b.indexOf('30') !== -1) return -1;
         else return aHour - bHour;        
     });
 
