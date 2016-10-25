@@ -18,8 +18,8 @@ var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
 // var DATA_URL = '../data/presidential-national-test.json';
-// var DATA_URL = '../data/presidential-national.json';
-var DATA_URL = '/elections16/data/presidential-national.json';
+var DATA_URL = '../data/presidential-national.json';
+// var DATA_URL = '/elections16/data/presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
 var LOAD_INTERVAL = 20000;
