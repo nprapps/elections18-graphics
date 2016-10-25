@@ -1,3 +1,303 @@
-#navbar {
-    background-color: #f1f1f1;
+
+// NPR color palette
+// -------------------------
+
+@link-blue: #5076b8;
+@link-blue-hover: #AEBEDE;
+@blue-dark: #1E2E3A;
+
+@primary-control: #6d8ac4;
+@music-red: #bc453e;
+@music-red-dark: #6f3533;
+@music-red-light: #f05b4e;
+
+@gray-medium: #A0A0A0;
+
+/////
+
+
+// fonts
+.knockout() {
+    font-family: 'Knockout 31 4r', Helvetica, Arial, sans-serif;
+    font-weight: normal;
+}
+.gotham() {
+    font-family: 'Gotham',Helvetica,Arial,sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+// Breakpoints
+@screen-jumbo-above: ~"screen and (min-width: 1920px)";
+@screen-mega-above: ~"screen and (min-width: 1600px)";
+@screen-large-above: ~"screen and (min-width: 1201px)";
+@screen-large: ~"screen and (min-width: 1200px)";
+@screen-medium-above: ~"screen and (min-width: 992px)";
+@screen-medium: ~"screen and (max-width: 991px)";
+@screen-small-above: ~"screen and (min-width: 768px)";
+@screen-small: ~"screen and (max-width: 767px)";
+@screen-tiny-above: ~"screen and (min-width: 481px)";
+@screen-tiny: ~"screen and (max-width: 480px)";
+
+// results nav
+// -------------------------
+
+#results-nav-wrapper {
+    font-size: 13px;
+    position: relative;
+    margin: 0 .5rem 2rem .5rem;
+
+
+    @media @screen-small-above {
+        font-size: 14px;
+    }
+
+    @media @screen-medium-above {
+        font-size: 16px;
+    }
+
+    @media @screen-large-above {
+        font-size: 18px;
+    }
+
+    @media @screen-mega-above {
+        font-size: 21px;
+    }
+
+    @media @screen-jumbo-above {
+        font-size: 24px;
+    }
+}
+
+.results-nav {
+	margin:0;
+	padding: 0;
+	background-color: #ddd;
+    .gotham();
+
+    @media @screen-small-above {
+        background-color: #fff;
+        border-bottom: 3px solid #ddd;
+    }
+
+
+
+    &:after {
+        content: " ";
+        display: table;
+        clear:both;
+    }
+
+    /*menu*/
+    .menu {
+		display: none;
+        @media @screen-small-above {
+            display: block;
+        }
+
+	}
+
+    /* menu label*/
+    .small-screen-nav-label {
+        position: absolute;
+        top: 0;
+        right: 0;
+		display: block;
+        cursor: pointer;
+
+        @media @screen-small-above {
+             display: none;
+        }
+    }
+
+    [id^=small-screen-nav-checkbox] {
+            display: none;
+    }
+
+    [id^=small-screen-nav-checkbox]:checked + ul {
+		display: block;
+	}
+
+    /*nav branding*/
+    .results-logo {
+        .knockout();
+        padding: .8rem;
+
+        @media @screen-small-above {
+            position: absolute;
+            top: .4rem;
+            left: 0;
+            width: 6.1rem;
+            height: 3.5rem;
+            background-color: #fff;
+            padding: 0;
+
+            .election-year {
+                color: @music-red;
+                display: block;
+                line-height: 1;
+                font-size: 2.2rem;
+                padding-left: .5rem;
+            }
+
+            .election-name {
+                color: @primary-control;
+                display: block;
+                text-transform: uppercase;
+                font-size: 1rem;
+                padding-left: .5rem;
+            }
+        }
+    }
+
+    a {
+    	display:block;
+        font-size: .8rem;
+        padding: .5rem;
+        color:@link-blue;
+    	text-decoration:none;
+
+        @media @screen-small-above {
+            padding: 1rem;
+            font-size: .9rem;
+        }
+
+        &:hover {
+            color: @link-blue-hover;
+
+            // .no-touchevents & {
+            //     background-color: #000;
+            //     color: #fff;
+            // }
+        }
+    }
+
+    ul {
+    	padding:0;
+    	margin:0;
+    	list-style-type: none;
+    	position: relative;
+        @media @screen-small-above {
+            margin-left: 5rem;
+        }
+    }
+
+    li {
+
+        @media @screen-small-above {
+            width: auto;
+            float: left;
+        }
+
+    }
+
+    /* State Nav */
+    .state-nav {
+        position: relative;
+
+        [id^=state-nav-checkbox] {
+            display: none;
+        }
+
+        [id^=state-nav-checkbox]:checked ~ ul {
+            display: block;
+        }
+
+        .state-nav-label {
+            display:block;
+            font-size: .8rem;
+            padding: .5rem;
+            color:@link-blue;
+            cursor: pointer;
+
+            &:hover {
+                color: @link-blue-hover;
+            }
+
+            &::after {
+                content: "\25BC";
+                font-size: .5rem;
+                position: absolute;
+                bottom: 1.2rem;
+                right: .5rem;
+
+            }
+
+            @media @screen-small-above {
+                padding: 1rem 1.4rem 1rem 1rem;
+                font-size: .9rem;
+            }
+        }
+
+        [id^=state-nav-checkbox]:checked + label {
+            color: @link-blue-hover;
+
+            &::after {
+                content: "\25B2";
+                font-size: .5rem;
+                position: absolute;
+                bottom: 1.2rem;
+                right: .5rem;
+
+            }
+        }
+
+        ul {
+        	display: none;
+            position: relative;
+            //max-height: 200px;
+            overflow: auto;
+            margin-left: .5rem;
+
+            @media @screen-small-above {
+                position: absolute;
+                top: 3rem;
+                right: 0;
+                z-index: 1000;
+                margin-left: 0;
+                max-height: none;
+                background-color: #fff;
+                -webkit-box-shadow: 4px 6px 14px -6px #333;
+                -moz-box-shadow: 4px 6px 14px -6px #333;
+                box-shadow: 4px 6px 14px -6px #333;
+                border: 1px solid #ddd;
+                width:410px;
+            }
+
+            li {
+                float:none;
+
+                @media @screen-small-above {
+                	position: relative;
+                    padding:  .3rem;
+
+
+
+                    &:after {
+                        content: " ";
+                        display: table;
+                        clear:both;
+                    }
+                }
+            }
+        }
+
+
+
+        div {
+            float: left;
+            width: 33%;
+
+            p {
+                margin: 0;
+
+                a {
+                    font-size: 10px;
+                    line-height: 1;
+                    padding: .4rem 0;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
 }
