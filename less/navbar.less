@@ -93,9 +93,10 @@
     /*menu*/
     .menu {
 		display: none;
-        margin: 0 0 0 4rem;
+        margin: -10px 0 0 0;
         @media @screen-small-above {
             display: block;
+            margin: 0 0 0 4rem;
         }
 
 	}
@@ -103,14 +104,14 @@
     /* menu label*/
     .small-screen-nav-label {
         position: absolute;
-        top: .8rem;
-        right: .5rem;
+        top: 13px;
+        right: 9px;
 		display: block;
         cursor: pointer;
         .knockout();
         text-transform: uppercase;
         color: #666;
-        font-size: .8rem;
+        font-size: 12px;
 
         &:hover {
             color: @link-blue-hover;
@@ -124,8 +125,8 @@
         &:after {
             content: "\f0c9";
             font-family: npr-app-template;
-            font-size: .8rem;
-            margin-left: .5rem;
+            font-size: 12px;
+            margin-left: 5px;
         }
 
 
@@ -149,11 +150,11 @@
     /*nav branding*/
     .results-logo {
         .knockout();
-        padding: .5rem;
+        padding: 9px;
 
         @media @screen-small-above {
             position: absolute;
-            top: .4rem;
+            top: .9rem;
             left: 0;
             width: 5rem;
             height: 3.5rem;
@@ -168,7 +169,7 @@
             @media @screen-small-above {
                 display: block;
                 line-height: 1;
-                font-size: 1.7rem;
+                font-size: 1.8rem;
                 padding-left: .5rem;
             }
         }
@@ -180,7 +181,7 @@
 
             @media @screen-small-above {
                 display: block;
-                font-size: .8rem;
+                font-size: .85rem;
                 padding-left: .5rem;
             }
         }
@@ -188,8 +189,8 @@
 
     a {
     	display:block;
-        font-size: .8rem;
-        padding: .5rem;
+        font-size: 11px;
+        padding: 6px 9px;
         color:@link-blue;
     	text-decoration:none;
 
@@ -213,16 +214,19 @@
     	margin:0;
     	list-style-type: none;
     	position: relative;
+
         @media @screen-small-above {
-            margin-left: 5rem;
+            margin: 0 0 0 5rem;
         }
     }
 
     li {
+        border-bottom: 1px solid #ddd;
 
         @media @screen-small-above {
-            width: auto;
             float: left;
+            width: auto;
+            border: none;
         }
 
     }
@@ -230,6 +234,14 @@
     /* State Nav */
     .state-nav {
         position: relative;
+        // float: none;
+        // display: block;
+        // white-space: nowrap;
+        // clear: both;
+        //
+        // @media @screen-small-above {
+        //     float: left;
+        // }
 
         [id^=state-nav-checkbox] {
             display: none;
@@ -241,7 +253,7 @@
 
         .state-nav-label {
             display:block;
-            font-size: .8rem;
+            font-size: 11px;
             padding: .5rem;
             color:@link-blue;
             cursor: pointer;
@@ -251,17 +263,22 @@
             }
 
             &::after {
-                content: "\25BC";
-                font-size: .5rem;
                 position: absolute;
-                bottom: 1.2rem;
+                top: 8px;
                 right: .5rem;
-
+                content: "\25BC";
+                font-size: 10px;
             }
 
             @media @screen-small-above {
-                padding: 1rem 1.4rem 1rem 1rem;
                 font-size: .9rem;
+                padding: 1rem 1.4rem 1rem 1rem;
+
+                &::after {
+                    font-size: .5rem;
+                    top: 1.4rem;
+                    right: .5rem;
+                }
             }
         }
 
@@ -270,11 +287,6 @@
 
             &::after {
                 content: "\25B2";
-                font-size: .5rem;
-                position: absolute;
-                bottom: 1.2rem;
-                right: .5rem;
-
             }
         }
 
@@ -323,6 +335,11 @@
         div {
             float: left;
             width: 33%;
+            padding: 3px 0;
+
+            @media @screen-small-above {
+                padding: 0;
+            }
 
             p {
                 margin: 0;
