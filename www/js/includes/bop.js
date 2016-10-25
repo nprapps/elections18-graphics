@@ -23,16 +23,12 @@ var DATA_URL = '../data/top-level-results.json';
 
 var CONGRESS = {
     'senate': {
-        'total': 100,
-        'majority': 51,
         'half': 50,
         'Dem': 34,
         'GOP': 30,
         'Other': 2
     },
     'house': {
-        'total': 435,
-        'majority': 218,
         'half': 217.5,
         'Dem': 0,
         'GOP': 0,
@@ -87,16 +83,6 @@ var formatData = function() {
     _.each(charts, function(d) {
         var chamber = bopData[d + '_bop'];
         var x0 = 0;
-        var totalCalled = 0;
-        var totalRemaining = 0;
-
-        _.each(chamber, function(c) {
-            totalCalled += +c['seats'];
-            // totalCalled = CONGRESS[d]['Dem'] + CONGRESS[d]['GOP'] + CONGRESS[d]['Other'];
-        });
-
-        totalRemaining = CONGRESS[d]['total'] - totalCalled;
-        chamber['totalRemaining'] = totalRemaining;
 
         chamber['values'] = [];
 
@@ -104,9 +90,8 @@ var formatData = function() {
             var val = null;
 
             if (party == 'Not yet called') {
-                val = totalRemaining;
+                val = +chamber['uncalled_races'];
             } else {
-                // chamber[party]['seats'] = CONGRESS[d][party];
                 val = chamber[party]['seats'];
             }
 
@@ -234,7 +219,7 @@ var renderStackedBarChart = function(config) {
         left: 1
     };
 
-    var majority = CONGRESS[config['chart']]['majority'];
+    var majority = config['data'][0]['majority'];
     var half = CONGRESS[config['chart']]['half'];
     var ticksX = 4;
     var roundTicksFactor = 1;
@@ -257,7 +242,7 @@ var renderStackedBarChart = function(config) {
      * Create D3 scale objects.
      */
     var min = 0;
-    var max = CONGRESS[config['chart']]['total'];
+    var max = config['data'][0]['total_seats'];
 
     var xScale = d3.scale.linear()
         .domain([min, max])
