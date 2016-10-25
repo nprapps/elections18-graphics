@@ -216,7 +216,7 @@ const renderRace = function(race, key) {
     }, [
         h('td.pickup', {
             class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
-        }[
+        }, [
             insertRunoffImage(race)
         ]),
         h('td.state', {
