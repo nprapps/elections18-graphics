@@ -72,7 +72,7 @@
 .results-nav {
 	margin:0;
 	padding: 0;
-	background-color: #ddd;
+	background-color: #eee;
     .gotham();
 
     @media @screen-small-above {
@@ -91,6 +91,7 @@
     /*menu*/
     .menu {
 		display: none;
+        margin: 0 0 0 4rem;
         @media @screen-small-above {
             display: block;
         }
@@ -100,10 +101,22 @@
     /* menu label*/
     .small-screen-nav-label {
         position: absolute;
-        top: 0;
-        right: 0;
+        top: .8rem;
+        right: 1rem;
 		display: block;
         cursor: pointer;
+        .knockout();
+        text-transform: uppercase;
+        color: #666;
+        font-size: .8rem;
+
+        &:after {
+            content: "\f0c9";
+            font-family: npr-app-template;
+            font-size: .8rem;
+            margin-left: .5rem;
+        }
+
 
         @media @screen-small-above {
              display: none;
@@ -127,7 +140,7 @@
             position: absolute;
             top: .4rem;
             left: 0;
-            width: 6.1rem;
+            width: 5rem;
             height: 3.5rem;
             background-color: #fff;
             padding: 0;
@@ -136,7 +149,7 @@
                 color: @music-red;
                 display: block;
                 line-height: 1;
-                font-size: 2.2rem;
+                font-size: 1.7rem;
                 padding-left: .5rem;
             }
 
@@ -144,7 +157,7 @@
                 color: @primary-control;
                 display: block;
                 text-transform: uppercase;
-                font-size: 1rem;
+                font-size: .8rem;
                 padding-left: .5rem;
             }
         }
