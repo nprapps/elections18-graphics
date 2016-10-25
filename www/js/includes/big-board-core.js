@@ -45,7 +45,7 @@ const buildDataURL = function(filename) {
 
 const getData = function() {
     request.get(dataURL)
-        .set('If-Modified-Since', lastRequestTime)
+        .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
             if (res.body) {
                 lastRequestTime = new Date().toUTCString();
@@ -78,24 +78,64 @@ const sortData = function(resultsData) {
 }
 
 const renderMaquette = function() {
+    let numberOfRaces = 0;
+
+    let times = [];
+    for (let time in resultsData) {
+        times.push(time);
+        const group = resultsData[time];
+        numberOfRaces += Object.keys(group).length;
+    }
+    const sortedTimes = times.sort(function(a, b) {
+        var aHour = parseInt(a.split(':')[0]);
+        var bHour = parseInt(b.split(':')[0]);
+
+        if (a.slice(-2) === 'AM') return 1;
+        if (b.slice(-2) === 'AM') return -1;
+        if (aHour === bHour && a.indexOf('30') !== -1) return 1;
+        if (aHour === bHour && b.indexOf('30') !== -1) return -1;
+        else return aHour - bHour;        
+    });
+
+    const breakingIndex = Math.ceil(numberOfRaces / 2)
+    let raceIndex = 0;
+    let firstColumn = {};
+    let secondColumn = {};
+    let selectedColumn = firstColumn
+
+    for (let time of sortedTimes) {
+        const group = resultsData[time];
+        for (let race in group) {
+            raceIndex += 1
+
+            if (!selectedColumn[time]) {
+                selectedColumn[time] = {};
+            }
+            selectedColumn[time][race] = group[race]
+
+            if (raceIndex === breakingIndex) {
+                selectedColumn = secondColumn
+            }
+        }
+    }
+
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', boardTitle),
             bopData ? renderLeaderboard() : ''
         ]),
         h('div.results', [
-            renderResultsColumn(FIRST_COLUMN_KEYS, 'first'),
-            renderResultsColumn(SECOND_COLUMN_KEYS, 'last')
+            renderResultsColumn(firstColumn, 'first'),
+            renderResultsColumn(secondColumn, 'last')
         ])
     ]);
 }
 
 const renderLeaderboard = function() {
-    let bop = {};
     if (boardTitle.indexOf('House') !== -1) {
-        bop = bopData['house_bop'];
+        var bop = bopData['house_bop'];
     } else if (boardTitle.indexOf('Senate') !== -1) {
-        bop = bopData['senate_bop'];
+        var bop = bopData['senate_bop'];
     } else {
         return h('div.leaderboard', '');
     }
@@ -150,14 +190,14 @@ const renderLeaderboard = function() {
     ])
 }
 
-const renderResultsColumn = function(keys, orderClass) {
-    var className = 'column ' + orderClass;
+const renderResultsColumn = function(column, orderClass) {
+    const className = 'column ' + orderClass;
     if (resultsData) {
         return h('div', {
             key: orderClass,
             class: className
         }, [
-            keys.map(key => renderResultsTable(key))
+            Object.keys(column).map(key => renderResultsTable(key, column))
         ])
     } else {
         return h('div', {
@@ -166,16 +206,27 @@ const renderResultsColumn = function(keys, orderClass) {
     }
 }
 
-const renderResultsTable = function(key) {
-    let races = '';
-    if (resultsData.hasOwnProperty(key)) {
-        races = resultsData[key];    
+const renderResultsTable = function(key, column) {
+    if (column.hasOwnProperty(key)) {
+        var races = column[key];    
     }
+
+    var sortedRaces = [];
+    for (var race in races) {
+        sortedRaces.push([race, races[race][0]['statepostal']]);
+    }
+
+    sortedRaces.sort(function(a, b) {
+        if (a[1] < b[1]) return -1;
+        if (a[1] > b[1]) return 1;
+        return 0;
+    });
+
     if (races) {
         return [
             h('h2.poll-closing-group', h('span.time', key)),
             h('table.races', [
-                Object.keys(races).map(key => renderRace(races[key], key))
+                sortedRaces.map(sortedKey => renderRace(races[sortedKey[0]], sortedKey[0]))
             ])
         ]
     } else {
@@ -185,29 +236,29 @@ const renderResultsTable = function(key) {
 
 const renderRace = function(race, key) {
     const results = determineResults(race, key);
-    const race1 = results[0];
-    const race2 = results[1];
+    const result1 = results[0];
+    const result2 = results[1];
 
-    if (race1['npr_winner']) {
-        var winningResult = race1;
-    } else if (race2['npr_winner']) {
-        var winningResult = race2;
+    if (result1['npr_winner']) {
+        var winningResult = result1;
+    } else if (result2['npr_winner']) {
+        var winningResult = result2;
     }
 
     if (winningResult) {
         var called = true;
     }
 
-    if (winningResult && race1['meta']['current_party'] && winningResult['party'] !== race1['meta']['current_party']) {
+    if (winningResult && result1['meta']['current_party'] && winningResult['party'] !== result1['meta']['current_party']) {
         var change = true
     }
 
-    if (race1['precinctsreporting'] > 0) {
+    if (result1['precinctsreporting'] > 0) {
         var reporting = true;
     }
 
     return h('tr', {
-        key: race1['last'],
+        key: result1['last'],
         classes: { 
             'called': called,
             'party-change': change,
@@ -216,71 +267,71 @@ const renderRace = function(race, key) {
     }, [
         h('td.pickup', {
             class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
-        }[
+        }, [
             insertRunoffImage(race)
         ]),
         h('td.state', {
             class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
         }, [
-            decideLabel(race1)
+            decideLabel(result1, key)
         ]),
         h('td.results-status', [
-            Math.round(race1['precinctsreportingpct'] * 100) 
+            Math.round(result1['precinctsreportingpct'] * 100) 
         ]),
         h('td.candidate', {
-            class: race1['party'].toLowerCase(),
+            class: result1['party'].toLowerCase(),
             classes: {
-                'winner': race1['npr_winner']
+                'winner': result1['npr_winner']
             }
         }, [
             h('span.fname', [
-                race1['first'] ? race1['first'] + ' ' : ''
+                result1['first'] ? result1['first'] + ' ' : ''
             ]),
             h('span.lname', [
-                race1['last'] + ' '
+                result1['last'] + ' '
             ]),
-            insertIncumbentImage(race1['incumbent'])
+            insertIncumbentImage(result1['incumbent'])
         ]),
         h('td.candidate-total', {
-            class: race1['party'].toLowerCase(),
+            class: result1['party'].toLowerCase(),
             classes: {
-                'winner': race1['npr_winner']
+                'winner': result1['npr_winner']
             }
         }, [
             h('span.candidate-total-wrapper', {
                 updateAnimation: onUpdateAnimation
             }, [
-                Math.round(race1['votepct'] * 100)
+                Math.round(result1['votepct'] * 100)
             ])
         ]),
         h('td.candidate-total-spacer'),
         h('td.candidate-total', {
-            class: race2['party'].toLowerCase(),
+            class: result2['party'].toLowerCase(),
             classes: {
-                'winner': race2['npr_winner']
+                'winner': result2['npr_winner']
             }
         }, [
             h('span.candidate-total-wrapper', {
                 updateAnimation: onUpdateAnimation
             }, [
-                race2 ? Math.round(race2['votepct'] * 100) : 0
+                result2 ? Math.round(result2['votepct'] * 100) : 0
             ])
         ]),
         h('td.candidate', {
-            class: race2['party'].toLowerCase(),
+            class: result2['party'].toLowerCase(),
             classes: {
-                'winner': race2['npr_winner']
+                'winner': result2['npr_winner']
             }
         }, [
             h('span.fname', [
-                race2 ? race2['first'] : ''
+                result2 ? result2['first'] : ''
             ]),
             ' ',
             h('span.lname', [
-                race2 ? race2['last'] : ''
+                result2 ? result2['last'] : ''
             ]),
             ' ',
-            insertIncumbentImage(race2['incumbent'])
+            insertIncumbentImage(result2['incumbent'])
         ])
     ])
 }
@@ -289,32 +340,34 @@ const determineResults = function(race) {
     const leading = race[0];
     const trailing = race[1];
 
-    let race1;
-    let race2;
+    let result1;
+    let result2;
     for (var i = 0; i <= 1; i++) {
         var results = [race[0], race[1]];
         var result = results[i];
-        if (result['party'] === 'Dem' && !race1) {
-            race1 = race[i];
-        } else if (result['party'] === 'GOP' && !race2) {
-            race2 = race[i];
+        if (result['party'] === 'Dem' && !result1) {
+            result1 = race[i];
+        } else if (result['party'] === 'GOP' && !result2) {
+            result2 = race[i];
         }
     }
 
-    if (!race1) {
-        race1 = race[0]
+    if (!result1) {
+        result1 = race[0]
     }
 
-    if (!race2) {
-        race2 = race[1];
+    if (!result2) {
+        result2 = race[1];
     }
 
-    return [race1, race2];
+    return [result1, result2];
 }
 
-const decideLabel = function(race) {
+const decideLabel = function(race, key) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
+    } else if (race['officename'] === 'President') {
+        return key; 
     } else if (race['is_ballot_measure'] === true) {
         return race['statepostal'] + '-' + race['seatname']; 
     } else {

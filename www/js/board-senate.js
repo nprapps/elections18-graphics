@@ -4,9 +4,12 @@ import bigboard from '../js/includes/big-board-core.js'
 import request from 'superagent';
 
 // global vars
-let pymChild = null;
+window.pymChild = null;
 let dataURL = null;
 let data = null;
+
+var resultsMenu = document.querySelector(".small-screen-nav-label");
+var stateMenu = document.querySelector(".state-nav-label");
 /*
 * Initialize the graphic.
 */
@@ -15,6 +18,13 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
+    resultsMenu.addEventListener('click', function() {
+        navbar.onResultsMenuClick(pymChild);
+    });
+    stateMenu.addEventListener('click', function() {
+        navbar.onStateMenuClick(pymChild);
+    });
+
     bigboard.initBigBoard('senate-national.json', 'Senate', 'senate');
 }
 
