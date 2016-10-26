@@ -24,12 +24,13 @@ exports.initBigBoard = function(filename, boardName, boardClass) {
     boardTitle = boardName;
     boardWrapper.classList.add(boardClass);
 
-    dataURL = buildDataURL(filename);
     bopDataURL = buildDataURL('top-level-results.json')
-    getData();
+    dataURL = buildDataURL(filename);
     getBopData();
+    getData();
     projector.append(boardWrapper, renderMaquette);
 
+    setInterval(getBopData, 5000);
     setInterval(getData, 5000);
 }
 
@@ -60,7 +61,6 @@ const getBopData = function() {
         .end(function(err, res) {
             if (res.body) {
                 bopData = res.body;
-                projector.scheduleRender();
             }
         });
 }
