@@ -266,12 +266,20 @@ const renderRace = function(race, key) {
         }
     }, [
         h('td.pickup', {
-            class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
+            classes: {
+                'winner': winningResult,
+                'dem': winningResult && winningResult['party'] === 'dem',
+                'gop': winningResult && winningResult['party'] === 'gop'
+            }
         }, [
             insertRunoffImage(race)
         ]),
         h('td.state', {
-            class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
+            classes: {
+                'winner': winningResult,
+                'dem': winningResult && winningResult['party'] === 'Dem',
+                'gop': winningResult && winningResult['party'] === 'GOP'
+            }
         }, [
             decideLabel(result1, key)
         ]),
