@@ -24,12 +24,13 @@ exports.initBigBoard = function(filename, boardName, boardClass) {
     boardTitle = boardName;
     boardWrapper.classList.add(boardClass);
 
-    dataURL = buildDataURL(filename);
     bopDataURL = buildDataURL('top-level-results.json')
-    getData();
+    dataURL = buildDataURL(filename);
     getBopData();
+    getData();
     projector.append(boardWrapper, renderMaquette);
 
+    setInterval(getBopData, 5000);
     setInterval(getData, 5000);
 }
 
@@ -60,7 +61,6 @@ const getBopData = function() {
         .end(function(err, res) {
             if (res.body) {
                 bopData = res.body;
-                projector.scheduleRender();
             }
         });
 }
@@ -213,12 +213,40 @@ const renderResultsTable = function(key, column) {
 
     var sortedRaces = [];
     for (var race in races) {
-        sortedRaces.push([race, races[race][0]['statepostal']]);
+        let statepostal = races[race][0]['statepostal'];
+        
+        // see if we need to pull a number
+        let num = races[race][0]['seatnum'] ? races[race][0]['seatnum'] : '';
+        if (!num && races[race][0]['reportingunitname']) {
+            num = races[race][0]['reportingunitname'].slice(-1);
+        }
+        if (!num && races[race][0]['is_ballot_measure']) {
+            num = races[race][0]['seatname'].split(' - ')[0];
+        }
+
+        let sortKey = num ? statepostal + '-' + num : statepostal;
+        sortedRaces.push([race, sortKey]);
     }
 
     sortedRaces.sort(function(a, b) {
-        if (a[1] < b[1]) return -1;
-        if (a[1] > b[1]) return 1;
+        const as = a[1];
+        const bs = b[1];
+
+        const aState = as.substring(0,1);
+        const bState = bs.substring(0,1);
+
+        // if we pulled a number off something
+        if (aState === bState && as.length > 2 && bs.length > 2) {
+            const aID = as.split('-')[1];
+            const bID = bs.split('-')[1];
+            if (parseInt(aID) && parseInt(bID)) {
+                if (parseInt(aID) < parseInt(bID)) return -1;
+                if (parseInt(aID) > parseInt(bID)) return 1;
+            }
+        }
+
+        if (as < bs) return -1;
+        if (as > bs) return 1;
         return 0;
     });
 
@@ -266,12 +294,20 @@ const renderRace = function(race, key) {
         }
     }, [
         h('td.pickup', {
-            class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
+            classes: {
+                'winner': winningResult,
+                'dem': winningResult && winningResult['party'] === 'dem',
+                'gop': winningResult && winningResult['party'] === 'gop'
+            }
         }, [
             insertRunoffImage(race)
         ]),
         h('td.state', {
-            class: winningResult ? winningResult['party'].toLowerCase() : 'no-winner',
+            classes: {
+                'winner': winningResult,
+                'dem': winningResult && winningResult['party'] === 'Dem',
+                'gop': winningResult && winningResult['party'] === 'GOP'
+            }
         }, [
             decideLabel(result1, key)
         ]),
@@ -337,9 +373,6 @@ const renderRace = function(race, key) {
 }
 
 const determineResults = function(race) {
-    const leading = race[0];
-    const trailing = race[1];
-
     let result1;
     let result2;
     for (var i = 0; i <= 1; i++) {
@@ -352,15 +385,27 @@ const determineResults = function(race) {
         }
     }
 
-    if (!result1) {
+    // handle the case where there are two GOP results to show
+    if (!result1 && race[0] !== result2) {
         result1 = race[0]
+    } else if (!result1 && race[0] !== result1) {
+        result1 = race[1]
     }
 
     if (!result2) {
         result2 = race[1];
     }
 
-    return [result1, result2];
+    // if we have the same party, ensure we order by votepct
+    if (result1['party'] === result2['party']) {
+        var sortedResults = [result1, result2].sort(function(a, b) {
+            return b['votepct'] - a['votepct'];
+        })
+    } else {
+        var sortedResults = [result1, result2];
+    }
+
+    return sortedResults;
 }
 
 const decideLabel = function(race, key) {
