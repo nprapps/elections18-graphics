@@ -213,12 +213,40 @@ const renderResultsTable = function(key, column) {
 
     var sortedRaces = [];
     for (var race in races) {
-        sortedRaces.push([race, races[race][0]['statepostal']]);
+        let statepostal = races[race][0]['statepostal'];
+        
+        // see if we need to pull a number
+        let num = races[race][0]['seatnum'] ? races[race][0]['seatnum'] : '';
+        if (!num && races[race][0]['reportingunitname']) {
+            num = races[race][0]['reportingunitname'].slice(-1);
+        }
+        if (!num && races[race][0]['is_ballot_measure']) {
+            num = races[race][0]['seatname'].split(' - ')[0];
+        }
+
+        let sortKey = num ? statepostal + '-' + num : statepostal;
+        sortedRaces.push([race, sortKey]);
     }
 
     sortedRaces.sort(function(a, b) {
-        if (a[1] < b[1]) return -1;
-        if (a[1] > b[1]) return 1;
+        const as = a[1];
+        const bs = b[1];
+
+        const aState = as.substring(0,1);
+        const bState = bs.substring(0,1);
+
+        // if we pulled a number off something
+        if (aState === bState && as.length > 2 && bs.length > 2) {
+            const aID = as.split('-')[1];
+            const bID = bs.split('-')[1];
+            if (parseInt(aID) && parseInt(bID)) {
+                if (parseInt(aID) < parseInt(bID)) return -1;
+                if (parseInt(aID) > parseInt(bID)) return 1;
+            }
+        }
+
+        if (as < bs) return -1;
+        if (as > bs) return 1;
         return 0;
     });
 
