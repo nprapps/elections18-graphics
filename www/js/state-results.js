@@ -6,10 +6,13 @@ const projector = maquette.createProjector();
 const h = maquette.h;
 
 let data = null;
+let extraData = null;
 let dataURL = null;
+let extraDataURL = null;
 let currentState = null;
 let lastRequestTime = null;
 let pymChild = null;
+
 
 /*
 * Initialize the graphic.
@@ -23,6 +26,8 @@ var onWindowLoaded = function() {
     currentState = 'nc';
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
+    extraDataURL = buildDataURL('fixed-data.json');
+    getExtraData();
     getData();
 }
 
@@ -34,8 +39,16 @@ const getData = function() {
         });
 }
 
+const getExtraData = function() {
+    request.get(extraDataURL)
+      .end(function(err, res) {
+        extraData = res.body;
+      });
+}
+
 const renderMaquette = function() {
     if (data) {
+        console.log(extraData);
         console.log(data);
 
         let trumpTotal = 0;
@@ -50,10 +63,6 @@ const renderMaquette = function() {
             trumpPct += trump.votepct;
             clintonPct += clinton.votepct;
         }
-        console.log(trumpTotal);
-        console.log(clintonTotal);
-        console.log(trumpPct);
-        console.log(clintonPct);
 
         return h('div.results', ['Loaded',
           h('div.state-results', [
@@ -109,7 +118,9 @@ const renderMaquette = function() {
                 h('tr', [
                   h('th.county', 'County'),
                   h('th.vote', 'Trump'),
-                  h('th.vote', 'Clinton')
+                  h('th.vote', 'Clinton'),
+                  h('th.lastWon', '2012 Result'),
+                  h('th.unemployment', 'Unemployment Rate')
                 ])
               ]),
               h('tbody', [
@@ -131,25 +142,10 @@ const renderCountyRow = function(results){
   return h('tr', [
     h('td', trump.reportingunitname),
     h('td', trump.votecount),
-    h('td', clinton.votecount)
+    h('td', clinton.votecount),
+    h('td', extraData[trump.fipscode].winner + ' +' + extraData[trump.fipscode].advantage.toFixed(2) + '%'),
+    h('td', extraData[trump.fipscode].unemployment + '%')
   ])
-
-  // if (data){
-  //   for (var fipscode in data){
-  //     let trump = data[fipscode][0];
-  //     let clinton = data[fipscode][1];
-  //     let trumpVotes = trump.votecount;
-  //     let clintonVotes = clinton.votecount;
-  //     let countyName = trump.reportingunitname;
-  //
-  //     return [ h('tr', [
-  //       h('td', countyName),
-  //       h('td', trumpVotes),
-  //       h('td', clintonVotes)
-  //     ]),
-  //   ]
-  //   }
-  // }
 }
 
 /*
