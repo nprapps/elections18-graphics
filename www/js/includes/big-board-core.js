@@ -345,9 +345,6 @@ const renderRace = function(race, key) {
 }
 
 const determineResults = function(race) {
-    const leading = race[0];
-    const trailing = race[1];
-
     let result1;
     let result2;
     for (var i = 0; i <= 1; i++) {
@@ -360,15 +357,27 @@ const determineResults = function(race) {
         }
     }
 
-    if (!result1) {
+    // handle the case where there are two GOP results to show
+    if (!result1 && race[0] !== result2) {
         result1 = race[0]
+    } else if (!result1 && race[0] !== result1) {
+        result1 = race[1]
     }
 
     if (!result2) {
         result2 = race[1];
     }
 
-    return [result1, result2];
+    // if we have the same party, ensure we order by votepct
+    if (result1['party'] === result2['party']) {
+        var sortedResults = [result1, result2].sort(function(a, b) {
+            return b['votepct'] - a['votepct'];
+        })
+    } else {
+        var sortedResults = [result1, result2];
+    }
+
+    return sortedResults;
 }
 
 const decideLabel = function(race, key) {
