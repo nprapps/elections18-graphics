@@ -55,44 +55,66 @@ const renderMaquette = function() {
         stateTotals(data);
 
         const firstCounty = data[Object.keys(data)[0]];
+        let stateName = firstCounty[0].statename;
 
-        return h('div.results', ['Loaded',
-          h('div.state-results', [
-            h('h2', 'Overall State Results'),
-            h('p', 'Lorem Ipsum dolemoar usted.'),
-            h('h4', '2016'),
-            h('table', [
+        return h('div.results', [
+          h('h1', stateName),
+          h('p', 'Blah blah blah'),
+          h('div.results-statewide', [
+            h('h2', 'STATEWIDE RESULTS'),
+            h('p', 'Tell them about the state history and stuff here.'),
+            h('table.results-table', [
               h('thead', [
                 h('tr', [
-                  h('th', 'Candidate'),
-                  h('th', 'Votes'),
-                  h('th', 'Percent')
+                  h('th.candidate', 'Candidate'),
+                  h('th.amt', 'Votes'),
+                  h('th.amt', 'Percent')
                 ])
               ]),
-              h('tbody', [
-                Object.keys(firstCounty).map(fipscode => renderStateRow(firstCounty[fipscode]))
+              Object.keys(firstCounty).map(fipscode => renderStateRow(firstCounty[fipscode]))
+              ,h('tfoot', [
+                h('tr', [
+                  h('td.candidate', 'Total'),
+                  h('td.amt', 'NUMBER'),
+                  h('td.amt', '100%')
+                ])
               ])
-            ])
+            ]),
+            h('p.precincts', '10% of precincts reporting (10 of 100)')
           ]),
-          h('div.county-results', [
-            h('h2', 'Counties To Watch'),
+          h('div.results-counties', [
+            h('h2', 'COUNTIES TO WATCH'),
             h('p', 'Lorem Ipsum blah blah blah'),
-            h('h2', 'All Results'),
-            h('table', [
+            h('ul.sorter', [
+              h('li.label', 'Sort Counties By'),
+              h('li.metric', 'Population'),
+              h('li.metric', '2012 Results'),
+              h('li.metric', 'Unemployment'),
+              h('li.metric', '% White'),
+              h('li.metric', '% Black'),
+              h('li.metric', '% Hispanic'),
+              h('li.metric', 'Median Income'),
+              h('li.metric', 'Foreclosure Rate'),
+              h('li.metric', '% College-Educated'),
+            ]),
+            h('table.results-table', [
               h('thead', [
                 h('tr', [
                   h('th.county', 'County'),
-                  h('th.vote', 'Trump'),
-                  h('th.vote', 'Clinton'),
-                  h('th.lastWon', '2012 Result'),
+                  h('th.amt.precincts', ''),
+                  h('th.vote.candidate.gop', 'Trump'),
+                  h('th.vote.candidate.dem', 'Clinton'),
+                  h('th.vote.candidate.ind', 'Other'),
+                  h('th.vote.margin', '2016 Margin'),
+                  h('th.comparison', '2012 Result'),
                   h('th.unemployment', 'Unemployment Rate')
                 ])
               ]),
-              h('tbody', [
-                Object.keys(data).map(fipscode => renderCountyRow(data[fipscode]))
-
-              ])
+              Object.keys(data).map(fipscode => renderCountyRow(data[fipscode]))
             ])
+          ]),
+          h('div.footer', [
+            h('p', 'Sources: sources go here.')
           ])
         ]);
     } else {
@@ -175,9 +197,9 @@ const renderStateRow = function(results){
   }
 
   return h('tr', [
-    h('td', results.first + ' ' + results.last + ' (' + party + ')'),
-    h('td', voteTotal.toLocaleString()),
-    h('td', votePct.toFixed(2) + '%')
+    h('td.candidate', results.first + ' ' + results.last + ' (' + party + ')'),
+    h('td.amt', voteTotal.toLocaleString()),
+    h('td.amt', votePct.toFixed(2) + '%')
   ])
 }
 
@@ -195,11 +217,14 @@ const renderCountyRow = function(results){
   }
 
   return h('tr', [
-    h('td', trump.reportingunitname),
-    h('td', (trump.votepct * 100).toFixed(1) + '%'),
-    h('td', (clinton.votepct * 100).toFixed(1) + '%'),
-    h('td', extraData[trump.fipscode].past_margin),
-    h('td', extraData[trump.fipscode].unemployment + '%')
+    h('td.county', trump.reportingunitname),
+    h('td.amt.precincts', '100% in'),
+    h('td.vote.gop', (trump.votepct * 100).toFixed(1) + '%'),
+    h('td.vote.dem', (clinton.votepct * 100).toFixed(1) + '%'),
+    h('td.vote.ind', 'MATH'),
+    h('td.vote.margin', '-'),
+    h('td.comparison', extraData[trump.fipscode].past_margin),
+    h('td.unemployment', extraData[trump.fipscode].unemployment + '%')
   ])
 }
 
