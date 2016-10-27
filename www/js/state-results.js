@@ -26,7 +26,7 @@ var onWindowLoaded = function() {
     currentState = 'pa';
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
-    const extraDataFilename = '/extra_data/' + currentState + '-extra.json'
+    const extraDataFilename = 'extra_data/' + currentState + '-extra.json'
     extraDataURL = buildDataURL(extraDataFilename);
     getExtraData();
     getData();
@@ -50,12 +50,12 @@ const getExtraData = function() {
 
 const renderMaquette = function() {
     if (data, extraData) {
-        console.log(data);
+        const stateResults = data['state'];
+        const sortedStateResults = stateResults.sort(function(a, b) {
+          return b['votecount'] - a['votecount'];
+        });
 
-        stateTotals(data);
-
-        const firstCounty = data[Object.keys(data)[0]];
-        let stateName = firstCounty[0].statename;
+        let stateName = stateResults.statename;
 
         return h('div.results', [
           h('h1', stateName),
@@ -71,8 +71,10 @@ const renderMaquette = function() {
                   h('th.amt', 'Percent')
                 ])
               ]),
-              Object.keys(firstCounty).map(fipscode => renderStateRow(firstCounty[fipscode]))
-              ,h('tfoot', [
+              h('tbody', [
+                sortedStateResults.map(result => renderStateRow(result))
+              ]),
+              h('tfoot', [
                 h('tr', [
                   h('td.candidate', 'Total'),
                   h('td.amt', 'NUMBER'),
@@ -110,7 +112,7 @@ const renderMaquette = function() {
                   h('th.unemployment', 'Unemployment Rate')
                 ])
               ]),
-              Object.keys(data).map(fipscode => renderCountyRow(data[fipscode]))
+              Object.keys(data).map(key => renderCountyRow(data[key], key))
             ])
           ]),
           h('div.footer', [
@@ -122,90 +124,23 @@ const renderMaquette = function() {
     }
 }
 
-//Candidate State-wide data
-let trumpTotal = 0;
-let trumpPct = 0;
-let clintonTotal = 0;
-let clintonPct = 0;
-let mcmullinTotal = 0;
-let mcmullinPct = 0;
-let johnsonTotal = 0;
-let johnsonPct = 0;
-let steinTotal = 0;
-let steinPct = 0;
-
-const stateTotals = function(data){
-  for (var fipscode in data){
-    let trump = null;
-    let clinton = null;
-    let mcmullin = null;
-    let johnson = null;
-    let stein = null;
-
-    for (var i = 0; i < data[fipscode].length; i++){
-      let candidate = data[fipscode][i];
-      if (candidate.last == 'Trump'){
-        trump = data[fipscode][i];
-        trumpTotal += trump.votecount;
-        trumpPct += trump.votepct;
-      } else if (candidate.last == 'Clinton'){
-        clinton = data[fipscode][i];
-        clintonTotal += clinton.votecount;
-        clintonPct += clinton.votepct;
-      } else if (candidate.last == 'Johnson'){
-        johnson = data[fipscode][i];
-        johnsonTotal += johnson.votecount;
-        johnsonPct += johnson.votepct;
-      } else if (candidate.last == 'Stein'){
-        stein = data[fipscode][i];
-        steinTotal += stein.votecount;
-        steinPct += stein.votepct;
-      } else if (candidate.last == 'McMullin'){
-        mcmullin = data[fipscode][i];
-        mcmullinTotal += mcmullin.votecount;
-        mcmullinPct += mcmullin.votepct;
-      }
-    }
-  }
-}
-
-const renderStateRow = function(results){
-  let voteTotal = null;
-  let votePct = null;
-  let party = null;
-
-  if (results.last == 'Trump'){
-    voteTotal = trumpTotal;
-    votePct = trumpPct;
-    party = 'R';
-  } else if (results.last == 'Clinton'){
-    voteTotal = clintonTotal;
-    votePct = clintonPct;
-    party = 'D';
-  } else if (results.last == 'Johnson'){
-    voteTotal = johnsonTotal;
-    votePct = johnsonPct;
-    party = 'L';
-  } else if (results.last == 'Stein'){
-    voteTotal = steinTotal;
-    votePct = steinPct;
-    party = 'G';
-  } else if (results.last == 'McMullin'){
-    voteTotal = mcmullinTotal;
-    votePct = mcmullinPct;
-    party = 'I';
-  }
+const renderStateRow = function(result){
 
   return h('tr', [
-    h('td.candidate', results.first + ' ' + results.last + ' (' + party + ')'),
-    h('td.amt', voteTotal.toLocaleString()),
-    h('td.amt', votePct.toFixed(2) + '%')
+    h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
+    h('td.amt', result.votecount.toLocaleString()),
+    h('td.amt', (result.votepct * 100).toFixed(2) + '%')
   ])
 }
 
-const renderCountyRow = function(results){
+const renderCountyRow = function(results, key){
+  if (key === 'state') {
+    return '';
+  }
+
   let trump = null;
   let clinton = null;
+  let othervotepct = 0;
 
   for (var i = 0; i < results.length; i++){
     let candidate = results[i];
@@ -213,6 +148,8 @@ const renderCountyRow = function(results){
       trump = results[i];
     } else if (candidate.last == 'Clinton'){
       clinton = results[i];
+    } else {
+      othervotepct += candidate.votepct;
     }
   }
 
@@ -221,11 +158,21 @@ const renderCountyRow = function(results){
     h('td.amt.precincts', '100% in'),
     h('td.vote.gop', (trump.votepct * 100).toFixed(1) + '%'),
     h('td.vote.dem', (clinton.votepct * 100).toFixed(1) + '%'),
-    h('td.vote.ind', 'MATH'),
-    h('td.vote.margin', '-'),
+    h('td.vote.ind', (othervotepct * 100).toFixed(1) + '%'),
+    h('td.vote.margin', calculateVoteMargin(trump.votepct, clinton.votepct)),
     h('td.comparison', extraData[trump.fipscode].past_margin),
     h('td.unemployment', extraData[trump.fipscode].unemployment + '%')
   ])
+}
+
+const calculateVoteMargin = function(trump, clinton) {
+  const difference = clinton - trump;
+  if (difference > 0) {
+    return 'D +' + Math.round(difference * 100);
+  } else {
+    return 'R +' + Math.round(Math.abs(difference) * 100);
+  }
+
 }
 
 /*
