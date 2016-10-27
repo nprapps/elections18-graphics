@@ -64,6 +64,19 @@
         <h2>{{ COPY.content.hed_county_results }}</h2>
         <p>In the past three presidential elections, Arizona has consistently had four Democratic counties (Apache, Coconino, Pima and Santa Cruz) and 11 Republican ones (Cochise, Gila, Graham, Greenlee, La Paz, Maricopa, Mohave, Navajo, Pinal, Yavapai and Yuma). The main county to watch is <span class="featured">Maricopa (Phoenix)&nbsp;<i class="icon icon-star"></i></span> and the most populous county in the state by far. 60% of the state’s voters live there, and it had more than 455,000 voters in it in 2012 than every other county combined. It went for Romney 54%-43%, nearly reflecting the overall margin. If Clinton is to win Arizona, she’d have to do better than Obama did in Maricopa. Also watch: <span class="featured">Pima (Tucson)&nbsp;<i class="icon icon-star"></i></span>. Obama won it 53%-46%.</p>
 
+        <ul class="sorter">
+            <li class="label">Sort Counties By</li>
+            <li class="metric">Population</li>
+            <li class="metric selected">2012 Results</li>
+            <li class="metric">Unemployment</li>
+            <li class="metric">% White</li>
+            <li class="metric">% Black</li>
+            <li class="metric">% Hispanic</li>
+            <li class="metric">Median Income</li>
+            <li class="metric">Foreclosure Rate</li>
+            <li class="metric">% College-Educated</li>
+        </ul>
+
         <table class="results-table">
             <thead>
                 <tr>
@@ -219,7 +232,7 @@
     </div>
 
     <div class="footer">
-        <p>Source: AP <span class="timestamp">(as of TKTKTK)</span></p>
+        <p>Sources: {{ COPY.content.source_county_data }}</p>
     </div>
 </div>
 {% endblock %}

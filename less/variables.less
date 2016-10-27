@@ -55,3 +55,21 @@
 @screen-md-max:              (@screen-lg - 1);
 @screen-lg-max:              (@screen-xl - 1);
 @screen-xl-max:              (@screen-big-board - 1);
+
+
+// Mixins
+.clearfix() {
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+    &:after { clear: both; }
+}
+
+.unselectable {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
