@@ -1,5 +1,6 @@
 @import "navbar";
 @import "variables";
+@import "results-table";
 
 body {
     margin: 0;
@@ -18,7 +19,6 @@ body {
 
 #county-results {
     font: 14px/1.4 Helvetica, Arial, sans-serif;
-    padding-top: 33px;
 
     h1, h2, h3, h4, h5, h6,
     p, ul, li {
@@ -45,17 +45,24 @@ body {
         line-height: 1.2;
         letter-spacing: 0.05em;
         -webkit-font-smoothing: antialiased;
-        font-size: 12px;
+        font-size: 14px;
         color: #333;
     }
 
     p {
         font-size: 12px;
         line-height: 1.6;
-        margin-bottom: 1em;
+        margin-bottom: 22px;
         color: #454545;
 
         strong { color: #121212; }
+
+        .featured {
+            background-color: #f1f1f1;
+            padding: 3px 3px 3px 6px;
+            color: #333;
+            font-weight: bold;
+        }
 
         &.battleground {
             color: #666;
@@ -63,38 +70,108 @@ body {
             margin-top: -11px;
             margin-bottom: 22px;
         }
-    }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-    }
-    tr { vertical-align: top; }
-    th {
-        padding: 0 11px 5px 11px;
-        border-bottom: 2px solid #eee;
-        text-align: left;
-    }
-    td {
-        padding: 5px 11px;
-        border-bottom: 1px solid #eee;
-
-        &.county {
-            text-align: left;
-
-            &.featured { font-weight: bold; }
+        &.precincts {
+            margin-top: 11px;
+            color: #999;
+            font-size: 11px;
+            font-style: italic;
         }
     }
 
-    th, td {
-        &.amt { text-align: right; }
-        &.vote { text-align: center; }
+    table.results-table {
+        th { border-color: #ccc; }
+        th, td {
+            &.vote { text-align: center; }
+        }
     }
 
     i.stateface {
         font-style: normal;
         display: inline-block;
         margin-right: 5px;
+    }
+
+    .results-statewide {
+        margin-bottom: 44px;
+
+        table { max-width: 350px; }
+    }
+
+    .results-counties {
+        .gop,
+        .ind,
+        .margin {
+            border-left: 1px solid #eee;
+        }
+
+        .leading {
+            &.dem { background-color: @demDim; }
+            &.gop { background-color: @gopDim; }
+            &.ind { background-color: @indDim; }
+        }
+        .winner {
+            color: #fff;
+
+            &.dem { background-color: @dem; }
+            &.gop { background-color: @gop; }
+            &.ind { background-color: @ind; }
+        }
+
+        th, td {
+            &.county {
+                width: 15%;
+                text-align: left;
+            }
+            &.dem,
+            &.gop,
+            &.ind {
+                width: 15%;
+            }
+            &.precincts {
+                border-right: 1px solid #ccc;
+                text-align: right;
+                font-style: italic;
+                color: #999;
+                font-size: 10px;
+                width: 5%;
+                white-space: nowrap;
+            }
+            &.comparison {
+                width: 15%;
+                border-left: 1px solid #ccc;
+            }
+        }
+
+        .featured td {
+            background-color: #f1f1f1;
+            font-weight: bold;
+
+            &.county {
+                font-weight: bold;
+                color: #333;
+            }
+            &.gop,
+            &.ind,
+            &.margin {
+                border-left-color: #dcdcdc;
+            }
+            .icon { font-size: 90%; }
+        }
+    }
+
+    .footer p {
+        margin: 2px 0 0 0;
+        font-size: 11px;
+        line-height: 1.7;
+        color: #999;
+    }
+
+    .footer {
+        margin-top: 22px;
+        p {
+            font-style: italic;
+            em { font-style: normal; }
+        }
     }
 }
