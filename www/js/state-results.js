@@ -23,7 +23,7 @@ var onWindowLoaded = function() {
         polling: 100
     });
     projector.append(resultsWrapper, renderMaquette);
-    currentState = 'nc';
+    currentState = 'oh';
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
     extraDataURL = buildDataURL('fixed-data.json');
@@ -46,23 +46,14 @@ const getExtraData = function() {
       });
 }
 
+
 const renderMaquette = function() {
-    if (data) {
-        console.log(extraData);
+    if (data, extraData) {
         console.log(data);
 
-        let trumpTotal = 0;
-        let trumpPct = 0;
-        let clintonTotal = 0;
-        let clintonPct = 0;
-        for (var fipscode in data){
-            let trump = data[fipscode][0];
-            let clinton = data[fipscode][1];
-            trumpTotal += trump.votecount;
-            clintonTotal += clinton.votecount;
-            trumpPct += trump.votepct;
-            clintonPct += clinton.votepct;
-        }
+        stateTotals(data);
+
+        const firstCounty = data[Object.keys(data)[0]];
 
         return h('div.results', ['Loaded',
           h('div.state-results', [
@@ -74,38 +65,11 @@ const renderMaquette = function() {
                 h('tr', [
                   h('th', 'Candidate'),
                   h('th', 'Votes'),
-                  h('th', 'Pct')
+                  h('th', 'Percent')
                 ])
               ]),
-              h('tr', [
-                h('td', 'Donald Trump (R)'),
-                h('td', trumpTotal),
-                h('td', trumpPct.toFixed(2) + '%')
-              ]),
-              h('tr', [
-                h('td', 'Hillary Clinton (D)'),
-                h('td', clintonTotal),
-                h('td', clintonPct.toFixed(2) + '%')
-              ])
-            ]),
-            h('h4', '2012'),
-            h('table', [
-              h('thead', [
-                h('tr', [
-                  h('th', 'Candidate'),
-                  h('th', 'Votes'),
-                  h('th', 'Pct')
-                ])
-              ]),
-              h('tr', [
-                h('td', 'Mitt Romney (R)'),
-                h('td', 'Number'),
-                h('td', 'Percent')
-              ]),
-              h('tr', [
-                h('td', 'Barack Obama (D)'),
-                h('td', 'Number'),
-                h('td', 'Percent')
+              h('tbody', [
+                Object.keys(firstCounty).map(fipscode => renderStateRow(firstCounty[fipscode]))
               ])
             ])
           ]),
@@ -135,15 +99,105 @@ const renderMaquette = function() {
     }
 }
 
+//Candidate State-wide data
+let trumpTotal = 0;
+let trumpPct = 0;
+let clintonTotal = 0;
+let clintonPct = 0;
+let mcmullinTotal = 0;
+let mcmullinPct = 0;
+let johnsonTotal = 0;
+let johnsonPct = 0;
+let steinTotal = 0;
+let steinPct = 0;
+
+const stateTotals = function(data){
+  for (var fipscode in data){
+    let trump = null;
+    let clinton = null;
+    let mcmullin = null;
+    let johnson = null;
+    let stein = null;
+
+    for (var i = 0; i < data[fipscode].length; i++){
+      let candidate = data[fipscode][i];
+      if (candidate.last == 'Trump'){
+        trump = data[fipscode][i];
+        trumpTotal += trump.votecount;
+        trumpPct += trump.votepct;
+      } else if (candidate.last == 'Clinton'){
+        clinton = data[fipscode][i];
+        clintonTotal += clinton.votecount;
+        clintonPct += clinton.votepct;
+      } else if (candidate.last == 'Johnson'){
+        johnson = data[fipscode][i];
+        johnsonTotal += johnson.votecount;
+        johnsonPct += johnson.votepct;
+      } else if (candidate.last == 'Stein'){
+        stein = data[fipscode][i];
+        steinTotal += stein.votecount;
+        steinPct += stein.votepct;
+      } else if (candidate.last == 'McMullin'){
+        mcmullin = data[fipscode][i];
+        mcmullinTotal += mcmullin.votecount;
+        mcmullinPct += mcmullin.votepct;
+      }
+    }
+  }
+}
+
+const renderStateRow = function(results){
+  let voteTotal = null;
+  let votePct = null;
+  let party = null;
+
+  if (results.last == 'Trump'){
+    voteTotal = trumpTotal;
+    votePct = trumpPct;
+    party = 'R';
+  } else if (results.last == 'Clinton'){
+    voteTotal = clintonTotal;
+    votePct = clintonPct;
+    party = 'D';
+  } else if (results.last == 'Johnson'){
+    voteTotal = johnsonTotal;
+    votePct = johnsonPct;
+    party = 'L';
+  } else if (results.last == 'Stein'){
+    voteTotal = steinTotal;
+    votePct = steinPct;
+    party = 'G';
+  } else if (results.last == 'McMullin'){
+    voteTotal = mcmullinTotal;
+    votePct = mcmullinPct;
+    party = 'I';
+  }
+
+  return h('tr', [
+    h('td', results.first + ' ' + results.last + ' (' + party + ')'),
+    h('td', voteTotal.toLocaleString()),
+    h('td', votePct.toFixed(2) + '%')
+  ])
+}
+
 const renderCountyRow = function(results){
-  const trump = results[0];
-  const clinton = results[1];
+  let trump = null;
+  let clinton = null;
+
+  for (var i = 0; i < results.length; i++){
+    let candidate = results[i];
+    if (candidate.last == 'Trump'){
+      trump = results[i];
+    } else if (candidate.last == 'Clinton'){
+      clinton = results[i];
+    }
+  }
 
   return h('tr', [
     h('td', trump.reportingunitname),
-    h('td', trump.votecount),
-    h('td', clinton.votecount),
-    h('td', extraData[trump.fipscode].winner + ' +' + extraData[trump.fipscode].advantage.toFixed(2) + '%'),
+    h('td', (trump.votepct * 100).toFixed(1) + '%'),
+    h('td', (clinton.votepct * 100).toFixed(1) + '%'),
+    h('td', extraData[trump.fipscode].winner + ' +' + (Math.round(extraData[trump.fipscode].advantage * 100))),
     h('td', extraData[trump.fipscode].unemployment + '%')
   ])
 }
