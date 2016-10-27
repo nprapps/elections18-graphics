@@ -129,7 +129,7 @@ const renderStateResults = function(results) {
         ])
       ])
     ]),
-    h('p.precincts', '10% of precincts reporting (10 of 100)')
+    h('p.precincts', + results[0].precinctsreportingpct * 100 + '% of precincts reporting (' + results[0].precinctsreporting +' of ' + results[0].precinctstotal + ')')
   ])
 }
 
@@ -155,6 +155,7 @@ const renderCountyRow = function(results, key){
 
   let trump = null;
   let clinton = null;
+  let othervotecount = 0;
   let othervotepct = 0;
 
   for (var i = 0; i < results.length; i++){
@@ -164,16 +165,29 @@ const renderCountyRow = function(results, key){
     } else if (candidate.last == 'Clinton'){
       clinton = results[i];
     } else {
+      othervotecount += candidate.votecount;
       othervotepct += candidate.votepct;
     }
   }
 
   return h('tr', [
     h('td.county', trump.reportingunitname),
-    h('td.amt.precincts', '100% in'),
-    h('td.vote.gop', (trump.votepct * 100).toFixed(1) + '%'),
-    h('td.vote.dem', (clinton.votepct * 100).toFixed(1) + '%'),
-    h('td.vote.ind', (othervotepct * 100).toFixed(1) + '%'),
+    h('td.amt.precincts', (trump.precinctsreportingpct) * 100 + '% in'),
+    h('td.vote.gop', {
+      classes: {
+        'winner': trump.votecount > clinton.votecount && trump.votecount > othervotecount && trump.precinctsreportingpct === 1
+      }
+    }, [(trump.votepct * 100).toFixed(1) + '%']),
+    h('td.vote.dem', {
+      classes: {
+        'winner': clinton.votecount > trump.votecount && clinton.votecount > othervotecount && clinton.precinctsreportingpct === 1
+      }
+    }, [(clinton.votepct * 100).toFixed(1) + '%']),
+    h('td.vote.ind', {
+      classes: {
+        'winner': othervotecount > trump.votecount && othervotecount > clinton.votecount && clinton.precinctsreportingpct === 1
+      }
+    }, (othervotepct * 100).toFixed(1) + '%'),
     h('td.vote.margin', calculateVoteMargin(trump.votepct, clinton.votepct)),
     h('td.comparison', extraData[trump.fipscode].past_margin),
   ])
