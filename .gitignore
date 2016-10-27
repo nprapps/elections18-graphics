@@ -46,6 +46,8 @@ confs/rendered/*
 www/js/rendered/*.js*
 www/board*
 www/bop*
+www/county*
+www/map*
 
 # Local data
 data/gdoc*.csv
