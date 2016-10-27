@@ -380,9 +380,6 @@ const determineResults = function(race) {
         var loopArr = race;
     } else {
         var loopArr = [race[0], race[1]];
-        if (race[0]['statepostal'] === 'AR') {
-            console.log(race[0]['last'], race[1]['last'])
-        }
     }
 
     for (var i = 0; i < loopArr.length ; i++) {
