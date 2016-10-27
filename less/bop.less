@@ -1,13 +1,32 @@
-@import "graphics-base";
+@import "variables";
 
 #bop {
+    font: 14px/1.4 @font-family-sans-serif;
+    color: #555;
+
     .chart {
         &:first-child { margin-bottom: 22px; }
 
         h3 {
-            text-align: center;
             margin: 0 0 2px 0;
+            font-family: @knockout;
+            font-weight: normal;
+            text-transform: uppercase;
+            padding-top: 0;
+            line-height: 1.2;
+            letter-spacing: 0.05em;
+            -webkit-font-smoothing: antialiased;
+            font-size: 12px;
+            color: #333;
+            text-align: center;
         }
+    }
+
+    rect {
+        &.dem   { fill: @dem; }
+        &.gop   { fill: @gop; }
+        &.other { fill: @ind; }
+        &.not-yet-called { fill: #ccc; }
     }
 
     .majority-marker {
@@ -21,10 +40,16 @@
     }
 
     .annotations {
-        font-family: 'Gotham SSm',Helvetica,Arial,sans-serif;
+        font-family: @gotham;
         font-size: 11px;
 
-        .party { font-weight: bold; }
+        .party {
+            font-weight: bold;
+
+            &.dem   { fill: @dem; }
+            &.gop   { fill: @gop; }
+            &.other { fill: @ind; }
+        }
 
         .value {
             font-size: 10px;

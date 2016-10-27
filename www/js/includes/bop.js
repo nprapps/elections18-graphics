@@ -116,23 +116,6 @@ var formatData = function() {
 
             x0 = x1;
         });
-
-        switch(d) {
-            case 'senate':
-                chamber['colorDomain'] = parties[d];
-                chamber['colorRange'] =  [ COLORS['blue2'],
-                                           COLORS['yellow3'],
-                                           '#aaa',
-                                           COLORS['red2'] ];
-                break;
-            case 'house':
-                chamber['colorDomain'] = parties[d];
-                chamber['colorRange'] =  [ COLORS['blue2'],
-                                           '#aaa',
-                                           COLORS['yellow3'],
-                                           COLORS['red2'] ];
-                break;
-        }
     });
 
     if (!isInitialized) {
@@ -258,11 +241,6 @@ var renderStackedBarChart = function(config) {
         .domain([min, max])
         .rangeRound([0, chartWidth]);
 
-    var colorScale = d3.scale.ordinal()
-        .domain(config['data'][0]['colorDomain'])
-        .range(config['data'][0]['colorRange']);
-
-
     /*
      * Create the root SVG element.
      */
@@ -304,9 +282,6 @@ var renderStackedBarChart = function(config) {
                  return Math.abs(xScale(d['x1']) - xScale(d['x0']));
              })
              .attr('height', barHeight)
-             .style('fill', function(d) {
-                 return colorScale(d['name']);
-             })
              .attr('class', function(d) {
                  return classify(d['name']);
              });
@@ -367,7 +342,6 @@ var renderStackedBarChart = function(config) {
                 .attr('style', function() {
                     var s = '';
                     s += 'text-anchor: ' + textAnchor + '; ';
-                    s += 'fill: ' + colorScale(d['name']);
                     return s;
                 });
 
@@ -380,7 +354,6 @@ var renderStackedBarChart = function(config) {
                 .attr('style', function() {
                     var s = '';
                     s += 'text-anchor: ' + textAnchor + '; ';
-                    // s += 'fill: ' + colorScale(d['name']);
                     return s;
                 });
         }
