@@ -162,25 +162,27 @@ body {
                 width: 15%;
                 text-align: left;
             }
+            &.precincts {
+                font-style: italic;
+                color: #999;
+                font-size: 10px;
+                white-space: nowrap;
+                border-right: 1px solid #ccc;
+                text-align: right;
+                width: 5%;
+            }
             &.dem,
             &.gop,
             &.ind {
                 width: 15%;
-            }
-            &.precincts {
-                border-right: 1px solid #ccc;
-                text-align: right;
-                font-style: italic;
-                color: #999;
-                font-size: 10px;
-                width: 5%;
-                white-space: nowrap;
             }
             &.comparison {
                 width: 15%;
                 border-left: 1px solid #ccc;
             }
         }
+
+        td { vertical-align: middle; }
 
         .featured td {
             background-color: #f1f1f1;
@@ -211,6 +213,45 @@ body {
         p {
             font-style: italic;
             em { font-style: normal; }
+        }
+    }
+}
+
+
+// desktop only
+@media screen and (min-width: (@screen-xs + 1)) {
+    #county-results {
+        .results-counties .results-table {
+            .precincts.mobile { display: none; }
+        }
+    }
+}
+
+// mobile only
+@media screen and (max-width: @screen-xs) {
+    #county-results {
+        .results-table {
+            th {
+                font-size: 10px;
+                padding: 0 2px 5px 2px;
+            }
+            td {
+                font-size: 11px;
+                padding: 5px 2px;
+            }
+        }
+        .results-counties .results-table {
+            th, td {
+                &.dem { border-left: 1px solid #ccc; }
+                &.precincts { display: none; }
+            }
+            .precincts.mobile {
+                display: block;
+                font-size: 9px;
+                font-style: italic;
+                color: #999;
+                white-space: nowrap;
+            }
         }
     }
 }
