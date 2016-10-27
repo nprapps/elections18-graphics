@@ -21,7 +21,7 @@ var fmtYearFull = d3.time.format('%Y');
 window.pymChild = null;
 var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
-var MOBILE_THRESHOLD = 500;
+var MOBILE_THRESHOLD = 480;
 var LOAD_INTERVAL = 20000;
 var isInitialized = false;
 var isMobile = false;
@@ -135,7 +135,6 @@ var buildDataURL = function(filename) {
  * Format data for D3.
  */
 var formatData = function() {
-    // console.log('formatData');
     _.each(electoralData, function(s, i) {
         s = s.sort(function(a, b){
             return d3.descending(a['votecount'], b['votecount']);
@@ -236,9 +235,6 @@ var formatData = function() {
         }
     });
 
-    console.log(electoralData['US'][0]['last'] + ': ' + electoralData['US'][0]['npr_electwon'] + ' | ' + electoralData['US'][1]['last'] + ': ' + electoralData['US'][1]['npr_electwon']);
-    console.log('TX:', electoralData['TX'][0]['last'], electoralData['TX'][0]['votecount'], electoralData['TX'][0]['npr_winner']);
-
     // update timestamp
     timestamp.html('(as of TKTKTK)');
 
@@ -318,8 +314,6 @@ var assignColor = function(category) {
  * Initialization
  */
 var init = function() {
-    // console.log('init');
-
     // position map labels
     positionMapLabels();
 
@@ -385,8 +379,6 @@ var render = function(containerWidth) {
  * Draw legend
  */
 var renderLegend = function() {
-    // console.log('render legend');
-
     var containerElement = d3.select('.map');
     containerElement.select('.legend').remove();
 
@@ -461,8 +453,6 @@ var renderLegend = function() {
  * Update the electoral map
  */
 var updateElectoralMap = function() {
-    // console.log('updateElectoralMap');
-
     _.each(electoralData, function(d,i) {
         var st = i;
         if (st != 'US') {

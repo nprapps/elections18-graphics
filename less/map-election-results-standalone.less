@@ -1,5 +1,60 @@
-@import "graphics-base";
+@import "variables";
 @import "navbar";
+
+html { -webkit-text-size-adjust: none; }
+
+body {
+    margin: 0;
+    padding: 0;
+    font: 14px/1.4 @font-family-sans-serif;
+    color: #555;
+}
+
+h3 {
+    font-family: @knockout;
+    font-weight: normal;
+    text-transform: uppercase;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    color: @gray-dark;
+}
+
+.footnotes {
+    margin-bottom: 20px;
+
+    h4 {
+        margin: 2px 0 7px 0;
+        color: @gray;
+        font-size: 11px;
+    }
+}
+
+.footnotes p,
+.footer p {
+    margin: 2px 0 0 0;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #999;
+}
+
+.footer p {
+    font-style: italic;
+    em { font-style: normal; }
+}
+.footnotes p strong { color: @gray; }
+
+a, a:link, a:visited {
+    color: #4774CC;
+    text-decoration: none;
+}
+
+a:hover, a:active { color: #bccae5; }
+
+svg { overflow: hidden; }
+
+.icon-ok { color: @gray; }
 
 #electoral-totals {
     width: 50%;
@@ -27,7 +82,7 @@
     h5 {
         margin: 0;
         padding: 0;
-        font-family: 'Gotham SSm',Helvetica,Arial,sans-serif;
+        font-family: @gotham;
         line-height: 1;
         font-weight: 700;
         -webkit-font-smoothing: antialiased;
@@ -52,7 +107,7 @@
             margin-right: 11px;
         }
 
-        h5 { color: @blue2; }
+        h5 { color: @dem; }
     }
 
     .trump {
@@ -63,7 +118,7 @@
             margin-left: 11px;
         }
 
-        h5 { color: @red2; }
+        h5 { color: @gop; }
     }
 
     .electoral {
@@ -96,7 +151,7 @@ text {
     pointer-events: none;
 
     .cartogram & {
-        font-family: 'Knockout 31 4r';
+        font-family: @knockout;
         font-weight: normal;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -124,24 +179,21 @@ text {
     text {
         font-size: 10.5px;
         fill: #999;
-        font-family: 'Knockout 31 4r';
+        font-family: @knockout;
         font-weight: normal;
         text-transform: uppercase;
         letter-spacing: 0.02em;
         -webkit-font-smoothing: antialiased;
 
         &.title {
-            fill: #666;
+            fill: @gray;
             letter-spacing: 0.05em;
         }
     }
 }
 
 #tooltip {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    .unselectable;
     pointer-events: none;
     position: absolute;
     padding: 8px 8px 5px 8px;
@@ -156,7 +208,7 @@ text {
         font-size: 11px;
         margin: 0 0 3px 0;
 
-        span { color: #666; }
+        span { color: @gray; }
     }
     table {
         width: 100%;
@@ -194,19 +246,16 @@ text {
         margin-right: 4px;
         margin-top: 5px;
 
-        &.dem { background-color: @blue2; }
-        &.gop { background-color: @red2; }
-        &.ind { background-color: @yellow3; }
+        &.dem { background-color: @dem; }
+        &.gop { background-color: @gop; }
+        &.ind { background-color: @ind; }
     }
-    .icon-ok {
-        margin-left: 3px;
-        color: #666;
-    }
+    .icon-ok { margin-left: 3px; }
 }
 
 
 // screen size-specific
-@media screen and (min-width: 501px) {
+@media screen and (min-width: (@screen-xs + 1)) {
     #electoral-totals { font-size: 10px; }
 
     .cartogram text {
@@ -225,11 +274,11 @@ text {
     #county-selector { display: none; }
 }
 
-@media screen and (min-width: 601px) {
+@media screen and (min-width: @screen-sm) {
     #electoral-totals { font-size: 12px; }
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: @screen-xs) {
     .cartogram text {
         font-size: 17px;
 

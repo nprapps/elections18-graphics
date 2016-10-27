@@ -8,7 +8,11 @@ var COLORS = {
     'yellow1': '#77631B', 'yellow2': '#B39429', 'yellow3': '#EFC637', 'yellow4': '#F3D469', 'yellow5': '#F7E39B', 'yellow6': '#FBF1CD',
     'teal1': '#0B403F', 'teal2': '#11605E', 'teal3': '#17807E', 'teal4': '#51A09E', 'teal5': '#8BC0BF', 'teal6': '#C5DFDF',
     'blue1': '#28556F', 'blue2': '#3D7FA6', 'blue3': '#51AADE', 'blue4': '#7DBFE6', 'blue5': '#A8D5EF', 'blue6': '#D3EAF7',
-    'gray1': '#333', 'gray2': '#666', 'gray3': '#999', 'gray4': '#AAA', 'gray5': '#CCC', 'gray6': '#F1F1F1'
+    'gray1': '#333', 'gray2': '#666', 'gray3': '#999', 'gray4': '#AAA', 'gray5': '#CCC', 'gray6': '#F1F1F1',
+
+    'gop': '#e61e1d', 'gopDim2': '#f8babb',
+    'dem': '#4167b0', 'demDim2': '#c5d1e7',
+    'ind': '#319269', 'indDim2': '#c3e1d2'
 };
 
 /*
