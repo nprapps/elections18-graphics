@@ -74,6 +74,7 @@ const sortData = function(resultsData) {
             })
         }
     }
+
     return resultsData
 }
 
@@ -281,7 +282,7 @@ const renderRace = function(race, key) {
         var change = true
     }
 
-    if (result1['precinctsreporting'] > 0) {
+    if (result1['precinctsreportingpct'] > 0) {
         var reporting = true;
     }
 
@@ -375,13 +376,25 @@ const renderRace = function(race, key) {
 const determineResults = function(race) {
     let result1;
     let result2;
-    for (var i = 0; i <= 1; i++) {
-        var results = [race[0], race[1]];
-        var result = results[i];
+    if (race[0]['precinctsreportingpct'] <= 0) {
+        var loopArr = race;
+    } else {
+        var loopArr = [race[0], race[1]];
+        if (race[0]['statepostal'] === 'AR') {
+            console.log(race[0]['last'], race[1]['last'])
+        }
+    }
+
+    for (var i = 0; i < loopArr.length ; i++) {
+        var result = loopArr[i];
         if (result['party'] === 'Dem' && !result1) {
-            result1 = race[i];
+            result1 = result;
         } else if (result['party'] === 'GOP' && !result2) {
-            result2 = race[i];
+            result2 = result;
+        }
+
+        if (result1 && result2) {
+            break;
         }
     }
 
