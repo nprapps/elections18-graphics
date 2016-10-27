@@ -12,7 +12,7 @@ let extraDataURL = null;
 let currentState = null;
 let lastRequestTime = null;
 let pymChild = null;
-
+let selectedFilter = 'population';
 
 /*
 * Initialize the graphic.
@@ -56,34 +56,17 @@ const renderMaquette = function() {
         });
 
         let stateName = stateResults[0].statename;
+        let statepostal = stateResults[0].statepostal;
 
         return h('div.results', [
-          h('h1', stateName),
-          h('p', 'Blah blah blah'),
-          h('div.results-statewide', [
-            h('h2', 'STATEWIDE RESULTS'),
-            h('p', 'Tell them about the state history and stuff here.'),
-            h('table.results-table', [
-              h('thead', [
-                h('tr', [
-                  h('th.candidate', 'Candidate'),
-                  h('th.amt', 'Votes'),
-                  h('th.amt', 'Percent')
-                ])
-              ]),
-              h('tbody', [
-                sortedStateResults.map(result => renderStateRow(result))
-              ]),
-              h('tfoot', [
-                h('tr', [
-                  h('td.candidate', 'Total'),
-                  h('td.amt', 'NUMBER'),
-                  h('td.amt', '100%')
-                ])
-              ])
-            ]),
-            h('p.precincts', '10% of precincts reporting (10 of 100)')
+          h('h1', [
+            stateName, 
+            h('i.stateface', {
+              class: 'stateface-' + statepostal.toLowerCase()
+            })
           ]),
+          h('p', 'Battleground rating: Toss-Up'),
+          renderStateResults(sortedStateResults),
           h('div.results-counties', [
             h('h2', 'COUNTIES TO WATCH'),
             h('p', 'Lorem Ipsum blah blah blah'),
@@ -124,9 +107,42 @@ const renderMaquette = function() {
     }
 }
 
-const renderStateRow = function(result){
+const renderStateResults = function(results) {
+  return h('div.results-statewide', [
+    h('h2', 'STATEWIDE RESULTS'),
+    h('p', 'Tell them about the state history and stuff here.'),
+    h('table.results-table', [
+      h('thead', [
+        h('tr', [
+          h('th.candidate', 'Candidate'),
+          h('th.amt', 'Votes'),
+          h('th.amt', 'Percent')
+        ])
+      ]),
+      h('tbody', [
+        results.map(result => renderStateRow(result))
+      ]),
+      h('tfoot', [
+        h('tr', [
+          h('td.candidate', 'Total'),
+          h('td.amt', 'NUMBER'),
+          h('td.amt', '100%')
+        ])
+      ])
+    ]),
+    h('p.precincts', '10% of precincts reporting (10 of 100)')
+  ])
+}
 
-  return h('tr', [
+const renderStateRow = function(result){
+  return h('tr', {
+    classes: {
+      'winner': result['npr_winner'],
+      'dem': result['npr_winner'] && result['party'] === 'Dem',
+      'gop': result['npr_winner'] && result['party'] === 'GOP',
+      'ind': result['npr_winner'] && result['party'] === 'Ind'
+    }
+  }, [
     h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
     h('td.amt', result.votecount.toLocaleString()),
     h('td.amt', (result.votepct * 100).toFixed(2) + '%')
