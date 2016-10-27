@@ -18,8 +18,7 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
-var DATA_URL = '../data/top-level-results.json';
-// var DATA_URL = '/elections16/data/top-level-results.json';
+var DATA_FILE = 'top-level-results.json';
 
 var CONGRESS = {
     'senate': {
@@ -60,8 +59,8 @@ var onWindowLoaded = function() {
  */
 var loadData = function() {
     clearInterval(reloadData);
-    console.log('loadData: ' + DATA_URL);
-    d3.json(DATA_URL, function(error, data) {
+    console.log('loadData: ' + DATA_FILE);
+    d3.json(buildDataURL(DATA_FILE), function(error, data) {
         if (error) {
             console.warn(error);
         }
@@ -70,6 +69,17 @@ var loadData = function() {
         formatData();
     });
 }
+
+var buildDataURL = function(filename) {
+    if (document.location.hostname === '127.0.0.1' ||
+        document.location.hostname === 'localhost' ||
+        document.location.hostname === '0.0.0.0') {
+        return document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/data/' + filename;
+    } else {
+        return document.location.protocol + '//' + document.location.hostname + '/elections16/data/' + filename;
+    }
+}
+
 
 /*
  * Format graphic data for processing by D3.
