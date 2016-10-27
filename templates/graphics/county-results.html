@@ -1,0 +1,238 @@
+{% extends '_base_child.html' %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div id="county-results">
+    <h1>Arizona <i class="stateface stateface-az"></i></h1>
+    <p class="battleground">Battleground rating: Toss-Up</p>
+
+    <div class="results-statewide">
+        <h2>{{ COPY.content.hed_state_results }}</h2>
+        <p>Arizona has gone Republican in every presidential election but one since 1952. It last went Democratic in 1996 during Bill Clinton's reelection &mdash; and only by a point. So what makes this year different? Demographics and Trump. Arizona's high &mdash; and growing &mdash; Hispanic population (30% overall but just 18% of voters in 2012) has made Democrats think it's a state it could eventually pick off. With Trump's rhetoric toward Latinos and immigrants, they are organizing to try and make this the year it flips. Polls have shown a close race, and both of the state's senators &mdash; John McCain and Jeff Flake &mdash; are not backing Trump. Still, this is the state where conservatives won controversial battles over immigration and is home to a strong tea party contingent and Maricopa County Sheriff Joe Arpaio, who has continued his conspiracy quest falsely questioning President Obama's birth. (For the record, Obama was born in Hawaii.)</p>
+
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th class="candidate">Candidate</th>
+                    <th class="amt">Votes</th>
+                    <th class="amt">Percent</th>
+                </tr>
+            </thead>
+            <tr class="winner ind">
+                <td class="candidate">Evan McMullin (I)&nbsp;<i class="icon icon-ok"></i></td>
+                <td class="amt">10,000</td>
+                <td class="amt">27.8%</td>
+            </tr>
+            <tr class="gop">
+                <td class="candidate">Donald Trump (R)</td>
+                <td class="amt">10,000</td>
+                <td class="amt">27.8%</td>
+            </tr>
+            <tr class="dem">
+                <td class="candidate">Hillary Clinton (D)</td>
+                <td class="amt">5,000</td>
+                <td class="amt">13.9%</td>
+            </tr>
+            <tr class="ind">
+                <td class="candidate">Gary Johnson (L)</td>
+                <td class="amt">5,000</td>
+                <td class="amt">13.9%</td>
+            </tr>
+            <tr class="ind">
+                <td class="candidate">Jill Stein (G)</td>
+                <td class="amt">5,000</td>
+                <td class="amt">13.9%</td>
+            </tr>
+            <tr>
+                <td class="candidate">Other</td>
+                <td class="amt">1,000</td>
+                <td class="amt">3.8%</td>
+            </tr>
+            <tfoot>
+                <tr>
+                    <td class="candidate">Total</td>
+                    <td class="amt">36,000</td>
+                    <td class="amt">100%</td>
+                </tr>
+            </tfoot>
+        </table>
+        <p class="precincts">10% of precincts reporting (10 of 100)</p>
+    </div>
+
+    <div class="results-counties">
+        <h2>{{ COPY.content.hed_county_results }}</h2>
+        <p>In the past three presidential elections, Arizona has consistently had four Democratic counties (Apache, Coconino, Pima and Santa Cruz) and 11 Republican ones (Cochise, Gila, Graham, Greenlee, La Paz, Maricopa, Mohave, Navajo, Pinal, Yavapai and Yuma). The main county to watch is <span class="featured">Maricopa (Phoenix)&nbsp;<i class="icon icon-star"></i></span> and the most populous county in the state by far. 60% of the state’s voters live there, and it had more than 455,000 voters in it in 2012 than every other county combined. It went for Romney 54%-43%, nearly reflecting the overall margin. If Clinton is to win Arizona, she’d have to do better than Obama did in Maricopa. Also watch: <span class="featured">Pima (Tucson)&nbsp;<i class="icon icon-star"></i></span>. Obama won it 53%-46%.</p>
+
+        <ul class="sorter">
+            <li class="label">Sort Counties By</li>
+            <li class="metric">Population</li>
+            <li class="metric selected">2012 Results</li>
+            <li class="metric">Unemployment</li>
+            <li class="metric">% White</li>
+            <li class="metric">% Black</li>
+            <li class="metric">% Hispanic</li>
+            <li class="metric">Median Income</li>
+            <li class="metric">Foreclosure Rate</li>
+            <li class="metric">% College-Educated</li>
+        </ul>
+
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th class="county">County</th>
+                    <th class="amt precincts">&nbsp;</th>
+                    <th class="vote candidate dem">Clinton</th>
+                    <th class="vote candidate gop">Trump</th>
+                    <th class="vote candidate ind">Other</th>
+                    <th class="vote margin">2016 Margin</th>
+                    <th class="comparison">2012 result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- add "winner" flag if precincts = 100% -->
+                <!-- add "leading" flag if precincts < 100% -->
+                <tr class="featured">
+                    <td class="county">Maricopa&nbsp;<i class="icon icon-star"></i></td>
+                    <td class="amt precincts">100% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote winner gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin gop">R +1</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Pinal</td>
+                    <td class="amt precincts">10% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">-</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Yavapai</td>
+                    <td class="amt precincts">10% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">-</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Mohave</td>
+                    <td class="amt precincts">100% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote winner gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin gop">R +1</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Yuma</td>
+                    <td class="amt precincts">10% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">-</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Coconino</td>
+                    <td class="amt precincts">100% in</td>
+                    <td class="vote winner dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">D +1</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Cochise</td>
+                    <td class="amt precincts">100% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote winner ind">20%</td>
+                    <td class="vote margin ind">I +1</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Navajo</td>
+                    <td class="amt precincts">10% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">-</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Apache</td>
+                    <td class="amt precincts">10% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">-</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Gila</td>
+                    <td class="amt precincts">10% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">-</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Santa Cruz</td>
+                    <td class="amt precincts">10% in</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">-</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Graham</td>
+                    <td class="amt precincts">100%</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote winner gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">R +1</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr>
+                    <td class="county">La Paz</td>
+                    <td class="amt precincts">10%</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote winner gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">R +1</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+                <tr class="featured">
+                    <td class="county">Pima&nbsp;<i class="icon icon-star"></i></td>
+                    <td class="amt precincts">100% in</td>
+                    <td class="vote winner dem">40%</td>
+                    <td class="vote gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin dem">D +1</td>
+                    <td class="comparison">D +5</td>
+                </tr>
+                <tr>
+                    <td class="county">Greenlee</td>
+                    <td class="amt precincts">10%</td>
+                    <td class="vote dem">40%</td>
+                    <td class="vote winner gop">40%</td>
+                    <td class="vote ind">20%</td>
+                    <td class="vote margin">R +1</td>
+                    <td class="comparison">R +5</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Sources: {{ COPY.content.source_county_data }}</p>
+    </div>
+</div>
+{% endblock %}

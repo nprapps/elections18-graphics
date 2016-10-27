@@ -5,23 +5,6 @@ body {
     padding: 0;
 }
 
-// Mixins
-.clearfix() {
-    &:before,
-    &:after {
-        content: " ";
-        display: table;
-    }
-    &:after { clear: both; }
-}
-
-.unselectable {
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
 .results-wrapper {
     font: 14px/1.4 Helvetica, Arial, sans-serif;
 
