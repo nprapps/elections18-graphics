@@ -1,7 +1,7 @@
 import maquette from 'maquette';
 import request from 'superagent';
 
-const resultsWrapper = document.querySelector('.results-wrapper');
+const resultsWrapper = document.querySelector('#county-results');
 const projector = maquette.createProjector();
 const h = maquette.h;
 
@@ -23,7 +23,7 @@ var onWindowLoaded = function() {
         polling: 100
     });
     projector.append(resultsWrapper, renderMaquette);
-    currentState = 'pa';
+    currentState = 'tx';
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
     const extraDataFilename = 'extra_data/' + currentState + '-extra.json'
@@ -55,7 +55,7 @@ const renderMaquette = function() {
           return b['votecount'] - a['votecount'];
         });
 
-        let stateName = stateResults.statename;
+        let stateName = stateResults[0].statename;
 
         return h('div.results', [
           h('h1', stateName),
