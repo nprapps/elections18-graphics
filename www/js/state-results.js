@@ -23,10 +23,11 @@ var onWindowLoaded = function() {
         polling: 100
     });
     projector.append(resultsWrapper, renderMaquette);
-    currentState = 'oh';
+    currentState = 'pa';
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
-    extraDataURL = buildDataURL('fixed-data.json');
+    const extraDataFilename = '/extra_data/' + currentState + '-extra.json'
+    extraDataURL = buildDataURL(extraDataFilename);
     getExtraData();
     getData();
 }
@@ -197,7 +198,7 @@ const renderCountyRow = function(results){
     h('td', trump.reportingunitname),
     h('td', (trump.votepct * 100).toFixed(1) + '%'),
     h('td', (clinton.votepct * 100).toFixed(1) + '%'),
-    h('td', extraData[trump.fipscode].winner + ' +' + (Math.round(extraData[trump.fipscode].advantage * 100))),
+    h('td', extraData[trump.fipscode].past_margin),
     h('td', extraData[trump.fipscode].unemployment + '%')
   ])
 }
