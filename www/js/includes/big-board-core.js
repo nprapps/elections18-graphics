@@ -297,8 +297,8 @@ const renderRace = function(race, key) {
         h('td.pickup', {
             classes: {
                 'winner': winningResult,
-                'dem': winningResult && winningResult['party'] === 'dem',
-                'gop': winningResult && winningResult['party'] === 'gop'
+                'dem': winningResult && winningResult['party'] === 'Dem',
+                'gop': winningResult && winningResult['party'] === 'GOP'
             }
         }, [
             insertRunoffImage(race)
