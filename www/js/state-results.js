@@ -92,7 +92,6 @@ const renderMaquette = function() {
                   h('th.vote.candidate.ind', 'Other'),
                   h('th.vote.margin', '2016 Margin'),
                   h('th.comparison', '2012 Result'),
-                  h('th.unemployment', 'Unemployment Rate')
                 ])
               ]),
               Object.keys(data).map(key => renderCountyRow(data[key], key))
@@ -177,7 +176,6 @@ const renderCountyRow = function(results, key){
     h('td.vote.ind', (othervotepct * 100).toFixed(1) + '%'),
     h('td.vote.margin', calculateVoteMargin(trump.votepct, clinton.votepct)),
     h('td.comparison', extraData[trump.fipscode].past_margin),
-    h('td.unemployment', extraData[trump.fipscode].unemployment + '%')
   ])
 }
 
