@@ -284,7 +284,7 @@ const renderRace = function(race, key) {
         var change = true
     }
 
-    if (result1['precinctsreportingpct'] > 0) {
+    if (result1['votecount'] > 0 || result2['votecount'] > 0) {
         var reporting = true;
     }
 
@@ -311,8 +311,6 @@ const renderRace = function(race, key) {
                 'winner': winningResult,
                 'dem': winningResult && winningResult['party'] === 'Dem',
                 'gop': winningResult && winningResult['party'] === 'GOP',
-                'yes': result1['party'] === 'Yes',
-                'no': result1['party'] === 'No',
                 'ind': winningResult && coloredParties.indexOf(winningResult['party']) < 0
             }
         }, [
