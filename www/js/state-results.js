@@ -22,8 +22,14 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
+    pymChild.onMessage('state-selected', changeState)
+
     projector.append(resultsWrapper, renderMaquette);
-    currentState = 'tx';
+}
+
+const changeState = function(state) {
+    currentState = state;
+
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
     const extraDataFilename = 'extra_data/' + currentState + '-extra.json'
@@ -42,9 +48,9 @@ const getData = function() {
 
 const getExtraData = function() {
     request.get(extraDataURL)
-      .end(function(err, res) {
-        extraData = res.body;
-      });
+        .end(function(err, res) {
+            extraData = res.body;
+        });
 }
 
 
