@@ -89,12 +89,11 @@ const changeState = function(state) {
 
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
-    const extraDataFilename = 'extra_data/' + currentState + '-extra.json'
-    extraDataURL = buildDataURL(extraDataFilename);
+    extraDataURL = '../data/extra_data/' + currentState + '-extra.json'
     getExtraData();
     getData();
 
-    setTimeout(getData, 5000);
+    setInterval(getData, 5000);
 }
 
 const getData = function() {
