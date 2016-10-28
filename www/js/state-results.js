@@ -78,6 +78,7 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
+    pymChild.sendMessage('child-loaded', 'ready');
     pymChild.onMessage('state-selected', changeState)
 
     projector.append(resultsWrapper, renderMaquette);
@@ -123,12 +124,15 @@ const sortCountyResults = function() {
 
     values.sort(function(a, b) {
         if (sortMetric['key'] === 'past_margin') {
+            // always put Democratic wins on top
             if (a[1][0] === 'D' && b[1][0] === 'R') return -1;
             if (a[1][0] === 'R' && b[1][0] === 'D') return 1;
 
             const aMargin = parseInt(a[1].split('+')[1]);
             const bMargin = parseInt(b[1].split('+')[1]);
 
+            // if Republican, sort in ascending order
+            // if Democratic, sort in descending order
             if (a[1][0] === 'R') {
                 return aMargin - bMargin;            
             } else {
@@ -150,12 +154,11 @@ const renderMaquette = function() {
           return b['votecount'] - a['votecount'];
         });
 
-        let stateName = stateResults[0].statename;
-        let statepostal = stateResults[0].statepostal;
+        const stateName = stateResults[0].statename;
+        const statepostal = stateResults[0].statepostal;
+        const statefaceClass = 'stateface-' + statepostal.toLowerCase();
 
         const sortKeys = sortCountyResults();
-
-        const statefaceClass = 'stateface-' + statepostal.toLowerCase();
 
         return h('div.results', [
           h('h1', [
@@ -173,30 +176,7 @@ const renderMaquette = function() {
             h('p', 'Lorem Ipsum blah blah blah'),
             h('ul.sorter', [
               h('li.label', 'Sort Counties By'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, 'Population'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, '2012 Results'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, 'Unemployment'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, '% White'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, '% Black'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, '% Hispanic'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, 'Median Income'),
-              h('li.metric', {
-                onclick: onMetricClick
-              }, '% College-Educated'),
+              availableMetrics.map(metric => renderMetricLi(metric))
             ]),
             h('table.results-table', [
               h('thead', [
@@ -262,6 +242,16 @@ const renderStateRow = function(result){
     h('td.amt', result.votecount.toLocaleString()),
     h('td.amt', (result.votepct * 100).toFixed(2) + '%')
   ])
+}
+
+const renderMetricLi = function(metric) {
+    return h('li.metric', {
+      onclick: onMetricClick,
+      classes: {
+        'selected': metric === sortMetric
+      }
+    }, [metric['name']])
+
 }
 
 const renderCountyRow = function(results, key){
