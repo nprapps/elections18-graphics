@@ -56,6 +56,7 @@ const getExtraData = function() {
 
 const renderMaquette = function() {
     if (data, extraData) {
+        console.log(data);
         const stateResults = data['state'];
         const sortedStateResults = stateResults.sort(function(a, b) {
           return b['votecount'] - a['votecount'];
@@ -66,7 +67,7 @@ const renderMaquette = function() {
 
         return h('div.results', [
           h('h1', [
-            stateName, 
+            stateName,
             h('i.stateface', {
               class: 'stateface-' + statepostal.toLowerCase()
             })
