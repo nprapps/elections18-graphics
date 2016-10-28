@@ -72,6 +72,9 @@ let lastRequestTime = null;
 let sortMetric = availableMetrics[0];
 let descriptions = null;
 let keyCounties = null;
+let stateTotalVotes = 0;
+
+
 window.pymChild = null;
 /*
 * Initialize the graphic.
@@ -216,6 +219,7 @@ const renderMaquette = function() {
 }
 
 const renderStateResults = function(results) {
+  stateTotalVotes = 0;
   return h('div.results-statewide', [
     h('h2', 'Statewide Results'),
     h('p', [
@@ -235,7 +239,7 @@ const renderStateResults = function(results) {
       h('tfoot', [
         h('tr', [
           h('td.candidate', 'Total'),
-          h('td.amt', 'NUMBER'),
+          h('td.amt', stateTotalVotes.toLocaleString()),
           h('td.amt', '100%')
         ])
       ])
@@ -245,6 +249,8 @@ const renderStateResults = function(results) {
 }
 
 const renderStateRow = function(result){
+  stateTotalVotes += parseInt(result.votecount);
+
   return h('tr', {
     classes: {
       'winner': result['npr_winner'],
