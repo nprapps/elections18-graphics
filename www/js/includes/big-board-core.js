@@ -1,7 +1,6 @@
 // npm libraries
 import maquette from 'maquette';
 import request from 'superagent';
-import navbar from '../includes/navbar.js';
 
 // global vars
 let dataURL = null;

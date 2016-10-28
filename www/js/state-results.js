@@ -69,11 +69,10 @@ let dataURL = null;
 let extraDataURL = null;
 let currentState = null;
 let lastRequestTime = null;
-let pymChild = null;
 let sortMetric = availableMetrics[0];
 let descriptions = null;
 let keyCounties = null;
-
+window.pymChild = null;
 /*
 * Initialize the graphic.
 */
