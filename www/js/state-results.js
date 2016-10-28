@@ -93,6 +93,8 @@ const changeState = function(state) {
     extraDataURL = buildDataURL(extraDataFilename);
     getExtraData();
     getData();
+
+    setTimeout(getData, 5000);
 }
 
 const getData = function() {
