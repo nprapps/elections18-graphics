@@ -1,6 +1,7 @@
 import maquette from 'maquette';
 import request from 'superagent';
 import commaNumber from 'comma-number';
+import navbar from '../js/includes/navbar.js';
 
 const resultsWrapper = document.querySelector('#county-results');
 const projector = maquette.createProjector();
@@ -226,7 +227,7 @@ const renderStateResults = function(results) {
         ])
       ])
     ]),
-    h('p.precincts', + results[0].precinctsreportingpct * 100 + '% of precincts reporting (' + results[0].precinctsreporting +' of ' + results[0].precinctstotal + ')')
+    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + results[0].precinctsreporting +' of ' + results[0].precinctstotal + ')'])
   ])
 }
 
@@ -301,7 +302,7 @@ const renderCountyRow = function(results, key){
 
   return h('tr', [
     h('td.county', trump.reportingunitname),
-    h('td.amt.precincts', (trump.precinctsreportingpct) * 100 + '% in'),
+    h('td.amt.precincts', [(trump.precinctsreportingpct * 100).toFixed(1) + '% in']),
     h('td.vote.gop', {
       classes: {
         'winner': trump.votecount > clinton.votecount && trump.votecount > othervotecount && trump.precinctsreportingpct === 1

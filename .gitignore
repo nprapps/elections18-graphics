@@ -48,6 +48,7 @@ www/board*
 www/bop*
 www/county*
 www/map*
+www/state*
 
 # Local data
 data/gdoc*.csv
