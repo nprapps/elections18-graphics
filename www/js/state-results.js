@@ -158,17 +158,17 @@ const renderMaquette = function() {
 
         const stateName = stateResults[0].statename;
         const statepostal = stateResults[0].statepostal;
-        const statefaceClass = 'stateface-' + statepostal.toLowerCase();
 
         const sortKeys = sortCountyResults();
 
+        const statefaceClass = 'stateface-' + statepostal.toLowerCase();
+
         return h('div.results', [
           h('h1', [
-            stateName, 
+            stateName,
+            ' ', 
             h('i.stateface', {
-                classes:  {
-                    statefaceClass: true
-                }
+                class: statefaceClass
             })
           ]),
           h('p', 'Battleground rating: Toss-Up'),
