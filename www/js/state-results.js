@@ -1,9 +1,65 @@
 import maquette from 'maquette';
 import request from 'superagent';
+import commaNumber from 'comma-number';
 
 const resultsWrapper = document.querySelector('#county-results');
 const projector = maquette.createProjector();
 const h = maquette.h;
+
+const availableMetrics = [
+    {
+        'name': 'Population',
+        'key': 'population',
+        'census': true,
+        'comma_filter': true
+    },
+    {
+        'name': '2012 Results',
+        'key': 'past_margin',
+        'census': false
+    },
+    {
+        'name': 'Unemployment',
+        'key': 'unemployment',
+        'census': false,
+        'append': '%'
+    },
+    {
+        'name': '% White',
+        'key': 'percent_white',
+        'census': true,
+        'percent_filter': true,
+        'append': '%'
+    },
+    {
+        'name': '% Black',
+        'key': 'percent_black',
+        'census': true,
+        'percent_filter': true,
+        'append': '%'
+    },
+    {
+        'name': '% Hispanic',
+        'key': 'percent_hispanic',
+        'census': true,
+        'percent_filter': true,
+        'append': '%'
+    },
+    {
+        'name': 'Median Income',
+        'key': 'median_income',
+        'census': true,
+        'comma_filter': true,
+        'prepend': '$'
+    },
+    {
+        'name': '% College-Educated',
+        'key': 'percent_bachelors',
+        'census': true,
+        'percent_filter': true,
+        'append': '%'
+    },
+]
 
 let data = null;
 let extraData = null;
@@ -12,7 +68,7 @@ let extraDataURL = null;
 let currentState = null;
 let lastRequestTime = null;
 let pymChild = null;
-let selectedFilter = 'population';
+let sortMetric = availableMetrics[0];
 
 /*
 * Initialize the graphic.
@@ -53,6 +109,39 @@ const getExtraData = function() {
         });
 }
 
+const sortCountyResults = function() {
+    let values = []
+
+    for (let fipscode in extraData) {
+        if (sortMetric['census']) {
+            var sorter = extraData[fipscode].census[sortMetric['key']];
+        } else {
+            var sorter = extraData[fipscode][sortMetric['key']];
+        }
+        values.push([fipscode, sorter]);
+    }
+
+    values.sort(function(a, b) {
+        if (sortMetric['key'] === 'past_margin') {
+            if (a[1][0] === 'D' && b[1][0] === 'R') return -1;
+            if (a[1][0] === 'R' && b[1][0] === 'D') return 1;
+
+            const aMargin = parseInt(a[1].split('+')[1]);
+            const bMargin = parseInt(b[1].split('+')[1]);
+
+            if (a[1][0] === 'R') {
+                return aMargin - bMargin;            
+            } else {
+                return bMargin - aMargin;  
+            }
+        }
+
+        return b[1] - a[1];
+    })
+
+    return values;
+}
+
 
 const renderMaquette = function() {
     if (data, extraData) {
@@ -64,29 +153,50 @@ const renderMaquette = function() {
         let stateName = stateResults[0].statename;
         let statepostal = stateResults[0].statepostal;
 
+        const sortKeys = sortCountyResults();
+
+        const statefaceClass = 'stateface-' + statepostal.toLowerCase();
+
         return h('div.results', [
           h('h1', [
             stateName, 
             h('i.stateface', {
-              class: 'stateface-' + statepostal.toLowerCase()
+                classes:  {
+                    statefaceClass: true
+                }
             })
           ]),
           h('p', 'Battleground rating: Toss-Up'),
           renderStateResults(sortedStateResults),
           h('div.results-counties', [
-            h('h2', 'COUNTIES TO WATCH'),
+            h('h2', 'Counties To Watch'),
             h('p', 'Lorem Ipsum blah blah blah'),
             h('ul.sorter', [
               h('li.label', 'Sort Counties By'),
-              h('li.metric', 'Population'),
-              h('li.metric', '2012 Results'),
-              h('li.metric', 'Unemployment'),
-              h('li.metric', '% White'),
-              h('li.metric', '% Black'),
-              h('li.metric', '% Hispanic'),
-              h('li.metric', 'Median Income'),
-              h('li.metric', 'Foreclosure Rate'),
-              h('li.metric', '% College-Educated'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, 'Population'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, '2012 Results'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, 'Unemployment'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, '% White'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, '% Black'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, '% Hispanic'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, 'Median Income'),
+              h('li.metric', {
+                onclick: onMetricClick
+              }, '% College-Educated'),
             ]),
             h('table.results-table', [
               h('thead', [
@@ -97,10 +207,10 @@ const renderMaquette = function() {
                   h('th.vote.candidate.dem', 'Clinton'),
                   h('th.vote.candidate.ind', 'Other'),
                   h('th.vote.margin', '2016 Margin'),
-                  h('th.comparison', '2012 Result'),
+                  h('th.comparison', sortMetric['name']),
                 ])
               ]),
-              Object.keys(data).map(key => renderCountyRow(data[key], key))
+              sortKeys.map(key => renderCountyRow(data[key[0]], key[0]))
             ])
           ]),
           h('div.footer', [
@@ -114,7 +224,7 @@ const renderMaquette = function() {
 
 const renderStateResults = function(results) {
   return h('div.results-statewide', [
-    h('h2', 'STATEWIDE RESULTS'),
+    h('h2', 'Statewide Results'),
     h('p', 'Tell them about the state history and stuff here.'),
     h('table.results-table', [
       h('thead', [
@@ -176,6 +286,28 @@ const renderCountyRow = function(results, key){
     }
   }
 
+  if (sortMetric['census']) {
+    var extraMetric = extraData[trump.fipscode].census[sortMetric['key']]
+  } else {
+    var extraMetric = extraData[trump.fipscode][sortMetric['key']]
+  }
+
+  if (sortMetric['comma_filter']) {
+    extraMetric = commaNumber(extraMetric);
+  }
+
+  if (sortMetric['percent_filter']) {
+    extraMetric = (extraMetric * 100).toFixed(1);
+  }
+
+  if (sortMetric['prepend']) {
+    extraMetric = sortMetric['prepend'] + extraMetric;
+  }
+
+  if (sortMetric['append']) {
+    extraMetric = extraMetric + sortMetric['append'];
+  }
+
   return h('tr', [
     h('td.county', trump.reportingunitname),
     h('td.amt.precincts', (trump.precinctsreportingpct) * 100 + '% in'),
@@ -195,7 +327,7 @@ const renderCountyRow = function(results, key){
       }
     }, (othervotepct * 100).toFixed(1) + '%'),
     h('td.vote.margin', calculateVoteMargin(trump.votepct, clinton.votepct)),
-    h('td.comparison', extraData[trump.fipscode].past_margin),
+    h('td.comparison', extraMetric),
   ])
 }
 
@@ -206,7 +338,14 @@ const calculateVoteMargin = function(trump, clinton) {
   } else {
     return 'R +' + Math.round(Math.abs(difference) * 100);
   }
+}
 
+const onMetricClick = function(e) {
+    for (var i = 0; i < availableMetrics.length; i++) {
+        if (availableMetrics[i]['name'] === e.target.innerHTML) {
+            sortMetric = availableMetrics[i];
+        }
+    }
 }
 
 /*
