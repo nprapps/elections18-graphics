@@ -2,6 +2,7 @@ import maquette from 'maquette';
 import request from 'superagent';
 import commaNumber from 'comma-number';
 import navbar from '../js/includes/navbar.js';
+import briefingData from '../data/extra_data/state-briefings.json'
 
 const resultsWrapper = document.querySelector('#county-results');
 const projector = maquette.createProjector();
@@ -70,6 +71,8 @@ let currentState = null;
 let lastRequestTime = null;
 let pymChild = null;
 let sortMetric = availableMetrics[0];
+let descriptions = null;
+let keyCounties = null;
 
 /*
 * Initialize the graphic.
@@ -87,12 +90,18 @@ var onWindowLoaded = function() {
 
 const changeState = function(state) {
     currentState = state;
+    descriptions = briefingData.descriptions.find(function(el) {
+      return el.state_postal === currentState;
+    });
+    keyCounties = briefingData.key_counties.filter(function(el) {
+      return el.state === currentState;
+    });
 
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
     extraDataURL = '../data/extra_data/' + currentState + '-extra.json'
-    getExtraData();
     getData();
+    getExtraData();
 
     setInterval(getData, 5000);
 }
@@ -171,11 +180,14 @@ const renderMaquette = function() {
                 class: statefaceClass
             })
           ]),
-          h('p', 'Battleground rating: Toss-Up'),
+          h('p', [
+            'Battleground rating: ',
+            descriptions.rating
+          ]),
           renderStateResults(sortedStateResults),
           h('div.results-counties', [
             h('h2', 'Counties To Watch'),
-            h('p', 'Lorem Ipsum blah blah blah'),
+            h('p', descriptions.county_desc ? descriptions.county_desc : ''),
             h('ul.sorter', [
               h('li.label', 'Sort Counties By'),
               availableMetrics.map(metric => renderMetricLi(metric))
@@ -200,14 +212,16 @@ const renderMaquette = function() {
           ])
         ]);
     } else {
-        return h('div.results');
+        return h('div.results', 'Loading...');
     }
 }
 
 const renderStateResults = function(results) {
   return h('div.results-statewide', [
     h('h2', 'Statewide Results'),
-    h('p', 'Tell them about the state history and stuff here.'),
+    h('p', [
+      descriptions.state_desc ? descriptions.state_desc : ''
+    ]),
     h('table.results-table', [
       h('thead', [
         h('tr', [
@@ -260,7 +274,6 @@ const renderCountyRow = function(results, key){
   if (key === 'state') {
     return '';
   }
-
   let trump = null;
   let clinton = null;
   let othervotecount = 0;
@@ -277,6 +290,10 @@ const renderCountyRow = function(results, key){
       othervotepct += candidate.votepct;
     }
   }
+
+  let isKeyCounty = keyCounties.find(function(el) {
+    return el.fips === trump.fipscode
+  })
 
   if (sortMetric['census']) {
     var extraMetric = extraData[trump.fipscode].census[sortMetric['key']]
@@ -300,8 +317,19 @@ const renderCountyRow = function(results, key){
     extraMetric = extraMetric + sortMetric['append'];
   }
 
-  return h('tr', [
-    h('td.county', toTitlecase(trump.reportingunitname)),
+  return h('tr', {
+    classes: {
+      'featured': isKeyCounty
+    }
+  }, [
+    h('td.county', [
+      toTitlecase(trump.reportingunitname),
+      h('i.icon', {
+        classes: {
+          'icon-star': isKeyCounty
+        }
+      })
+    ]),
     h('td.amt.precincts', [(trump.precinctsreportingpct * 100).toFixed(1) + '% in']),
     h('td.vote.dem', {
       classes: {

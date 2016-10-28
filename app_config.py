@@ -95,6 +95,9 @@ COPY EDITING
 COPY_GOOGLE_DOC_KEY = '1Rs2qSw00DYECHummasktOa6zLfrifusJWh-uP-GFgvc'
 COPY_PATH = 'data/copy.xlsx'
 
+BRIEFING_GOOGLE_DOC_KEY = '1cG6itV9fK9Fc7AA_On4ToUgqEWA8Ae5bp0JCxQdtEOw'
+BRIEFING_PATH = 'data/briefing.xlsx'
+
 """
 SHARING
 """
