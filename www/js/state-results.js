@@ -185,8 +185,8 @@ const renderMaquette = function() {
                 h('tr', [
                   h('th.county', 'County'),
                   h('th.amt.precincts', ''),
-                  h('th.vote.candidate.gop', 'Trump'),
                   h('th.vote.candidate.dem', 'Clinton'),
+                  h('th.vote.candidate.gop', 'Trump'),
                   h('th.vote.candidate.ind', 'Other'),
                   h('th.vote.margin', '2016 Margin'),
                   h('th.comparison', sortMetric['name']),
@@ -303,16 +303,16 @@ const renderCountyRow = function(results, key){
   return h('tr', [
     h('td.county', trump.reportingunitname),
     h('td.amt.precincts', [(trump.precinctsreportingpct * 100).toFixed(1) + '% in']),
-    h('td.vote.gop', {
-      classes: {
-        'winner': trump.votecount > clinton.votecount && trump.votecount > othervotecount && trump.precinctsreportingpct === 1
-      }
-    }, [(trump.votepct * 100).toFixed(1) + '%']),
     h('td.vote.dem', {
       classes: {
         'winner': clinton.votecount > trump.votecount && clinton.votecount > othervotecount && clinton.precinctsreportingpct === 1
       }
     }, [(clinton.votepct * 100).toFixed(1) + '%']),
+    h('td.vote.gop', {
+      classes: {
+        'winner': trump.votecount > clinton.votecount && trump.votecount > othervotecount && trump.precinctsreportingpct === 1
+      }
+    }, [(trump.votepct * 100).toFixed(1) + '%']),
     h('td.vote.ind', {
       classes: {
         'winner': othervotecount > trump.votecount && othervotecount > clinton.votecount && clinton.precinctsreportingpct === 1
