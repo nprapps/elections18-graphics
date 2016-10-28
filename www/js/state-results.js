@@ -256,7 +256,7 @@ const renderStateRow = function(result){
   }, [
     h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
     h('td.amt', result.votecount.toLocaleString()),
-    h('td.amt', (result.votepct * 100).toFixed(2) + '%')
+    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
 
