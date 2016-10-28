@@ -284,7 +284,7 @@ const renderRace = function(race, key) {
         var change = true
     }
 
-    if (result1['votecount'] > 0 || result2['votecount'] > 0) {
+    if ((result1['votecount'] > 0 || result2['votecount'] > 0) || called)  {
         var reporting = true;
     }
 
