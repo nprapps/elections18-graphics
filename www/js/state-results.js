@@ -186,7 +186,7 @@ const renderMaquette = function() {
           ]),
           renderStateResults(sortedStateResults),
           h('div.results-counties', [
-            h('h2', 'Counties To Watch'),
+            h('h2', descriptions.county_desc ? 'Counties To Watch' : ''),
             h('p', descriptions.county_desc ? descriptions.county_desc : ''),
             h('ul.sorter', [
               h('li.label', 'Sort Counties By'),
