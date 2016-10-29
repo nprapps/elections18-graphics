@@ -250,7 +250,7 @@
         var pymParent = new pym.Parent('preview', 'child.html', {
             id: '{{ slug }}'
         });
-        if ('{{ slug }}' === 'state-results') {
+        if ('{{ slug }}' === 'state-results' || '{{slug}}' === 'state-down-ballot') {
             var getParameterByName = function(name) {
                 name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
                 var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
