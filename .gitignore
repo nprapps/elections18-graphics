@@ -48,14 +48,17 @@ www/board*
 www/bop*
 www/county*
 www/map*
+www/state*
 
 # Local data
 data/gdoc*.csv
 data/copy.xls
 data/copy.xlsx
+data/briefing.xlsx
 www/assets/*
 !www/assets/assetsignore
 www/live-data/*
+www/data/extra_data/state-briefings.json
 
 #Logs
 logs/*.log

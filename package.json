@@ -9,6 +9,7 @@
     "preinstall": "npm install -g concurrently"
   },
   "dependencies": {
+    "comma-number": "^1.1.0",
     "d3": "^3.5.17",
     "maquette": "^2.4.1",
     "moment": "^2.15.0",

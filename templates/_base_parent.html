@@ -259,9 +259,9 @@
             }
 
             var state = getParameterByName('state');
-            setTimeout(function() {
-                pymParent.sendMessage('state-selected', state)
-            }, 1000);
+            pymParent.onMessage('child-loaded', function() { 
+                pymParent.sendMessage('state-selected', state);
+            });
         }
     </script>
 

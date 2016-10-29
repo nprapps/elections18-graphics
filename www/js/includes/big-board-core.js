@@ -15,6 +15,7 @@ const FIRST_COLUMN_KEYS = ['6:00 PM', '7:00 PM', '7:30 PM', '8:00 PM']
 const SECOND_COLUMN_KEYS = ['8:30 PM', '9:00 PM', '10:00 PM', '11:00 PM', '1:00 AM']
 const projector = maquette.createProjector();
 const h = maquette.h;
+const coloredParties = ['Dem', 'GOP', 'Yes', 'No'];
 
 var exports = module.exports = {};
 /*
@@ -282,7 +283,7 @@ const renderRace = function(race, key) {
         var change = true
     }
 
-    if (result1['precinctsreportingpct'] > 0) {
+    if ((result1['votecount'] > 0 || result2['votecount'] > 0) || called)  {
         var reporting = true;
     }
 
@@ -298,7 +299,8 @@ const renderRace = function(race, key) {
             classes: {
                 'winner': winningResult,
                 'dem': winningResult && winningResult['party'] === 'Dem',
-                'gop': winningResult && winningResult['party'] === 'GOP'
+                'gop': winningResult && winningResult['party'] === 'GOP',
+                'ind': winningResult && winningResult['party'] === 'Ind'
             }
         }, [
             insertRunoffImage(race)
@@ -307,7 +309,8 @@ const renderRace = function(race, key) {
             classes: {
                 'winner': winningResult,
                 'dem': winningResult && winningResult['party'] === 'Dem',
-                'gop': winningResult && winningResult['party'] === 'GOP'
+                'gop': winningResult && winningResult['party'] === 'GOP',
+                'ind': winningResult && coloredParties.indexOf(winningResult['party']) < 0
             }
         }, [
             decideLabel(result1, key)
@@ -316,9 +319,13 @@ const renderRace = function(race, key) {
             Math.round(result1['precinctsreportingpct'] * 100) 
         ]),
         h('td.candidate', {
-            class: result1['party'].toLowerCase(),
             classes: {
-                'winner': result1['npr_winner']
+                'winner': result1['npr_winner'],
+                'dem': result1['party'] === 'Dem',
+                'gop': result1['party'] === 'GOP',
+                'yes': result1['party'] === 'Yes',
+                'no': result1['party'] === 'No',
+                'ind': coloredParties.indexOf(result1['party']) < 0
             }
         }, [
             h('span.fname', [
@@ -332,7 +339,12 @@ const renderRace = function(race, key) {
         h('td.candidate-total', {
             class: result1['party'].toLowerCase(),
             classes: {
-                'winner': result1['npr_winner']
+                'winner': result1['npr_winner'],
+                'dem': result1['party'] === 'Dem',
+                'gop': result1['party'] === 'GOP',
+                'yes': result1['party'] === 'Yes',
+                'no': result1['party'] === 'No',
+                'ind': coloredParties.indexOf(result1['party']) < 0
             }
         }, [
             h('span.candidate-total-wrapper', {
@@ -345,7 +357,12 @@ const renderRace = function(race, key) {
         h('td.candidate-total', {
             class: result2['party'].toLowerCase(),
             classes: {
-                'winner': result2['npr_winner']
+                'winner': result2['npr_winner'],
+                'dem': result2['party'] === 'Dem',
+                'gop': result2['party'] === 'GOP',
+                'yes': result2['party'] === 'Yes',
+                'no': result2['party'] === 'No',
+                'ind': coloredParties.indexOf(result2['party']) < 0
             }
         }, [
             h('span.candidate-total-wrapper', {
@@ -357,7 +374,12 @@ const renderRace = function(race, key) {
         h('td.candidate', {
             class: result2['party'].toLowerCase(),
             classes: {
-                'winner': result2['npr_winner']
+                'winner': result2['npr_winner'],
+                'dem': result2['party'] === 'Dem',
+                'gop': result2['party'] === 'GOP',
+                'yes': result2['party'] === 'Yes',
+                'no': result2['party'] === 'No',
+                'ind': coloredParties.indexOf(result2['party']) < 0
             }
         }, [
             h('span.fname', [
@@ -384,9 +406,9 @@ const determineResults = function(race) {
 
     for (var i = 0; i < loopArr.length ; i++) {
         var result = loopArr[i];
-        if (result['party'] === 'Dem' && !result1) {
+        if ((result['party'] === 'Dem' || result['party'] === 'Yes') && !result1) {
             result1 = result;
-        } else if (result['party'] === 'GOP' && !result2) {
+        } else if (result['party'] === 'GOP' || result['party'] === 'No' && !result2) {
             result2 = result;
         }
 

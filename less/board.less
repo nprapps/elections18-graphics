@@ -1,12 +1,28 @@
 @import "variables";
 
+html {
+    font: 14px/1.4 Helvetica, Arial, sans-serif;
+
+    @media screen and (min-width: @screen-big-board-min) { font-size: 18px; }
+    @media screen and (max-width: @screen-md) { font-size: 13px; }
+    @media screen and (max-width: @screen-sm) { font-size: 12px; }
+    @media screen and (max-width: @screen-xs) { font-size: 11px; }
+
+    // @screen-xs:                  480px;  // Extra small screen / phone
+    // @screen-sm:                  768px;  // Small screen / tablet
+    // @screen-md:                  992px;  // Medium screen / desktop
+    // @screen-lg:                 1200px;  // Large screen / wide desktop
+    // @screen-xl:                 1500px;  // Superwide
+    // @screen-big-board:          1920px;  // HDTV
+}
+
 body {
     margin: 0;
     padding: 0;
 }
 
 .results-wrapper {
-    font: 14px/1.4 Helvetica, Arial, sans-serif;
+    padding: 0 10px;
 
     h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
@@ -23,10 +39,12 @@ body {
         margin-bottom: 0.5rem;
 
         h1 {
-            font: 700 2.8rem @gotham;
+            font: 700 2.6rem @gotham;
             text-transform: uppercase;
             color: @gray-darker;
             float: left;
+
+            @media screen and (max-width: @screen-xs) { font-size: 2rem; }
         }
 
         h4 {
@@ -51,19 +69,20 @@ body {
 
         .column {
             box-sizing: border-box;
-            padding: 0 1%;
-            float: left;
-            width: 50%;
 
-            &.first {
-                padding-left: 0;
-            }
+            // stack on small screens,
+            // side-by-side on larger screens
+            @media screen and (min-width: @screen-sm) {
+                padding: 0 1%;
+                float: left;
+                width: 50%;
 
-            &.last {
-                padding-right: 0;
+                &.first { padding-left: 0; }
 
-                .poll-closing-group:first-child {
-                    display: none;
+                &.last {
+                    padding-right: 0;
+
+                    .poll-closing-group:first-child { display: none; }
                 }
             }
         }
@@ -112,12 +131,24 @@ body {
 }
 
 .ballot-measures .results .races {
-    .state { width: 46%; text-align: left; }
-    .candidate { width: 11%; }
+    .pickup { display: none; }
+    .state {
+        width: 46%;
+        text-align: left;
+        padding-left: 0;
+    }
+    .candidate {
+        width: 11%;
 
-    td {
-        vertical-align: top;
-        padding: 0.2rem 0.4rem;
+        .fname { display: none; }
+        &:nth-child(4) {
+            text-align: right;
+            padding-right: 0;
+        }
+        &:nth-child(8) {
+            text-align: left;
+            padding-left: 0;
+        }
     }
 }
 
