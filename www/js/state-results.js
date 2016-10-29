@@ -364,7 +364,7 @@ const renderCountyRow = function(results, key){
   }
 
   if (sortMetric['append']) {
-    extraMetric = extraMetric + sortMetric['append'];
+    extraMetric = extraMetric.toFixed(1) + sortMetric['append'];
   }
 
   return h('tr', {
