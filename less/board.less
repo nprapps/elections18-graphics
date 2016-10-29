@@ -1,12 +1,26 @@
 @import "variables";
 
+html {
+    font: 14px/1.4 Helvetica, Arial, sans-serif;
+
+    @media screen and (min-width: (@screen-xl + 1)) { font-size: 18px; }
+    @media screen and (max-width: @screen-sm) { font-size: 14px; }
+    @media screen and (max-width: @screen-xs) { font-size: 12px; }
+
+    // @screen-xs:                  480px;  // Extra small screen / phone
+    // @screen-sm:                  768px;  // Small screen / tablet
+    // @screen-md:                  992px;  // Medium screen / desktop
+    // @screen-lg:                 1200px;  // Large screen / wide desktop
+    // @screen-xl:                 1500px;  // Superwide
+    // @screen-big-board:          1920px;  // HDTV
+}
+
 body {
     margin: 0;
     padding: 0;
 }
 
 .results-wrapper {
-    font: 14px/1.4 Helvetica, Arial, sans-serif;
     padding: 0 10px;
 
     h1, h2, h3, h4, h5, h6, p { margin: 0; }
@@ -113,7 +127,12 @@ body {
 }
 
 .ballot-measures .results .races {
-    .state { width: 46%; text-align: left; }
+    .pickup { display: none; }
+    .state {
+        width: 46%;
+        text-align: left;
+        padding-left: 0;
+    }
     .candidate { width: 11%; }
 
     td {
