@@ -65,6 +65,12 @@
       "css": "star",
       "code": 59400,
       "src": "fontawesome"
+    },
+    {
+      "uid": "85fda3129wk4amvn25wrq843sbj3yzl0",
+      "css": "incumbent",
+      "code": 59401,
+      "src": "typicons"
     }
   ]
 }

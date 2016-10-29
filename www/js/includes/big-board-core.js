@@ -333,9 +333,9 @@ const renderRace = function(race, key) {
                 result1['first'] ? result1['first'] + ' ' : ''
             ]),
             h('span.lname', [
-                result1['last'] + ' '
-            ]),
-            insertIncumbentImage(result1['incumbent'])
+                result1['last'],
+                insertIncumbentIcon(result1['incumbent'])
+            ])
         ]),
         h('td.candidate-total', {
             class: result1['party'].toLowerCase(),
@@ -389,10 +389,9 @@ const renderRace = function(race, key) {
             ]),
             ' ',
             h('span.lname', [
-                result2 ? result2['last'] : ''
-            ]),
-            ' ',
-            insertIncumbentImage(result2['incumbent'])
+                result2 ? result2['last'] : '',
+                insertIncumbentIcon(result2['incumbent'])
+            ])
         ])
     ])
 }
@@ -471,11 +470,12 @@ const insertRunoffImage = function(race) {
     }
 }
 
-const insertIncumbentImage = function(incumbency) {
+const insertIncumbentIcon = function(incumbency) {
     if (incumbency) {
-        return h('img.img-responsive', {
-            src: '../assets/incumbent.svg'
-        })
+        return h('i.icon-incumbent', { })
+        // return h('img.img-responsive', {
+        //     src: '../assets/incumbent.svg'
+        // })
     } else {
         return ''
     }
