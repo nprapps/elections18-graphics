@@ -179,11 +179,7 @@ tr {
     }
 
     .candidate {
-        transition: all 2s ease;
         width: 30%;
-
-        // highlight on change
-        &.lighten { background-color: @yellow !important; }
 
         &.dem { background: @demDim; }
         &.gop, &.no { background: @gopDim; }
@@ -215,10 +211,6 @@ tr {
     }
 
     .candidate-total {
-        transition: all 2s ease;
-        &.lighten {
-            background-color: @ind !important;
-        }
         width: 7%;
         text-align: right;
         background: transparent;
@@ -244,6 +236,21 @@ tr {
     }
 
     .candidate-total-spacer + .candidate-total { text-align: left; }
+
+    // highlight on update
+    .candidate,
+    .candidate-total {
+        // &.lighten { background-color: @updateHighlight !important; }
+    }
+    // .candidate,
+    // .candidate-total,
+    .results-status {
+        transition: all 2s ease;
+        &.lighten {
+            // color: darken(@updateHighlight, 10%) !important;
+            color: #f1f1f1 !important;
+        }
+    }
 }
 
 

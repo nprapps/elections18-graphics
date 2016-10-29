@@ -502,8 +502,12 @@ const onUpdateAnimation = function(domNode, properties, previousProperties) {
     parent.classList.add('lighten');
     sibling.classList.add('lighten');
 
+    const precincts = domNode.parentNode.parentNode.querySelector('.results-status');
+    precincts.classList.add('lighten');
+
     setTimeout(function() {
         parent.classList.remove('lighten')
         sibling.classList.remove('lighten');
+        precincts.classList.remove('lighten');
     }, 2000);
 }
