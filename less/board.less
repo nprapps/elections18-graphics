@@ -116,13 +116,6 @@ body {
             }
         }
     }
-
-    .state-slide {
-        .header {
-            font-size:30px;
-            padding-top:20px;
-        }
-    }
 }
 
 tr {
@@ -132,7 +125,7 @@ tr {
         white-space: nowrap;
         text-align: center;
 
-        &:after{
+        &:after {
             content: "% in";
             font-size: 80%;
             vertical-align: top;
@@ -168,7 +161,9 @@ tr {
     .state {
         color: #000;
         text-align: center;
+        white-space: nowrap;
         width: 10%;
+
         &.dem { color: @dem; }
         &.gop  { color: @gop; }
         &.other { color: @ind; }
@@ -206,10 +201,11 @@ tr {
         }
 
         &.incumbent {
-            img {
-                width: .6rem;
-                height: 1rem;
-                vertical-align: text-top;
+            .lname { white-space: nowrap; }
+            .icon-incumbent {
+                margin-left: .1em;
+
+                &::before { font-size: .8rem; }
             }
         }
 
@@ -258,6 +254,7 @@ tr {
         width: 46%;
         text-align: left;
         padding-left: 0;
+        white-space: normal;
     }
     .candidate {
         width: 11%;
@@ -268,12 +265,15 @@ tr {
     }
 }
 
+.governor { min-height: 340px; }
+
+.house .results .races {
+    .state { width: 15%; }
+}
+
 .president .results .races {
     .pickup { display: none; }
-    .state {
-        white-space: nowrap;
-        width: 15%;
-    }
+    .state { width: 15%; }
     .results-status { width: 10%; }
 }
 
