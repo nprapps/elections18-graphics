@@ -99,6 +99,38 @@ const renderMaquette = function() {
         else return aHour - bHour;
     });
 
+
+
+    let sortedRacesPerTime = {};
+
+    for (let time in resultsData) {
+        let sortedRaces = Object.keys(resultsData[time]).sort(function(a,b) {
+            const aResult = resultsData[time][a][0];
+            const bResult = resultsData[time][b][0];
+            const as = determineSortKey(aResult);
+            const bs = determineSortKey(bResult);
+
+            const aState = as.substring(0,1);
+            const bState = bs.substring(0,1);
+
+            // if we pulled a number off something
+            if (aState === bState && as.length > 2 && bs.length > 2) {
+                const aID = as.split('-')[1];
+                const bID = bs.split('-')[1];
+                if (parseInt(aID) && parseInt(bID)) {
+                    if (parseInt(aID) < parseInt(bID)) return -1;
+                    if (parseInt(aID) > parseInt(bID)) return 1;
+                }
+            }
+
+            if (as < bs) return -1;
+            if (as > bs) return 1;
+            return 0;
+        });
+
+        sortedRacesPerTime[time] = sortedRaces;
+    }
+
     const breakingIndex = Math.ceil(numberOfRaces / 2)
     let raceIndex = 0;
     let firstColumn = {};
@@ -107,18 +139,18 @@ const renderMaquette = function() {
 
     for (let time of sortedTimes) {
         const group = resultsData[time];
-        for (let race in group) {
+        sortedRacesPerTime[time].map(function(id) {
             raceIndex += 1
 
             if (!selectedColumn[time]) {
                 selectedColumn[time] = {};
             }
-            selectedColumn[time][race] = group[race]
+            selectedColumn[time][id] = group[id]
 
             if (raceIndex === breakingIndex) {
                 selectedColumn = secondColumn
             }
-        }
+        });
     }
 
     return h('div.results-wrapper', [
@@ -213,50 +245,11 @@ const renderResultsTable = function(key, column) {
         var races = column[key];
     }
 
-    var sortedRaces = [];
-    for (var race in races) {
-        let statepostal = races[race][0]['statepostal'];
-
-        // see if we need to pull a number
-        let num = races[race][0]['seatnum'] ? races[race][0]['seatnum'] : '';
-        if (!num && races[race][0]['reportingunitname']) {
-            num = races[race][0]['reportingunitname'].slice(-1);
-        }
-        if (!num && races[race][0]['is_ballot_measure']) {
-            num = races[race][0]['seatname'].split(' - ')[0];
-        }
-
-        let sortKey = num ? statepostal + '-' + num : statepostal;
-        sortedRaces.push([race, sortKey]);
-    }
-
-    sortedRaces.sort(function(a, b) {
-        const as = a[1];
-        const bs = b[1];
-
-        const aState = as.substring(0,1);
-        const bState = bs.substring(0,1);
-
-        // if we pulled a number off something
-        if (aState === bState && as.length > 2 && bs.length > 2) {
-            const aID = as.split('-')[1];
-            const bID = bs.split('-')[1];
-            if (parseInt(aID) && parseInt(bID)) {
-                if (parseInt(aID) < parseInt(bID)) return -1;
-                if (parseInt(aID) > parseInt(bID)) return 1;
-            }
-        }
-
-        if (as < bs) return -1;
-        if (as > bs) return 1;
-        return 0;
-    });
-
     if (races) {
         return [
             h('h2.poll-closing-group', h('span.time', key)),
             h('table.races', [
-                sortedRaces.map(sortedKey => renderRace(races[sortedKey[0]], sortedKey[0]))
+                Object.keys(races).map(key => renderRace(races[key], key))
             ])
         ]
     } else {
@@ -506,4 +499,22 @@ const onUpdateAnimation = function(domNode, properties, previousProperties) {
         parent.classList.remove('lighten')
         sibling.classList.remove('lighten');
     }, 2000);
+}
+
+const determineSortKey = function(result) {
+    if (result.officename === 'President') {
+        if (result.level === 'state') {
+            return result.statepostal;        
+        } else {
+            return result.statepostal + '-' + result.reportingunitname.slice('-1');
+        }
+    } else if (result.officename === 'U.S. Senate') {
+        return result.statepostal;
+    } else if (result.officename === 'Governor') {
+        return result.statepostal;
+    } else if (result.officename === 'U.S. House') {
+        return result.statepostal + '-' + result.seatnum;
+    } else if (result.is_ballot_measure) {
+        return result.statepostal + '-' + result.seatname.split(' - ')[0];
+    }
 }
