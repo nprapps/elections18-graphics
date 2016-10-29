@@ -3,7 +3,7 @@
 html {
     font: 14px/1.4 Helvetica, Arial, sans-serif;
 
-    @media screen and (min-width: (@screen-xl + 1)) { font-size: 18px; }
+    @media screen and (min-width: @screen-big-board-min) { font-size: 18px; }
     @media screen and (max-width: @screen-sm) { font-size: 14px; }
     @media screen and (max-width: @screen-xs) { font-size: 12px; }
 
@@ -66,19 +66,20 @@ body {
 
         .column {
             box-sizing: border-box;
-            padding: 0 1%;
-            float: left;
-            width: 50%;
 
-            &.first {
-                padding-left: 0;
-            }
+            // stack on small screens,
+            // side-by-side on larger screens
+            @media screen and (min-width: @screen-sm) {
+                padding: 0 1%;
+                float: left;
+                width: 50%;
 
-            &.last {
-                padding-right: 0;
+                &.first { padding-left: 0; }
 
-                .poll-closing-group:first-child {
-                    display: none;
+                &.last {
+                    padding-right: 0;
+
+                    .poll-closing-group:first-child { display: none; }
                 }
             }
         }
