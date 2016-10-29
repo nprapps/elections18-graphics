@@ -96,7 +96,7 @@ const renderMaquette = function() {
         if (b.slice(-2) === 'AM') return -1;
         if (aHour === bHour && a.indexOf('30') !== -1) return 1;
         if (aHour === bHour && b.indexOf('30') !== -1) return -1;
-        else return aHour - bHour;        
+        else return aHour - bHour;
     });
 
     const breakingIndex = Math.ceil(numberOfRaces / 2)
@@ -210,13 +210,13 @@ const renderResultsColumn = function(column, orderClass) {
 
 const renderResultsTable = function(key, column) {
     if (column.hasOwnProperty(key)) {
-        var races = column[key];    
+        var races = column[key];
     }
 
     var sortedRaces = [];
     for (var race in races) {
         let statepostal = races[race][0]['statepostal'];
-        
+
         // see if we need to pull a number
         let num = races[race][0]['seatnum'] ? races[race][0]['seatnum'] : '';
         if (!num && races[race][0]['reportingunitname']) {
@@ -289,7 +289,7 @@ const renderRace = function(race, key) {
 
     return h('tr', {
         key: result1['last'],
-        classes: { 
+        classes: {
             'called': called,
             'party-change': change,
             'reporting': reporting
@@ -316,7 +316,7 @@ const renderRace = function(race, key) {
             decideLabel(result1, key)
         ]),
         h('td.results-status', [
-            Math.round(result1['precinctsreportingpct'] * 100) 
+            Math.round(result1['precinctsreportingpct'] * 100)
         ]),
         h('td.candidate', {
             classes: {
@@ -325,7 +325,8 @@ const renderRace = function(race, key) {
                 'gop': result1['party'] === 'GOP',
                 'yes': result1['party'] === 'Yes',
                 'no': result1['party'] === 'No',
-                'ind': coloredParties.indexOf(result1['party']) < 0
+                'ind': coloredParties.indexOf(result1['party']) < 0,
+                'incumbent': result1['incumbent']
             }
         }, [
             h('span.fname', [
@@ -379,7 +380,8 @@ const renderRace = function(race, key) {
                 'gop': result2['party'] === 'GOP',
                 'yes': result2['party'] === 'Yes',
                 'no': result2['party'] === 'No',
-                'ind': coloredParties.indexOf(result2['party']) < 0
+                'ind': coloredParties.indexOf(result2['party']) < 0,
+                'incumbent': result2['incumbent']
             }
         }, [
             h('span.fname', [
@@ -444,9 +446,9 @@ const decideLabel = function(race, key) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
     } else if (race['officename'] === 'President') {
-        return key; 
+        return key;
     } else if (race['is_ballot_measure'] === true) {
-        return race['statepostal'] + '-' + race['seatname']; 
+        return race['statepostal'] + '-' + race['seatname'];
     } else {
         return race['statepostal'];
     }
@@ -496,11 +498,11 @@ const onUpdateAnimation = function(domNode, properties, previousProperties) {
         party = 'gop';
     }
     const sibling = domNode.parentNode.parentNode.querySelector('.candidate.' + party)
-    
+
     parent.classList.add('lighten');
     sibling.classList.add('lighten');
-    
-    setTimeout(function() { 
+
+    setTimeout(function() {
         parent.classList.remove('lighten')
         sibling.classList.remove('lighten');
     }, 2000);
