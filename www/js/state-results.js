@@ -456,6 +456,25 @@ const renderHouseTable = function(results){
 ])
 }
 
+const renderRow = function(result){
+  let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' (' + result.party + ')'
+
+  return h('tr', {
+    classes: {
+      'winner': result['npr_winner'],
+      'dem': result['npr_winner'] && result['party'] === 'Dem',
+      'gop': result['npr_winner'] && result['party'] === 'GOP',
+      'ind': result['npr_winner'] && result['party'] === 'Ind',
+      'yes': result['npr_winner'] && result['party'] === 'Yes',
+      'no': result['npr_winner'] && result['party'] === 'No'
+    }
+  }, [
+    h('td.candidate', candidate),
+    h('td.amt', commaNumber(result.votecount)),
+    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
+  ])
+}
+
 const renderGovTable = function(results){
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
@@ -478,7 +497,7 @@ const renderGovTable = function(results){
       h('tfoot', [
         h('tr', [
           h('td.candidate', 'Total'),
-          h('td.amt', commaNumber(totalVotes))
+          h('td.amt', commaNumber(totalVotes)),
           h('td.amt', '100%')
         ])
       ])
@@ -504,7 +523,7 @@ const renderMeasureTable = function(results){
       ])
     ]),
     h('tbody', [
-      results.map(measure => renderMeasureRow(measure))
+      results.map(measure => renderRow(measure))
     ]),
     h('tfoot', [
       h('tr', [
@@ -515,20 +534,6 @@ const renderMeasureTable = function(results){
     ])
   ])
 ])
-}
-
-const renderMeasureRow = function(result){
-  return h('tr', {
-    classes: {
-      'winner': result['npr_winner'],
-      'yes': result['npr_winner'] && result['party'] === 'Yes',
-      'no': result['npr_winner'] && result['party'] === 'No'
-    }
-  }, [
-    h('td.candidate', result.party),
-    h('td.amt', commaNumber(result.votecount)),
-    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
-  ])
 }
 
 const calculateVoteMargin = function(trump, clinton) {
