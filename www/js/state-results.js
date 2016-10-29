@@ -31,21 +31,18 @@ const availableMetrics = [
         'key': 'percent_white',
         'census': true,
         'percent_filter': true,
-        'append': '%'
     },
     {
         'name': '% Black',
         'key': 'percent_black',
         'census': true,
         'percent_filter': true,
-        'append': '%'
     },
     {
         'name': '% Hispanic',
         'key': 'percent_hispanic',
         'census': true,
         'percent_filter': true,
-        'append': '%'
     },
     {
         'name': 'Median Income',
@@ -59,7 +56,6 @@ const availableMetrics = [
         'key': 'percent_bachelors',
         'census': true,
         'percent_filter': true,
-        'append': '%'
     },
 ]
 
@@ -356,7 +352,7 @@ const renderCountyRow = function(results, key){
   }
 
   if (sortMetric['percent_filter']) {
-    extraMetric = (extraMetric * 100).toFixed(1);
+    extraMetric = (extraMetric * 100).toFixed(1) + '%';
   }
 
   if (sortMetric['prepend']) {
