@@ -242,8 +242,6 @@ const renderResults = function() {
       return data['house'][a][0]['seatnum'] - data['house'][b][0]['seatnum'];
     });
 
-    console.log(sortedHouseKeys);
-
     return h('div.downballot', [
       Object.keys(data['senate']).map(race => renderSenateTable(data['senate'][race])),
       h('div.results-house', [
@@ -414,7 +412,7 @@ const renderSenateTable = function(results){
         ])
       ]),
       h('tbody', [
-        results.map(key => renderSenateRow(key))
+        results.map(key => renderRow(key))
       ]),
       h('tfoot', [
         h('tr', [
@@ -427,23 +425,7 @@ const renderSenateTable = function(results){
   ])
 }
 
-const renderSenateRow = function(result){
-    return h('tr', {
-      classes: {
-        'winner': result['npr_winner'],
-        'dem': result['npr_winner'] && result['party'] === 'Dem',
-        'gop': result['npr_winner'] && result['party'] === 'GOP',
-        'ind': result['npr_winner'] && result['party'] === 'Ind'
-      }
-    }, [
-      h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
-      h('td.amt', commaNumber(result.votecount)),
-      h('td.amt', (result.votepct * 100).toFixed(1) + '%')
-    ])
-}
-
 const renderHouseTable = function(results){
-  console.log(results);
   let seatName = results[0].seatname;
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
@@ -461,7 +443,7 @@ const renderHouseTable = function(results){
       ])
     ]),
     h('tbody', [
-      results.map(result => renderHouseRow(result))
+      results.map(result => renderRow(result))
     ]),
     h('tfoot', [
       h('tr', [
@@ -472,21 +454,6 @@ const renderHouseTable = function(results){
     ])
   ])
 ])
-}
-
-const renderHouseRow = function(result){
-  return h('tr', {
-    classes: {
-      'winner': result['npr_winner'],
-      'dem': result['npr_winner'] && result['party'] === 'Dem',
-      'gop': result['npr_winner'] && result['party'] === 'GOP',
-      'ind': result['npr_winner'] && result['party'] === 'Ind'
-    }
-  }, [
-    h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
-    h('td.amt', commaNumber(result.votecount))
-    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
-  ])
 }
 
 const renderGovTable = function(results){
@@ -506,7 +473,7 @@ const renderGovTable = function(results){
         ])
       ]),
       h('tbody', [
-        results.map(key => renderGovRow(key))
+        results.map(key => renderRow(key))
       ]),
       h('tfoot', [
         h('tr', [
@@ -516,21 +483,6 @@ const renderGovTable = function(results){
         ])
       ])
     ])
-  ])
-}
-
-const renderGovRow = function(result){
-  return h('tr', {
-    classes: {
-      'winner': result['npr_winner'],
-      'dem': result['npr_winner'] && result['party'] === 'Dem',
-      'gop': result['npr_winner'] && result['party'] === 'GOP',
-      'ind': result['npr_winner'] && result['party'] === 'Ind'
-    }
-  }, [
-    h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
-    h('td.amt', commaNumber(result.votecount)),
-    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
 
