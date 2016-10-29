@@ -280,7 +280,7 @@ const renderStateResults = function(results) {
       h('tfoot', [
         h('tr', [
           h('td.candidate', 'Total'),
-          h('td.amt', stateTotalVotes.toLocaleString()),
+          h('td.amt', commaNumber(stateTotalVotes)),
           h('td.amt', '100%')
         ])
       ])
@@ -301,7 +301,7 @@ const renderStateRow = function(result){
     }
   }, [
     h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
-    h('td.amt', result.votecount.toLocaleString()),
+    h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
@@ -419,7 +419,7 @@ const renderSenateTable = function(results){
       h('tfoot', [
         h('tr', [
           h('td.candidate', 'Total'),
-          h('td.amt', totalVotes.toLocaleString()),
+          h('td.amt', commaNumber(totalVotes)),
           h('td.amt', '100%')
         ])
       ])
@@ -437,7 +437,7 @@ const renderSenateRow = function(result){
       }
     }, [
       h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
-      h('td.amt', result.votecount.toLocaleString()),
+      h('td.amt', commaNumber(result.votecount)),
       h('td.amt', (result.votepct * 100).toFixed(1) + '%')
     ])
 }
@@ -466,7 +466,7 @@ const renderHouseTable = function(results){
     h('tfoot', [
       h('tr', [
         h('td.candidate', 'Total'),
-        h('td.amt', totalVotes.toLocaleString()),
+        h('td.amt', commaNumber(totalVotes)),
         h('td.amt', '100%')
       ])
     ])
@@ -484,7 +484,7 @@ const renderHouseRow = function(result){
     }
   }, [
     h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
-    h('td.amt', result.votecount.toLocaleString()),
+    h('td.amt', commaNumber(result.votecount))
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
@@ -511,7 +511,7 @@ const renderGovTable = function(results){
       h('tfoot', [
         h('tr', [
           h('td.candidate', 'Total'),
-          h('td.amt', totalVotes.toLocaleString()),
+          h('td.amt', commaNumber(totalVotes))
           h('td.amt', '100%')
         ])
       ])
@@ -529,7 +529,7 @@ const renderGovRow = function(result){
     }
   }, [
     h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
-    h('td.amt', result.votecount.toLocaleString()),
+    h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
@@ -557,7 +557,7 @@ const renderMeasureTable = function(results){
     h('tfoot', [
       h('tr', [
         h('td.candidate', 'Total'),
-        h('td.amt', totalVotes.toLocaleString()),
+        h('td.amt', commaNumber(totalVotes)),
         h('td.amt', '100%')
       ])
     ])
@@ -574,7 +574,7 @@ const renderMeasureRow = function(result){
     }
   }, [
     h('td.candidate', result.party),
-    h('td.amt', result.votecount.toLocaleString()),
+    h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
