@@ -44,8 +44,6 @@ const getData = function() {
 
 const renderMaquette = function() {
     if (data) {
-        console.log(data);
-
         return h('div.results', [
           Object.keys(data['senate']).map(race => renderSenateTable(data['senate'][race])),
           h('div.results-house', [
@@ -104,7 +102,7 @@ const renderSenateRow = function(result){
     }, [
       h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
       h('td.amt', result.votecount.toLocaleString()),
-      h('td.amt', (result.votepct * 100).toFixed(2) + '%')
+      h('td.amt', (result.votepct * 100).toFixed(1) + '%')
     ])
 }
 
@@ -150,7 +148,7 @@ const renderHouseRow = function(result){
   }, [
     h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
     h('td.amt', result.votecount.toLocaleString()),
-    h('td.amt', (result.votepct * 100).toFixed(2) + '%')
+    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
 
@@ -195,7 +193,7 @@ const renderGovRow = function(result){
   }, [
     h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
     h('td.amt', result.votecount.toLocaleString()),
-    h('td.amt', (result.votepct * 100).toFixed(2) + '%')
+    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
 
@@ -240,7 +238,7 @@ const renderMeasureRow = function(result){
   }, [
     h('td.candidate', result.party),
     h('td.amt', result.votecount.toLocaleString()),
-    h('td.amt', (result.votepct * 100).toFixed(2) + '%')
+    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
 }
 
