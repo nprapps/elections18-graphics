@@ -88,14 +88,7 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
-    pymChild.sendMessage('child-loaded', 'ready');
-    pymChild.onMessage('state-selected', changeState)
-
-    projector.append(resultsWrapper, renderMaquette);
-}
-
-const changeState = function(state) {
-    currentState = state;
+    currentState = getParameterByName('state');
     descriptions = briefingData.descriptions.find(function(el) {
       return el.state_postal === currentState;
     });
@@ -110,6 +103,7 @@ const changeState = function(state) {
     getExtraData();
 
     dataTimer = setInterval(getData, 5000);
+    projector.append(resultsWrapper, renderMaquette);
 }
 
 const getData = function() {
