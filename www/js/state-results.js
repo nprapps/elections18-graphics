@@ -248,11 +248,17 @@ const renderResults = function() {
       ])
     ])
   } else if (resultsView === 'downballot') {
+    const sortedHouseKeys = Object.keys(data['house']).sort(function(a, b) {
+      return data['house'][a][0]['seatnum'] - data['house'][b][0]['seatnum'];
+    });
+
+    console.log(sortedHouseKeys);
+
     return h('div.downballot', [
       Object.keys(data['senate']).map(race => renderSenateTable(data['senate'][race])),
       h('div.results-house', [
         h('h2', 'House'),
-        Object.keys(data['house']).map(race => renderHouseTable(data['house'][race]))
+        sortedHouseKeys.map(race => renderHouseTable(data['house'][race]))
       ]),
       Object.keys(data['governor']).map(race => renderGovTable(data['governor'][race])),
       h('div.results-ballot-measures', [
@@ -447,6 +453,7 @@ const renderSenateRow = function(result){
 }
 
 const renderHouseTable = function(results){
+  console.log(results);
   let seatName = results[0].seatname;
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
