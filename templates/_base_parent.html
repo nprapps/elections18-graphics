@@ -258,6 +258,10 @@
             var pymParent = new pym.Parent('preview', 'child.html?state=' + state, {
                 id: '{{ slug }}'
             });
+        } else {
+            var pymParent = new pym.Parent('preview', 'child.html', {
+                id: '{{ slug }}'
+            });
         }
     </script>
 
