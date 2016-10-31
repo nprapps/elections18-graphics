@@ -190,7 +190,7 @@ const renderMaquette = function() {
                 class: statefaceClass
             })
           ]),
-          h('p', [
+          h('p.rating', [
             'Battleground rating: ',
             descriptions.rating
           ]),
