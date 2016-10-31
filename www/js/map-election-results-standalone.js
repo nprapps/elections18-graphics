@@ -22,6 +22,7 @@ var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 480;
 var LOAD_INTERVAL = 20000;
+var isHP = false;
 var isInitialized = false;
 var isMobile = false;
 var lastUpdated = '';
@@ -61,6 +62,11 @@ var onWindowLoaded = function() {
     clintonElectoral = electoralTotals.select('.clinton-electoral');
     trumpTitle = electoralTotals.select('.trump h3');
     trumpElectoral = electoralTotals.select('.trump-electoral');
+
+    if (getParameterByName('hp')) {
+        isHP = true;
+        d3.select('body').classed('hp', true);
+    }
 
     // Extract categories from data
     var categories = [];
