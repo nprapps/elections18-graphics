@@ -191,9 +191,17 @@ const renderMaquette = function() {
             })
           ]),
           h('p.rating', [
-            'Battleground rating: ',
-            descriptions.rating
-          ]),
+              'Battleground rating: ',
+              h('span', {
+                classes:{
+                  'd-safe': descriptions.rating === 'D-Safe/Likely',
+                  'd-lean': descriptions.rating === 'D-Lean',
+                  'toss-up': descriptions.rating === 'Toss-up',
+                  'r-lean': descriptions.rating === 'R-Lean',
+                  'r-safe': descriptions.rating === 'R-Safe/Likely',
+                }
+              }, descriptions.rating)
+            ]),
           renderResults()
         ]);
     } else {
