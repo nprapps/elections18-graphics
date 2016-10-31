@@ -481,6 +481,11 @@ const findDemResult = function(result) {
 
 const onUpdateAnimation = function(domNode, properties, previousProperties) {
     const parent = domNode.parentNode;
+
+    // add class to the parent row
+    const parentRow = domNode.parentNode.parentNode;
+    parentRow.classList.add('updated');
+
     let party = '';
     if (parent.classList.contains('dem')) {
         party = 'dem';
@@ -493,23 +498,21 @@ const onUpdateAnimation = function(domNode, properties, previousProperties) {
     }
     const sibling = domNode.parentNode.parentNode.querySelector('.candidate.' + party)
 
+    // add class to the affected cells
     parent.classList.add('lighten');
     sibling.classList.add('lighten');
 
-    const precincts = domNode.parentNode.parentNode.querySelector('.results-status');
-    precincts.classList.add('lighten');
-
     setTimeout(function() {
-        parent.classList.remove('lighten')
+        parentRow.classList.remove('updated');
+        parent.classList.remove('lighten');
         sibling.classList.remove('lighten');
-        precincts.classList.remove('lighten');
     }, 2000);
 }
 
 const determineSortKey = function(result) {
     if (result.officename === 'President') {
         if (result.level === 'state') {
-            return result.statepostal;        
+            return result.statepostal;
         } else {
             return result.statepostal + '-' + result.reportingunitname.slice('-1');
         }

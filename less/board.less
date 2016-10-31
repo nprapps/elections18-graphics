@@ -238,19 +238,8 @@ tr {
     .candidate-total-spacer + .candidate-total { text-align: left; }
 
     // highlight on update
-    .candidate,
-    .candidate-total {
-        // &.lighten { background-color: @updateHighlight !important; }
-    }
-    // .candidate,
-    // .candidate-total,
-    .results-status {
-        transition: all 2s ease;
-        &.lighten {
-            // color: darken(@updateHighlight, 10%) !important;
-            color: #f1f1f1 !important;
-        }
-    }
+    &.reporting .results-status { transition: all 2s ease; }
+    &.reporting.updated .results-status { color: darken(@updateHighlight, 15%) !important; }
 }
 
 
