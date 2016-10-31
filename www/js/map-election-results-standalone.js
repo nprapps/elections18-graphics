@@ -9,7 +9,6 @@
 import d3 from 'd3';
 import * as _ from 'underscore';
 import textures from 'textures';
-import navbar from '../js/includes/navbar.js';
 
 // D3 formatters
 var fmtComma = d3.format(',');
