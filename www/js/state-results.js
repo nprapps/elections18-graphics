@@ -202,7 +202,10 @@ const renderMaquette = function() {
 }
 
 const renderResults = function() {
+  const body = document.getElementsByTagName('BODY')[0];
   if (resultsView === 'presidential') {
+    body.classList.remove('tab-downballot');
+    body.classList.add('tab-presidential');
     const stateResults = data['state'];
     const sortedStateResults = stateResults.sort(function(a, b) {
       return b['votecount'] - a['votecount'];
@@ -212,7 +215,7 @@ const renderResults = function() {
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
       h('div.results-counties', [
-        h('h2', descriptions.county_desc ? 'Counties To Watch' : 'Results By County'),
+        h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
         h('p', descriptions.county_desc ? descriptions.county_desc : ''),
         h('ul.sorter', [
           h('li.label', 'Sort Counties By'),
@@ -238,6 +241,8 @@ const renderResults = function() {
       ])
     ])
   } else if (resultsView === 'downballot') {
+    body.classList.remove('tab-presidential');
+    body.classList.add('tab-downballot');
     const sortedHouseKeys = Object.keys(data['house']).sort(function(a, b) {
       return data['house'][a][0]['seatnum'] - data['house'][b][0]['seatnum'];
     });
