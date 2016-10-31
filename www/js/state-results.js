@@ -214,7 +214,18 @@ const renderResults = function() {
 
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
-      h('div.results-counties', [
+      h('div.results-counties', {
+        classes: {
+          'population': sortMetric['key'] === 'population',
+          '2012-results': sortMetric['key'] === 'past_margin',
+          'unemployment': sortMetric['key'] === 'unemployment',
+          'percent-white': sortMetric['key'] === 'percent_white',
+          'percent-black': sortMetric['key'] === 'percent_black',
+          'percent-hispanic': sortMetric['key'] === 'percent_hispanic',
+          'median-income': sortMetric['key'] === 'median_income',
+          'percent-college-educated': sortMetric['key'] === 'percent_bachelors',
+        }
+      }, [
         h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
         h('p', descriptions.county_desc ? descriptions.county_desc : ''),
         h('ul.sorter', [
