@@ -318,7 +318,7 @@ const renderRace = function(race, key) {
                 'gop': result1['party'] === 'GOP',
                 'yes': result1['party'] === 'Yes',
                 'no': result1['party'] === 'No',
-                'ind': coloredParties.indexOf(result1['party']) < 0,
+                'other': coloredParties.indexOf(result1['party']) < 0,
                 'incumbent': result1['incumbent']
             }
         }, [
@@ -338,7 +338,7 @@ const renderRace = function(race, key) {
                 'gop': result1['party'] === 'GOP',
                 'yes': result1['party'] === 'Yes',
                 'no': result1['party'] === 'No',
-                'ind': coloredParties.indexOf(result1['party']) < 0
+                'other': coloredParties.indexOf(result1['party']) < 0
             }
         }, [
             h('span.candidate-total-wrapper', {
@@ -356,7 +356,7 @@ const renderRace = function(race, key) {
                 'gop': result2['party'] === 'GOP',
                 'yes': result2['party'] === 'Yes',
                 'no': result2['party'] === 'No',
-                'ind': coloredParties.indexOf(result2['party']) < 0
+                'other': coloredParties.indexOf(result2['party']) < 0
             }
         }, [
             h('span.candidate-total-wrapper', {
@@ -373,7 +373,7 @@ const renderRace = function(race, key) {
                 'gop': result2['party'] === 'GOP',
                 'yes': result2['party'] === 'Yes',
                 'no': result2['party'] === 'No',
-                'ind': coloredParties.indexOf(result2['party']) < 0,
+                'other': coloredParties.indexOf(result2['party']) < 0,
                 'incumbent': result2['incumbent']
             }
         }, [
