@@ -216,6 +216,7 @@ const renderMaquette = function() {
 
 const renderResults = function() {
   const body = document.getElementsByTagName('BODY')[0];
+
   if (resultsView === 'presidential') {
     body.classList.remove('tab-downballot');
     body.classList.add('tab-presidential');
@@ -264,20 +265,21 @@ const renderResults = function() {
   } else if (resultsView === 'downballot') {
     body.classList.remove('tab-presidential');
     body.classList.add('tab-downballot');
-    const sortedHouseKeys = Object.keys(data['house']).sort(function(a, b) {
-      return data['house'][a][0]['seatnum'] - data['house'][b][0]['seatnum'];
+
+    const sortedHouseKeys = Object.keys(data['house']['results']).sort(function(a, b) {
+      return data['house']['results'][a][0]['seatnum'] - data['house']['results'][b][0]['seatnum'];
     });
 
     return h('div.downballot', [
-      Object.keys(data['senate']).map(race => renderSenateTable(data['senate'][race])),
+      Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race])),
       h('div.results-house', [
         h('h2', 'House'),
-        sortedHouseKeys.map(race => renderHouseTable(data['house'][race]))
+        sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
       ]),
-      Object.keys(data['governor']).map(race => renderGovTable(data['governor'][race])),
+      Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor'['results']][race])),
       h('div.results-ballot-measures', [
         h('h2', 'Ballot Measures'),
-        Object.keys(data['ballot_measures']).map(measure => renderMeasureTable(data['ballot_measures'][measure]))
+        Object.keys(data['ballot_measures']['results']).map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
       ])
     ]);
   }
