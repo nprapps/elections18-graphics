@@ -331,7 +331,6 @@ const renderRace = function(race, key) {
             ])
         ]),
         h('td.candidate-total', {
-            class: result1['party'].toLowerCase(),
             classes: {
                 'winner': result1['npr_winner'],
                 'dem': result1['party'] === 'Dem',
@@ -349,7 +348,6 @@ const renderRace = function(race, key) {
         ]),
         h('td.candidate-total-spacer'),
         h('td.candidate-total', {
-            class: result2['party'].toLowerCase(),
             classes: {
                 'winner': result2['npr_winner'],
                 'dem': result2['party'] === 'Dem',
@@ -366,7 +364,6 @@ const renderRace = function(race, key) {
             ])
         ]),
         h('td.candidate', {
-            class: result2['party'].toLowerCase(),
             classes: {
                 'winner': result2['npr_winner'],
                 'dem': result2['party'] === 'Dem',
