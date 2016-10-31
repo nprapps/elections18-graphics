@@ -63,6 +63,15 @@ body {
             font-size: 12px;
             max-width: @mm-max-width;
             margin: -11px auto 22px auto;
+
+            span{
+              &.d-safe { background-color: @demSafe; color: #fff; padding: 5px; }
+              &.d-lean { background-color: @demLean; color: #fff; padding: 5px; }
+              &.toss-up { background-color: @yellow; color: #fff; padding: 5px; }
+              &.r-lean { background-color: @gopLean; color: #fff; padding: 5px; }
+              &.r-safe { background-color: @gopSafe; color: #fff; padding: 5px;}
+            }
+
         }
 
         &.precincts {
