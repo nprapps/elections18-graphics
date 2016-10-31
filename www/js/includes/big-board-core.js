@@ -489,6 +489,10 @@ const onUpdateAnimation = function(domNode, properties, previousProperties) {
         party = 'dem';
     } else if (parent.classList.contains('gop')) {
         party = 'gop';
+    } else if (parent.classList.contains('yes')) {
+        party = 'yes';
+    } else if (parent.classList.contains('no')) {
+        party = 'no';
     }
     const sibling = domNode.parentNode.parentNode.querySelector('.candidate.' + party)
 
