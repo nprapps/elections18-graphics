@@ -2,6 +2,8 @@
 @import "variables";
 @import "results-table";
 
+@mm-max-width: 650px;
+
 body {
     margin: 0;
     padding: 0;
@@ -17,7 +19,8 @@ body {
     }
 
     h1 {
-        margin: 0 0 22px 0;
+        max-width: @mm-max-width;
+        margin: 0 auto 22px auto;
         font-size: 35px;
         color: #333;
         font-family: @gotham;
@@ -68,6 +71,13 @@ body {
             font-size: 11px;
             font-style: italic;
         }
+    }
+
+    .switcher {
+        max-width: @mm-max-width;
+        margin: 0 auto 11px auto;
+        font-size: 12px;
+        color: @gray;
     }
 
     .sorter {
@@ -132,12 +142,20 @@ body {
     }
 
     .results-statewide {
-        margin-bottom: 44px;
+        max-width: @mm-max-width;
+        margin: 0 auto 44px auto;
 
         table { max-width: 350px; }
     }
 
     .results-counties {
+        h2,
+        p {
+            max-width: @mm-max-width;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .gop,
         .ind,
         .margin {
@@ -201,17 +219,17 @@ body {
         }
     }
 
-    .footer p {
-        margin: 2px 0 0 0;
-        font-size: 11px;
-        line-height: 1.7;
-        color: #999;
-    }
-
     .footer {
-        margin-top: 22px;
+        max-width: @mm-max-width;
+        margin: 22px auto 0 auto;
+
         p {
+            margin: 2px 0 0 0;
+            font-size: 11px;
+            line-height: 1.7;
+            color: #999;
             font-style: italic;
+
             em { font-style: normal; }
         }
     }
