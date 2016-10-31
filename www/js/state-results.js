@@ -147,9 +147,9 @@ const sortCountyResults = function() {
             // if Republican, sort in ascending order
             // if Democratic, sort in descending order
             if (a[1][0] === 'R') {
-                return aMargin - bMargin;            
+                return aMargin - bMargin;
             } else {
-                return bMargin - aMargin;  
+                return bMargin - aMargin;
             }
         }
 
@@ -185,7 +185,7 @@ const renderMaquette = function() {
           ]),
           h('h1', [
             stateName,
-            ' ', 
+            ' ',
             h('i.stateface', {
                 class: statefaceClass
             })
@@ -212,7 +212,7 @@ const renderResults = function() {
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
       h('div.results-counties', [
-        h('h2', descriptions.county_desc ? 'Counties To Watch' : ''),
+        h('h2', descriptions.county_desc ? 'Counties To Watch' : 'Results By County'),
         h('p', descriptions.county_desc ? descriptions.county_desc : ''),
         h('ul.sorter', [
           h('li.label', 'Sort Counties By'),
