@@ -204,7 +204,7 @@ const renderMaquette = function() {
                 }
               }, descriptions.rating)
             ]),
-          renderResults()
+          renderResults(),
           h('div.footer', [
             h('p', [
               'Census Bureau, Bureau of Labor Statistics and TKTKTK. Current results from AP',
