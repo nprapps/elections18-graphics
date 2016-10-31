@@ -326,7 +326,14 @@ const renderStateRow = function(result){
       'ind': result['npr_winner'] && result['party'] === 'Ind'
     }
   }, [
-    h('td.candidate', result.first + ' ' + result.last + ' (' + result.party + ')'),
+    h('td.candidate', [
+      result.first + ' ' + result.last + ' (' + result.party + ')',
+      h('i.icon', {
+        classes: {
+          'icon-ok': result.npr_winner
+        }
+      })
+    ]),
     h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
@@ -497,7 +504,14 @@ const renderRow = function(result){
       'no': result['npr_winner'] && result['party'] === 'No'
     }
   }, [
-    h('td.candidate', candidate),
+    h('td.candidate', [
+      candidate,
+      h('i.icon', {
+        classes: {
+          'icon-ok': result.npr_winner
+        }
+      })
+    ]),
     h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ])
