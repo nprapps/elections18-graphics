@@ -74,6 +74,7 @@ let resultsView = 'presidential';
 let stateName = null;
 let statepostal = null;
 let statefaceClass = null;
+let lastUpdated = null;
 
 window.pymChild = null;
 /*
@@ -111,7 +112,8 @@ const getData = function() {
             } else {
               resultsView = 'downballot';
             }
-            data = res.body;
+            data = res.body.results;
+            lastUpdated = res.body.last_updated;
             projector.scheduleRender();
         });
 }
@@ -194,7 +196,18 @@ const renderMaquette = function() {
             'Battleground rating: ',
             descriptions.rating
           ]),
-          renderResults()
+          renderResults(),
+          h('div.footer', [
+            h('p', [
+              'Census Bureau, Bureau of Labor Statistics and TKTKTK. Current results from AP',
+              ' ', 
+              h('span.timestamp', [
+                '(as of ',
+                lastUpdated,
+                ')'
+              ])
+            ])
+          ])
         ]);
     } else {
         return h('div.results', 'Loading...');
@@ -246,9 +259,6 @@ const renderResults = function() {
           ]),
           sortKeys.map(key => renderCountyRow(data[key[0]], key[0]))
         ])
-      ]),
-      h('div.footer', [
-        h('p', 'Sources: sources go here.')
       ])
     ])
   } else if (resultsView === 'downballot') {

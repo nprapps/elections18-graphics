@@ -36,6 +36,7 @@ var mapWidth = null;
 var mapScale = null;
 var reloadData = null;
 var timestamp = null;
+var lastUpdated = null;
 var tooltip = null;
 var tDLead = null;
 var tRLead = null;
@@ -120,7 +121,9 @@ var loadData = function() {
             console.warn(error);
         }
 
-        electoralData = data;
+        electoralData = data.results;
+        lastUpdated = data.last_updated;
+        console.log(electoralData);
         formatData();
     });
 }
@@ -241,7 +244,7 @@ var formatData = function() {
     });
 
     // update timestamp
-    timestamp.html('(as of TKTKTK)');
+    timestamp.html('(as of ' + lastUpdated + ')');
 
     // color in the map!
     updateElectoralMap();

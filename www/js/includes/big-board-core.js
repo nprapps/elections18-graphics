@@ -9,6 +9,7 @@ let lastRequestTime = null;
 let boardTitle = null;
 let resultsData = null;
 let bopData = null;
+let lastUpdated = null;
 
 const boardWrapper = document.querySelector('.board')
 const FIRST_COLUMN_KEYS = ['6:00 PM', '7:00 PM', '7:30 PM', '8:00 PM']
@@ -51,7 +52,8 @@ const getData = function() {
         .end(function(err, res) {
             if (res.body) {
                 lastRequestTime = new Date().toUTCString();
-                resultsData = sortData(res.body)
+                resultsData = sortData(res.body.results)
+                lastUpdated = res.body.last_updated
                 projector.scheduleRender();
             }
         });
@@ -161,6 +163,14 @@ const renderMaquette = function() {
         h('div.results', [
             renderResultsColumn(firstColumn, 'first'),
             renderResultsColumn(secondColumn, 'last')
+        ]),
+        h('div.footer', [
+            'Source: AP ',
+            h('span', [
+                '(as of ',
+                lastUpdated,
+                ')'
+            ])
         ])
     ]);
 }
