@@ -207,7 +207,7 @@ const renderMaquette = function() {
           renderResults(),
           h('div.footer', [
             h('p', [
-              'Census Bureau, Bureau of Labor Statistics and TKTKTK. Current results from AP',
+              'Sources: Census Bureau, Bureau of Labor Statistics and TKTKTK. Current results from AP',
               ' ',
               h('span.timestamp', [
                 '(as of ',
@@ -331,11 +331,16 @@ const renderStateRow = function(result){
       'winner': result['npr_winner'],
       'dem': result['npr_winner'] && result['party'] === 'Dem',
       'gop': result['npr_winner'] && result['party'] === 'GOP',
-      'ind': result['npr_winner'] && result['party'] === 'Ind'
+      'ind': result['npr_winner'] && result['party'] === 'Ind',
+      'hidden': result['last'] === 'Other' && result['votecount'] === 0
     }
   }, [
     h('td.candidate', [
-      result.first + ' ' + result.last + ' (' + result.party + ')',
+      result.first, 
+      ' ', 
+      result.last,
+      ' ',
+      result.party ? '(' + result.party + ')': '',
       h('i.icon', {
         classes: {
           'icon-ok': result.npr_winner
@@ -363,8 +368,7 @@ const renderCountyRow = function(results, key){
   }
   let trump = null;
   let clinton = null;
-  let othervotecount = 0;
-  let othervotepct = 0;
+  let other = null;
 
   for (var i = 0; i < results.length; i++){
     let candidate = results[i];
@@ -372,9 +376,8 @@ const renderCountyRow = function(results, key){
       trump = results[i];
     } else if (candidate.last == 'Clinton'){
       clinton = results[i];
-    } else {
-      othervotecount += candidate.votecount;
-      othervotepct += candidate.votepct;
+    } else if (candidate.last == 'Other') {
+      other = results[i];
     }
   }
 
@@ -420,19 +423,19 @@ const renderCountyRow = function(results, key){
     h('td.amt.precincts', [(trump.precinctsreportingpct * 100).toFixed(1) + '% in']),
     h('td.vote.dem', {
       classes: {
-        'winner': clinton.votecount > trump.votecount && clinton.votecount > othervotecount && clinton.precinctsreportingpct === 1
+        'winner': clinton.votecount > trump.votecount && clinton.votecount > other.votecount && clinton.precinctsreportingpct === 1
       }
     }, [(clinton.votepct * 100).toFixed(1) + '%']),
     h('td.vote.gop', {
       classes: {
-        'winner': trump.votecount > clinton.votecount && trump.votecount > othervotecount && trump.precinctsreportingpct === 1
+        'winner': trump.votecount > clinton.votecount && trump.votecount > other.votecount && trump.precinctsreportingpct === 1
       }
     }, [(trump.votepct * 100).toFixed(1) + '%']),
     h('td.vote.ind', {
       classes: {
-        'winner': othervotecount > trump.votecount && othervotecount > clinton.votecount && clinton.precinctsreportingpct === 1
+        'winner': other.npr_winner && clinton.precinctsreportingpct === 1
       }
-    }, (othervotepct * 100).toFixed(1) + '%'),
+    }, (other.votepct * 100).toFixed(1) + '%'),
     h('td.vote.margin', calculateVoteMargin(trump.votepct, clinton.votepct)),
     h('td.comparison', extraMetric),
   ])
@@ -500,7 +503,8 @@ const renderHouseTable = function(results){
 }
 
 const renderRow = function(result){
-  let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' (' + result.party + ')'
+  let party = result.party ? '(' + result.party + ')' : ''
+  let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' ' + party
 
   return h('tr', {
     classes: {
@@ -509,7 +513,8 @@ const renderRow = function(result){
       'gop': result['npr_winner'] && result['party'] === 'GOP',
       'ind': result['npr_winner'] && result['party'] === 'Ind',
       'yes': result['npr_winner'] && result['party'] === 'Yes',
-      'no': result['npr_winner'] && result['party'] === 'No'
+      'no': result['npr_winner'] && result['party'] === 'No',
+      'hidden': result['last'] === 'Other' && result['votecount'] === 0
     }
   }, [
     h('td.candidate', [
