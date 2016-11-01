@@ -85,3 +85,23 @@ var buildDataURL = function(filename) {
         return document.location.protocol + '//' + document.location.hostname + '/elections16/data/' + filename;
     }
 }
+
+var injectCustomCSS = function() {
+    var link = document.createElement('link')
+    link.setAttribute('rel', 'stylesheet')
+    link.setAttribute('type', 'text/css')
+    if (APP_CONFIG.DEPLOYMENT_TARGET == 'production') {
+        link.setAttribute('href', '../css/rendered/screenshot.css');
+    } else {
+        link.setAttribute('href', '../less/screenshot.less');
+    }
+    document.getElementsByTagName('head')[0].appendChild(link)
+}
+
+if (Boolean(getParameterByName('screenshot'))) {
+    if (document.readyState != 'loading'){
+        injectCustomCSS();
+    } else {
+        document.addEventListener('DOMContentLoaded', injectCustomCSS);
+    }
+}
