@@ -165,6 +165,7 @@ const sortCountyResults = function() {
 
 const renderMaquette = function() {
     if (data, extraData) {
+      console.log(data);
         if (!stateName && !statepostal && !statefaceClass) {
           stateName = data['state'][0].statename;
           statepostal = data['state'][0].statepostal;
@@ -300,7 +301,11 @@ const renderResults = function() {
       ]),
       Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor']['results'][race])),
       h('div.results-ballot-measures', [
-        h('h2', 'Ballot Measures'),
+        h('h2', {
+          classes: {
+            'hidden': Object.keys(data['ballot_measures']['results']).length === 0,
+          }
+        }, 'Ballot Measures'),
         h('div.results-wrapper', [
             sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
         ]),
