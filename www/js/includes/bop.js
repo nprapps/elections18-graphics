@@ -41,16 +41,20 @@ var LOAD_INTERVAL = 20000;
 window.pymChild = null;
 var isInitialized = false;
 var isMobile = false;
+var lastUpdated = '';
 var charts = d3.keys(CONGRESS);
 var skipLabels = [ 'label', 'values' ];
 var bopData = [];
 var reloadData = null;
 var graphicWidth = null;
+var timestamp = null;
 
 /*
  * Initialize the graphic.
  */
 var onWindowLoaded = function() {
+    timestamp = d3.select('.footer .timestamp');
+
     loadData();
 }
 
@@ -66,6 +70,7 @@ var loadData = function() {
         }
 
         bopData = data;
+        lastUpdated = data.last_updated;
         formatData();
     });
 }
@@ -185,6 +190,9 @@ var redrawChart = function() {
             chart: d
         });
     })
+
+    // update timestamp
+    timestamp.html('(as of ' + lastUpdated + ' ET)');
 
     // Update iframe
     if (pymChild) {
