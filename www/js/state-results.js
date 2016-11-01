@@ -501,7 +501,9 @@ const renderHouseTable = function(results){
 
   return h('div.house-race', [
    h('table.results-table', [
-    h('caption', seatName),
+    h('caption', [ seatName,
+      h('amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
+    ]),
     h('thead', [
       h('tr', [
         h('th.candidate', 'Candidate'),
