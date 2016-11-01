@@ -9,6 +9,16 @@
 </div>
 {% endif %}
 
+<!-- results nav -->
+<nav>
+    <h3>{{ COPY.content.nav_sidebar_header }}</h3>
+    <ul>
+        {% for row in COPY.nav %}
+        <li><a href="{{ row.nav }}">{{ row.label }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>
+
 <div class="footer">
     {% if COPY.bop.source %}<p>Source: {{ COPY.bop.source|smarty }}</p>{% endif %}
     {% if COPY.bop.credit %}<p>Credit: {{ COPY.bop.credit|smarty }}</p>{% endif %}

@@ -1,0 +1,52 @@
+@import "bop";
+
+html { -webkit-text-size-adjust: none; }
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.footnotes {
+    margin-bottom: 22px;
+}
+
+nav {
+    font: 12px/1.4 @gotham;
+    background-color: @gray-lighter;
+    border-top: 2px solid #ccc;
+    margin: 0 0 11px 0;
+    padding: 11px;
+    color: @gray;
+
+
+    h3 {
+        margin: 0 0 3px 0;
+        font-size: 100%;
+        color: @gray-dark;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            display: inline;
+
+            &::after {
+                content: ', ';
+            }
+
+            &:last-child::after { content: '' };
+        }
+    }
+
+    a, a:link, a:visited {
+        color: @link-color;
+        text-decoration: none;
+    }
+    a:hover, a:active {
+        color: @link-hover-color;
+    }
+}
