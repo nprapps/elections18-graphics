@@ -220,7 +220,7 @@ const renderMaquette = function() {
               h('span.timestamp', [
                 '(as of ',
                 lastUpdated,
-                ')'
+                ' ET)'
               ])
             ])
           ])
