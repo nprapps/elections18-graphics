@@ -1,8 +1,6 @@
 console.log('loading bop');
 
 /* TODO
-- highlight existing senate seats differently?
-- last updated timestamp
 - refresh counter
 - link bars to the big board
 */
@@ -10,12 +8,7 @@ console.log('loading bop');
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
-import textures from 'textures';
-
-// D3 formatters
-var fmtComma = d3.format(',');
-var fmtYearAbbrev = d3.time.format('%y');
-var fmtYearFull = d3.time.format('%Y');
+// import textures from 'textures';
 
 // Global vars
 var DATA_FILE = 'top-level-results.json';
@@ -73,16 +66,6 @@ var loadData = function() {
         lastUpdated = data.last_updated;
         formatData();
     });
-}
-
-var buildDataURL = function(filename) {
-    if (document.location.hostname === '127.0.0.1' ||
-        document.location.hostname === 'localhost' ||
-        document.location.hostname === '0.0.0.0') {
-        return document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/data/' + filename;
-    } else {
-        return document.location.protocol + '//' + document.location.hostname + '/elections16/data/' + filename;
-    }
 }
 
 
