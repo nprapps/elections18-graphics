@@ -75,6 +75,7 @@ let stateName = null;
 let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
+let resultsType = 'Presidential Results';
 
 window.pymChild = null;
 /*
@@ -196,7 +197,7 @@ const renderMaquette = function() {
                   h('span.state-name', [
                       stateName
                   ]),
-                  'Presidential Results'
+                  resultsType
               ]),
               h('p.rating', [
                   'Battleground rating: ',
@@ -626,9 +627,11 @@ const toTitlecase = function(str) {
 
 const switchResultsView = function(e) {
   if (e.target.getAttribute('id') === 'presidential') {
-    var dataFilename = 'presidential-' + currentState + '-counties.json'
+    var dataFilename = 'presidential-' + currentState + '-counties.json';
+    resultsType = 'Presidential Results';
   } else {
     var dataFilename = currentState + '.json';
+    resultsType = 'Statewide Results';
   }
   dataURL = buildDataURL(dataFilename);
 
