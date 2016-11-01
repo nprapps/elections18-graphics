@@ -285,6 +285,10 @@ const renderResults = function() {
       return data['house']['results'][a][0]['seatnum'] - data['house']['results'][b][0]['seatnum'];
     });
 
+    const sortedBallotKeys = Object.keys(data['ballot_measures']['results']).sort(function(a, b) {
+      return data['ballot_measures']['results'][a][0]['seatname'].split(' - ')[0] - data['ballot_measures']['results'][b][0]['seatname'].split(' - ')[0];
+    });
+
     return h('div.downballot', [
       Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race])),
       h('div.results-house', [
@@ -297,7 +301,7 @@ const renderResults = function() {
       h('div.results-ballot-measures', [
         h('h2', 'Ballot Measures'),
         h('div.results-wrapper', [
-            Object.keys(data['ballot_measures']['results']).map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
+            sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
         ]),
       ])
     ]);
