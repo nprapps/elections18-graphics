@@ -3,8 +3,14 @@
 {% block content %}
 {% include 'bop.html' %}
 
+{% if COPY.map.footnote %}
+<div class="footnotes">
+    <p><strong>Note:</strong> {{ COPY.bop.footnote|smarty }}</p>
+</div>
+{% endif %}
+
 <div class="footer">
-    {% if COPY.map.source %}<p>Source: {{ COPY.map.source|smarty }}</p>{% endif %}
-    {% if COPY.map.credit %}<p>Credit: {{ COPY.map.credit|smarty }}</p>{% endif %}
+    {% if COPY.bop.source %}<p>Source: {{ COPY.bop.source|smarty }}</p>{% endif %}
+    {% if COPY.bop.credit %}<p>Credit: {{ COPY.bop.credit|smarty }}</p>{% endif %}
 </div>
 {% endblock %}
