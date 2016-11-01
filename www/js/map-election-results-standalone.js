@@ -1,6 +1,5 @@
 /* TODO
 - popular vote
-- last updated timestamp (overall)
 - modernizr support? disable tooltips on touch devices.
 - refresh counter
 */
@@ -244,7 +243,7 @@ var formatData = function() {
     });
 
     // update timestamp
-    timestamp.html('(as of ' + lastUpdated + ')');
+    timestamp.html('(as of ' + lastUpdated + ' ET)');
 
     // color in the map!
     updateElectoralMap();
