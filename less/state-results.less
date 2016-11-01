@@ -19,8 +19,7 @@ body {
     }
 
     h1 {
-        max-width: @mm-max-width;
-        margin: 0 auto 22px auto;
+        margin: 0;
         font-size: 35px;
         color: #333;
         font-family: @gotham;
@@ -59,34 +58,78 @@ body {
         }
 
         &.rating {
-            color: #666;
+            color: @gray-medium;
             font-size: 12px;
-            max-width: @mm-max-width;
-            margin: -11px auto 22px auto;
+            margin-bottom: 0;
+            padding-top: 11px;
+            clear: both;
 
-            span{
-              &.d-safe { background-color: @demSafe; color: #fff; padding: 5px; }
-              &.d-lean { background-color: @demLean; color: #fff; padding: 5px; }
-              &.toss-up { background-color: @yellow; color: #fff; padding: 5px; }
-              &.r-lean { background-color: @gopLean; color: #fff; padding: 5px; }
-              &.r-safe { background-color: @gopSafe; color: #fff; padding: 5px;}
+            span {
+                color: #fff;
+                padding: 5px;
+
+                &.d-safe { background-color: @demSafe; }
+                &.d-lean { background-color: @demLean; }
+                &.toss-up { background-color: @yellow; }
+                &.r-lean { background-color: @gopLean; }
+                &.r-safe { background-color: @gopSafe; }
             }
 
+            .tab-downballot & { display: none; }
         }
 
         &.precincts {
             margin-top: 11px;
+            margin-bottom: 0;
             color: #999;
             font-size: 11px;
             font-style: italic;
         }
     }
 
-    .switcher {
+    header {
         max-width: @mm-max-width;
-        margin: 0 auto 11px auto;
+        margin: 0 auto 33px auto;
+        padding-bottom: 22px;
+        border-bottom: 2px solid #eee;
+        .clearfix();
+
+        .state-icon {
+            font-size: 80px;
+            float: left;
+            line-height: .9;
+        }
+
+        h1 {
+            .state-name {
+                font-size: 40%;
+                display: block;
+                padding-top: 7px;
+                margin-bottom: -2px;
+            }
+        }
+    }
+
+    .switcher {
+        margin: 0 0 22px 0;
         font-size: 12px;
-        color: @gray;
+        color: @gray-medium;
+
+        span {
+            margin: 0 6px;
+            color: @link-color;
+
+            &:hover {
+                color: @link-hover-color;
+                cursor: pointer;
+            }
+        }
+
+        .tab-presidential & #presidential,
+        .tab-downballot & #downballot {
+            color: @gray;
+            font-weight: bold;
+        }
     }
 
     .sorter {
@@ -150,9 +193,12 @@ body {
         margin-right: 5px;
     }
 
-    .results-statewide {
+    .results-statewide,
+    .results-senate {
         max-width: @mm-max-width;
-        margin: 0 auto 44px auto;
+        padding-bottom: 33px;
+        margin: 0 auto 33px auto;
+        border-bottom: 2px solid #eee;
 
         table { max-width: 350px; }
     }
@@ -246,7 +292,7 @@ body {
 
 
 // desktop only
-@media screen and (min-width: (@screen-xs + 1)) {
+@media screen and (min-width: @screen-sm-min) {
     #county-results {
         .results-counties .results-table {
             .precincts.mobile { display: none; }
@@ -257,6 +303,18 @@ body {
 // mobile only
 @media screen and (max-width: @screen-xs) {
     #county-results {
+        header {
+            .state-icon { font-size: 60px; }
+            h1 {
+                font-size: 22px;
+
+                .state-name {
+                    padding-top: 2px;
+                    margin-bottom: 0;
+                    font-size: 60%;
+                }
+            }
+        }
         .results-table {
             th {
                 font-size: 10px;
