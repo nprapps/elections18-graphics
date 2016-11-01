@@ -172,38 +172,45 @@ const renderMaquette = function() {
         }
 
         return h('div.results', [
-          h('div.switcher', [
-            h('span#presidential', {
-              'onclick': switchResultsView
-            }, [
-              'Presidential Results'
-            ]),
-            ' ',
-            h('span#downballot', {
-              'onclick': switchResultsView
-            }, [
-              'Downballot Results'
-            ]),
+          h('header', [
+              h('div.switcher', [
+                stateName + ' election results: ',
+                h('span#presidential', {
+                  'onclick': switchResultsView
+                }, [
+                  'Presidential'
+                ]),
+                ' | ',
+                h('span#downballot', {
+                  'onclick': switchResultsView
+                }, [
+                  'Statewide'
+                ]),
+              ]),
+              h('div.state-icon', [
+                h('i.stateface', {
+                    class: statefaceClass
+                })
+              ]),
+              h('h1', [
+                  h('span.state-name', [
+                      stateName
+                  ]),
+                  'Presidential Results'
+              ]),
+              h('p.rating', [
+                  'Battleground rating: ',
+                  h('span', {
+                    classes:{
+                      'd-safe': descriptions.rating === 'D-Safe/Likely',
+                      'd-lean': descriptions.rating === 'D-Lean',
+                      'toss-up': descriptions.rating === 'Toss-up',
+                      'r-lean': descriptions.rating === 'R-Lean',
+                      'r-safe': descriptions.rating === 'R-Safe/Likely',
+                    }
+                  }, descriptions.rating)
+                ])
           ]),
-          h('h1', [
-            stateName,
-            ' ',
-            h('i.stateface', {
-                class: statefaceClass
-            })
-          ]),
-          h('p.rating', [
-              'Battleground rating: ',
-              h('span', {
-                classes:{
-                  'd-safe': descriptions.rating === 'D-Safe/Likely',
-                  'd-lean': descriptions.rating === 'D-Lean',
-                  'toss-up': descriptions.rating === 'Toss-up',
-                  'r-lean': descriptions.rating === 'R-Lean',
-                  'r-safe': descriptions.rating === 'R-Safe/Likely',
-                }
-              }, descriptions.rating)
-            ]),
           renderResults(),
           h('div.footer', [
             h('p', [
@@ -282,12 +289,16 @@ const renderResults = function() {
       Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race])),
       h('div.results-house', [
         h('h2', 'House'),
-        sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
+        h('div.results-wrapper', [
+            sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
+        ]),
       ]),
       Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor'['results']][race])),
       h('div.results-ballot-measures', [
         h('h2', 'Ballot Measures'),
-        Object.keys(data['ballot_measures']['results']).map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
+        h('div.results-wrapper', [
+            Object.keys(data['ballot_measures']['results']).map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
+        ]),
       ])
     ]);
   }
@@ -336,8 +347,8 @@ const renderStateRow = function(result){
     }
   }, [
     h('td.candidate', [
-      result.first, 
-      ' ', 
+      result.first,
+      ' ',
       result.last,
       ' ',
       result.party ? '(' + result.party + ')': '',

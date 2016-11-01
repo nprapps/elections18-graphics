@@ -29,16 +29,18 @@ body {
     }
 
     h2 {
-        margin-bottom: 11px;
         font-family: @knockout;
         font-weight: normal;
         text-transform: uppercase;
-        padding-top: 0;
         line-height: 1.2;
         letter-spacing: 0.05em;
         -webkit-font-smoothing: antialiased;
         font-size: 14px;
         color: #333;
+        max-width: @mm-max-width;
+        margin: 0 auto 22px auto;
+        padding: 33px 10px 0 10px;
+        border-top: 2px solid #eee;
     }
 
     p {
@@ -46,6 +48,8 @@ body {
         line-height: 1.6;
         margin-bottom: 22px;
         color: #454545;
+        padding-left: 10px;
+        padding-right: 10px;
 
         strong { color: #121212; }
 
@@ -89,9 +93,7 @@ body {
 
     header {
         max-width: @mm-max-width;
-        margin: 0 auto 33px auto;
-        padding-bottom: 22px;
-        border-bottom: 2px solid #eee;
+        margin: 0 auto 22px auto;
         .clearfix();
 
         .state-icon {
@@ -100,18 +102,18 @@ body {
             line-height: .9;
         }
 
-        h1 {
-            .state-name {
-                font-size: 40%;
-                display: block;
-                padding-top: 7px;
-                margin-bottom: -2px;
-            }
+        .state-name {
+            font-size: 40%;
+            display: block;
+            padding-top: 7px;
+            margin-bottom: -2px;
         }
     }
 
     .switcher {
         margin: 0 0 22px 0;
+        padding-left: 10px;
+        padding-right: 10px;
         font-size: 12px;
         color: @gray-medium;
 
@@ -194,13 +196,60 @@ body {
     }
 
     .results-statewide,
-    .results-senate {
+    .results-senate,
+    .results-gubernatorial {
         max-width: @mm-max-width;
         padding-bottom: 33px;
-        margin: 0 auto 33px auto;
-        border-bottom: 2px solid #eee;
+        margin: 0 auto;
 
         table { max-width: 350px; }
+    }
+
+    .results-house,
+    .results-ballot-measures {
+        margin: 0 auto 0 auto;
+
+        h2 {
+            max-width: @mm-max-width;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .results-wrapper {
+            @media screen and (min-width: @screen-sm-min) {
+                display: flex;
+                flex-flow: row wrap;
+            }
+        }
+
+        .house-race,
+        .ballot-measure {
+            margin-bottom: 33px;
+
+            @media screen and (min-width: @screen-sm-min) {
+                box-sizing: border-box;
+                width: 50%;
+                padding-right: 22px;
+            }
+            @media screen and (min-width: @screen-md-min) {
+                width: 33%;
+            }
+            @media screen and (min-width: @screen-lg-min) {
+                width: 25%;
+            }
+            @media screen and (min-width: @screen-xl-min) {
+                width: 20%;
+            }
+
+            // @screen-sm-min:              (@screen-xs + 1);
+            // @screen-md-min:              (@screen-sm + 1);
+            // @screen-lg-min:              (@screen-md + 1);
+            // @screen-xl-min:              (@screen-lg + 1);
+            // @screen-big-board-min:       (@screen-xl + 1);
+
+
+        }
+
     }
 
     .results-counties {
@@ -303,6 +352,13 @@ body {
 // mobile only
 @media screen and (max-width: @screen-xs) {
     #county-results {
+        h2,
+        p,
+        .switcher {
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
         header {
             .state-icon { font-size: 60px; }
             h1 {
@@ -316,6 +372,11 @@ body {
             }
         }
         .results-table {
+            caption {
+                padding-left: 2px;
+                padding-right: 2px;
+                font-size: 11px;
+            }
             th {
                 font-size: 10px;
                 padding: 0 2px 5px 2px;
