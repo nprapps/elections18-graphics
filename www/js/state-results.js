@@ -215,13 +215,14 @@ const renderMaquette = function() {
           renderResults(),
           h('div.footer', [
             h('p', [
-              'Sources: Census Bureau, Bureau of Labor Statistics and TKTKTK. Current results from AP',
+              'Sources: Current results from AP',
               ' ',
               h('span.timestamp', [
                 '(as of ',
                 lastUpdated,
-                ' ET)'
-              ])
+                ' ET).'
+              ]),
+              ' Other statistics from the Census Bureau (2014 American Community Survey 5-year estimates) and Bureau of Labor Statistics (2015 figures).'
             ])
           ])
         ]);
