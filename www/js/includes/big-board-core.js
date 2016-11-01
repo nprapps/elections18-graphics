@@ -94,8 +94,8 @@ const renderMaquette = function() {
         var aHour = parseInt(a.split(':')[0]);
         var bHour = parseInt(b.split(':')[0]);
 
-        if (a.slice(-2) === 'AM') return 1;
-        if (b.slice(-2) === 'AM') return -1;
+        if (a.slice(-4) === 'a.m.') return 1;
+        if (b.slice(-4) === 'a.m.') return -1;
         if (aHour === bHour && a.indexOf('30') !== -1) return 1;
         if (aHour === bHour && b.indexOf('30') !== -1) return -1;
         else return aHour - bHour;
@@ -155,12 +155,18 @@ const renderMaquette = function() {
         });
     }
 
+    let duplicates = diffArrays(Object.keys(firstColumn), Object.keys(secondColumn));
+
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', boardTitle),
             bopData ? renderLeaderboard() : ''
         ]),
-        h('div.results', [
+        h('div.results', {
+            classes: {
+                'hide-second-column-header': duplicates.length > 0
+            }
+        }, [
             renderResultsColumn(firstColumn, 'first'),
             renderResultsColumn(secondColumn, 'last')
         ]),
@@ -639,3 +645,13 @@ const determineSortKey = function(result) {
         return result.statepostal + '-' + result.seatname.split(' - ')[0];
     }
 }
+
+const diffArrays = function(arr1, arr2) {
+    var ret = [];
+    for(var i in arr1) {   
+        if(arr2.indexOf( arr1[i] ) > -1){
+            ret.push( arr1[i] );
+        }
+    }
+    return ret;
+};
