@@ -293,7 +293,7 @@ const renderResults = function() {
             sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
         ]),
       ]),
-      Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor'['results']][race])),
+      Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor']['results'][race])),
       h('div.results-ballot-measures', [
         h('h2', 'Ballot Measures'),
         h('div.results-wrapper', [
