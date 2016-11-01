@@ -1,8 +1,9 @@
-var page = require('webpage').create();
+var page = require('webpage').create(),
+    system = require('system');
 
-page.viewportSize = { width: 750 * 2, height: 500 };
+page.viewportSize = { width: 1200, height: 400 };
 
-page.open('http://127.0.0.1:8000/map-election-results-standalone/child.html?initialWidth=730&hp=1', function (status) {
+page.open(system.args[1], function (status) {
     page.evaluate(function () {
         document.body.style.backgroundColor = "#fff";
         /* scale the whole body */
@@ -13,7 +14,7 @@ page.open('http://127.0.0.1:8000/map-election-results-standalone/child.html?init
     });
 
     window.setTimeout(function () {
-        page.render('test.png');
+        page.render(system.args[2]);
         phantom.exit();
-    }, 3000);
+    }, 1000);
 });
