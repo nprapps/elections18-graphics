@@ -169,7 +169,7 @@ const renderMaquette = function() {
             h('span', [
                 '(as of ',
                 lastUpdated,
-                ')'
+                ' ET)'
             ])
         ])
     ]);
@@ -257,7 +257,7 @@ const renderResultsTable = function(key, column) {
 
     if (races) {
         return [
-            h('h2.poll-closing-group', h('span.time', key)),
+            h('h2.poll-closing-group', h('span.time', key + ' ET')),
             h('table.races', [
                 Object.keys(races).map(key => renderRace(races[key], key))
             ])
