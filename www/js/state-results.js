@@ -165,7 +165,6 @@ const sortCountyResults = function() {
 
 const renderMaquette = function() {
     if (data, extraData) {
-      console.log(data);
         if (!stateName && !statepostal && !statefaceClass) {
           stateName = data['state'][0].statename;
           statepostal = data['state'][0].statepostal;
@@ -316,6 +315,8 @@ const renderResults = function() {
 
 const renderStateResults = function(results) {
   stateTotalVotes = 0;
+
+  results = sortResults(results);
   return h('div.results-statewide', [
     h('h2', 'Statewide Results'),
     h('p', [
@@ -468,6 +469,10 @@ const renderSenateTable = function(results){
     totalVotes += results[i].votecount;
   }
 
+  if (results.length > 2) {
+    results = sortResults(results);
+  }
+
   return h('div.results-senate', [
     h('h2', 'Senate'),
     h('table.results-table', [
@@ -497,6 +502,10 @@ const renderHouseTable = function(results){
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
     totalVotes += results[i].votecount;
+  }
+
+  if (results.length > 2) {
+    results = sortResults(results)
   }
 
   return h('div.house-race', [
@@ -559,6 +568,10 @@ const renderGovTable = function(results){
     totalVotes += results[i].votecount;
   }
 
+  if (results.length > 2) {
+    results = sortResults(results);
+  }
+
   return h('div.results-gubernatorial', [
     h('h2', 'Gubernatorial'),
     h('table.results-table', [
@@ -588,6 +601,10 @@ const renderMeasureTable = function(results){
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
     totalVotes += results[i].votecount;
+  }
+
+  if (results.length > 2) {
+    results = sortResults(results);
   }
 
   return h('div.ballot-measure', [
@@ -649,6 +666,21 @@ const switchResultsView = function(e) {
   clearInterval(dataTimer);
   getData();
   dataTimer = setInterval(getData, 5000);
+}
+
+const sortResults = function(results) {
+  results.sort(function(a, b) {
+    if (a.votecount > 0 || a.precinctsreporting > 0) {
+      return b.votecount - a.votecount;
+    } else {
+      if (a.last === 'Other') return 1;
+      if (b.last === 'Other') return -1;
+      if (a.last < b.last) return -1;
+      if (a.last > b.last) return 1;
+      return 0;
+    }
+  });
+  return results
 }
 
 /*
