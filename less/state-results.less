@@ -202,7 +202,9 @@ body {
         padding-bottom: 33px;
         margin: 0 auto;
 
-        table { max-width: 350px; }
+        @media screen and (min-width: @screen-sm-min) {
+            table { max-width: 350px; }
+        }
     }
 
     .results-house,
@@ -267,13 +269,16 @@ body {
           padding-bottom: 33px;
           margin: 0 auto;
 
-          table { max-width: 350px; }
+          @media screen and (min-width: @screen-sm-min) {
+            table { max-width: 350px; }
 
-          .house-race,
-          .ballot-measure{
-            width: 350px;
-            padding: 0;
-            margin: 0;
+            .house-race,
+            .ballot-measure{
+
+              width: 350px;
+              padding: 0;
+              margin: 0;
+            }
           }
         }
 
