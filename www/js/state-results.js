@@ -76,7 +76,6 @@ let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
 let resultsType = 'Presidential Results';
-let firstMeasure = null;
 
 window.pymChild = null;
 /*
@@ -345,7 +344,7 @@ const renderResults = function() {
         h('div.results-wrapper', [
             sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
         ]),
-        h('p.precincts', [(firstMeasure.precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(firstMeasure.precinctsreporting) +' of ' + commaNumber(firstMeasure.precinctstotal) + ')'])
+        renderMeasurePrecincts(data['ballot_measures']['results'])
       ])
     ]);
   }
@@ -529,7 +528,7 @@ const determineWinner = function(keyedResults) {
     }
   }
 
-  return winner; 
+  return winner;
 }
 
 const renderSenateTable = function(results){
@@ -667,7 +666,6 @@ const renderGovTable = function(results){
 }
 
 const renderMeasureTable = function(results){
-  firstMeasure = results[0];
   let propName = results[0].seatname;
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
@@ -700,6 +698,16 @@ const renderMeasureTable = function(results){
     ])
   ]),
 ])
+}
+
+const renderMeasurePrecincts = function(results){
+  let precinctReporting = null;
+  for (var result in results){
+    if (results[result][0]){
+      precinctReporting = results[result][0];
+      return h('p.precincts', [(precinctReporting.precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
+    }
+  }
 }
 
 const calculateVoteMargin = function(keyedResults, winner) {
