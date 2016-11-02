@@ -82,6 +82,10 @@ const sortData = function(resultsData) {
 }
 
 const renderMaquette = function() {
+    if (!resultsData) {
+        return h('div.results-wrapper', 'Loading...')
+    }
+
     let numberOfRaces = 0;
 
     let times = [];
@@ -90,6 +94,7 @@ const renderMaquette = function() {
         const group = resultsData[time];
         numberOfRaces += Object.keys(group).length;
     }
+
     const sortedTimes = times.sort(function(a, b) {
         var aHour = parseInt(a.split(':')[0]);
         var bHour = parseInt(b.split(':')[0]);
@@ -100,8 +105,6 @@ const renderMaquette = function() {
         if (aHour === bHour && b.indexOf('30') !== -1) return -1;
         else return aHour - bHour;
     });
-
-
 
     let sortedRacesPerTime = {};
 
@@ -139,7 +142,7 @@ const renderMaquette = function() {
     let secondColumn = {};
     let selectedColumn = firstColumn
 
-    for (let time of sortedTimes) {
+    sortedTimes.forEach(function(time) {
         const group = resultsData[time];
         sortedRacesPerTime[time].map(function(id) {
             raceIndex += 1
@@ -153,7 +156,7 @@ const renderMaquette = function() {
                 selectedColumn = secondColumn
             }
         });
-    }
+    });
 
     let duplicates = diffArrays(Object.keys(firstColumn), Object.keys(secondColumn));
 
@@ -564,11 +567,11 @@ const decideLabel = function(race, key) {
 
 const insertRunoffImage = function(race) {
     let runoff = false;
-    for (var result of race) {
+    race.forEach(function(result) {
         if (result['runoff'] === true) {
             runoff = true;
         }
-    }
+    });
 
     if (runoff) {
         return h('img.img-responsive', {
