@@ -16,7 +16,5 @@ NEWMD5=`md5sum $FILEDIR/$FILEDATE-election16-map.png | awk '{ print $1 }'`
 OLDMD5=`md5sum $FILEDIR/$LASTFILE | awk '{ print $1 }'`
 
 if [ $NEWMD5 = $OLDMD5 ]; then
-  echo "matched"
-else
-  echo "didnt match"
+  rm $FILEDIR/$FILEDATE-election-16-map.png
 fi
