@@ -116,7 +116,7 @@ var onWindowLoaded = function() {
  */
 var loadData = function() {
     clearInterval(reloadData);
-    console.log('loadData: ' + DATA_FILE);
+    // console.log('loadData: ' + DATA_FILE);
     d3.json(buildDataURL(DATA_FILE), function(error, data) {
         if (error) {
             console.warn(error);
@@ -124,7 +124,7 @@ var loadData = function() {
 
         electoralData = data.results;
         lastUpdated = data.last_updated;
-        console.log(electoralData);
+        // console.log(electoralData);
         formatData();
     });
 }
@@ -370,7 +370,12 @@ var render = function(containerWidth) {
 
     // adjust map measurements
     mapWidth = containerWidth;
-    mapElement.attr('width', mapWidth);
+    mapElement.attr('width', mapWidth)
+        .attr('height', function() {
+                var s = d3.select(this);
+                var viewBox = s.attr('viewBox').split(' ');
+                return Math.floor(mapWidth * viewBox[3] / viewBox[2]);
+            });
 
     // reset map scale (relevant to tooltip positioning)
     mapScale = mapWidth / 720;
