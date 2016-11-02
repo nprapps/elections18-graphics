@@ -262,8 +262,6 @@ const renderResults = function() {
       if (a > b) return 1;
     });
 
-    console.log(sortedCandidates, availableCandidates);
-
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
       h('div.results-counties', {
@@ -280,7 +278,9 @@ const renderResults = function() {
         }
       }, [
         h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
-        h('p', descriptions.county_desc ? descriptions.county_desc : ''),
+        h('p', {
+          innerHTML: descriptions.county_desc ? descriptions.county_desc : ''
+        }),
         h('ul.sorter', [
           h('li.label', 'Sort Counties By'),
           availableMetrics.map(metric => renderMetricLi(metric))
@@ -359,9 +359,10 @@ const renderStateResults = function(results) {
   results = sortResults(results);
   return h('div.results-statewide', [
     h('h2', 'Statewide Results'),
-    h('p', [
-      descriptions.state_desc ? descriptions.state_desc : ''
-    ]),
+    h('p', {
+      innerHTML: descriptions.state_desc ? descriptions.state_desc : ''
+    }
+    ),
     h('table.results-table', [
       h('thead', [
         h('tr', [
