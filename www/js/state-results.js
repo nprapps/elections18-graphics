@@ -677,11 +677,11 @@ const switchResultsView = function(e) {
 
 const sortResults = function(results) {
   results.sort(function(a, b) {
+    if (a.last === 'Other') return 1;
+    if (b.last === 'Other') return -1;
     if (a.votecount > 0 || a.precinctsreporting > 0) {
       return b.votecount - a.votecount;
     } else {
-      if (a.last === 'Other') return 1;
-      if (b.last === 'Other') return -1;
       if (a.last < b.last) return -1;
       if (a.last > b.last) return 1;
       return 0;
