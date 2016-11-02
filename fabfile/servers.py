@@ -51,7 +51,6 @@ def create_directories():
     require('settings', provided_by=['production', 'staging'])
 
     run('mkdir -p %(SERVER_PROJECT_PATH)s' % app_config.__dict__)
-    run('mkdir -p /var/www/uploads/%(PROJECT_FILENAME)s' % app_config.__dict__)
 
 def create_virtualenv():
     """
@@ -92,7 +91,8 @@ def install_requirements():
     require('settings', provided_by=['production', 'staging'])
 
     run('%(SERVER_VIRTUALENV_PATH)s/bin/pip install -U -r %(SERVER_REPOSITORY_PATH)s/requirements.txt' % app_config.__dict__)
-    run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__)
+    with settings(warn_only=True):
+        run('cd %(SERVER_REPOSITORY_PATH)s; npm install' % app_config.__dict__)
 
 @task
 def setup_logs():
@@ -138,6 +138,7 @@ def remove_google_oauth_creds():
     """
     run('rm %s' % app_config.GOOGLE_OAUTH_CREDENTIALS_PATH)
 
+@task
 def delete_project():
     """
     Remove the project directory. Invoked by shiva.
