@@ -243,6 +243,11 @@ const renderResults = function() {
     });
     const sortKeys = sortCountyResults();
 
+    var hideCountyResults = false;
+    if (sortKeys.length < 2) {
+      hideCountyResults = true;
+    }
+
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
       h('div.results-counties', {
@@ -255,6 +260,7 @@ const renderResults = function() {
           'percent-hispanic': sortMetric['key'] === 'percent_hispanic',
           'median-income': sortMetric['key'] === 'median_income',
           'percent-college-educated': sortMetric['key'] === 'percent_bachelors',
+          'hidden': hideCountyResults
         }
       }, [
         h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
@@ -671,17 +677,43 @@ const switchResultsView = function(e) {
 
 const sortResults = function(results) {
   results.sort(function(a, b) {
+    if (a.last === 'Other') return 1;
+    if (b.last === 'Other') return -1;
     if (a.votecount > 0 || a.precinctsreporting > 0) {
       return b.votecount - a.votecount;
     } else {
-      if (a.last === 'Other') return 1;
-      if (b.last === 'Other') return -1;
       if (a.last < b.last) return -1;
       if (a.last > b.last) return 1;
       return 0;
     }
   });
   return results
+}
+
+if (!Array.prototype.find) {
+  Object.defineProperty(Array.prototype, 'find', {
+    value: function(predicate) {
+     'use strict';
+     if (this == null) {
+       throw new TypeError('Array.prototype.find called on null or undefined');
+     }
+     if (typeof predicate !== 'function') {
+       throw new TypeError('predicate must be a function');
+     }
+     var list = Object(this);
+     var length = list.length >>> 0;
+     var thisArg = arguments[1];
+     var value;
+
+     for (var i = 0; i < length; i++) {
+       value = list[i];
+       if (predicate.call(thisArg, value, i, list)) {
+         return value;
+       }
+     }
+     return undefined;
+    }
+  });
 }
 
 /*
