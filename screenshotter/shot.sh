@@ -12,8 +12,8 @@ mkdir -p $FILEDIR
 phantomjs $SCRIPTDIR/screenshotter/screenshot.js "http://stage-apps.npr.org/elections16graphics/map-election-results-standalone/child.html?initialWidth=600&screenshot=1" $FILEDIR/$FILEDATE-election16-map.png
 
 LASTFILE=`ls -t ~/screenshots/stage/map/ | head -1`
-NEWMD5=`md5 $FILEDIR/$FILEDATE-election16-map.png`
-OLDMD5=`md5 $FILEDIR/$LASTFILE`
+NEWMD5=`md5sum $FILEDIR/$FILEDATE-election16-map.png | awk '{ print $1 }'`
+OLDMD5=`md5sum $FILEDIR/$LASTFILE | awk '{ print $1 }'`
 
 if [ $NEWMD5 = $OLDMD5 ]; then
   echo "matched"
