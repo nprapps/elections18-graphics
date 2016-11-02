@@ -214,7 +214,7 @@ const renderMaquette = function() {
           ]),
           renderResults(),
           h('div.footer', [
-            h('p', [
+            h('p.sources', [
               'Sources: Current results from AP',
               ' ',
               h('span.timestamp', [

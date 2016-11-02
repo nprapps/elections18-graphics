@@ -174,13 +174,13 @@ const renderMaquette = function() {
             renderResultsColumn(secondColumn, 'last')
         ]),
         h('div.footer', [
-            'Source: AP ',
-            h('span', [
-                '(as of ',
-                lastUpdated,
-                ' ET)'
-            ])
+          h('p', ['Source: AP ', h('span', [
+              '(as of ',
+              lastUpdated,
+              ' ET)'
+          ])
         ])
+      ])
     ]);
 }
 
@@ -651,7 +651,7 @@ const determineSortKey = function(result) {
 
 const diffArrays = function(arr1, arr2) {
     var ret = [];
-    for(var i in arr1) {   
+    for(var i in arr1) {
         if(arr2.indexOf( arr1[i] ) > -1){
             ret.push( arr1[i] );
         }
