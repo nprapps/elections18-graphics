@@ -248,7 +248,7 @@ const renderResults = function() {
       h('div.results-counties', {
         classes: {
           'population': sortMetric['key'] === 'population',
-          '2012-results': sortMetric['key'] === 'past_margin',
+          'past-results': sortMetric['key'] === 'past_margin',
           'unemployment': sortMetric['key'] === 'unemployment',
           'percent-white': sortMetric['key'] === 'percent_white',
           'percent-black': sortMetric['key'] === 'percent_black',
