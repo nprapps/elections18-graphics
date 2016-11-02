@@ -299,14 +299,32 @@ const renderResults = function() {
 
     return h('div.downballot', [
       Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race])),
-      h('div.results-house', [
-        h('h2', 'House'),
+      h('div.results-house', {
+        classes: {
+          'one-result': Object.keys(data['house']['results']).length === 1,
+          'two-results': Object.keys(data['house']['results']).length === 2,
+          'three-results': Object.keys(data['house']['results']).length === 3,
+          'four-results': Object.keys(data['house']['results']).length === 4,
+        }
+      },[
+        h('h2', {
+          classes: {
+            'hidden': Object.keys(data['house']['results']).length === 0,
+          }
+        }, 'House'),
         h('div.results-wrapper', [
             sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
         ]),
       ]),
       Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor']['results'][race])),
-      h('div.results-ballot-measures', [
+      h('div.results-ballot-measures', {
+        classes: {
+          'one-result': Object.keys(data['ballot_measures']['results']).length === 1,
+          'two-results': Object.keys(data['ballot_measures']['results']).length === 2,
+          'three-results': Object.keys(data['ballot_measures']['results']).length === 3,
+          'four-results': Object.keys(data['ballot_measures']['results']).length === 4,
+        }
+      },[
         h('h2', {
           classes: {
             'hidden': Object.keys(data['ballot_measures']['results']).length === 0,
