@@ -261,6 +261,78 @@ body {
 
         }
 
+
+        &.one-result{
+          max-width: @mm-max-width;
+          padding-bottom: 33px;
+          margin: 0 auto;
+
+          table { max-width: 350px; }
+
+          .house-race,
+          .ballot-measure{
+            width: 350px;
+            padding: 0;
+            margin: 0;
+          }
+        }
+
+        &.two-results{
+          max-width: @mm-max-width;
+          margin: 0 auto;
+
+          .house-race,
+          .ballot-measure{
+            margin-bottom: 33px;
+
+            @media screen and (min-width: @screen-sm-min) {
+                box-sizing: border-box;
+                width: 50%;
+                padding-right: 22px;
+            }
+          }
+        }
+
+        &.three-results{
+          max-width: 975px;
+          margin: 0 auto;
+
+          .house-race,
+          .ballot-measure{
+            margin-bottom: 33px;
+
+            @media screen and (min-width: @screen-sm-min) {
+                box-sizing: border-box;
+                width: 50%;
+                padding-right: 22px;
+            }
+            @media screen and (min-width: @screen-md-min) {
+                width: 33%;
+            }
+          }
+        }
+
+        &.four-results{
+          margin: 0 auto;
+
+          .house-race,
+          .ballot-measure{
+            margin-bottom: 33px;
+
+            @media screen and (min-width: @screen-sm-min) {
+                box-sizing: border-box;
+                width: 50%;
+                padding-right: 22px;
+            }
+            @media screen and (min-width: @screen-md-min) {
+                width: 33%;
+            }
+            @media screen and (min-width: @screen-lg-min) {
+                width: 25%;
+            }
+          }
+        }
+
     }
 
     .results-counties {
