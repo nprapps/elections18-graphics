@@ -87,7 +87,7 @@ var onWindowLoaded = function() {
     pymChild = new pym.Child({
         polling: 100
     });
-    currentState = getParameterByName('state');
+    currentState = getParameterByName('state').toLowerCase();
     descriptions = briefingData.descriptions.find(function(el) {
       return el.state_postal === currentState;
     });
