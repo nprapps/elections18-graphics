@@ -75,6 +75,7 @@ let stateName = null;
 let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
+let resultsType = 'Presidential Results';
 
 window.pymChild = null;
 /*
@@ -172,48 +173,56 @@ const renderMaquette = function() {
         }
 
         return h('div.results', [
-          h('div.switcher', [
-            h('span#presidential', {
-              'onclick': switchResultsView
-            }, [
-              'Presidential Results'
-            ]),
-            ' ',
-            h('span#downballot', {
-              'onclick': switchResultsView
-            }, [
-              'Downballot Results'
-            ]),
+          h('header', [
+              h('div.switcher', [
+                stateName + ' election results: ',
+                h('span#presidential', {
+                  'onclick': switchResultsView
+                }, [
+                  'Presidential'
+                ]),
+                ' | ',
+                h('span#downballot', {
+                  'onclick': switchResultsView
+                }, [
+                  'Statewide'
+                ]),
+              ]),
+              h('div.state-icon', [
+                h('i.stateface', {
+                    class: statefaceClass
+                })
+              ]),
+              h('h1', [
+                  h('span.state-name', [
+                      stateName
+                  ]),
+                  resultsType
+              ]),
+              h('p.rating', [
+                  'Battleground rating: ',
+                  h('span', {
+                    classes:{
+                      'd-safe': descriptions.rating === 'D-Safe/Likely',
+                      'd-lean': descriptions.rating === 'D-Lean',
+                      'toss-up': descriptions.rating === 'Toss-up',
+                      'r-lean': descriptions.rating === 'R-Lean',
+                      'r-safe': descriptions.rating === 'R-Safe/Likely',
+                    }
+                  }, descriptions.rating)
+                ])
           ]),
-          h('h1', [
-            stateName,
-            ' ',
-            h('i.stateface', {
-                class: statefaceClass
-            })
-          ]),
-          h('p.rating', [
-              'Battleground rating: ',
-              h('span', {
-                classes:{
-                  'd-safe': descriptions.rating === 'D-Safe/Likely',
-                  'd-lean': descriptions.rating === 'D-Lean',
-                  'toss-up': descriptions.rating === 'Toss-up',
-                  'r-lean': descriptions.rating === 'R-Lean',
-                  'r-safe': descriptions.rating === 'R-Safe/Likely',
-                }
-              }, descriptions.rating)
-            ]),
           renderResults(),
           h('div.footer', [
             h('p', [
-              'Sources: Census Bureau, Bureau of Labor Statistics and TKTKTK. Current results from AP',
+              'Sources: Current results from AP',
               ' ',
               h('span.timestamp', [
                 '(as of ',
                 lastUpdated,
-                ')'
-              ])
+                ' ET).'
+              ]),
+              ' Other statistics from the Census Bureau (2014 American Community Survey 5-year estimates) and Bureau of Labor Statistics (2015 figures).'
             ])
           ])
         ]);
@@ -278,16 +287,28 @@ const renderResults = function() {
       return data['house']['results'][a][0]['seatnum'] - data['house']['results'][b][0]['seatnum'];
     });
 
+    const sortedBallotKeys = Object.keys(data['ballot_measures']['results']).sort(function(a, b) {
+      return data['ballot_measures']['results'][a][0]['seatname'].split(' - ')[0] - data['ballot_measures']['results'][b][0]['seatname'].split(' - ')[0];
+    });
+
     return h('div.downballot', [
       Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race])),
       h('div.results-house', [
         h('h2', 'House'),
-        sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
+        h('div.results-wrapper', [
+            sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
+        ]),
       ]),
-      Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor'['results']][race])),
+      Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor']['results'][race])),
       h('div.results-ballot-measures', [
-        h('h2', 'Ballot Measures'),
-        Object.keys(data['ballot_measures']['results']).map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
+        h('h2', {
+          classes: {
+            'hidden': Object.keys(data['ballot_measures']['results']).length === 0,
+          }
+        }, 'Ballot Measures'),
+        h('div.results-wrapper', [
+            sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
+        ]),
       ])
     ]);
   }
@@ -295,6 +316,8 @@ const renderResults = function() {
 
 const renderStateResults = function(results) {
   stateTotalVotes = 0;
+
+  results = sortResults(results);
   return h('div.results-statewide', [
     h('h2', 'Statewide Results'),
     h('p', [
@@ -336,8 +359,8 @@ const renderStateRow = function(result){
     }
   }, [
     h('td.candidate', [
-      result.first, 
-      ' ', 
+      result.first,
+      ' ',
       result.last,
       ' ',
       result.party ? '(' + result.party + ')': '',
@@ -447,6 +470,10 @@ const renderSenateTable = function(results){
     totalVotes += results[i].votecount;
   }
 
+  if (results.length > 2) {
+    results = sortResults(results);
+  }
+
   return h('div.results-senate', [
     h('h2', 'Senate'),
     h('table.results-table', [
@@ -478,9 +505,15 @@ const renderHouseTable = function(results){
     totalVotes += results[i].votecount;
   }
 
+  if (results.length > 2) {
+    results = sortResults(results)
+  }
+
   return h('div.house-race', [
    h('table.results-table', [
-    h('caption', seatName),
+    h('caption', [ seatName,
+      h('amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
+    ]),
     h('thead', [
       h('tr', [
         h('th.candidate', 'Candidate'),
@@ -536,6 +569,10 @@ const renderGovTable = function(results){
     totalVotes += results[i].votecount;
   }
 
+  if (results.length > 2) {
+    results = sortResults(results);
+  }
+
   return h('div.results-gubernatorial', [
     h('h2', 'Gubernatorial'),
     h('table.results-table', [
@@ -565,6 +602,10 @@ const renderMeasureTable = function(results){
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
     totalVotes += results[i].votecount;
+  }
+
+  if (results.length > 2) {
+    results = sortResults(results);
   }
 
   return h('div.ballot-measure', [
@@ -615,15 +656,32 @@ const toTitlecase = function(str) {
 
 const switchResultsView = function(e) {
   if (e.target.getAttribute('id') === 'presidential') {
-    var dataFilename = 'presidential-' + currentState + '-counties.json'
+    var dataFilename = 'presidential-' + currentState + '-counties.json';
+    resultsType = 'Presidential Results';
   } else {
     var dataFilename = currentState + '.json';
+    resultsType = 'Statewide Results';
   }
   dataURL = buildDataURL(dataFilename);
 
   clearInterval(dataTimer);
   getData();
   dataTimer = setInterval(getData, 5000);
+}
+
+const sortResults = function(results) {
+  results.sort(function(a, b) {
+    if (a.votecount > 0 || a.precinctsreporting > 0) {
+      return b.votecount - a.votecount;
+    } else {
+      if (a.last === 'Other') return 1;
+      if (b.last === 'Other') return -1;
+      if (a.last < b.last) return -1;
+      if (a.last > b.last) return 1;
+      return 0;
+    }
+  });
+  return results
 }
 
 /*

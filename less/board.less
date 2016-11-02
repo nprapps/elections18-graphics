@@ -81,15 +81,16 @@ body {
 
                 &.last {
                     padding-right: 0;
-
-                    .poll-closing-group:first-child { display: none; }
                 }
             }
         }
 
+        &.hide-second-column-header {
+            .last .poll-closing-group:first-child { display: none; }
+        }
+
         .poll-closing-group {
             font: normal 0.8rem/1.2 @knockout;
-            text-transform: uppercase;
             letter-spacing: 0.05em;
             color: @gray-light;
             padding-bottom: 3px;
@@ -291,6 +292,10 @@ tr {
 		padding-right: 0;
 	}
 
+    &.hidden {
+        display: none;
+    }
+
 	.party,
 	.seats-needed,
 	.total {
@@ -304,6 +309,11 @@ tr {
 	}
 
 	h2 { font-weight: 500; }
+
+    img { 
+        width: 32%; 
+        &.hidden { display: none; }
+    }
 
 	.change {
 		font-size: 1.4rem;
