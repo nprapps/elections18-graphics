@@ -65,13 +65,11 @@
 .results-nav {
 	margin:0;
 	padding: 0;
-	background-color: #eee;
+	background-color: #fff;
     .gotham();
-    border-top: 2px solid #ccc;
+    border-bottom: 2px solid #ddd;
 
     @media @screen-small-above {
-        background-color: #fff;
-        border-top: none;
         border-bottom: 3px solid #ddd;
     }
 
@@ -86,7 +84,7 @@
     /*menu*/
     .menu {
 		display: none;
-        margin: -10px 0 0 0;
+        margin: -5px 0 0 0;
         @media @screen-small-above {
             display: block;
             margin: 0 0 0 3.8rem;
@@ -97,8 +95,8 @@
     /* menu label*/
     .small-screen-nav-label {
         position: absolute;
-        top: 13px;
-        right: 9px;
+        top: 7px;
+        right: 0px;
 		display: block;
         cursor: pointer;
         .knockout();
@@ -140,7 +138,7 @@
     /*nav branding*/
     .results-logo {
         .knockout();
-        padding: 9px;
+        padding: 5px 0;
 
         @media @screen-small-above {
             position: absolute;
@@ -178,7 +176,7 @@
     a {
     	display:block;
         font-size: 11px;
-        padding: 6px 9px;
+        padding: 6px 9px 6px 0;
         color:@link-blue;
     	text-decoration:none;
 
@@ -199,6 +197,7 @@
     	margin:0;
     	list-style-type: none;
     	position: relative;
+        .gotham();
 
         @media @screen-small-above {
             margin: 0 0 0 5rem;
@@ -239,7 +238,7 @@
         .state-nav-label {
             display:block;
             font-size: 11px;
-            padding: .5rem;
+            padding: 6px 9px 8px 0;
             color:@link-blue;
             cursor: pointer;
 
@@ -251,7 +250,7 @@
 
             &::after {
                 position: absolute;
-                top: 8px;
+                top: 7px;
                 right: 0;
                 content: "\25BC";
                 font-size: 10px;
@@ -282,7 +281,7 @@
             position: relative;
             //max-height: 200px;
             overflow: auto;
-            margin-left: .5rem;
+            margin-left: 0;
 
             @media @screen-small-above {
                 position: absolute;
