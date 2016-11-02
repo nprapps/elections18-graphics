@@ -76,6 +76,7 @@ let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
 let resultsType = 'Presidential Results';
+let firstMeasure = null;
 
 window.pymChild = null;
 /*
@@ -333,6 +334,7 @@ const renderResults = function() {
         h('div.results-wrapper', [
             sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
         ]),
+        h('p.precincts', [(firstMeasure.precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(firstMeasure.precinctsreporting) +' of ' + commaNumber(firstMeasure.precinctstotal) + ')'])
       ])
     ]);
   }
@@ -536,9 +538,7 @@ const renderHouseTable = function(results){
 
   return h('div.house-race', [
    h('table.results-table', [
-    h('caption', [ seatName,
-      h('amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
-    ]),
+    h('caption', seatName),
     h('thead', [
       h('tr', [
         h('th.candidate', 'Candidate'),
@@ -556,7 +556,8 @@ const renderHouseTable = function(results){
         h('td.amt', '100%')
       ])
     ])
-  ])
+  ]),
+  h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
 ])
 }
 
@@ -624,6 +625,7 @@ const renderGovTable = function(results){
 }
 
 const renderMeasureTable = function(results){
+  firstMeasure = results[0];
   let propName = results[0].seatname;
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
@@ -636,9 +638,7 @@ const renderMeasureTable = function(results){
 
   return h('div.ballot-measure', [
   h('table.results-table', [
-    h('caption', [propName,
-      h('amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in'])
-    ]),
+    h('caption', propName),
     h('thead', [
       h('tr', [
         h('th.candidate', 'Ballot Measure'),
@@ -656,7 +656,7 @@ const renderMeasureTable = function(results){
         h('td.amt', '100%')
       ])
     ])
-  ])
+  ]),
 ])
 }
 
