@@ -8,6 +8,7 @@ console.log('loading bop');
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
+import request from 'superagent';
 // import textures from 'textures';
 
 // Global vars
@@ -29,7 +30,7 @@ var CONGRESS = {
 }
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
-var LOAD_INTERVAL = 20000;
+var LOAD_INTERVAL = 15000;
 
 window.pymChild = null;
 var isInitialized = false;
@@ -41,6 +42,7 @@ var bopData = [];
 var reloadData = null;
 var graphicWidth = null;
 var timestamp = null;
+var lastRequestTime = null;
 
 /*
  * Initialize the graphic.
@@ -57,15 +59,18 @@ var onWindowLoaded = function() {
 var loadData = function() {
     clearInterval(reloadData);
     console.log('loadData: ' + DATA_FILE);
-    d3.json(buildDataURL(DATA_FILE), function(error, data) {
-        if (error) {
-            console.warn(error);
-        }
+    request.get(buildDataURL(DATA_FILE))
+        .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
+        .end(function(err, res) {
+            if (err) {
+                console.warn(err);
+            }
 
-        bopData = data;
-        lastUpdated = data.last_updated;
-        formatData();
-    });
+            lastRequestTime = new Date().toUTCString();
+            bopData = res.body;
+            lastUpdated = res.body.last_updated;
+            formatData();
+        });
 }
 
 

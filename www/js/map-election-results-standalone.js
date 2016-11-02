@@ -8,6 +8,7 @@
 import d3 from 'd3';
 import * as _ from 'underscore';
 import textures from 'textures';
+import request from 'superagent';
 
 // D3 formatters
 var fmtComma = d3.format(',');
@@ -20,7 +21,7 @@ window.pymChild = null;
 var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 480;
-var LOAD_INTERVAL = 20000;
+var LOAD_INTERVAL = 15000;
 var isHP = false;
 var isInitialized = false;
 var isMobile = false;
@@ -30,6 +31,7 @@ var colorScale = null;
 var countySelector = null;
 var districtStates = [ { 'abbr': 'ME', 'votes': 4 },
                        { 'abbr': 'NE', 'votes': 5 } ];
+var lastRequestTime = null;
 var mapElement = null;
 var mapWidth = null;
 var mapScale = null;
@@ -117,16 +119,18 @@ var onWindowLoaded = function() {
 var loadData = function() {
     clearInterval(reloadData);
     // console.log('loadData: ' + DATA_FILE);
-    d3.json(buildDataURL(DATA_FILE), function(error, data) {
-        if (error) {
-            console.warn(error);
-        }
 
-        electoralData = data.results;
-        lastUpdated = data.last_updated;
-        // console.log(electoralData);
-        formatData();
-    });
+    request.get(buildDataURL(DATA_FILE))
+        .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
+        .end(function(err, res) {
+            if (err) {
+                console.warn(err);
+            }
+            lastRequestTime = new Date().toUTCString();
+            electoralData = res.body.results;
+            lastUpdated = res.body.last_updated;
+            formatData();
+        })
 }
 
 var buildDataURL = function(filename) {
