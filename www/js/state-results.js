@@ -242,6 +242,11 @@ const renderResults = function() {
     });
     const sortKeys = sortCountyResults();
 
+    var hideCountyResults = false;
+    if (sortKeys.length < 2) {
+      hideCountyResults = true;
+    }
+
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
       h('div.results-counties', {
@@ -254,6 +259,7 @@ const renderResults = function() {
           'percent-hispanic': sortMetric['key'] === 'percent_hispanic',
           'median-income': sortMetric['key'] === 'median_income',
           'percent-college-educated': sortMetric['key'] === 'percent_bachelors',
+          'hidden': hideCountyResults
         }
       }, [
         h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
