@@ -5,7 +5,7 @@ FILEDATE=`date +%Y-%m-%d-%H\:%M`
 FILEDIR=/home/ubuntu/screenshots/stage/map
 SCRIPTDIR=/home/ubuntu/apps/elections16graphics/repository
 
-echo 'screenshotting map at $FILEDATE'
+echo "screenshotting map at $FILEDATE"
 
 mkdir -p $FILEDIR
 
@@ -16,5 +16,5 @@ NEWMD5=`md5sum $FILEDIR/$FILEDATE-election16-map.png | awk '{ print $1 }'`
 OLDMD5=`md5sum $FILEDIR/$LASTFILE | awk '{ print $1 }'`
 
 if [ $NEWMD5 = $OLDMD5 ]; then
-  rm $FILEDIR/$FILEDATE-election-16-map.png
+    rm $FILEDIR/$FILEDATE-election-16-map.png
 fi
