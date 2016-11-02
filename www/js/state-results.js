@@ -742,6 +742,7 @@ const onMetricClick = function(e) {
     for (var i = 0; i < availableMetrics.length; i++) {
         if (availableMetrics[i]['name'] === e.target.innerHTML) {
             sortMetric = availableMetrics[i];
+            ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
         }
     }
 }
@@ -755,9 +756,11 @@ const switchResultsView = function(e) {
   if (e.target.getAttribute('id') === 'presidential') {
     var dataFilename = 'presidential-' + currentState + '-counties.json';
     resultsType = 'Presidential Results';
+    ANALYTICS.trackEvent('presidential-view-click');
   } else {
     var dataFilename = currentState + '.json';
     resultsType = 'Statewide Results';
+    ANALYTICS.trackEvent('statewide-view-click');
   }
   dataURL = buildDataURL(dataFilename);
 
