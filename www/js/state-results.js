@@ -100,12 +100,12 @@ var onWindowLoaded = function() {
     getData();
     getExtraData();
 
-    dataTimer = setInterval(getData, 5000);
+    // dataTimer = setInterval(getData, 5000);
     projector.append(resultsWrapper, renderMaquette);
 }
 
 const getData = function() {
-    projector.resume();
+    // projector.resume();
     request.get(dataURL)
         .end(function(err, res) {
             if (dataURL.indexOf('presidential') !== -1) {
@@ -254,12 +254,15 @@ const renderResults = function() {
         availableCandidates.push(result.last);
       }
     });
-    availableCandidates.sort(function(a, b) {
+    const sortedCandidates = availableCandidates.sort(function(a, b) {
       if (a === 'Clinton') return -1;
       if (a === 'Trump' && b !== 'Clinton') return -1;
+      if (b === 'Trump' && a !== 'Clinton') return 1;
       if (a < b) return -1;
       if (a > b) return 1;
     });
+
+    console.log(sortedCandidates, availableCandidates);
 
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
@@ -292,7 +295,7 @@ const renderResults = function() {
               h('th.comparison', h('div', h('span', sortMetric['name']))),
             ])
           ]),
-          sortKeys.map(key => renderCountyRow(data[key[0]], key[0], availableCandidates))
+          sortKeys.map(key => renderCountyRow(data[key[0]], key[0], sortedCandidates))
         ])
       ])
     ])
@@ -519,7 +522,7 @@ const determineWinner = function(keyedResults) {
     let result = keyedResults[key];
 
     if (result.precinctsreportingpct < 1) {
-      return;
+      return winner;
     }
 
     if (result.votepct > winningPct) {
@@ -529,6 +532,31 @@ const determineWinner = function(keyedResults) {
   }
 
   return winner;
+}
+
+const calculateVoteMargin = function(keyedResults, winner) {
+  if (!winner) {
+    return ''
+  }
+
+  let winnerMargin = 100;
+  for (var key in keyedResults) {
+    let result = keyedResults[key];
+
+    if (winner.votepct - result.votepct < winnerMargin && winner !== result) {
+      winnerMargin = winner.votepct - result.votepct
+    }
+  }
+
+  if (winner.last === 'Clinton') {
+    var prefix = 'D';
+  } else if (winner.last === 'Trump') {
+    var prefix = 'R';
+  } else {
+    var prefix = winner.last.substr(0, 1);
+  }
+
+  return prefix + ' +' + Math.round(winnerMargin * 100);
 }
 
 const renderSenateTable = function(results){
@@ -708,27 +736,6 @@ const renderMeasurePrecincts = function(results){
       return h('p.precincts', [(precinctReporting.precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
     }
   }
-}
-
-const calculateVoteMargin = function(keyedResults, winner) {
-  let winnerMargin = 100;
-  for (var key in keyedResults) {
-    let result = keyedResults[key];
-
-    if (winner.votepct - result.votepct < winnerMargin && winner !== result) {
-      winnerMargin = winner.votepct - result.votepct
-    }
-  }
-
-  if (winner.last === 'Clinton') {
-    var prefix = 'D';
-  } else if (winner.last === 'Trump') {
-    var prefix = 'R';
-  } else {
-    var prefix = winner.last.substr(0, 1);
-  }
-
-  return prefix + ' +' + Math.round(winnerMargin * 100);
 }
 
 const onMetricClick = function(e) {
