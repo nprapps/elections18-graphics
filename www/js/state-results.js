@@ -215,13 +215,14 @@ const renderMaquette = function() {
           renderResults(),
           h('div.footer', [
             h('p', [
-              'Sources: Census Bureau, Bureau of Labor Statistics and TKTKTK. Current results from AP',
+              'Sources: Current results from AP',
               ' ',
               h('span.timestamp', [
                 '(as of ',
                 lastUpdated,
-                ' ET)'
-              ])
+                ' ET).'
+              ]),
+              ' Other statistics from the Census Bureau (2014 American Community Survey 5-year estimates) and Bureau of Labor Statistics (2015 figures).'
             ])
           ])
         ]);
@@ -252,7 +253,7 @@ const renderResults = function() {
       h('div.results-counties', {
         classes: {
           'population': sortMetric['key'] === 'population',
-          '2012-results': sortMetric['key'] === 'past_margin',
+          'past-results': sortMetric['key'] === 'past_margin',
           'unemployment': sortMetric['key'] === 'unemployment',
           'percent-white': sortMetric['key'] === 'percent_white',
           'percent-black': sortMetric['key'] === 'percent_black',

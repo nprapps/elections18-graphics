@@ -1,18 +1,10 @@
-console.log('loading bop');
-
-/* TODO
-- refresh counter
-- link bars to the big board
-*/
-
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
-// import textures from 'textures';
 
 // Global vars
+window.pymChild = null;
 var DATA_FILE = 'top-level-results.json';
-
 var CONGRESS = {
     'senate': {
         'half': 50,
@@ -30,39 +22,52 @@ var CONGRESS = {
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 500;
 var LOAD_INTERVAL = 20000;
-
-window.pymChild = null;
 var isInitialized = false;
 var isMobile = false;
 var lastUpdated = '';
 var charts = d3.keys(CONGRESS);
 var skipLabels = [ 'label', 'values' ];
 var bopData = [];
+var electoralData = [];
 var reloadData = null;
 var graphicWidth = null;
 var timestamp = null;
 
+var electoralTotals = null;
+var clintonTitle = null;
+var clintonElectoral = null;
+var trumpTitle = null;
+var trumpElectoral = null;
+
+
 /*
- * Initialize the graphic.
- */
+* Initialize the graphic.
+*/
 var onWindowLoaded = function() {
+    electoralTotals = d3.select('#electoral-totals');
+    clintonTitle = electoralTotals.select('.clinton h3');
+    clintonElectoral = electoralTotals.select('.clinton-electoral');
+    trumpTitle = electoralTotals.select('.trump h3');
+    trumpElectoral = electoralTotals.select('.trump-electoral');
     timestamp = d3.select('.footer .timestamp');
 
+    // load data
     loadData();
 }
 
+
 /*
- * Load a datafile
+ * Load data
  */
 var loadData = function() {
     clearInterval(reloadData);
-    console.log('loadData: ' + DATA_FILE);
     d3.json(buildDataURL(DATA_FILE), function(error, data) {
         if (error) {
             console.warn(error);
         }
 
         bopData = data;
+        electoralData = data['electoral_college'];
         lastUpdated = data.last_updated;
         formatData();
     });
@@ -70,7 +75,7 @@ var loadData = function() {
 
 
 /*
- * Format graphic data for processing by D3.
+ * Format data for D3.
  */
 var formatData = function() {
     var parties = {
@@ -78,6 +83,22 @@ var formatData = function() {
         'house': [ 'Dem', 'Not yet called', 'Other', 'GOP' ]
     }
 
+    // update overall totals
+    trumpElectoral.html(electoralData['Trump']);
+    if (electoralData['Trump'] >= 270) {
+        trumpTitle.html('Trump <i class="icon icon-ok"></i>');
+    } else {
+        trumpTitle.html('Trump');
+    }
+
+    clintonElectoral.html(electoralData['Clinton']);
+    if (electoralData['Clinton'] >= 270) {
+        clintonTitle.html('Clinton <i class="icon icon-ok"></i>');
+    } else {
+        clintonTitle.html('Clinton');
+    }
+
+    // bop chart
     _.each(charts, function(d) {
         var chamber = bopData[d + '_bop'];
         var x0 = 0;
@@ -113,6 +134,11 @@ var formatData = function() {
     }
 
     reloadData = setInterval(loadData, LOAD_INTERVAL);
+
+    // Update iframe
+    if (pymChild) {
+        pymChild.sendHeight();
+    }
 }
 
 
@@ -350,6 +376,7 @@ var renderStackedBarChart = function(config) {
         }
     });
 }
+
 
 /*
  * Initially load the graphic
