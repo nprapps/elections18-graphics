@@ -7,6 +7,7 @@ Commands for rendering various parts of the app stack.
 from glob import glob
 import logging
 import os
+import subprocess
 
 from fabric.api import local, task
 from fabric.state import env
@@ -96,10 +97,17 @@ def render(slug):
     """
     Render HTML templates and compile assets.
     """
+    _render_special_css()
     if slug:
         _render_graphics(['templates/graphics/%s' % slug])
     else:
         _render_graphics(glob('templates/graphics/*'))
+
+
+def _render_special_css():
+    content = subprocess.check_output(["node_modules/less/bin/lessc", "-x", 'less/screenshot.less'])
+    with open('www/css/rendered/screenshot.css', 'w') as writefile:
+        writefile.write(content)
 
 def _render_graphics(paths):
     """
