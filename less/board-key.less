@@ -43,9 +43,8 @@
         margin-right: 5px;
     }
 
-    .dem,
-    .gop,
-    .ind {
+    .dem, .gop, .ind,
+    .yes, .no {
         i {
             height: 10px;
             width: 1em;
@@ -66,6 +65,12 @@
     .gop .winner { background-color: @gop; }
     .ind i { background-color: @indDim; }
     .ind .winner { background-color: @ind; }
+    .yes i { background-color: @gopDim; }
+    .yes .winner { background-color: @gop; }
+    .no i { background-color: @indDim; }
+    .no .winner { background-color: @ind; }
+
+    .yes, .no { display: none; }
 
     .pickup i {
         width: 1em;
@@ -112,4 +117,12 @@
             margin-left: -0.1em;
         }
     }
+}
+.board.ballot-measures + .board-key {
+    li { width: auto; margin-right: 30px; }
+    .dem, .gop, .ind, .incumbent, .pickup, .runoff, .held { display: none; }
+    .yes, .no { display: block; }
+}
+.board.president + .board-key {
+    .incumbent, .pickup, .runoff, .held { display: none; }
 }
