@@ -1,0 +1,115 @@
+.board-key {
+    margin: 22px 10px 0 10px;
+    font-family: @knockout;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    -webkit-font-smoothing: antialiased;
+    text-transform: uppercase;
+    color: @gray;
+    border-top: 1px solid @gray-lighter;
+    padding-top: 11px;
+
+    h3 {
+        margin: 0 0 6px 0;
+        font-size: 12px;
+        font-weight: normal;
+        color: @gray-darker;
+        float: left;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0 0 0 35px;
+        padding: 0 0 0 11px;
+        border-left: 1px solid @gray-lighter;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+    }
+    li {
+        margin: 0 0 6px 0;
+        padding: 0;
+        display: block;
+        white-space: nowrap;
+        line-height: 14px;
+        width: 210px;
+    }
+    i {
+        font-style: normal;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .dem,
+    .gop,
+    .ind {
+        i {
+            height: 10px;
+            width: 1em;
+            border-radius: 2px;
+            float: left;
+            margin-top: 2px;
+        }
+        .winner {
+            border-radius: 2px;
+            color: #fff;
+            padding: 0 3px;
+        }
+    }
+
+    .dem i { background-color: @demDim; }
+    .dem .winner { background-color: @dem; }
+    .gop i { background-color: @gopDim; }
+    .gop .winner { background-color: @gop; }
+    .ind i { background-color: @indDim; }
+    .ind .winner { background-color: @ind; }
+
+    .pickup i {
+        width: 1em;
+        font-style: italic;
+        font-size: 10px;
+        line-height: 12px;
+        color: @dem;
+    }
+
+    .runoff i {
+        width: .9em;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    .time i {
+        letter-spacing: 0.05em;
+        color: @gray-light;
+        text-transform: none;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .held i {
+        font-family: @font-family-sans-serif;
+        letter-spacing: 0;
+        font-size: 11px;
+        color: @gop;
+    }
+
+    .precincts i {
+        color: @gray;
+        font-family: @font-family-sans-serif;
+        letter-spacing: 0;
+        font-size: 11px;
+        text-transform: none;
+
+        span {
+            font-size: 80%;
+            vertical-align: top;
+            margin-left: -0.1em;
+        }
+    }
+}
