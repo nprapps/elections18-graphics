@@ -90,7 +90,7 @@ var injectCustomCSS = function() {
     var link = document.createElement('link')
     link.setAttribute('rel', 'stylesheet')
     link.setAttribute('type', 'text/css')
-    if (APP_CONFIG.DEPLOYMENT_TARGET == 'production') {
+    if (APP_CONFIG.DEPLOYMENT_TARGET == 'production' || APP_CONFIG.DEPLOYMENT_TARGET == 'staging') {
         link.setAttribute('href', '../css/rendered/screenshot.css');
     } else {
         link.setAttribute('href', '../less/screenshot.less');
