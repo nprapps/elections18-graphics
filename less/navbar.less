@@ -22,7 +22,7 @@
     font-weight: normal;
 }
 .gotham() {
-    font-family: 'Gotham',Helvetica,Arial,sans-serif;
+    font-family: 'Gotham','Gotham SSm',Helvetica,Arial,sans-serif;
     font-weight: 400;
     line-height: 1.4;
 }
@@ -30,12 +30,16 @@
 // Breakpoints
 @screen-jumbo-above: ~"screen and (min-width: 1920px)";
 @screen-mega-above: ~"screen and (min-width: 1600px)";
+
 @screen-large-above: ~"screen and (min-width: 1201px)";
 @screen-large: ~"screen and (min-width: 1200px)";
+
 @screen-medium-above: ~"screen and (min-width: 992px)";
 @screen-medium: ~"screen and (max-width: 991px)";
-@screen-small-above: ~"screen and (min-width: 768px)";
-@screen-small: ~"screen and (max-width: 767px)";
+
+@screen-small-above: ~"screen and (min-width: 707px)";
+@screen-small: ~"screen and (max-width: 706px)";
+
 @screen-tiny-above: ~"screen and (min-width: 481px)";
 @screen-tiny: ~"screen and (max-width: 480px)";
 
@@ -43,30 +47,19 @@
 // -------------------------
 
 #results-nav-wrapper {
-    font-size: 13px;
+    font-size: 12px;
     position: relative;
     margin: 0 0 2rem 0;
 
 
     @media @screen-small-above {
-        font-size: 14px;
+        font-size: 13px;
     }
 
     @media @screen-medium-above {
         font-size: 16px;
     }
 
-    @media @screen-large-above {
-        font-size: 18px;
-    }
-
-    @media @screen-mega-above {
-        font-size: 21px;
-    }
-
-    @media @screen-jumbo-above {
-        font-size: 24px;
-    }
 }
 
 .results-nav {
@@ -96,7 +89,7 @@
         margin: -10px 0 0 0;
         @media @screen-small-above {
             display: block;
-            margin: 0 0 0 4rem;
+            margin: 0 0 0 3.8rem;
         }
 
 	}
@@ -153,7 +146,7 @@
             position: absolute;
             top: .9rem;
             left: 0;
-            width: 5rem;
+            width: 4.6rem;
             height: 3.5rem;
             background-color: #fff;
             padding: 0;
@@ -167,7 +160,6 @@
                 display: block;
                 line-height: 1;
                 font-size: 1.8rem;
-                padding-left: .5rem;
             }
         }
 
@@ -179,7 +171,6 @@
             @media @screen-small-above {
                 display: block;
                 font-size: .85rem;
-                padding-left: .5rem;
             }
         }
     }
@@ -192,7 +183,7 @@
     	text-decoration:none;
 
         @media @screen-small-above {
-            padding: 1rem;
+            padding: 1rem .7rem;
             font-size: 1rem;
         }
 
@@ -261,14 +252,14 @@
             &::after {
                 position: absolute;
                 top: 8px;
-                right: .5rem;
+                right: 0;
                 content: "\25BC";
                 font-size: 10px;
             }
 
             @media @screen-small-above {
                 font-size: 1rem;
-                padding: 1rem 1.4rem 1rem 1rem;
+                padding: 1rem 1.4rem 1rem .7rem;
 
                 &::after {
                     font-size: .5rem;
