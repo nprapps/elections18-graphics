@@ -3,7 +3,7 @@
 export QT_QPA_PLATFORM=offscreen
 FILEDATE=`date +%Y-%m-%d-%H\:%M`
 FILEDIR=/home/ubuntu/screenshots/stage/map
-SCRIPTDIR=/home/ubuntu/elections16graphics/repository
+SCRIPTDIR=/home/ubuntu/apps/elections16graphics/repository
 
 mkdir -p $FILEDIR
 
