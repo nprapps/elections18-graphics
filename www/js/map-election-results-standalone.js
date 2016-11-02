@@ -35,6 +35,7 @@ var mapWidth = null;
 var mapScale = null;
 var reloadData = null;
 var timestamp = null;
+var timestampScreenshot = null;
 var lastUpdated = null;
 var tooltip = null;
 var tDLead = null;
@@ -55,6 +56,7 @@ var onWindowLoaded = function() {
     countySelector = d3.select('#county-selector select');
     mapElement = d3.select('.map svg');
     timestamp = d3.select('.footer .timestamp');
+    timestampScreenshot = d3.select('.phantom-footer .timestamp-screenshot');
     tooltip = d3.select('#tooltip');
 
     electoralTotals = d3.select('#electoral-totals');
@@ -244,6 +246,7 @@ var formatData = function() {
 
     // update timestamp
     timestamp.html('(as of ' + lastUpdated + ' ET)');
+    timestampScreenshot.html(lastUpdated);
 
     // color in the map!
     updateElectoralMap();
