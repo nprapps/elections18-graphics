@@ -366,7 +366,7 @@ const renderStateResults = function(results) {
         ])
       ])
     ]),
-    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + results[0].precinctsreporting +' of ' + results[0].precinctstotal + ')'])
+    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
   ])
 }
 
@@ -518,7 +518,8 @@ const renderSenateTable = function(results){
           h('td.amt', '100%')
         ])
       ])
-    ])
+    ]),
+    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
   ])
 }
 
@@ -617,7 +618,8 @@ const renderGovTable = function(results){
           h('td.amt', '100%')
         ])
       ])
-    ])
+    ]),
+    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
   ])
 }
 
@@ -634,7 +636,9 @@ const renderMeasureTable = function(results){
 
   return h('div.ballot-measure', [
   h('table.results-table', [
-    h('caption', propName),
+    h('caption', [propName,
+      h('amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in'])
+    ]),
     h('thead', [
       h('tr', [
         h('th.candidate', 'Ballot Measure'),
