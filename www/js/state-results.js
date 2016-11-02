@@ -76,7 +76,6 @@ let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
 let resultsType = 'Presidential Results';
-let firstMeasure = null;
 
 window.pymChild = null;
 /*
@@ -249,6 +248,19 @@ const renderResults = function() {
       hideCountyResults = true;
     }
 
+    const availableCandidates = [];
+    stateResults.forEach(function(result) {
+      if (availableCandidates.indexOf(result.last) === -1 && result.last !== 'Other') {
+        availableCandidates.push(result.last);
+      }
+    });
+    availableCandidates.sort(function(a, b) {
+      if (a === 'Clinton') return -1;
+      if (a === 'Trump' && b !== 'Clinton') return -1;
+      if (a < b) return -1;
+      if (a > b) return 1;
+    });
+
     return h('div.presidential-results', [
       renderStateResults(sortedStateResults),
       h('div.results-counties', {
@@ -273,16 +285,14 @@ const renderResults = function() {
         h('table.results-table', [
           h('thead', [
             h('tr', [
-              h('th.county', 'County'),
-              h('th.amt.precincts', ''),
-              h('th.vote.candidate.dem', 'Clinton'),
-              h('th.vote.candidate.gop', 'Trump'),
-              h('th.vote.candidate.ind', 'Other'),
-              h('th.vote.margin', '2016 Margin'),
-              h('th.comparison', sortMetric['name']),
+              h('th.county', h('div', h('span', 'County'))),
+              h('th.amt.precincts', h('div', h('span', ''))),
+              availableCandidates.map(cand => renderCandidateTH(cand)),
+              h('th.vote.margin', h('div', h('span', '2016 Margin'))),
+              h('th.comparison', h('div', h('span', sortMetric['name']))),
             ])
           ]),
-          sortKeys.map(key => renderCountyRow(data[key[0]], key[0]))
+          sortKeys.map(key => renderCountyRow(data[key[0]], key[0], availableCandidates))
         ])
       ])
     ])
@@ -334,7 +344,7 @@ const renderResults = function() {
         h('div.results-wrapper', [
             sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
         ]),
-        h('p.precincts', [(firstMeasure.precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(firstMeasure.precinctsreporting) +' of ' + commaNumber(firstMeasure.precinctstotal) + ')'])
+        renderMeasurePrecincts(data['ballot_measures']['results'])
       ])
     ]);
   }
@@ -411,33 +421,47 @@ const renderMetricLi = function(metric) {
 
 }
 
-const renderCountyRow = function(results, key){
+const renderCandidateTH = function(candidate) {
+  return h('th.vote', {
+    classes: {
+      'dem': candidate === 'Clinton',
+      'gop': candidate === 'Trump',
+      'ind': ['Johnson', 'McMullin', 'Stein'].indexOf(candidate) !== -1
+    }
+  }, h('div', h('span', candidate)))
+}
+
+const renderCountyRow = function(results, key, availableCandidates){
   if (key === 'state') {
     return '';
   }
-  let trump = null;
-  let clinton = null;
-  let other = null;
 
+  let keyedResults = {}
   for (var i = 0; i < results.length; i++){
     let candidate = results[i];
     if (candidate.last == 'Trump'){
-      trump = results[i];
+      keyedResults['Trump'] = results[i];
     } else if (candidate.last == 'Clinton'){
-      clinton = results[i];
-    } else if (candidate.last == 'Other') {
-      other = results[i];
+      keyedResults['Clinton'] = results[i];
+    } else if (candidate.last == 'Johnson') {
+      keyedResults['Johnson'] = results[i];
+    } else if (candidate.last == 'McMullin') {
+      keyedResults['McMullin'] = results[i];
+    } else if (candidate.last == 'Stein') {
+      keyedResults['Stein'] = results[i];
     }
   }
 
-  let isKeyCounty = keyCounties.find(function(el) {
-    return el.fips === trump.fipscode
+  const winner = determineWinner(keyedResults);
+
+  const isKeyCounty = keyCounties.find(function(el) {
+    return el.fips === results[0].fipscode
   })
 
   if (sortMetric['census']) {
-    var extraMetric = extraData[trump.fipscode].census[sortMetric['key']]
+    var extraMetric = extraData[results[0].fipscode].census[sortMetric['key']]
   } else {
-    var extraMetric = extraData[trump.fipscode][sortMetric['key']]
+    var extraMetric = extraData[results[0].fipscode][sortMetric['key']]
   }
 
   if (sortMetric['comma_filter']) {
@@ -462,32 +486,49 @@ const renderCountyRow = function(results, key){
     }
   }, [
     h('td.county', [
-      toTitlecase(trump.reportingunitname),
+      toTitlecase(results[0].reportingunitname),
       h('i.icon', {
         classes: {
           'icon-star': isKeyCounty
         }
-      })
+      }),
+      h('span.precincts.mobile', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in'])
     ]),
-    h('td.amt.precincts', [(trump.precinctsreportingpct * 100).toFixed(1) + '% in']),
-    h('td.vote.dem', {
-      classes: {
-        'winner': clinton.votecount > trump.votecount && clinton.votecount > other.votecount && clinton.precinctsreportingpct === 1
-      }
-    }, [(clinton.votepct * 100).toFixed(1) + '%']),
-    h('td.vote.gop', {
-      classes: {
-        'winner': trump.votecount > clinton.votecount && trump.votecount > other.votecount && trump.precinctsreportingpct === 1
-      }
-    }, [(trump.votepct * 100).toFixed(1) + '%']),
-    h('td.vote.ind', {
-      classes: {
-        'winner': other.npr_winner && clinton.precinctsreportingpct === 1
-      }
-    }, (other.votepct * 100).toFixed(1) + '%'),
-    h('td.vote.margin', calculateVoteMargin(trump.votepct, clinton.votepct)),
-    h('td.comparison', extraMetric),
+    h('td.amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
+    availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
+    h('td.vote.margin', calculateVoteMargin(keyedResults, winner)),
+    h('td.comparison', extraMetric)
   ])
+}
+
+const renderCountyCell = function(result, winner) {
+  return h('td.vote', {
+      classes: {
+        'dem': result.party === 'Dem',
+        'gop': result.party === 'GOP',
+        'ind': ['Dem', 'GOP'].indexOf(result.party) === -1,
+        'winner': winner === result
+      }
+  }, [(result.votepct * 100).toFixed(1) + '%'])
+}
+
+const determineWinner = function(keyedResults) {
+  let winner = null;
+  let winningPct = 0;
+  for (var key in keyedResults) {
+    let result = keyedResults[key];
+
+    if (result.precinctsreportingpct < 1) {
+      return;
+    }
+
+    if (result.votepct > winningPct) {
+      winningPct = result.votepct;
+      winner = result;
+    }
+  }
+
+  return winner;
 }
 
 const renderSenateTable = function(results){
@@ -625,7 +666,6 @@ const renderGovTable = function(results){
 }
 
 const renderMeasureTable = function(results){
-  firstMeasure = results[0];
   let propName = results[0].seatname;
   let totalVotes = 0;
   for (var i = 0; i < results.length; i++){
@@ -660,13 +700,35 @@ const renderMeasureTable = function(results){
 ])
 }
 
-const calculateVoteMargin = function(trump, clinton) {
-  const difference = clinton - trump;
-  if (difference > 0) {
-    return 'D +' + Math.round(difference * 100);
-  } else {
-    return 'R +' + Math.round(Math.abs(difference) * 100);
+const renderMeasurePrecincts = function(results){
+  let precinctReporting = null;
+  for (var result in results){
+    if (results[result][0]){
+      precinctReporting = results[result][0];
+      return h('p.precincts', [(precinctReporting.precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
+    }
   }
+}
+
+const calculateVoteMargin = function(keyedResults, winner) {
+  let winnerMargin = 100;
+  for (var key in keyedResults) {
+    let result = keyedResults[key];
+
+    if (winner.votepct - result.votepct < winnerMargin && winner !== result) {
+      winnerMargin = winner.votepct - result.votepct
+    }
+  }
+
+  if (winner.last === 'Clinton') {
+    var prefix = 'D';
+  } else if (winner.last === 'Trump') {
+    var prefix = 'R';
+  } else {
+    var prefix = winner.last.substr(0, 1);
+  }
+
+  return prefix + ' +' + Math.round(winnerMargin * 100);
 }
 
 const onMetricClick = function(e) {
