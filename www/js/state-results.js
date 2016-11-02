@@ -454,12 +454,6 @@ const renderCountyRow = function(results, key, availableCandidates){
   }
 
   const winner = determineWinner(keyedResults);
-  const sortedKeys = Object.keys(keyedResults).sort(function(a, b) {
-    if (a === 'Clinton') return -1;
-    if (a === 'Trump' && b !== 'Clinton') return -1;
-    if (a < b) return -1;
-    if (a > b) return 1;
-  });
 
   const isKeyCounty = keyCounties.find(function(el) {
     return el.fips === results[0].fipscode
@@ -502,7 +496,7 @@ const renderCountyRow = function(results, key, availableCandidates){
       h('span.precincts.mobile', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in'])
     ]),
     h('td.amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
-    sortedKeys.map(key => renderCountyCell(keyedResults[key], winner)),
+    availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
     h('td.vote.margin', calculateVoteMargin(keyedResults, winner)),
     h('td.comparison', extraMetric)
   ])
