@@ -21,9 +21,11 @@ var onWindowLoaded = function() {
  * Render
  */
 var render = function(containerWidth) {
+    // only run the first time
     if (!isMapInit) {
         map.initMap(containerWidth);
         isMapInit= true;
+    // run onresize
     } else {
         map.renderMap(containerWidth);
     }
