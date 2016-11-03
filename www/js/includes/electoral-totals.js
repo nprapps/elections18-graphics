@@ -42,6 +42,7 @@ var loadElectoralData = function() {
             electoralData = res.body.electoral_college;
 
             // electoralData['McMullin'] = 6; // FOR TESTING
+            // electoralData['Stein'] = 6; // FOR TESTING
 
             console.log(electoralData);
             formatElectoralData();
@@ -89,6 +90,7 @@ var formatElectoralData = function() {
             .attr('class', 'candidate ' + classify(d));
 
         if (candidatesShown.length == 2) {
+            electoralElement.classed('top-two', true);
             electoralElement.classed('multiple', false);
             candidateWrapper.append('img')
                 .attr('src', function() {
@@ -103,6 +105,7 @@ var formatElectoralData = function() {
                 })
                 .attr('alt', 'Illustrated portrait of ' + d);
         } else {
+            electoralElement.classed('top-two', false);
             electoralElement.classed('multiple', true);
         }
 

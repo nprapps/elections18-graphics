@@ -43,12 +43,6 @@ var tooltip = null;
 var tDLead = null;
 var tRLead = null;
 var tILead = null;
-
-var electoralTotals = null;
-var clintonTitle = null;
-var clintonElectoral = null;
-var trumpTitle = null;
-var trumpElectoral = null;
 var indicator = null;
 
 var exports = module.exports = {};
@@ -63,12 +57,6 @@ exports.initMap = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
     timestampScreenshot = d3.select('.phantom-footer .timestamp-screenshot');
     tooltip = d3.select('#tooltip');
-
-    electoralTotals = d3.select('#electoral-totals');
-    clintonTitle = electoralTotals.select('.clinton h3');
-    clintonElectoral = electoralTotals.select('.clinton-electoral');
-    trumpTitle = electoralTotals.select('.trump h3');
-    trumpElectoral = electoralTotals.select('.trump-electoral');
     indicator = document.querySelector('.update-indicator');
 
     mapWidth = containerWidth;
@@ -218,30 +206,6 @@ var formatData = function() {
                     s['districts'][dist]['color'] = assignColor(s['districts'][dist]['category']);
                 });
             }
-        }
-    });
-
-    // update overall totals
-    _.each(electoralData['US'], function(c) {
-        switch(c['last']) {
-            case 'Trump':
-                var votePct = c['votepct'] * 100;
-                trumpElectoral.html(c['npr_electwon']);
-                if (c['npr_electwon'] >= 270) {
-                    trumpTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
-                } else {
-                    trumpTitle.html(c['last']);
-                }
-                break;
-            case 'Clinton':
-                var votePct = c['votepct'] * 100;
-                clintonElectoral.html(c['npr_electwon']);
-                if (c['npr_electwon'] >= 270) {
-                    clintonTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
-                } else {
-                    clintonTitle.html(c['last']);
-                }
-                break;
         }
     });
 

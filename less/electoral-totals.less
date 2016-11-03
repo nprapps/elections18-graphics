@@ -2,7 +2,6 @@
     font-size: 12px;
     .clearfix();
     margin: 0 auto;
-    display: table;
 
     h3 {
         font-family: @knockout;
@@ -42,8 +41,14 @@
     .total-wrapper {
         display: -webkit-flex;
         display: flex;
+        -webkit-flex-wrap: wrap;
         flex-wrap: wrap;
+        -webkit-justify-content: center;
         justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+
+        &.top-two { max-width: 27em; }
     }
 
     .candidate {
@@ -95,6 +100,18 @@
 
 
 // screen size-specific
+@media screen and (min-width: @screen-md-min) {
+    #electoral-totals { font-size: 14px; }
+}
+@media screen and (min-width: @screen-lg-min) {
+    #electoral-totals { font-size: 16px; }
+}
+@media screen and (min-width: @screen-xl-min) {
+    #electoral-totals { font-size: 18px; }
+}
+@media screen and (max-width: @screen-xs) {
+    #electoral-totals { font-size: 10px; }
+}
 @media screen and (max-width: 280px) {
     #electoral-totals {
         img { display: none; }
