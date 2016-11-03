@@ -115,16 +115,20 @@ const renderMaquette = function() {
             const as = determineSortKey(aResult);
             const bs = determineSortKey(bResult);
 
-            const aState = as.substring(0,1);
-            const bState = bs.substring(0,1);
+            const aState = as.substring(0,2);
+            const bState = bs.substring(0,2);
 
             // if we pulled a number off something
             if (aState === bState && as.length > 2 && bs.length > 2) {
                 const aID = as.split('-')[1];
                 const bID = bs.split('-')[1];
                 if (parseInt(aID) && parseInt(bID)) {
-                    if (parseInt(aID) < parseInt(bID)) return -1;
-                    if (parseInt(aID) > parseInt(bID)) return 1;
+                    if (parseInt(aID) < parseInt(bID)) {
+                        return -1;
+                    }
+                    if (parseInt(aID) > parseInt(bID)) {
+                        return 1;
+                    }
                 }
             }
 
@@ -148,9 +152,9 @@ const renderMaquette = function() {
             raceIndex += 1
 
             if (!selectedColumn[time]) {
-                selectedColumn[time] = {};
+                selectedColumn[time] = [];
             }
-            selectedColumn[time][id] = group[id]
+            selectedColumn[time].push(group[id])
 
             if (raceIndex === breakingIndex) {
                 selectedColumn = secondColumn
@@ -371,7 +375,7 @@ const renderResultsTable = function(key, column) {
         return [
             h('h2.poll-closing-group', h('span.time', key + ' ET')),
             h('table.races', [
-                Object.keys(races).map(key => renderRace(races[key], key))
+                races.map(race => renderRace(race))
             ])
         ]
     } else {
@@ -379,8 +383,8 @@ const renderResultsTable = function(key, column) {
     }
 }
 
-const renderRace = function(race, key) {
-    const results = determineResults(race, key);
+const renderRace = function(race) {
+    const results = determineResults(race);
     const result1 = results[0];
     const result2 = results[1];
 
@@ -428,7 +432,7 @@ const renderRace = function(race, key) {
                 'ind': winningResult && coloredParties.indexOf(winningResult['party']) < 0
             }
         }, [
-            decideLabel(result1, key)
+            decideLabel(result1)
         ]),
         h('td.results-status', [
             Math.round(result1['precinctsreportingpct'] * 100)
@@ -553,11 +557,11 @@ const determineResults = function(race) {
     return sortedResults;
 }
 
-const decideLabel = function(race, key) {
+const decideLabel = function(race) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
-    } else if (race['officename'] === 'President') {
-        return key;
+    } else if (race['officename'] === 'President' && race['level'] === 'district') {
+        return race['statepostal'] + '-' + race['reportingunitname'].slice('-1');
     } else if (race['is_ballot_measure'] === true) {
         return race['statepostal'] + '-' + race['seatname'];
     } else {
