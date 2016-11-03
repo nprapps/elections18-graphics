@@ -164,21 +164,42 @@ body {
                 margin-bottom: 6px;
             }
 
-            &.metric {
-                // background-color: @gray-light;
-                color: @link-color;
-                padding: 0 5px;
+            &.sortButton{
+              span{
+                &.metric {
+                    color: @link-color;
+                    padding: 0 5px;
 
-                &:hover {
-                    color: @link-hover-color;
-                    cursor: pointer;
+                    &:hover {
+                        color: @link-hover-color;
+                        cursor: pointer;
+                    }
                 }
+                &.pipe{
+                  color: @gray-medium;
+                  font-weight: normal;
+                }
+              }
+              &.selected {
+                  color: @gray;
+                  font-weight: bold;
 
-                &.selected {
-                    background-color: #f1f1f1;
-                    color: @gray-dark;
-                    font-weight: bold;
-                }
+                  span{
+                    &.metric {
+                        color: @gray;
+                        padding: 0 5px;
+
+                        &:hover {
+                            color: @gray;
+                            cursor: pointer;
+                        }
+                    }
+                    &.pipe{
+                      color: @gray-medium;
+                      font-weight: normal;
+                    }
+                  }
+              }
             }
         }
     }

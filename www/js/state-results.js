@@ -416,12 +416,21 @@ const renderStateRow = function(result){
 }
 
 const renderMetricLi = function(metric) {
-    return h('li.metric', {
+  if (metric.name == '% College-Educated'){
+    return h('li.sortButton', {
       onclick: onMetricClick,
       classes: {
         'selected': metric === sortMetric
       }
-    }, [metric['name']])
+    }, h('span.metric', [metric['name']]))
+  } else {
+    return h('li.sortButton', {
+      onclick: onMetricClick,
+      classes: {
+        'selected': metric === sortMetric
+      }
+    }, [ h('span.metric', [metric['name']]), h('span.pipe', ' | ')])
+  }
 
 }
 
