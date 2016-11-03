@@ -41,10 +41,7 @@ var loadElectoralData = function() {
             lastRequestTime = new Date().toUTCString();
             electoralData = res.body.electoral_college;
 
-            // electoralData['McMullin'] = 6; // FOR TESTING
-            // electoralData['Stein'] = 6; // FOR TESTING
-
-            console.log(electoralData);
+            // console.log(electoralData);
             formatElectoralData();
         });
 }

@@ -1,4 +1,5 @@
 // npm libraries
+import electoral from '../js/includes/electoral-totals.js';
 import map from '../js/includes/map.js'
 import maquette from 'maquette';
 import request from 'superagent';
@@ -7,6 +8,7 @@ import timeago from 'timeago.js';
 // global vars
 window.pymChild = null;
 var isMapInit = false;
+var isElectoralInit = false;
 var h = maquette.h;
 var headlineURL = null;
 var headlines = null;
@@ -88,6 +90,11 @@ var render = function(containerWidth) {
     // run onresize
     } else {
         map.renderMap(containerWidth);
+    }
+
+    if (!isElectoralInit) {
+        electoral.initElectoralTotals()
+        isElectoralInit = true;
     }
 }
 
