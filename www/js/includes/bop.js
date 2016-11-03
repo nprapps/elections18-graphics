@@ -61,19 +61,16 @@ exports.initBop = function(containerWidth) {
  * Load a datafile
  */
 var loadData = function() {
-    clearInterval(reloadData);
-    // console.log('loadData: ' + DATA_FILE);
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
-            if (err) {
-                console.warn(err);
+            if (res.body) {
+                lastRequestTime = new Date().toUTCString();
+                bopData = res.body;
+                lastUpdated = res.body.last_updated;
+                formatData();
             }
-
-            lastRequestTime = new Date().toUTCString();
-            bopData = res.body;
-            lastUpdated = res.body.last_updated;
-            formatData();
+            
             countdown.resultsCountdown(indicator, LOAD_INTERVAL);
         });
 }

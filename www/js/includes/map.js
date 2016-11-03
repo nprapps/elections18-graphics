@@ -116,6 +116,7 @@ exports.initMap = function(containerWidth) {
 
     // load data
     loadData();
+    setInterval(loadData, LOAD_INTERVAL)
 }
 
 
@@ -123,20 +124,16 @@ exports.initMap = function(containerWidth) {
  * Load data
  */
 var loadData = function() {
-    clearInterval(reloadData);
-    // console.log('loadData: ' + DATA_FILE);
-
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
-            if (err) {
-                console.warn(err);
+            if (res.body) {
+                lastRequestTime = new Date().toUTCString();
+                electoralData = res.body.results;
+                lastUpdated = res.body.last_updated;
+                formatData();
             }
-            lastRequestTime = new Date().toUTCString();
-            electoralData = res.body.results;
-            lastUpdated = res.body.last_updated;
-            formatData();
-            countdown.resultsCountdown(indicator, LOAD_INTERVAL);
+            countdown.resultsCountdown(indicator, LOAD_INTERVAL);    
         })
 }
 
@@ -251,8 +248,6 @@ var formatData = function() {
 
     // color in the map!
     updateElectoralMap();
-
-    reloadData = setInterval(loadData, LOAD_INTERVAL);
 
     // only do this once
     if (!isInitialized) {
