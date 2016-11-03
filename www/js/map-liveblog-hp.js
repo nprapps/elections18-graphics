@@ -18,16 +18,15 @@ var lastRequestTime = null;
 * Initialize the graphic.
 */
 var onWindowLoaded = function() {
-    headlineURL = buildHeadlineURL('headline.json');
-    projector.append(liveblog, renderMaquette);
-    getData();
-    setInterval(getData, 5000);
-
-
     // init pym and render callback
     pymChild = new pym.Child({
         renderCallback: render
     });
+
+    headlineURL = buildHeadlineURL('headline.json');
+    projector.append(liveblog, renderMaquette);
+    getData();
+    setInterval(getData, 5000);
 }
 
 var getData = function() {
