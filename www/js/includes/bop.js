@@ -1,5 +1,3 @@
-console.log('loading bop');
-
 /* TODO
 - refresh counter
 - link bars to the big board
@@ -44,11 +42,14 @@ var graphicWidth = null;
 var timestamp = null;
 var lastRequestTime = null;
 
+var exports = module.exports = {};
+
 /*
  * Initialize the graphic.
  */
-var onWindowLoaded = function() {
+exports.initBop = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
+    graphicWidth = containerWidth;
 
     loadData();
 }
@@ -58,7 +59,7 @@ var onWindowLoaded = function() {
  */
 var loadData = function() {
     clearInterval(reloadData);
-    console.log('loadData: ' + DATA_FILE);
+    // console.log('loadData: ' + DATA_FILE);
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
@@ -111,40 +112,16 @@ var formatData = function() {
         });
     });
 
-    if (!isInitialized) {
-        init();
-    } else {
-        redrawChart();
-    }
+    redrawChart(graphicWidth);
 
     reloadData = setInterval(loadData, LOAD_INTERVAL);
 }
 
 
 /*
- * Initialize
- */
-var init = function() {
-    pymChild = new pym.Child({
-        renderCallback: render
-    });
-
-    pymChild.onMessage('on-screen', function(bucket) {
-        ANALYTICS.trackEvent('on-screen', bucket);
-    });
-    pymChild.onMessage('scroll-depth', function(data) {
-        data = JSON.parse(data);
-        ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
-    });
-
-    isInitialized = true;
-}
-
-
-/*
  * Render the graphic(s). Called by pym with the container width.
  */
-var render = function(containerWidth) {
+exports.renderBop = function(containerWidth) {
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;
     }
@@ -157,11 +134,11 @@ var render = function(containerWidth) {
 
     graphicWidth = containerWidth;
 
-    redrawChart();
+    redrawChart(containerWidth);
 }
 
 //
-var redrawChart = function() {
+var redrawChart = function(containerWidth) {
     // Clear existing graphic (for redraw)
     var containerElement = d3.select('#bop');
     containerElement.html('');
@@ -183,8 +160,8 @@ var redrawChart = function() {
     timestamp.html('(as of ' + lastUpdated + ' ET)');
 
     // Update iframe
-    if (pymChild) {
-        pymChild.sendHeight();
+    if (window.pymChild) {
+        window.pymChild.sendHeight();
     }
 }
 
@@ -355,9 +332,3 @@ var renderStackedBarChart = function(config) {
         }
     });
 }
-
-/*
- * Initially load the graphic
- * (NB: Use window.load to ensure all images have loaded)
- */
-window.onload = onWindowLoaded;
