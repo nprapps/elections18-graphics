@@ -97,11 +97,11 @@ var onWindowLoaded = function() {
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
     extraDataURL = '../data/extra_data/' + currentState + '-extra.json'
+    projector.append(resultsWrapper, renderMaquette);
     getData();
     getExtraData();
 
-    // dataTimer = setInterval(getData, 5000);
-    projector.append(resultsWrapper, renderMaquette);
+    dataTimer = setInterval(getData, 5000);
 }
 
 const getData = function() {
