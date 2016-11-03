@@ -28,9 +28,9 @@ exports.initBigBoard = function(filename, boardName, boardClass) {
 
     bopDataURL = buildDataURL('top-level-results.json')
     dataURL = buildDataURL(filename);
+    projector.append(boardWrapper, renderMaquette);
     getBopData();
     getData();
-    projector.append(boardWrapper, renderMaquette);
 
     setInterval(getBopData, 5000);
     setInterval(getData, 5000);
