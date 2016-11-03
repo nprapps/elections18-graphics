@@ -18,12 +18,15 @@ var lastRequestTime = null;
 * Initialize the graphic.
 */
 var onWindowLoaded = function() {
-    headlineURL = buildHeadlineURL('headline.json');
-
     // init pym and render callback
     pymChild = new pym.Child({
         renderCallback: render
     });
+
+    headlineURL = buildHeadlineURL('headline.json');
+    projector.append(liveblog, renderMaquette);
+    getData();
+    setInterval(getData, 5000);
 }
 
 var getData = function() {
@@ -52,7 +55,7 @@ var buildHeadlineURL = function(filename) {
 var renderMaquette = function() {
     if (headlines) {
         return h('div.headlines', [
-            h('h2', 'Latest news'),
+            h('h3', 'Latest news'),
             headlines.map(post => renderHeadline(post))
         ])
     } else {
@@ -78,10 +81,6 @@ var renderHeadline = function(post) {
  * Render
  */
 var render = function(containerWidth) {
-    projector.append(liveblog, renderMaquette);
-    getData();
-    setInterval(getData, 5000);
-
     // only run the first time
     if (!isMapInit) {
         map.initMap(containerWidth);

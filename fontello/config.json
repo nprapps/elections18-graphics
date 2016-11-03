@@ -71,6 +71,12 @@
       "css": "incumbent",
       "code": 59401,
       "src": "typicons"
+    },
+    {
+      "uid": "2a6740fc2f9d0edea54205963f662594",
+      "css": "spin3",
+      "code": 59442,
+      "src": "fontelico"
     }
   ]
 }

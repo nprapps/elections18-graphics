@@ -560,7 +560,7 @@ const determineResults = function(race) {
 const decideLabel = function(race) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
-    } else if (race['officename'] === 'President' && race['level'] === 'district') {
+    } else if (race['officename'] === 'President' && race['level'] === 'district' && race['reportingunitname'] !== 'At Large') {
         return race['statepostal'] + '-' + race['reportingunitname'].slice('-1');
     } else if (race['is_ballot_measure'] === true) {
         return race['statepostal'] + '-' + race['seatname'];
@@ -637,10 +637,10 @@ const onUpdateAnimation = function(domNode, properties, previousProperties) {
 
 const determineSortKey = function(result) {
     if (result.officename === 'President') {
-        if (result.level === 'state') {
-            return result.statepostal;
-        } else {
+        if (result.level === 'district' && result.reportingunitname !== 'At Large') {
             return result.statepostal + '-' + result.reportingunitname.slice('-1');
+        } else {
+            return result.statepostal;
         }
     } else if (result.officename === 'U.S. Senate') {
         return result.statepostal;
