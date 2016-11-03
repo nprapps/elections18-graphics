@@ -7,6 +7,7 @@
 import d3 from 'd3';
 import * as _ from 'underscore';
 import request from 'superagent';
+import countdown from './countdown';
 // import textures from 'textures';
 
 // Global vars
@@ -41,6 +42,7 @@ var reloadData = null;
 var graphicWidth = null;
 var timestamp = null;
 var lastRequestTime = null;
+var indicator = null;
 
 var exports = module.exports = {};
 
@@ -49,6 +51,7 @@ var exports = module.exports = {};
  */
 exports.initBop = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
+    indicator = document.querySelector('.countdown');
     graphicWidth = containerWidth;
 
     loadData();
@@ -71,6 +74,7 @@ var loadData = function() {
             bopData = res.body;
             lastUpdated = res.body.last_updated;
             formatData();
+            countdown.resultsCountdown(indicator, LOAD_INTERVAL);
         });
 }
 

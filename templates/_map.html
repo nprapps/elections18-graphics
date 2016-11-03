@@ -42,6 +42,9 @@
 <div class="footer">
     {% if COPY.map.source %}<p>Source: {{ COPY.map.source|smarty }}</p>{% endif %}
     {% if COPY.map.credit %}<p>Credit: {{ COPY.map.credit|smarty }}</p>{% endif %}
+    <div class="countdown">
+        <span class="update-indicator">Next update: <b class="icon icon-spin3"></b> <span class="text"></span></span>
+    </div>
 </div>
 <div class="phantom-footer">
     <p class="timestamp-screenshot"></p>

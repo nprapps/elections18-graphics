@@ -9,6 +9,7 @@ import d3 from 'd3';
 import * as _ from 'underscore';
 import textures from 'textures';
 import request from 'superagent';
+import countdown from './countdown';
 
 // D3 formatters
 var fmtComma = d3.format(',');
@@ -20,7 +21,7 @@ window.pymChild = null;
 var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 480;
-var LOAD_INTERVAL = 15000;
+var LOAD_INTERVAL = 5000;
 var isHP = false;
 var isInitialized = false;
 var isMobile = false;
@@ -48,6 +49,7 @@ var clintonTitle = null;
 var clintonElectoral = null;
 var trumpTitle = null;
 var trumpElectoral = null;
+var indicator = null;
 
 var exports = module.exports = {};
 
@@ -67,6 +69,7 @@ exports.initMap = function(containerWidth) {
     clintonElectoral = electoralTotals.select('.clinton-electoral');
     trumpTitle = electoralTotals.select('.trump h3');
     trumpElectoral = electoralTotals.select('.trump-electoral');
+    indicator = document.querySelector('.update-indicator');
 
     mapWidth = containerWidth;
 
@@ -133,6 +136,7 @@ var loadData = function() {
             electoralData = res.body.results;
             lastUpdated = res.body.last_updated;
             formatData();
+            countdown.resultsCountdown(indicator, LOAD_INTERVAL);
         })
 }
 
