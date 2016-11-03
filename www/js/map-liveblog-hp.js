@@ -55,7 +55,7 @@ var buildHeadlineURL = function(filename) {
 var renderMaquette = function() {
     if (headlines) {
         return h('div.headlines', [
-            h('h3', 'Latest news'),
+            h('h3', 'The latest from our live blog'),
             headlines.map(post => renderHeadline(post))
         ])
     } else {
