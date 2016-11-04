@@ -231,7 +231,7 @@ const renderCongressBOP = function(bop) {
                 'Pickups: ',
                 h('span.change.party', demPickups >= 0 ? '+' + demPickups : demPickups),
                 h('br'),
-                'Needs: ',
+                'Need: ',
                 h('span.needed.party', demNeed)
             ])
         ]),
@@ -241,7 +241,7 @@ const renderCongressBOP = function(bop) {
                 'Pickups: ',
                 h('span.change.party', gopPickups >= 0 ? '+' + gopPickups : gopPickups),
                 h('br'),
-                'Needs: ',
+                'Need: ',
                 h('span.needed.party', gopNeed)
             ])
         ]),
