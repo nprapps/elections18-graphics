@@ -197,24 +197,27 @@
     	margin:0;
     	list-style-type: none;
     	position: relative;
-        .gotham();
+      .gotham();
 
-        @media @screen-small-above {
-            margin: 0 0 0 5rem;
-        }
+      @media @screen-small-above {
+          margin: 0 0 0 5rem;
+      }
     }
 
     li {
         border-bottom: 1px solid #ddd;
         margin-bottom: 0;
-
+        text-transform: lowercase;
+        p {
+            text-transform: none;
+        }
         @media @screen-small-above {
             float: left;
             width: auto;
             border: none;
         }
-
     }
+
 
     /* State Nav */
     .state-nav {
