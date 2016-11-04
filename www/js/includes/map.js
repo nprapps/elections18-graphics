@@ -535,7 +535,12 @@ var onStateMouseover = function() {
             if (leftPos + ttWidth > mapWidth) {
                 leftPos = leftPos - ttWidth;
             }
-            var topPos = (coords[1] * mapScale) + 5;
+            var topPos = ((coords[1] * mapScale) + 5)
+
+            if (document.querySelector('.headlines')) {
+                var headlinesHeight = document.querySelector('.headlines').offsetHeight;
+                topPos += headlinesHeight;
+            }
 
             var s = '';
             s += 'left: ' + leftPos + 'px; ';
