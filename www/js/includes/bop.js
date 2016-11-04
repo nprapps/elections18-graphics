@@ -320,7 +320,7 @@ var renderStackedBarChart = function(config) {
                 return Math.abs(xScale(d['x1']) - xScale(d['x0']));
             })
             .attr('height', function(d) {
-                var t = d3.select(this.parentNode)[0][0].classList[1].split('-');
+                var t = d3.select(this.parentNode)[0][0].getAttribute('class').split(' ')[1].split('-');
                 var tIndex = t[1];
 
                 if (tIndex == 0) {
