@@ -164,6 +164,8 @@ const renderMaquette = function() {
 
     let duplicates = diffArrays(Object.keys(firstColumn), Object.keys(secondColumn));
 
+    setTimeout(pymChild.sendHeight, 0);
+
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', boardTitle),
@@ -213,6 +215,10 @@ const renderCongressBOP = function(bop) {
     const gopPickups = bop['GOP']['pickups'];
     const indPickups = bop['Other']['pickups'];
 
+    const demExpected = demSeats + bop['Dem']['expected'];
+    const gopExpected = gopSeats + bop['GOP']['expected'];
+    const indExpected = indSeats + bop['Other']['expected'];
+
     const demNeed = bop['Dem']['needed'];
     const gopNeed = bop['GOP']['needed'];
 
@@ -220,36 +226,37 @@ const renderCongressBOP = function(bop) {
 
     return h('div.leaderboard', [
         h('div.results-header-group.dem', [
-            h('h2.party', 'Dem.'),
-            h('p.total', [
-                h('span.percentage', demSeats),
-                h('span.change', demPickups >= 0 ? '+' + demPickups : demPickups)
-            ]),
-            h('p.seats-needed', [
-                h('span.count', demNeed)
+            h('h2.party', [ 'Dem.: ' + demSeats ]),
+            h('p.detail', [
+                'Pickups: ',
+                h('span.change.party', demPickups >= 0 ? '+' + demPickups : demPickups),
+                h('br'),
+                'Need: ',
+                h('span.needed.party', demNeed)
             ])
         ]),
         h('div.results-header-group.gop', [
-            h('h2.party', 'GOP'),
-            h('p.total', [
-                h('span.percentage', gopSeats),
-                h('span.change', gopPickups >= 0 ? '+' + gopPickups : gopPickups)
-            ]),
-            h('p.seats-needed', [
-                h('span.count', gopNeed)
+            h('h2.party', 'GOP: ' + gopSeats),
+            h('p.detail', [
+                'Pickups: ',
+                h('span.change.party', gopPickups >= 0 ? '+' + gopPickups : gopPickups),
+                h('br'),
+                'Need: ',
+                h('span.needed.party', gopNeed)
             ])
         ]),
         h('div.results-header-group.other', [
-            h('h2.party', 'Ind.'),
-            h('p.total', [
-                h('span.percentage', indSeats),
-                h('span.change', indPickups >= 0 ? '+' + indPickups : indPickups)
+            h('h2.party', 'Ind.: ' + indSeats),
+            h('p.detail', [
+                'Pickups: ',
+                h('span.change.party', indPickups >= 0 ? '+' + indPickups : indPickups)
             ]),
         ]),
         h('div.results-header-group.not-called', [
-            h('h2', 'Not Called'),
-            h('p.total', [
-                h('span.count', uncalledRaces)
+            h('h2.party', [
+                'Not Yet',
+                h('br'),
+                'Called: ' + uncalledRaces
             ])
         ])
     ]);
@@ -267,7 +274,12 @@ const renderElectoralBOP = function(bop) {
         hidePortraits = true;
     }
 
-    return h('div.leaderboard', [
+    return h('div.leaderboard', {
+            classes: {
+                'top-two': !hidePortraits,
+                'multiple': hidePortraits
+            }
+        },[
         h('div.results-header-group.dem', [
             h('img.candidate', {
                 src: clintonBase64,
@@ -275,14 +287,16 @@ const renderElectoralBOP = function(bop) {
                     'hidden': hidePortraits
                 }
             }),
-            h('h2.party', 'Clinton'),
-            h('p.total', [
-                h('span.percentage', clintonVotes),
+            h('h2.party', [
+                'Clinton',
                 h('i.icon', {
                     classes: {
                         'icon-ok': clintonVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', clintonVotes)
             ]),
         ]),
         h('div.results-header-group.gop', [
@@ -292,14 +306,16 @@ const renderElectoralBOP = function(bop) {
                     'hidden': hidePortraits
                 }
             }),
-            h('h2.party', 'Trump'),
-            h('p.total', [
-                h('span.percentage', trumpVotes),
+            h('h2.party', [
+                'Trump',
                 h('i.icon', {
                     classes: {
                         'icon-ok': trumpVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', trumpVotes)
             ]),
         ]),
         h('div.results-header-group.other', {
@@ -307,14 +323,16 @@ const renderElectoralBOP = function(bop) {
                 'hidden': johnsonVotes === 0
             }
         }, [
-            h('h2.party', 'Johnson'),
-            h('p.total', [
-                h('span.percentage', johnsonVotes),
+            h('h2.party', [
+                'Johnson',
                 h('i.icon', {
                     classes: {
                         'icon-ok': johnsonVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', johnsonVotes)
             ]),
         ]),
         h('div.results-header-group.other', {
@@ -322,14 +340,16 @@ const renderElectoralBOP = function(bop) {
                 'hidden': mcMullinVotes === 0
             }
         }, [
-            h('h2.party', 'McMullin'),
-            h('p.total', [
-                h('span.percentage', mcMullinVotes),
+            h('h2.party', [
+                'McMullin',
                 h('i.icon', {
                     classes: {
                         'icon-ok': mcMullinVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', mcMullinVotes)
             ]),
         ]),
         h('div.results-header-group.other', {
@@ -337,14 +357,16 @@ const renderElectoralBOP = function(bop) {
                 'hidden': steinVotes === 0
             }
         }, [
-            h('h2.party', 'Stein'),
-            h('p.total', [
-                h('span.percentage', steinVotes),
+            h('h2.party', [
+                'Stein',
                 h('i.icon', {
                     classes: {
                         'icon-ok': steinVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', steinVotes)
             ]),
         ])
     ]);

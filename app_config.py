@@ -98,6 +98,9 @@ COPY_PATH = 'data/copy.xlsx'
 BRIEFING_GOOGLE_DOC_KEY = '1cG6itV9fK9Fc7AA_On4ToUgqEWA8Ae5bp0JCxQdtEOw'
 BRIEFING_PATH = 'data/briefing.xlsx'
 
+NAVBAR_GOOGLE_DOC_KEY = '1i0hJX8VZsNLQr6bEnHGWj9wnMBH-_NYeDJrWMdb6Yfo'
+NAVBAR_PATH = 'data/navbar.xlsx'
+
 """
 SHARING
 """

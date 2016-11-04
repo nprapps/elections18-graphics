@@ -1,9 +1,11 @@
 // npm libraries
+import electoral from '../js/includes/electoral-totals.js';
 import map from '../js/includes/map.js'
 
 // global vars
 window.pymChild = null;
 var isMapInit = false;
+var isElectoralInit = false;
 
 
 /*
@@ -34,6 +36,11 @@ var render = function(containerWidth) {
         isMapInit= true;
     } else {
         map.renderMap(containerWidth);
+    }
+
+    if (!isElectoralInit) {
+        electoral.initElectoralTotals()
+        isElectoralInit = true;
     }
 }
 

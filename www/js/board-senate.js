@@ -15,16 +15,7 @@ var stateMenu = document.querySelector(".state-nav-label");
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child({
-        polling: 100
-    });
-    resultsMenu.addEventListener('click', function() {
-        navbar.onResultsMenuClick(pymChild);
-    });
-    stateMenu.addEventListener('click', function() {
-        navbar.onStateMenuClick(pymChild);
-    });
-
+    pymChild = new pym.Child();
     bigboard.initBigBoard('senate-national.json', 'Senate', 'senate');
 }
 

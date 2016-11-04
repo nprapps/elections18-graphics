@@ -27,7 +27,7 @@ svg { overflow: hidden; }
     rect {
         &.dem   { fill: @dem; }
         &.gop   { fill: @gop; }
-        &.other { fill: @ind; }
+        &.ind   { fill: @ind; }
         &.not-yet-called { fill: #ccc; }
     }
 
@@ -45,12 +45,35 @@ svg { overflow: hidden; }
         font-family: @gotham;
         font-size: 11px;
 
+        .side-label {
+            font-family: @knockout;
+            font-weight: normal;
+            text-transform: uppercase;
+            line-height: 1.2;
+            letter-spacing: 0.05em;
+            -webkit-font-smoothing: antialiased;
+            text-anchor: end;
+
+            &.called {
+                font-size: 12px;
+                fill: #333;
+
+                @media screen and (max-width: 280px) { font-size: 11px; }
+            }
+            &.expected {
+                font-size: 10px;
+                fill: #999;
+
+                @media screen and (max-width: 280px) { font-size: 8.5px; }
+            }
+        }
+
         .party {
             font-weight: bold;
 
             &.dem   { fill: @dem; }
             &.gop   { fill: @gop; }
-            &.other { fill: @ind; }
+            &.ind   { fill: @ind; }
         }
 
         .value {
@@ -66,6 +89,7 @@ svg { overflow: hidden; }
 }
 
 .footnotes {
+    padding-top: 11px;
     margin-bottom: 6px;
 
     h4 {
@@ -79,7 +103,7 @@ svg { overflow: hidden; }
 .footer p {
     margin: 2px 0 0 0;
     font-size: 11px;
-    line-height: 1.7;
+    line-height: 1.5;
     color: #999;
 }
 

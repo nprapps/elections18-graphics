@@ -64,7 +64,6 @@ let extraData = null;
 let dataURL = null;
 let extraDataURL = null;
 let currentState = null;
-let lastRequestTime = null;
 let sortMetric = availableMetrics[0];
 let descriptions = null;
 let keyCounties = null;
@@ -76,6 +75,9 @@ let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
 let resultsType = 'Presidential Results';
+let lastPresidentialRequestTime = null;
+let lastDownballotRequestTime = null;
+
 
 window.pymChild = null;
 /*
@@ -83,9 +85,7 @@ window.pymChild = null;
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child({
-        polling: 100
-    });
+    pymChild = new pym.Child();
     currentState = getParameterByName('state').toLowerCase();
     descriptions = briefingData.descriptions.find(function(el) {
       return el.state_postal === currentState;
@@ -104,18 +104,34 @@ var onWindowLoaded = function() {
     dataTimer = setInterval(getData, 5000);
 }
 
-const getData = function() {
-    // projector.resume();
+const getData = function(forceReload) {
+    if (dataURL.indexOf('presidential') !== -1) {
+        resultsView = 'presidential';
+        var requestTime = lastPresidentialRequestTime;
+    } else {
+        resultsView = 'downballot';
+        var requestTime = lastDownballotRequestTime;
+    }
+
+    if (forceReload) {
+        var requestTime = '';
+    }
+
     request.get(dataURL)
+        .set('If-Modified-Since', requestTime ? requestTime : '')
         .end(function(err, res) {
-            if (dataURL.indexOf('presidential') !== -1) {
-              resultsView = 'presidential';
-            } else {
-              resultsView = 'downballot';
+            if (res.body) {
+                if (resultsView === 'presidential') {
+                    lastPresidentialRequestTime = new Date().toUTCString();
+                } else if (resultsView === 'downballot') {
+                    lastDownballotRequestTime = new Date().toUTCString();
+                }
+
+                data = res.body.results;
+                lastUpdated = res.body.last_updated;
+                projector.resume();            
+                projector.scheduleRender();
             }
-            data = res.body.results;
-            lastUpdated = res.body.last_updated;
-            projector.scheduleRender();
         });
 }
 
@@ -164,6 +180,8 @@ const sortCountyResults = function() {
 
 
 const renderMaquette = function() {
+    setTimeout(pymChild.sendHeight, 0);
+    
     if (data, extraData) {
         if (!stateName && !statepostal && !statefaceClass) {
           stateName = data['state'][0].statename;
@@ -171,7 +189,6 @@ const renderMaquette = function() {
 
           statefaceClass = 'stateface-' + statepostal.toLowerCase();
         }
-
         return h('div.results', [
           h('header', [
               h('div.switcher', [
@@ -509,7 +526,7 @@ const renderCountyRow = function(results, key, availableCandidates){
     ]),
     h('td.amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
-    h('td.vote.margin', calculateVoteMargin(keyedResults, winner)),
+    h('td.vote.margin', calculateVoteMargin(keyedResults)),
     h('td.comparison', extraMetric)
   ])
 }
@@ -544,11 +561,21 @@ const determineWinner = function(keyedResults) {
   return winner;
 }
 
-const calculateVoteMargin = function(keyedResults, winner) {
-  if (!winner) {
-    return ''
+const calculateVoteMargin = function(keyedResults) {
+  let winnerVotePct = 0;
+  let winner = null;
+  for (var key in keyedResults) {
+    let result = keyedResults[key];
+
+    if (result.votepct > winnerVotePct) {
+      winnerVotePct = result.votepct;
+      winner = result;
+    }
   }
 
+  if (!winner) {
+    return '';
+  }
   let winnerMargin = 100;
   for (var key in keyedResults) {
     let result = keyedResults[key];
@@ -763,20 +790,22 @@ const toTitlecase = function(str) {
 
 
 const switchResultsView = function(e) {
-  if (e.target.getAttribute('id') === 'presidential') {
-    var dataFilename = 'presidential-' + currentState + '-counties.json';
-    resultsType = 'Presidential Results';
-    ANALYTICS.trackEvent('presidential-view-click');
-  } else {
-    var dataFilename = currentState + '.json';
-    resultsType = 'Statewide Results';
-    ANALYTICS.trackEvent('statewide-view-click');
-  }
-  dataURL = buildDataURL(dataFilename);
+    projector.stop();
 
-  clearInterval(dataTimer);
-  getData();
-  dataTimer = setInterval(getData, 5000);
+    if (e.target.getAttribute('id') === 'presidential') {
+        var dataFilename = 'presidential-' + currentState + '-counties.json';
+        resultsType = 'Presidential Results';
+        ANALYTICS.trackEvent('presidential-view-click');
+    } else {
+        var dataFilename = currentState + '.json';
+        resultsType = 'Statewide Results';
+        ANALYTICS.trackEvent('statewide-view-click');
+    }
+    dataURL = buildDataURL(dataFilename);
+
+    clearInterval(dataTimer);
+    getData(true);
+    dataTimer = setInterval(getData, 5000);
 }
 
 const sortResults = function(results) {

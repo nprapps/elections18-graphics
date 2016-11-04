@@ -9,6 +9,7 @@ import d3 from 'd3';
 import * as _ from 'underscore';
 import textures from 'textures';
 import request from 'superagent';
+import countdown from './countdown';
 
 // D3 formatters
 var fmtComma = d3.format(',');
@@ -20,7 +21,7 @@ window.pymChild = null;
 var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 480;
-var LOAD_INTERVAL = 15000;
+var LOAD_INTERVAL = 5000;
 var isHP = false;
 var isInitialized = false;
 var isMobile = false;
@@ -42,12 +43,7 @@ var tooltip = null;
 var tDLead = null;
 var tRLead = null;
 var tILead = null;
-
-var electoralTotals = null;
-var clintonTitle = null;
-var clintonElectoral = null;
-var trumpTitle = null;
-var trumpElectoral = null;
+var indicator = null;
 
 var exports = module.exports = {};
 
@@ -61,12 +57,7 @@ exports.initMap = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
     timestampScreenshot = d3.select('.phantom-footer .timestamp-screenshot');
     tooltip = d3.select('#tooltip');
-
-    electoralTotals = d3.select('#electoral-totals');
-    clintonTitle = electoralTotals.select('.clinton h3');
-    clintonElectoral = electoralTotals.select('.clinton-electoral');
-    trumpTitle = electoralTotals.select('.trump h3');
-    trumpElectoral = electoralTotals.select('.trump-electoral');
+    indicator = document.querySelector('.update-indicator');
 
     mapWidth = containerWidth;
 
@@ -113,6 +104,7 @@ exports.initMap = function(containerWidth) {
 
     // load data
     loadData();
+    setInterval(loadData, LOAD_INTERVAL)
 }
 
 
@@ -120,19 +112,16 @@ exports.initMap = function(containerWidth) {
  * Load data
  */
 var loadData = function() {
-    clearInterval(reloadData);
-    // console.log('loadData: ' + DATA_FILE);
-
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
-            if (err) {
-                console.warn(err);
+            if (res.body) {
+                lastRequestTime = new Date().toUTCString();
+                electoralData = res.body.results;
+                lastUpdated = res.body.last_updated;
+                formatData();
             }
-            lastRequestTime = new Date().toUTCString();
-            electoralData = res.body.results;
-            lastUpdated = res.body.last_updated;
-            formatData();
+            countdown.resultsCountdown(indicator, LOAD_INTERVAL);    
         })
 }
 
@@ -217,38 +206,12 @@ var formatData = function() {
         }
     });
 
-    // update overall totals
-    _.each(electoralData['US'], function(c) {
-        switch(c['last']) {
-            case 'Trump':
-                var votePct = c['votepct'] * 100;
-                trumpElectoral.html(c['npr_electwon']);
-                if (c['npr_electwon'] >= 270) {
-                    trumpTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
-                } else {
-                    trumpTitle.html(c['last']);
-                }
-                break;
-            case 'Clinton':
-                var votePct = c['votepct'] * 100;
-                clintonElectoral.html(c['npr_electwon']);
-                if (c['npr_electwon'] >= 270) {
-                    clintonTitle.html(c['last'] + ' <i class="icon icon-ok"></i>');
-                } else {
-                    clintonTitle.html(c['last']);
-                }
-                break;
-        }
-    });
-
     // update timestamp
     timestamp.html('(as of ' + lastUpdated + ' ET)');
     timestampScreenshot.html(lastUpdated);
 
     // color in the map!
     updateElectoralMap();
-
-    reloadData = setInterval(loadData, LOAD_INTERVAL);
 
     // only do this once
     if (!isInitialized) {

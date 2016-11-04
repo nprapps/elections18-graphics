@@ -185,6 +185,7 @@ def make_context(asset_depth=0):
 
     try:
         context['COPY'] = copytext.Copy(app_config.COPY_PATH)
+        context['NAVBAR'] = copytext.Copy(app_config.NAVBAR_PATH)
     except copytext.CopyException:
         pass
 
