@@ -97,10 +97,7 @@ var onWindowLoaded = function() {
     const dataFilename = 'presidential-' + currentState + '-counties.json'
     dataURL = buildDataURL(dataFilename);
     extraDataURL = '../data/extra_data/' + currentState + '-extra.json'
-    projector.append(resultsWrapper, renderMaquette);
-    getData();
     getExtraData();
-
     dataTimer = setInterval(getData, 5000);
 }
 
@@ -139,6 +136,7 @@ const getExtraData = function() {
     request.get(extraDataURL)
         .end(function(err, res) {
             extraData = res.body;
+            projector.append(resultsWrapper, renderMaquette);
         });
 }
 
@@ -182,7 +180,7 @@ const sortCountyResults = function() {
 const renderMaquette = function() {
     setTimeout(pymChild.sendHeight, 0);
     
-    if (data, extraData) {
+    if (data && extraData) {
         if (!stateName && !statepostal && !statefaceClass) {
           stateName = data['state'][0].statename;
           statepostal = data['state'][0].statepostal;
@@ -244,6 +242,7 @@ const renderMaquette = function() {
           ])
         ]);
     } else {
+        getData();  
         return h('div.results', 'Loading...');
     }
 }
