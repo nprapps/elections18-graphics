@@ -12,9 +12,7 @@ let data = null;
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child({
-        polling: 100
-    });
+    pymChild = new pym.Child();
     bigboard.initBigBoard('presidential-big-board.json', 'President', 'president');
 }
 

@@ -85,9 +85,7 @@ window.pymChild = null;
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child({
-        polling: 100
-    });
+    pymChild = new pym.Child();
     currentState = getParameterByName('state').toLowerCase();
     descriptions = briefingData.descriptions.find(function(el) {
       return el.state_postal === currentState;
@@ -182,6 +180,8 @@ const sortCountyResults = function() {
 
 
 const renderMaquette = function() {
+    setTimeout(pymChild.sendHeight, 0);
+    
     if (data, extraData) {
         if (!stateName && !statepostal && !statefaceClass) {
           stateName = data['state'][0].statename;
@@ -189,7 +189,6 @@ const renderMaquette = function() {
 
           statefaceClass = 'stateface-' + statepostal.toLowerCase();
         }
-
         return h('div.results', [
           h('header', [
               h('div.switcher', [
