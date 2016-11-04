@@ -561,11 +561,21 @@ const determineWinner = function(keyedResults) {
   return winner;
 }
 
-const calculateVoteMargin = function(keyedResults, winner) {
-  if (!winner) {
-    return ''
+const calculateVoteMargin = function(keyedResults) {
+  let winnerVotePct = 0;
+  let winner = null;
+  for (var key in keyedResults) {
+    let result = keyedResults[key];
+
+    if (result.votepct > winnerVotePct) {
+      winnerVotePct = result.votepct;
+      winner = result;
+    }
   }
 
+  if (!winner) {
+    return '';
+  }
   let winnerMargin = 100;
   for (var key in keyedResults) {
     let result = keyedResults[key];
