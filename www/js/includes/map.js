@@ -24,7 +24,7 @@ var MOBILE_THRESHOLD = 480;
 var LOAD_INTERVAL = 5000;
 var isHP = false;
 var isInitialized = false;
-var isMobile = false;
+var isMobile = Modernizr.touchevents;
 var lastUpdated = '';
 var electoralData = [];
 var colorScale = null;
@@ -303,12 +303,6 @@ exports.renderMap = function(containerWidth) {
 var resetMap = function(containerWidth) {
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;
-    }
-
-    if (containerWidth <= MOBILE_THRESHOLD) {
-        isMobile = true;
-    } else {
-        isMobile = false;
     }
 
     // render legend
