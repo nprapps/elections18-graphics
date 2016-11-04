@@ -32,8 +32,9 @@ def update():
         return
 
     get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
-    get_document(app_config.BRIEFING_GOOGLE_DOC_KEY, app_config.BRIEFING_PATH)
+    get_document(app_config.NAVBAR_GOOGLE_DOC_KEY, app_config.NAVBAR_PATH)
 
+    get_document(app_config.BRIEFING_GOOGLE_DOC_KEY, app_config.BRIEFING_PATH)
     with open('www/data/extra_data/state-briefings.json', 'w') as f:
         copy = copytext.Copy(app_config.BRIEFING_PATH)
         output = copy.json()
