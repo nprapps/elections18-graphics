@@ -526,7 +526,7 @@ const renderCountyRow = function(results, key, availableCandidates){
     ]),
     h('td.amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
-    h('td.vote.margin', calculateVoteMargin(keyedResults, winner)),
+    h('td.vote.margin', calculateVoteMargin(keyedResults)),
     h('td.comparison', extraMetric)
   ])
 }
