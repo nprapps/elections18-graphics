@@ -39,8 +39,8 @@ var getData = function() {
                 lastRequestTime = new Date().toUTCString();
                 headlines = res.body.posts;
             }
-            projector.scheduleRender();    
-            setTimeout(pymChild.sendHeight, 0);    
+            projector.scheduleRender();
+            setTimeout(pymChild.sendHeight, 0);
         });
 }
 
@@ -57,8 +57,10 @@ var buildHeadlineURL = function(filename) {
 var renderMaquette = function() {
     if (headlines) {
         return h('div.headlines', [
-            h('h3', 'Latest news'),
-            headlines.map(post => renderHeadline(post))
+            h('h3', 'Latest From Our Election Live Blog'),
+            h('div.list', [
+                headlines.map(post => renderHeadline(post))
+            ])
         ])
     } else {
         return h('div.headlines')
@@ -71,11 +73,11 @@ var renderHeadline = function(post) {
     return h('h4.headline', {
         key: post.url
     }, [
+        h('span.timestamp', timeAgo),
         h('a', {
             href: post.url
         }, post.headline),
         ' ',
-        h('span.timestamp', timeAgo)
     ])
 }
 
