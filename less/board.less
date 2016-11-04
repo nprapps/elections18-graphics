@@ -7,13 +7,6 @@ html {
     @media screen and (max-width: @screen-md) { font-size: 13px; }
     @media screen and (max-width: @screen-sm) { font-size: 12px; }
     @media screen and (max-width: @screen-xs) { font-size: 11px; }
-
-    // @screen-xs:                  480px;  // Extra small screen / phone
-    // @screen-sm:                  768px;  // Small screen / tablet
-    // @screen-md:                  992px;  // Medium screen / desktop
-    // @screen-lg:                 1200px;  // Large screen / wide desktop
-    // @screen-xl:                 1500px;  // Superwide
-    // @screen-big-board:          1920px;  // HDTV
 }
 
 body {
@@ -57,8 +50,15 @@ body {
         }
 
         .leaderboard {
-            float: right;
-            display: table;
+            @media screen and (min-width: @screen-md-min) {
+                float: right;
+                display: table;
+            }
+            @media screen and (max-width: @screen-sm) {
+                clear: both;
+                padding-top: 11px;
+                padding-bottom: 11px;
+            }
         }
     }
 
@@ -292,9 +292,7 @@ tr {
 		padding-right: 0;
 	}
 
-    &.hidden {
-        display: none;
-    }
+    &.hidden { display: none; }
 
 	.party,
 	.seats-needed,
@@ -387,6 +385,53 @@ tr {
 			color: fadeout(@gray, 25%);
 		}
 	}
+}
+
+.board.president .leaderboard {
+    display: -webkit-flex;
+    display: flex;
+
+    .results-header-group {
+        text-align: center;
+
+        img { float: left; }
+        h2 {
+            font-family: @knockout;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+            font-size: 97%;
+            color: @gray-dark;
+            margin: 0 0 3px 0;
+            line-height: 1;
+            text-transform: uppercase;
+            white-space: nowrap;
+            -webkit-font-smoothing: antialiased;
+            display: block;
+        }
+        .total {
+            display: block;
+            margin: 0;
+            padding: 0;
+            font-family: @gotham;
+            line-height: 1;
+            font-weight: 700;
+            font-size: 200%;
+            -webkit-font-smoothing: antialiased;
+        }
+    }
+
+    &.top-two {
+        max-width: 300px;
+        .results-header-group { width: 50%; }
+    }
+
+    &.multiple {
+        max-width: 350px;
+        .results-header-group {
+            width: 33%;
+            padding: 0 11px
+        }
+    }
 }
 
 

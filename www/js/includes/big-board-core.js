@@ -267,7 +267,12 @@ const renderElectoralBOP = function(bop) {
         hidePortraits = true;
     }
 
-    return h('div.leaderboard', [
+    return h('div.leaderboard', {
+            classes: {
+                'top-two': !hidePortraits,
+                'multiple': hidePortraits
+            }
+        },[
         h('div.results-header-group.dem', [
             h('img.candidate', {
                 src: clintonBase64,
@@ -275,14 +280,16 @@ const renderElectoralBOP = function(bop) {
                     'hidden': hidePortraits
                 }
             }),
-            h('h2.party', 'Clinton'),
-            h('p.total', [
-                h('span.percentage', clintonVotes),
+            h('h2.party', [
+                'Clinton',
                 h('i.icon', {
                     classes: {
                         'icon-ok': clintonVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', clintonVotes)
             ]),
         ]),
         h('div.results-header-group.gop', [
@@ -292,14 +299,16 @@ const renderElectoralBOP = function(bop) {
                     'hidden': hidePortraits
                 }
             }),
-            h('h2.party', 'Trump'),
-            h('p.total', [
-                h('span.percentage', trumpVotes),
+            h('h2.party', [
+                'Trump',
                 h('i.icon', {
                     classes: {
                         'icon-ok': trumpVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', trumpVotes)
             ]),
         ]),
         h('div.results-header-group.other', {
@@ -307,14 +316,16 @@ const renderElectoralBOP = function(bop) {
                 'hidden': johnsonVotes === 0
             }
         }, [
-            h('h2.party', 'Johnson'),
-            h('p.total', [
-                h('span.percentage', johnsonVotes),
+            h('h2.party', [
+                'Johnson',
                 h('i.icon', {
                     classes: {
                         'icon-ok': johnsonVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', johnsonVotes)
             ]),
         ]),
         h('div.results-header-group.other', {
@@ -322,14 +333,16 @@ const renderElectoralBOP = function(bop) {
                 'hidden': mcMullinVotes === 0
             }
         }, [
-            h('h2.party', 'McMullin'),
-            h('p.total', [
-                h('span.percentage', mcMullinVotes),
+            h('h2.party', [
+                'McMullin',
                 h('i.icon', {
                     classes: {
                         'icon-ok': mcMullinVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', mcMullinVotes)
             ]),
         ]),
         h('div.results-header-group.other', {
@@ -337,14 +350,16 @@ const renderElectoralBOP = function(bop) {
                 'hidden': steinVotes === 0
             }
         }, [
-            h('h2.party', 'Stein'),
-            h('p.total', [
-                h('span.percentage', steinVotes),
+            h('h2.party', [
+                'Stein',
                 h('i.icon', {
                     classes: {
                         'icon-ok': steinVotes >= 270
                     }
                 })
+            ]),
+            h('p.total', [
+                h('span.percentage', steinVotes)
             ]),
         ])
     ]);
