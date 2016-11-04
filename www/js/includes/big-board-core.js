@@ -213,6 +213,10 @@ const renderCongressBOP = function(bop) {
     const gopPickups = bop['GOP']['pickups'];
     const indPickups = bop['Other']['pickups'];
 
+    const demExpected = demSeats + bop['Dem']['expected'];
+    const gopExpected = gopSeats + bop['GOP']['expected'];
+    const indExpected = indSeats + bop['Other']['expected'];
+
     const demNeed = bop['Dem']['needed'];
     const gopNeed = bop['GOP']['needed'];
 
@@ -220,36 +224,37 @@ const renderCongressBOP = function(bop) {
 
     return h('div.leaderboard', [
         h('div.results-header-group.dem', [
-            h('h2.party', 'Dem.'),
-            h('p.total', [
-                h('span.percentage', demSeats),
-                h('span.change', demPickups >= 0 ? '+' + demPickups : demPickups)
-            ]),
-            h('p.seats-needed', [
-                h('span.count', demNeed)
+            h('h2.party', [ 'Dem.: ' + demSeats ]),
+            h('p.detail', [
+                'Pickups: ',
+                h('span.change.party', demPickups >= 0 ? '+' + demPickups : demPickups),
+                h('br'),
+                'Needs: ',
+                h('span.needed.party', demNeed)
             ])
         ]),
         h('div.results-header-group.gop', [
-            h('h2.party', 'GOP'),
-            h('p.total', [
-                h('span.percentage', gopSeats),
-                h('span.change', gopPickups >= 0 ? '+' + gopPickups : gopPickups)
-            ]),
-            h('p.seats-needed', [
-                h('span.count', gopNeed)
+            h('h2.party', 'GOP: ' + gopSeats),
+            h('p.detail', [
+                'Pickups: ',
+                h('span.change.party', gopPickups >= 0 ? '+' + gopPickups : gopPickups),
+                h('br'),
+                'Needs: ',
+                h('span.needed.party', gopNeed)
             ])
         ]),
         h('div.results-header-group.other', [
-            h('h2.party', 'Ind.'),
-            h('p.total', [
-                h('span.percentage', indSeats),
-                h('span.change', indPickups >= 0 ? '+' + indPickups : indPickups)
+            h('h2.party', 'Ind.: ' + indSeats),
+            h('p.detail', [
+                'Pickups: ',
+                h('span.change.party', indPickups >= 0 ? '+' + indPickups : indPickups)
             ]),
         ]),
         h('div.results-header-group.not-called', [
-            h('h2', 'Not Called'),
-            h('p.total', [
-                h('span.count', uncalledRaces)
+            h('h2.party', [
+                'Not Yet',
+                h('br'),
+                'Called: ' + uncalledRaces
             ])
         ])
     ]);

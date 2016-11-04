@@ -280,111 +280,75 @@ tr {
  */
 .results-header-group {
 	white-space: nowrap;
-	padding: 0 0.75rem 0.07rem;
+    padding: 0 0.7rem 0.07rem 0.7rem;
 	display: inline-block;
 	overflow: hidden;
 	box-sizing: border-box;
 
-	.footer-container & { padding: 0 0.25rem 0.07rem; }
-
-	&:last-child {
-		margin-right: 0;
-		padding-right: 0;
-	}
-
+    &:first-child { padding-left: 0; }
+    &:last-child { padding-right: 0; }
     &.hidden { display: none; }
-
-	.party,
-	.seats-needed,
-	.total {
-		display: inline;
-	}
-
-	h2,
-	p {
-		margin: 0;
-		font-size: 1.4rem;
-	}
-
-	h2 { font-weight: 500; }
 
     img {
         width: 32%;
         &.hidden { display: none; }
     }
+}
 
-	.change {
-		font-size: 1.4rem;
-		font-weight: 500;
-	}
+.board.senate .leaderboard,
+.board.house .leaderboard {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+    text-align: center;
 
-	.seats,
-	.needed {
-		border: 0.1rem solid transparent;
-
-		@media screen and (min-width: @screen-sm){
-			border-width: 2px;
-		}
-
-		display: inline-block;
-		box-sizing: border-box;
-		min-width: 3rem;
-		height: 3rem;
-		border-radius: 2rem;
-		margin-top: 0;
-		padding: 0 0.5rem;
-		// color: @white;
-		font-size: 1.5rem;
-		text-align: center;
-		line-height: 2.8rem;
-	}
-    .seats {
-        color: @white;
+    .results-header-group {
+        &:first-child { padding-left: 0; }
+        &:last-child { padding-right: 0; }
     }
 
-	.seats-needed,
-	.total {
-		white-space: nowrap;
-	}
+    .dem .party { color: @dem; }
+    .gop .party { color: @gop; }
+    .other .party { color: @ind; }
+    .not-called .party { color: @gray-light; }
 
-	.seats-needed {
-		padding-left: 1rem;
+    h2 {
+        font-family: @gotham;
+        font-size: 95%;
 
-		.needed,
-        .seats { display: inline-block; }
-	}
+        .change {
+            font-weight: normal;
+            font-family: @font-family-sans-serif;
+            font-style: italic;
+            font-size: 85%;
+        }
+    }
+    .not-called {
+        h2 {
+            font-weight: 400;
+            font-size: 90%;
+            line-height: 1.4rem;
+        }
+    }
 
-	&.dem {
-		color: fadeout(@dem, 15%);
+    p.detail {
+        font-family: @font-family-sans-serif;
+        font-size: 80%;
+        color: @gray;
+    }
 
-		.seats { background: fadeout(@dem, 25%); }
-        .needed { background: @demDim; }
-	}
-
-	&.gop {
-		color: fadeout(@gop, 25%);
-
-		.seats { background: fadeout(@gop, 25%); }
-        .needed { background: @gopDim; }
-	}
-
-	&.other {
-		color: fadeout(@ind, 25%);
-
-		.seats { background: fadeout(@ind, 25%); }
-		.total { padding: 0; }
-	}
-
-	&.not-called {
-		color: fadeout(@gray, 25%);
-
-		h2 { display: inline; }
-
-		.seats {
-			border-color: fadeout(@gray-light, 25%);
-			color: fadeout(@gray, 25%);
-		}
-	}
+    @media screen and (min-width: @screen-md-min) {
+        width: 50%;
+        max-width: 500px;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+    @media screen and (max-width: @screen-sm) {
+        width: 100%;
+        max-width: 350px;
+    }
 }
 
 .board.president .leaderboard {
@@ -418,6 +382,10 @@ tr {
             font-size: 200%;
             -webkit-font-smoothing: antialiased;
         }
+
+        &.dem .total { color: @dem; }
+        &.gop .total { color: @gop; }
+        &.other .total { color: @ind; }
     }
 
     &.top-two {
