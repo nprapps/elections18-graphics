@@ -29,8 +29,7 @@ exports.initBigBoard = function(filename, boardName, boardClass) {
     bopDataURL = buildDataURL('top-level-results.json')
     dataURL = buildDataURL(filename);
     projector.append(boardWrapper, renderMaquette);
-    getBopData();
-    getData();
+    getInitialData();
 
     setInterval(getBopData, 5000);
     setInterval(getData, 5000);
@@ -44,6 +43,18 @@ const buildDataURL = function(filename) {
     } else {
         return document.location.protocol + '//' + document.location.hostname + '/elections16/data/' + filename;
     }
+}
+
+const getInitialData = function() {
+    request.get(bopDataURL).end(function(err, res) {
+        bopData = res.body;
+        request.get(dataURL).end(function(err, res) {
+            lastRequestTime = new Date().toUTCString();
+            resultsData = sortData(res.body.results)
+            lastUpdated = res.body.last_updated
+            projector.scheduleRender();
+        });
+    });
 }
 
 const getData = function() {
