@@ -25,7 +25,7 @@ const followNavLink = function(e) {
             const domain = parseParentURL();
             if (domain == 'npr.org') {
                 const seamusid = e.target.getAttribute('data-seamus-id');
-                const url = 'http://www-s1.npr.org/templates/story/story.php?storyId=' + seamusid;
+                const url = 'http://www-s1.npr.org/sections/thetwo-way/2016/11/01/500293722/hurricane-matthew-took-a-big-bite-out-of-southeastern-states-beaches';
                 pymChild.sendMessage('navigate', url);
             } else {
                 pymChild.navigateParentTo(e.target.getAttribute('data-relative-href'));
