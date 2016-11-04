@@ -141,7 +141,7 @@ var formatData = function() {
     ];
     houseExpected = [
         { 'name': 'Dem.', 'val': hData['Dem']['seats'] },
-        { 'name': 'Dem-expected', 'val': hData['Dem']['expected'] },
+        { 'name': 'Dem.-expected', 'val': hData['Dem']['expected'] },
         { 'name': 'Not yet called', 'val': (hData['uncalled_races'] - hData['Dem']['expected'] - hData['GOP']['expected'] - hData['Other']['expected']) },
         { 'name': 'Ind.-expected', 'val': hData['Other']['expected'] },
         { 'name': 'Ind.', 'val': hData['Other']['seats'] },
