@@ -496,7 +496,7 @@ var onStateMouseover = function() {
     // d3.event.preventDefault();
     var t = d3.select(this);
     var coords = d3.mouse(this);
-    var st = t[0][0]['classList'][0].toUpperCase();
+    var st = t[0][0].getAttribute('class').split(' ')[0].toUpperCase();
     var stateData = electoralData[st];
     var ttWidth = 150;
 
