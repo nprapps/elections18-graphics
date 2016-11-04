@@ -526,7 +526,7 @@ const renderCountyRow = function(results, key, availableCandidates){
     ]),
     h('td.amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
-    h('td.vote.margin', calculateVoteMargin(keyedResults, winner)),
+    h('td.vote.margin', calculateVoteMargin(keyedResults)),
     h('td.comparison', extraMetric)
   ])
 }
@@ -561,11 +561,21 @@ const determineWinner = function(keyedResults) {
   return winner;
 }
 
-const calculateVoteMargin = function(keyedResults, winner) {
-  if (!winner) {
-    return ''
+const calculateVoteMargin = function(keyedResults) {
+  let winnerVotePct = 0;
+  let winner = null;
+  for (var key in keyedResults) {
+    let result = keyedResults[key];
+
+    if (result.votepct > winnerVotePct) {
+      winnerVotePct = result.votepct;
+      winner = result;
+    }
   }
 
+  if (!winner) {
+    return '';
+  }
   let winnerMargin = 100;
   for (var key in keyedResults) {
     let result = keyedResults[key];

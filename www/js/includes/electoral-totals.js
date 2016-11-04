@@ -22,6 +22,7 @@ var exports = module.exports = {};
 exports.initElectoralTotals = function() {
     electoralElement = d3.select('#electoral-totals .total-wrapper');
     loadElectoralData();
+    setInterval(loadElectoralData, 5000);
 }
 
 
@@ -29,20 +30,14 @@ exports.initElectoralTotals = function() {
  * Load data
  */
 var loadElectoralData = function() {
-    clearInterval(reloadElectoralData);
-    // console.log('loadData: ' + DATA_FILE);
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
-            if (err) {
-                console.warn(err);
+            if (res.body) {
+                lastRequestTime = new Date().toUTCString();
+                electoralData = res.body.electoral_college;
+                formatElectoralData();
             }
-
-            lastRequestTime = new Date().toUTCString();
-            electoralData = res.body.electoral_college;
-
-            // console.log(electoralData);
-            formatElectoralData();
         });
 }
 
@@ -123,8 +118,6 @@ var formatElectoralData = function() {
             .attr('class', classify(d) + '-electoral')
             .text(electoralData[d]);
     });
-
-    reloadElectoralData = setInterval(loadElectoralData, LOAD_INTERVAL);
 
     // Update iframe
     if (window.pymChild) {

@@ -38,9 +38,9 @@ var getData = function() {
             if (res.body) {
                 lastRequestTime = new Date().toUTCString();
                 headlines = res.body.posts;
-                projector.scheduleRender();
-                setTimeout(pymChild.sendHeight, 0);
             }
+            projector.scheduleRender();    
+            setTimeout(pymChild.sendHeight, 0);    
         });
 }
 
