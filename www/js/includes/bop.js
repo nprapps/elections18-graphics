@@ -87,13 +87,13 @@ exports.initBop = function(containerWidth) {
         .background('#ccc');
 
     loadData();
+    setInterval(loadData, LOAD_INTERVAL)
 }
 
 /*
  * Load a datafile
  */
 var loadData = function() {
-    clearInterval(reloadData);
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
@@ -165,8 +165,6 @@ var formatData = function() {
     });
 
     redrawChart(graphicWidth);
-
-    reloadData = setInterval(loadData, LOAD_INTERVAL);
 }
 
 
