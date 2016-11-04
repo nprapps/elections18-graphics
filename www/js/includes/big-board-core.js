@@ -164,6 +164,8 @@ const renderMaquette = function() {
 
     let duplicates = diffArrays(Object.keys(firstColumn), Object.keys(secondColumn));
 
+    setTimeout(pymChild.sendHeight, 0);
+
     return h('div.results-wrapper', [
         h('div.results-header', [
             h('h1', boardTitle),
