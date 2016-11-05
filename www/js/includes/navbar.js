@@ -21,7 +21,7 @@ const updateMenuParent = function(e) {
 
 const followNavLink = function(e) {
     const domain = parseParentURL();
-    if (e.target !== e.currentTarget && pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+    if (e.target.tagName == 'A' && e.target !== e.currentTarget && pymChild && (domain == 'npr.org' || domain == 'localhost')) {
         pymChild.sendMessage('navigate', e.target.href);
         e.preventDefault();
         e.stopPropagation();
@@ -34,6 +34,6 @@ resultsMenuButton.addEventListener("click", updateMenuParent);
 resultsMenu.addEventListener("click", followNavLink);
 
 var stateMenuButton = document.querySelector(".state-nav-label");
-var stateMenu = document.querySelector(".state-nav .states");
+var stateMenu = document.querySelector(".state-nav");
 stateMenu.addEventListener("click", followNavLink);
 stateMenuButton.addEventListener("click", updateMenuParent);
