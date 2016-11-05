@@ -1,20 +1,47 @@
 body {
     background-color: #fff;
+    padding-top: 0;
+    padding-bottom: 20px;
+    padding-left: 70px;
+    padding-right: 85px;
 }
 
-.footer, .footnotes {
+.footer, .footnotes, .legend {
     display: none;
+}
+
+#electoral-totals {
+    -webkit-transform: scale(0.65);
+    margin-bottom: -115px;
+    margin-left: -170px;
 }
 
 .phantom-footer {
     font-family:Gotham SSm,Helvetica,Arial,sans-serif;
     display: block;
+    position: relative;
+    margin-top: 0;
     padding-left: 10px;
     p {
         margin: 0;
+        font-size: 0.5rem;
     }
     .timestamp-screenshot {
-        font-size: 1.5rem;
+        font-size: 0.8rem;
         font-weight: bold;
+    }
+    .timestamp-screenshot-wrapper {
+        position: absolute;
+        left: 0;
+        bottom: 5px;
+    }
+    .logo {
+        position: absolute;
+        right: 105px;
+        bottom: 5px;
+        img {
+            width: 175px;
+            height: auto;
+        }
     }
 }
