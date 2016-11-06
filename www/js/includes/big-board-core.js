@@ -2,7 +2,6 @@
 import maquette from 'maquette';
 import request from 'superagent';
 import { buildDataURL } from './helpers.js';
-import { clintonBase64, trumpBase64 } from './illos.js';
 
 // global vars
 let dataURL = null;
@@ -285,7 +284,7 @@ const renderElectoralBOP = function(bop) {
         },[
         h('div.results-header-group.dem', [
             h('img.candidate', {
-                src: clintonBase64,
+                src: '../assets/clinton-thumb.png',
                 classes: {
                     'hidden': hidePortraits
                 }
@@ -304,7 +303,7 @@ const renderElectoralBOP = function(bop) {
         ]),
         h('div.results-header-group.gop', [
             h('img.candidate', {
-                src: trumpBase64,
+                src: '../assets/trump-thumb.png',
                 classes: {
                     'hidden': hidePortraits
                 }
