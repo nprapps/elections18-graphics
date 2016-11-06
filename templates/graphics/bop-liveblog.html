@@ -3,9 +3,6 @@
 {% block content %}
 <!-- electoral -->
 <div class="electoral-summary">
-    <h3>President</h3>
-    <h4>270 electoral votes needed</h4>
-
     <div id="electoral-totals">
         <div class="total-wrapper"></div>
     </div>
@@ -15,18 +12,8 @@
 <!-- bop -->
 {% include '_bop.html' %}
 
-{% if COPY.bop.footnote %}
-<div class="footnotes">
-    <p><strong>Note:</strong> {{ COPY.bop.footnote|smarty }}</p>
-</div>
-{% endif %}
-
-
 <div class="footer">
     {% if COPY.bop.source %}<p>Source: {{ COPY.bop.source|smarty }}</p>{% endif %}
     {% if COPY.bop.credit %}<p>Credit: {{ COPY.bop.credit|smarty }}</p>{% endif %}
-    <div class="countdown">
-        <span class="update-indicator">Next update: <b class="icon icon-spin3"></b> <span class="text"></span></span>
-    </div>
 </div>
 {% endblock %}

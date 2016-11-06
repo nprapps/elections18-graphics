@@ -1,5 +1,5 @@
 // npm libraries
-import bop from '../js/includes/bop.js';
+import bop from '../js/includes/bop-liveblog-render.js';
 import electoral from '../js/includes/electoral-totals.js';
 
 // Global vars
