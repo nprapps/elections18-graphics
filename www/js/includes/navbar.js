@@ -20,22 +20,12 @@ const updateMenuParent = function(e) {
 }
 
 const followNavLink = function(e) {
-    if (e.target !== e.currentTarget) {
-        if (pymChild) {
-            const domain = parseParentURL();
-            if (domain == 'npr.org') {
-                const seamusid = e.target.getAttribute('data-seamus-id');
-                const url = 'http://www-s1.npr.org/sections/thetwo-way/2016/11/01/500293722/hurricane-matthew-took-a-big-bite-out-of-southeastern-states-beaches';
-                pymChild.sendMessage('navigate', url);
-            } else {
-                pymChild.navigateParentTo(e.target.getAttribute('data-relative-href'));
-            }
-        } else {
-            window.location.href = e.target.getAttribute('data-relative-href');
-        }
+    const domain = parseParentURL();
+    if (e.target.tagName == 'A' && e.target !== e.currentTarget && pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+        pymChild.sendMessage('navigate', e.target.href);
+        e.preventDefault();
+        e.stopPropagation();
     }
-    e.preventDefault();
-    e.stopPropagation();
 }
 
 var resultsMenuButton = document.querySelector(".small-screen-nav-label");
@@ -44,6 +34,6 @@ resultsMenuButton.addEventListener("click", updateMenuParent);
 resultsMenu.addEventListener("click", followNavLink);
 
 var stateMenuButton = document.querySelector(".state-nav-label");
-var stateMenu = document.querySelector(".state-nav .states");
+var stateMenu = document.querySelector(".state-nav");
 stateMenu.addEventListener("click", followNavLink);
 stateMenuButton.addEventListener("click", updateMenuParent);

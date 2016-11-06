@@ -14,29 +14,28 @@
 
             {% for item in NAVBAR.nav %}
             <li>
-                <a data-relative-href="{{ item.relativepath }}" data-seamus-id="{{ item.seamusid }}">{{ item.label }}</a>
+                <a target="_blank" href="{{ item.url }}">{{ item.label }}</a>
             </li>
             {% endfor %}
-        </ul>
 
-        <ul>
-            <li class="state-nav">
+            <ul>
+                <li class="state-nav">
+                    <input type="checkbox" id="state-nav-checkbox" />
+                    <label for="state-nav-checkbox" class="state-nav-label">state results </label>
 
-                <input type="checkbox" id="state-nav-checkbox" />
-                <label for="state-nav-checkbox" class="state-nav-label">state results </label>
-
-                <ul class="states">
-                    <li>
-                        {% for column in NAVBAR.states|slice(3) %}
-                        <div class="group-{{ loop.index }}">
-                            {% for state in column %}
-                                <p><a href="http://www-s1.npr.org/templates/story/story.php?storyId={{ state.seamusid }}" data-relative-href="{{ state.relativepath }}" data-seamus-id="{{ state.seamusid }}">{{ state.label }}</a></p>
+                    <ul class="states">
+                        <li>
+                            {% for column in NAVBAR.states|slice(3) %}
+                            <div class="group-{{ loop.index }}">
+                                {% for state in column %}
+                                    <p><a target="_blank" href="{{ state.url }}">{{ state.label }}</a></p>
+                                {% endfor %}
+                            </div>
                             {% endfor %}
-                        </div>
-                        {% endfor %}
-                    </li>
-                </ul>
-            </li>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </ul>
     </nav>
 </div> <!-- / results-nav-wrapper -->

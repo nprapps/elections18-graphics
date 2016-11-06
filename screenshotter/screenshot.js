@@ -1,7 +1,7 @@
 var page = require('webpage').create(),
     system = require('system');
 
-page.viewportSize = { width: 1200, height: 400 };
+page.viewportSize = { width: 1200, height: 500 };
 
 page.open(system.args[1], function (status) {
     page.evaluate(function () {

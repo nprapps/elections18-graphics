@@ -264,6 +264,7 @@
     <script src="//pym.nprapps.org/pym.v1.min.js" type="text/javascript"></script>
     <script>
         var onNavigateMessage = function(url) {
+            console.log('triggering synthetic click');
             var anchor = document.createElement('a');
             anchor.style.display = 'none';
             anchor.setAttribute('href', url);

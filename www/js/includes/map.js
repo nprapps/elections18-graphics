@@ -208,7 +208,7 @@ var formatData = function() {
 
     // update timestamp
     timestamp.html('(as of ' + lastUpdated + ' ET)');
-    timestampScreenshot.html(lastUpdated);
+    timestampScreenshot.html(lastUpdated + ' ET');
 
     // color in the map!
     updateElectoralMap();

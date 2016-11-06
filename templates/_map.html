@@ -27,8 +27,15 @@
     </div>
 </div>
 <div class="phantom-footer">
-    <p class="timestamp-screenshot"></p>
-    {% if COPY.map.source %}<p>Source: {{ COPY.map.source|smarty }}</p>{% endif %}
+
+    <div class="timestamp-screenshot-wrapper">
+        <p class="timestamp-screenshot"></p>
+        {% if COPY.map.source %}<p>Source: {{ COPY.map.source|smarty }}</p>{% endif %}
+    </div>
+
+    <p class="logo">
+        <img src="../assets/npr-politics-logo.png" />
+    </p>
 </div>
 
 </div>
