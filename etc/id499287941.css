@@ -1,0 +1,52 @@
+body {
+    min-width: 100%;
+    width: 100%;
+}
+
+#main-section {
+    padding: 0;
+    min-height: 0;
+    max-height: 100vh;
+}
+
+.bucketwrap.statichtml {
+    padding: 0;
+    margin: 0;
+}
+
+.storytitle,
+#story-meta,
+.share-tools,
+.slug,
+.ad-backstage-wrap,
+#newsletter-acquisition-callout-mount,
+.related-stories {
+    display: none;
+}
+
+.story {
+    padding: 0;
+}
+
+.globalheader .lead .search-wrapper {
+    /*right: 266px;*/
+}
+
+@media only screen and (min-width: 768px) {
+    .player-wrap-outer {
+        right: 0;
+        position: absolute;
+    }
+
+    .npr-player {
+        right: 10px;
+        width: 300px
+    }
+}
+
+@media only screen and (min-width: 1025px) {
+    .globalheader {
+        padding-right: 370px;
+    }
+
+}
