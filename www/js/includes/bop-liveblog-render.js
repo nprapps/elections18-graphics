@@ -191,6 +191,8 @@ var redrawChart = function(containerWidth) {
     var containerElement = d3.select('#bop');
     containerElement.html('');
 
+    var widthMultiplier = 0.45;
+
     _.each(charts, function(d, i) {
         var chartDiv = containerElement.append('div')
             .attr('class', 'chart ' + classify(d));
@@ -198,7 +200,7 @@ var redrawChart = function(containerWidth) {
         // Render the chart!
         renderStackedBarChart({
             container: '#bop .chart.' + classify(d),
-            width: graphicWidth,
+            width: graphicWidth * widthMultiplier,
             dataCalled: eval(classify(d) + 'Called'),
             dataExpected: eval(classify(d) + 'Expected'),
             chart: d
@@ -223,13 +225,12 @@ var renderStackedBarChart = function(config) {
      */
     var labelColumn = 'label';
 
-    var barCalledHeight = 35;
-    var barExpectedHeight = 15;
+    var barExpectedHeight = 10;
     var barGap = 2;
     var valueGap = 6;
 
     var margins = {
-        top: 46,
+        top: 28,
         right: 1,
         bottom: 0,
         left: 1
@@ -247,7 +248,7 @@ var renderStackedBarChart = function(config) {
 
     // Calculate actual chart dimensions
     var chartWidth = config['width'] - margins['left'] - margins['right'];
-    var chartHeight = barCalledHeight + barGap + barExpectedHeight;
+    var chartHeight = barExpectedHeight;
 
     // footnotes.attr('style', 'margin-left: ' + margins['left'] + 'px;');
 
@@ -288,18 +289,15 @@ var renderStackedBarChart = function(config) {
      * Render bars to chart.
      */
     var group = chartElement.selectAll('.group')
-        .data([ config['dataCalled'], config['dataExpected'] ])
+        .data([ config['dataExpected'] ])
         .enter().append('g')
             .attr('class', function(d, i) {
                 return 'group group-' + i;
             })
             .attr('transform', function(d, i) {
                 var yPos = null;
-                if (i == 0) {
-                    yPos = 0;
-                } else if (i == 1) {
-                    yPos = barCalledHeight + barGap;
-                }
+                yPos = 0;
+
                 return 'translate(0,' + yPos + ')';
             });
 
@@ -318,11 +316,7 @@ var renderStackedBarChart = function(config) {
                 var t = d3.select(this.parentNode)[0][0].getAttribute('class').split(' ')[1].split('-');
                 var tIndex = t[1];
 
-                if (tIndex == 0) {
-                    return barCalledHeight;
-                } else if (tIndex == 1) {
-                    return barExpectedHeight;
-                }
+                return barExpectedHeight;
             })
             .attr('class', function(d) {
                 return classify(d['name']);
@@ -351,10 +345,6 @@ var renderStackedBarChart = function(config) {
         .attr('x2', xScale(half))
         .attr('y1', -valueGap)
         .attr('y2', chartHeight);
-    majorityMarker.append('text')
-        .attr('x', xScale(half))
-        .attr('y', (-margins['top'] + 10))
-        .text(majority + ' needed for majority');
 
     /*
      * Annotations

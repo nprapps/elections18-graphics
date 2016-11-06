@@ -10,8 +10,8 @@ body {
 }
 
 .electoral-summary {
-    padding-bottom: 22px;
-    margin-bottom: 22px;
+    padding-bottom: 11px;
+    margin-bottom: 11px;
     border-bottom: 2px solid #eee;
     .clearfix();
 
@@ -38,7 +38,26 @@ body {
     }
 }
 
-#bop { margin-bottom: 11px; }
+#bop {
+    margin-bottom: 5px;
+    .clearfix();
+
+    .chart {
+        width: 50%;
+        box-sizing: border-box;
+        float: left;
+        
+        &.senate {
+            padding-right: 5%;
+            margin-bottom: 0;
+        }
+        
+        &.house{
+            margin-bottom: 0;
+            padding-left: 5%;
+        }
+    }
+}
 
 
 nav {
