@@ -38,12 +38,20 @@ exports.initBigBoard = function(filename, boardName, boardClass) {
 
 const getInitialData = function() {
     request.get(bopDataURL).end(function(err, res) {
-        bopData = res.body;
+        if (res.body) {
+            bopData = res.body;            
+        } else {
+            console.warn(err);
+        }
         request.get(dataURL).end(function(err, res) {
-            lastRequestTime = new Date().toUTCString();
-            resultsData = sortData(res.body.results)
-            lastUpdated = res.body.last_updated
-            projector.scheduleRender();
+            if (res.body) {
+                lastRequestTime = new Date().toUTCString();
+                resultsData = sortData(res.body.results)
+                lastUpdated = res.body.last_updated
+                projector.scheduleRender();
+            } else {
+                console.warn(err);
+            }
         });
     });
 }
