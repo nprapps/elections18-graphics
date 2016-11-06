@@ -22,7 +22,7 @@ const updateMenuParent = function(e) {
 const followNavLink = function(e) {
     const domain = parseParentURL();
     if (e.target.tagName == 'A' && e.target !== e.currentTarget && pymChild && (domain == 'npr.org' || domain == 'localhost')) {
-        pymChild.sendMessage('navigate', e.target.href);
+        pymChild.sendMessage('pjax-navigate', e.target.href);
         e.preventDefault();
         e.stopPropagation();
     }
