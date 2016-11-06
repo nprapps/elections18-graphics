@@ -85,10 +85,11 @@ exports.injectCustomCSS = function() {
     document.getElementsByTagName('head')[0].appendChild(link)
 }
 
+// Evaluate custom css injection onload
 if (Boolean(exports.getParameterByName('screenshot'))) {
     if (document.readyState != 'loading'){
-        injectCustomCSS();
+        exports.injectCustomCSS();
     } else {
-        document.addEventListener('DOMContentLoaded', injectCustomCSS);
+        document.addEventListener('DOMContentLoaded', exports.injectCustomCSS);
     }
 }
