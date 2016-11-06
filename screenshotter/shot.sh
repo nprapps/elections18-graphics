@@ -2,7 +2,7 @@
 
 export QT_QPA_PLATFORM=offscreen
 FILEDATE=`date +%Y-%m-%d-%H\:%M`
-FILEDIR=/home/ubuntu/screenshots/stage/map
+FILEDIR=/home/ubuntu/screenshots
 FILENAME="election16-map-$FILEDATE.png"
 SCRIPTDIR=/home/ubuntu/apps/elections16graphics/repository
 
@@ -21,8 +21,10 @@ if [ $LASTFILE ]; then
         echo "duplicate of $LASTFILE, deleting"
         rm $FILEDIR/$FILENAME
     else
+        echo "uploading to s3"
         aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/latest.png
-        aws s3 cp $FILEDIR/$FILENAME.png s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME.png
+        aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME
+        echo "uploading to dropbox"
         $SCRIPTDIR/dropbox_uploader.sh $FILEDIR/$FILENAME $FILENAME
     fi
 fi
