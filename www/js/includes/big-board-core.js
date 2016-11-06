@@ -1,6 +1,8 @@
 // npm libraries
 import maquette from 'maquette';
 import request from 'superagent';
+import { buildDataURL } from './helpers.js';
+import { clintonBase64, trumpBase64 } from './illos.js';
 
 // global vars
 let dataURL = null;
@@ -33,16 +35,6 @@ exports.initBigBoard = function(filename, boardName, boardClass) {
 
     setInterval(getBopData, 5000);
     setInterval(getData, 5000);
-}
-
-const buildDataURL = function(filename) {
-    if (document.location.hostname === '127.0.0.1' ||
-        document.location.hostname === 'localhost' ||
-        document.location.hostname === '0.0.0.0') {
-        return document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/data/' + filename;
-    } else {
-        return document.location.protocol + '//' + document.location.hostname + '/elections16/data/' + filename;
-    }
 }
 
 const getInitialData = function() {

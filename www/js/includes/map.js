@@ -10,6 +10,7 @@ import * as _ from 'underscore';
 import textures from 'textures';
 import request from 'superagent';
 import countdown from './countdown';
+import { classify, getParameterByName, buildDataURL } from './helpers.js';
 
 // D3 formatters
 var fmtComma = d3.format(',');

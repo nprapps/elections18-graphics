@@ -1,6 +1,8 @@
 // npm libraries
 import d3 from 'd3';
 import request from 'superagent';
+import { classify, buildDataURL } from './helpers.js';
+import { clintonBase64, trumpBase64 } from './illos.js';
 
 // Global vars
 window.pymChild = null;

@@ -3,6 +3,7 @@ import request from 'superagent';
 import commaNumber from 'comma-number';
 import navbar from '../js/includes/navbar.js';
 import briefingData from '../data/extra_data/state-briefings.json'
+import { getParameterByName, buildDataURL } from './includes/helpers.js';
 
 const resultsWrapper = document.querySelector('#county-results');
 const projector = maquette.createProjector();

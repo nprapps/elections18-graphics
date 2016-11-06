@@ -10,6 +10,7 @@ import textures from 'textures';
 import request from 'superagent';
 import countdown from './countdown';
 // import textures from 'textures';
+import { classify, buildDataURL } from './helpers.js';
 
 // Global vars
 var DATA_FILE = 'top-level-results.json';
