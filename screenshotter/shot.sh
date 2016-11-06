@@ -21,8 +21,8 @@ if [ $LASTFILE ]; then
         echo "duplicate of $LASTFILE, deleting"
         rm $FILEDIR/$FILENAME
     else
-        aws-cli s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/latest.png
-        aws-cli s3 cp $FILEDIR/$FILENAME.png s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME.png
+        aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/latest.png
+        aws s3 cp $FILEDIR/$FILENAME.png s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME.png
         $SCRIPTDIR/dropbox_uploader.sh $FILEDIR/$FILENAME $FILENAME
     fi
 fi
