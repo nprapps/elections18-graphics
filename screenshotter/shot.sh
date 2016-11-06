@@ -4,14 +4,14 @@ export QT_QPA_PLATFORM=offscreen
 FILEDATE=`date +%Y-%m-%d-%H\:%M`
 FILEDIR=/home/ubuntu/screenshots
 FILENAME="election16-map-$FILEDATE.png"
-SCRIPTDIR=/home/ubuntu/apps/elections16graphics/repository
+SCRIPTDIR=/home/ubuntu/apps/elections16graphics/repository/screenshotter
 
 echo "screenshotting map at $FILEDATE"
 mkdir -p $FILEDIR
 LASTFILE=`ls -t $FILEDIR | head -1`
 
 
-phantomjs $SCRIPTDIR/screenshotter/screenshot.js "http://stage-apps.npr.org/elections16graphics/map-election-results-standalone/child.html?initialWidth=600&screenshot=1" $FILEDIR/$FILENAME
+phantomjs $SCRIPTDIR/screenshot.js "http://stage-apps.npr.org/elections16graphics/map-election-results-standalone/child.html?initialWidth=600&screenshot=1" $FILEDIR/$FILENAME
 
 if [ $LASTFILE ]; then
     NEWMD5=`md5sum $FILEDIR/$FILENAME | awk '{ print $1 }'`
