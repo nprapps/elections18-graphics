@@ -92,11 +92,19 @@ text {
         fill-opacity: 0.9;
         text-anchor: middle;
 
+        &.shadow {
+            stroke: #999;
+            fill: #999;
+            stroke-width: 4px;
+            display: none;
+        }
+
         &.votes {
             fill-opacity: 0.65;
             display: none;
 
             &.active { display: block; }
+            &.active.shadow { display: none; }
         }
     }
 
@@ -104,6 +112,17 @@ text {
     .ne & {
         fill: #999;
         text-anchor: end;
+    }
+}
+.cartogram .ahead text {
+    fill: #fff;
+
+    &.votes { fill-opacity: 0.9; }
+
+    &.shadow,
+    &.votes.active.shadow {
+        display: block;
+        display: none;
     }
 }
 
@@ -225,10 +244,11 @@ text {
     }
 
     .cartogram text {
-        font-size: 17px;
+        font-size: 22px;
 
         &.small { font-size: 15px; }
     }
+    .cartogram .ahead text.shadow { stroke-width: 3px; }
     .active rect { stroke-width: 3px; }
 
     #county-selector { display: block; }
