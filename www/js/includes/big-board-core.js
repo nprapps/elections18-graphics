@@ -245,7 +245,7 @@ const renderCongressBOP = function(bop) {
             h('h2.party', [ 'Dem.: ' + demSeats ]),
             h('p.detail', [
                 'Net gains: ',
-                h('span.change.party', demPickups >= 0 ? '+' + demPickups : demPickups),
+                h('span.change.party', demPickups > 0 ? '+' + demPickups : demPickups),
                 h('br'),
                 'Need: ',
                 h('span.needed.party', demNeed)
@@ -255,7 +255,7 @@ const renderCongressBOP = function(bop) {
             h('h2.party', 'GOP: ' + gopSeats),
             h('p.detail', [
                 'Net gains: ',
-                h('span.change.party', gopPickups >= 0 ? '+' + gopPickups : gopPickups),
+                h('span.change.party', gopPickups > 0 ? '+' + gopPickups : gopPickups),
                 h('br'),
                 'Need: ',
                 h('span.needed.party', gopNeed)
@@ -265,7 +265,7 @@ const renderCongressBOP = function(bop) {
             h('h2.party', 'Ind.: ' + indSeats),
             h('p.detail', [
                 'Net gains: ',
-                h('span.change.party', indPickups >= 0 ? '+' + indPickups : indPickups)
+                h('span.change.party', indPickups > 0 ? '+' + indPickups : indPickups)
             ]),
         ]),
         h('div.results-header-group.not-called', [
