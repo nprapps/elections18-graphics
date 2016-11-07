@@ -216,7 +216,10 @@ const renderMaquette = function() {
                   resultsType
               ]),
               h('p.rating', [
-                  'Battleground rating: ',
+                  h('a', {
+                      href: 'http://www.npr.org/2016/11/07/500706879/final-npr-battleground-map-the-race-snaps-back-but-clinton-maintains-advantage'
+                  }, 'Battleground rating'),
+                  ': ',
                   h('span', {
                     classes:{
                       'd-safe': descriptions.rating === 'D-Safe/Likely',
@@ -239,9 +242,9 @@ const renderMaquette = function() {
                 ' ET).'
               ]),
               ' ',
-              'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ', 
-              h('a', { href: 'https://censusreporter.org/tables/B19013/' }, 'Median Household Income.'), 
-              ' Percent White numbers are taken from ', 
+              'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ',
+              h('a', { href: 'https://censusreporter.org/tables/B19013/' }, 'Median Household Income.'),
+              ' Percent White numbers are taken from ',
               h('a', { href: 'https://censusreporter.org/tables/B03002/' }, 'Hispanic or Latino Origin by Race'),
               ' to find the percentage of non-Hispanic White people. ',
               'Percent College Educated is a calculation of all citizens ages 18 or older with a bachelor\'s degree or higher, taken from ',
