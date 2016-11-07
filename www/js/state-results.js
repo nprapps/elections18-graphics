@@ -188,9 +188,16 @@ const renderMaquette = function() {
 
           statefaceClass = 'stateface-' + statepostal.toLowerCase();
         }
+
+        console.log(currentState);
+
         return h('div.results', [
           h('header', [
-              h('div.switcher', [
+              h('div.switcher', {
+                classes: {
+                  'hidden': currentState === 'dc'
+                }
+              }, [
                 stateName + ' election results: ',
                 h('span#presidential', {
                   'onclick': switchResultsView
@@ -382,10 +389,16 @@ const renderResults = function() {
 
 const renderStateResults = function(results) {
   stateTotalVotes = 0;
+  if (currentState === 'dc') {
+    var statewideTitle = 'District-Wide Results';
+  } else {
+    var statewideTitle = 'Statewide Results'
+  }
+
 
   results = sortResults(results);
   return h('div.results-statewide', [
-    h('h2', 'Statewide Results'),
+    h('h2', statewideTitle),
     h('p', {
       innerHTML: descriptions.state_desc ? descriptions.state_desc : ''
     }
