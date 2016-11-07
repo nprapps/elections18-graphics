@@ -7,6 +7,7 @@ import { buildDataURL } from './helpers.js';
 let dataURL = null;
 let bopDataURL = null;
 let lastRequestTime = null;
+let lastBopRequestTime = null;
 let boardTitle = null;
 let resultsData = null;
 let bopData = null;
@@ -42,6 +43,7 @@ const getInitialData = function() {
         .end(function(err, res) {
             if (res.body) {
                 bopData = res.body;
+                lastBopRequestTime = new Date().toUTCString();
             } else {
                 console.warn(err);
             }
@@ -75,9 +77,12 @@ const getData = function() {
 
 const getBopData = function() {
     request.get(bopDataURL)
+        .set('If-Modified-Since', lastBopRequestTime ? lastBopRequestTime : '')
         .end(function(err, res) {
             if (res.body) {
+                lastBopRequestTime = new Date().toUTCString();
                 bopData = res.body;
+                projector.scheduleRender();
             }
         });
 }
