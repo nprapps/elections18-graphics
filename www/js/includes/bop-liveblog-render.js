@@ -49,8 +49,10 @@ var footnotes = null;
 
 var senateCalled = [];
 var senateExpected = [];
+var senateSummed = [];
 var houseCalled = [];
 var houseExpected = [];
+var houseSummed = [];
 
 var tDExpected = null;
 var tRExpected = null;
@@ -86,8 +88,8 @@ exports.initBop = function(containerWidth) {
         .background('#ccc');
 
     loadData();
-    console.log('YOU TURNED OFF THE REFRESH INTERVAL');
-    //setInterval(loadData, LOAD_INTERVAL)
+    //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
+    setInterval(loadData, LOAD_INTERVAL)
 }
 
 /*
@@ -127,6 +129,11 @@ var formatData = function() {
         { 'name': 'GOP-expected', 'val': sData['GOP']['expected'] },
         { 'name': 'GOP', 'val': sData['GOP']['seats'] }
     ];
+    senateSummed = [
+        { 'name': 'Dem.', 'val': sData['Dem']['seats'] + sData['Dem']['expected'] },
+        { 'name': 'Ind.', 'val': sData['Other']['seats'] + sData['Other']['expected'] },
+        { 'name': 'GOP', 'val': sData['GOP']['seats'] + sData['GOP']['expected'] }
+    ];
     CONGRESS['senate']['total'] = sData['total_seats'];
     CONGRESS['senate']['majority'] = sData['majority'];
 
@@ -146,13 +153,18 @@ var formatData = function() {
         { 'name': 'GOP-expected', 'val': hData['GOP']['expected'] },
         { 'name': 'GOP', 'val': hData['GOP']['seats'] }
     ];
+    houseSummed = [
+        { 'name': 'Dem.', 'val': hData['Dem']['seats'] + hData['Dem']['expected'] },
+        { 'name': 'Ind.', 'val': hData['Other']['seats'] + hData['Other']['expected'] },
+        { 'name': 'GOP', 'val': hData['GOP']['seats'] + hData['GOP']['expected'] }
+    ];
     CONGRESS['house']['total'] = hData['total_seats'];
     CONGRESS['house']['majority'] = hData['majority'];
 
     // console.log(senateExpected[0]['value'] + senateExpected[1]['value'] + senateExpected[2]['value'] + senateExpected[3]['value'] + senateExpected[4]['value'] + senateExpected[5]['value'] + senateExpected[6]['value']);
     // console.log(houseExpected[0]['value'] + houseExpected[1]['value'] + houseExpected[2]['value'] + houseExpected[3]['value'] + houseExpected[4]['value'] + houseExpected[5]['value'] + houseExpected[6]['value']);
 
-    _.each([ senateCalled, senateExpected, houseCalled, houseExpected ], function(d, i) {
+    _.each([ senateCalled, senateExpected, senateSummed, houseCalled, houseExpected, houseSummed ], function(d, i) {
         var x0 = 0;
 
         _.each(d, function(v, k) {
@@ -203,6 +215,7 @@ var redrawChart = function(containerWidth) {
             width: graphicWidth * widthMultiplier,
             dataCalled: eval(classify(d) + 'Called'),
             dataExpected: eval(classify(d) + 'Expected'),
+            dataSummed: eval(classify(d) + 'Summed'),
             chart: d
         });
     })
@@ -230,9 +243,9 @@ var renderStackedBarChart = function(config) {
     var valueGap = 6;
 
     var margins = {
-        top: 28,
+        top: 15,
         right: 1,
-        bottom: 0,
+        bottom: 15,
         left: 1
     };
 
@@ -352,50 +365,52 @@ var renderStackedBarChart = function(config) {
     var annotations = chartElement.append('g')
         .attr('class', 'annotations');
 
-    _.each(config['dataCalled'], function(d) {
+    _.each(config['dataSummed'], function(d) {
         var lbl = d['name'];
         var textAnchor = null;
         var xPos = null;
-        var yPos = -18;
+        var yPos = 0;
         var showLabel = true;
         switch(d['name']) {
             case 'Dem.':
-                xPos = xScale(d['x0']);
+                //xPos = xScale(d['x0']);
+                xPos = 0;
                 textAnchor = 'start';
                 lbl = 'Dem.';
                 break;
             case 'GOP':
-                xPos = xScale(d['x1']);
+                //xPos = xScale(chartWid);
+                xPos = chartWidth;
                 textAnchor = 'end';
                 break;
             default:
                 xPos = xScale(d['x0'] + ((d['x1'] - d['x0']) / 2));
                 textAnchor = 'middle';
-                if (_.contains([ 'Not yet called', 'Dem-expected', 'GOP-expected', 'Other-expected' ], d['name']) || d['val'] == 0) {
+                if (_.contains(['Ind.'], d['name']) || d['val'] == 0) {
                     showLabel = false;
                 }
                 break;
         }
 
+        annotations.append('text')
+            .text(lbl)
+            .attr('class', 'party ' + classify(d['name']))
+            .attr('x', xPos)
+            .attr('y', yPos)
+            .attr('dy', -6)
+            .attr('style', function() {
+                var s = '';
+                s += 'text-anchor: ' + textAnchor + '; ';
+                return s;
+            });
+
         if (showLabel) {
             annotations.append('text')
-                .text(lbl)
-                .attr('class', 'party ' + classify(d['name']))
-                .attr('x', xPos)
-                .attr('y', yPos)
-                .attr('dy', 0)
-                .attr('style', function() {
-                    var s = '';
-                    s += 'text-anchor: ' + textAnchor + '; ';
-                    return s;
-                });
-
-            annotations.append('text')
-                .text(d['val'])
+                .text(d['val'] + ' expected')
                 .attr('class', 'value ' + classify(d['name']))
                 .attr('x', xPos)
                 .attr('y', yPos)
-                .attr('dy', 13)
+                .attr('dy', barExpectedHeight + 12)
                 .attr('style', function() {
                     var s = '';
                     s += 'text-anchor: ' + textAnchor + '; ';

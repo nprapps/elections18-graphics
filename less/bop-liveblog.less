@@ -1,18 +1,25 @@
 @import "bop";
 @import "electoral-totals";
 
+@linegray: #ddd;
+
 html { -webkit-text-size-adjust: none; }
 
 body {
     margin: 0;
     padding: 0;
     font: 14px/1.4 @font-family-sans-serif;
+    background: #eee;
+}
+
+#electoral-totals .candidate {
+    border-color: @linegray;
 }
 
 .electoral-summary {
     padding-bottom: 11px;
     margin-bottom: 11px;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid @linegray;
     .clearfix();
 
     h3 {
@@ -55,6 +62,20 @@ body {
         &.house{
             margin-bottom: 0;
             padding-left: 5%;
+        }
+
+        .annotations {
+            .value {
+                font-family: @font-family-sans-serif;
+
+                &.dem {
+                    fill: lighten(@dem, 20%);
+                }
+
+                &.gop {
+                    fill: lighten(@gop, 20%);
+                }
+            }
         }
     }
 }
