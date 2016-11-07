@@ -216,6 +216,23 @@ text {
     display: none;
 }
 
+#county-selector {
+    margin: 5px 0 0 0;
+    padding: 5px 0;
+    border-top: 1px solid @gray-lighter;
+    border-bottom: 1px solid @gray-lighter;
+    background-color: @gray-lighter;
+    display: none;
+
+    select {
+        display: block;
+        margin: 0 auto;
+        width: 80%;
+        max-width: 300px;
+    }
+}
+.touch #county-selector { display: block; }
+
 // screen size-specific
 @media screen and (min-width: @screen-sm-min) {
     .cartogram text {
@@ -230,8 +247,6 @@ text {
         bottom: 0;
         right: 0;
     }
-
-    #county-selector { display: none; }
 }
 @media screen and (min-width: @screen-md-min) {
     #electoral-totals { margin-bottom: -90px; }
@@ -258,6 +273,4 @@ text {
     }
     .cartogram .ahead text.shadow { stroke-width: 3px; }
     .active rect { stroke-width: 3px; }
-
-    #county-selector { display: block; }
 }

@@ -59,6 +59,11 @@ exports.initMap = function(containerWidth) {
     timestampScreenshot = d3.select('.phantom-footer .timestamp-screenshot');
     tooltip = d3.select('#tooltip');
     indicator = document.querySelector('.update-indicator');
+    if (isTouch) {
+        d3.select('body').classed('touch', true);
+    } else {
+        d3.select('body').classed('no-touch', true);
+    }
 
     mapWidth = containerWidth;
 
