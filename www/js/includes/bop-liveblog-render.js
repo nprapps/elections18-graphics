@@ -103,6 +103,8 @@ var loadData = function() {
                 bopData = res.body;
                 lastUpdated = res.body.last_updated;
                 formatData();
+            } else {
+                redrawChart();
             }
         });
 }
@@ -202,7 +204,7 @@ var redrawChart = function() {
     var containerElement = d3.select('#bop');
     containerElement.html('');
 
-    var widthMultiplier = 0.45;
+    var widthMultiplier = 0.46;
 
     _.each(charts, function(d, i) {
         var chartDiv = containerElement.append('div')
@@ -239,7 +241,7 @@ var renderStackedBarChart = function(config) {
 
     var barExpectedHeight = 10;
     var barGap = 2;
-    var valueGap = 6;
+    var valueGap = 4;
 
     var margins = {
         top: 15,

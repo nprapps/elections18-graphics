@@ -87,6 +87,7 @@ exports.initBop = function(containerWidth) {
         .background('#ccc');
 
     loadData();
+    //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
     setInterval(loadData, LOAD_INTERVAL)
 }
 
@@ -102,6 +103,8 @@ var loadData = function() {
                 bopData = res.body;
                 lastUpdated = res.body.last_updated;
                 formatData();
+            } else {
+                redrawChart();
             }
 
             countdown.resultsCountdown(indicator, LOAD_INTERVAL);

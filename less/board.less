@@ -76,16 +76,16 @@ body {
 
             // stack on small screens,
             // side-by-side on larger screens
-            @media screen and (min-width: @screen-sm) {
+            @media screen and (min-width: @screen-sm-min) {
                 padding: 0 1%;
                 float: left;
                 width: 50%;
 
                 &.first { padding-left: 0; }
-
-                &.last {
-                    padding-right: 0;
-                }
+                &.last { padding-right: 0; }
+            }
+            @media screen and (max-width: @screen-xs) {
+                &.last { margin-top: -0.2rem; }
             }
         }
 
@@ -96,7 +96,7 @@ body {
                 &:after {
                     content: " (continued)";
                 }
-                @media screen and (min-width: @screen-sm) {
+                @media screen and (min-width: @screen-sm-min) {
                     display: block;
                 }
             }
@@ -455,24 +455,7 @@ tr {
   }
 }
 
-
-#results-nav-wrapper {
-    margin: 0 10px 20px 10px;
-}
-// .results-nav{
-//   padding: 0 10px;
-//
-//   @media screen and (min-width: @screen-sm-min) {
-//     .results-logo{
-//       padding: 0 10px;
-//
-//     }
-//   }
-//
-//   ul.menu{
-//     padding: 0 10px;
-//   }
-// }
+#results-nav-wrapper { margin: 0 10px 20px 10px; }
 
 .board.president {
     @media screen and (min-width: @screen-lg-min) {

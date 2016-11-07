@@ -9,14 +9,31 @@ body {
     margin: 0;
     padding: 0;
     font: 14px/1.4 @font-family-sans-serif;
-    /*background: #eee;*/
 }
 
-#electoral-totals .candidate {
-    border-color: @linegray;
+#electoral-totals {
+    .candidate {
+        border-color: @linegray;
+    }
+
+    @media screen and (max-width: 280px) {
+        .multiple .candidate {
+            width: auto;
+
+            &:nth-child(2n+1) {
+                padding-left: 11px;
+                border-left: 1px solid @linegray;
+            }
+            &:nth-child(2n+2) {
+                padding-right: 11px;
+            }
+        }
+    }
 }
 
 .electoral-summary {
+    background: white;
+    padding-top: 11px;
     padding-bottom: 11px;
     margin-bottom: 11px;
     border-bottom: 2px solid @linegray;
@@ -55,13 +72,13 @@ body {
         float: left;
         
         &.senate {
-            padding-right: 5%;
+            padding-right: 4%;
             margin-bottom: 0;
         }
         
         &.house{
             margin-bottom: 0;
-            padding-left: 5%;
+            padding-left: 4%;
         }
 
         .annotations {
