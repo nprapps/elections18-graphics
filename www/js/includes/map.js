@@ -83,19 +83,19 @@ exports.initMap = function(containerWidth) {
 
     // define textures for "leading/ahead"
     tDLead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('D-Ahead'))
         .background(COLORS['gray3']);
 
     tRLead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('R-Ahead'))
         .background(COLORS['gray3']);
 
     tILead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('I-Ahead'))
         .background(COLORS['gray3']);
