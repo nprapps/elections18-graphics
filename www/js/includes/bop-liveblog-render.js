@@ -103,6 +103,8 @@ var loadData = function() {
                 bopData = res.body;
                 lastUpdated = res.body.last_updated;
                 formatData();
+            } else {
+                redrawChart();
             }
         });
 }

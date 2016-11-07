@@ -87,6 +87,8 @@ const sortData = function(resultsData) {
     for (var time in resultsData) {
         for (var race in resultsData[time]) {
             resultsData[time][race].sort(function(a, b) {
+                if (a.npr_winner) return -1;
+                if (b.npr_winner) return 1;
                 return b.votecount - a.votecount;
             })
         }
