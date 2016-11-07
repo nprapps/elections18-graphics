@@ -87,6 +87,8 @@ const sortData = function(resultsData) {
     for (var time in resultsData) {
         for (var race in resultsData[time]) {
             resultsData[time][race].sort(function(a, b) {
+                if (a.npr_winner) return -1;
+                if (b.npr_winner) return 1;
                 return b.votecount - a.votecount;
             })
         }
@@ -243,7 +245,7 @@ const renderCongressBOP = function(bop) {
             h('h2.party', [ 'Dem.: ' + demSeats ]),
             h('p.detail', [
                 'Net gains: ',
-                h('span.change.party', demPickups >= 0 ? '+' + demPickups : demPickups),
+                h('span.change.party', demPickups > 0 ? '+' + demPickups : demPickups),
                 h('br'),
                 'Need: ',
                 h('span.needed.party', demNeed)
@@ -253,7 +255,7 @@ const renderCongressBOP = function(bop) {
             h('h2.party', 'GOP: ' + gopSeats),
             h('p.detail', [
                 'Net gains: ',
-                h('span.change.party', gopPickups >= 0 ? '+' + gopPickups : gopPickups),
+                h('span.change.party', gopPickups > 0 ? '+' + gopPickups : gopPickups),
                 h('br'),
                 'Need: ',
                 h('span.needed.party', gopNeed)
@@ -263,7 +265,7 @@ const renderCongressBOP = function(bop) {
             h('h2.party', 'Ind.: ' + indSeats),
             h('p.detail', [
                 'Net gains: ',
-                h('span.change.party', indPickups >= 0 ? '+' + indPickups : indPickups)
+                h('span.change.party', indPickups > 0 ? '+' + indPickups : indPickups)
             ]),
         ]),
         h('div.results-header-group.not-called', [
