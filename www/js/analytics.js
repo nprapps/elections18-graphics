@@ -26,9 +26,10 @@ window.ANALYTICS = (function () {
         var startUrl = location.host + location.pathname;
 
         var parentUrl = new URL(decodeURIComponent(getParameterByName('parentUrl')));
+        var state = getParameterByName('state');
         
-        var gaLocation = startUrl + '?parentUrl=' + parentUrl.hostname
-        var gaPath = location.pathname.substring(1) + '?parentUrl=' + parentUrl.hostname;
+        var gaLocation = startUrl + '?parentUrl=' + parentUrl.hostname + '&state=' + state;
+        var gaPath = location.pathname.substring(1) + '?parentUrl=' + parentUrl.hostname + '&state=' + state;
 
         ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
         ga('send', {

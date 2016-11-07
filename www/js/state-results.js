@@ -86,7 +86,7 @@ window.pymChild = null;
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child();
+    window.pymChild = new pym.Child();
     currentState = getParameterByName('state').toLowerCase();
     descriptions = briefingData.descriptions.find(function(el) {
       return el.state_postal === currentState;
@@ -127,7 +127,7 @@ const getData = function(forceReload) {
 
                 data = res.body.results;
                 lastUpdated = res.body.last_updated;
-                projector.resume();            
+                projector.resume();
                 projector.scheduleRender();
             }
         });
@@ -180,7 +180,7 @@ const sortCountyResults = function() {
 
 const renderMaquette = function() {
     setTimeout(pymChild.sendHeight, 0);
-    
+
     if (data && extraData) {
         if (!stateName && !statepostal && !statefaceClass) {
           stateName = data['state'][0].statename;
@@ -238,12 +238,19 @@ const renderMaquette = function() {
                 lastUpdated,
                 ' ET).'
               ]),
-              ' Other statistics from the Census Bureau (2014 American Community Survey 5-year estimates) and Bureau of Labor Statistics (2015 figures).'
+              ' ',
+              'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ', 
+              h('a', { href: 'https://censusreporter.org/tables/B19013/' }, 'Median Household Income.'), 
+              ' Percent White numbers are taken from ', 
+              h('a', { href: 'https://censusreporter.org/tables/B03002/' }, 'Hispanic or Latino Origin by Race'),
+              ' to find the percentage of non-Hispanic White people. ',
+              'Percent College Educated is a calculation of all citizens ages 18 or older with a bachelor\'s degree or higher, taken from ',
+              h('a', { href: 'https://censusreporter.org/tables/B15001/' }, 'Sex by Age by Educational Attainment.')
             ])
           ])
         ]);
     } else {
-        getData();  
+        getData();
         return h('div.results', 'Loading...');
     }
 }

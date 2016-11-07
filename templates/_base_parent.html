@@ -169,6 +169,10 @@
 <script type=text/javascript>
     (function(jQuery) {
         if (typeof jQuery !== 'undefined' && typeof jQuery.getScript === 'function') {
+            {% if slug == 'state-results' %}
+            var resultsState = '<STATEPOSTAL>';
+            {% endif %}
+
             var getParameterByName = function(name) {
                 name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
                 var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -181,12 +185,7 @@
                 anchor.style.display = 'none';
                 anchor.setAttribute('href', url);
                 document.getElementById('main-section').appendChild(anchor);
-                var evt = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true,
-                });
-                anchor.dispatchEvent(evt);
+                anchor.click();
                 anchor.parentNode.removeChild(anchor);
             }
 
@@ -202,7 +201,6 @@
                         var childUrl =  'http://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
                     }
                     {% if slug == 'state-results' %}
-                    var resultsState = '<STATEPOSTAL>';
                     var childUrl = childUrl + '?state=' + resultsState;
                     {% endif %}
                     var pymParent = new pym.Parent(el.id, childUrl, {});
@@ -273,12 +271,7 @@
             anchor.style.display = 'none';
             anchor.setAttribute('href', url);
             document.getElementById('main-section').appendChild(anchor);
-            var evt = new MouseEvent('click', {
-                view: window,
-                bubbles: true,
-                cancelable: true,
-            });
-            anchor.dispatchEvent(evt);
+            anchor.click();
             anchor.parentNode.removeChild(anchor);
         }
 

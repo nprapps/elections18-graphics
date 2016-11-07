@@ -18,7 +18,6 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
-window.pymChild = null;
 var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 480;
@@ -83,19 +82,19 @@ exports.initMap = function(containerWidth) {
 
     // define textures for "leading/ahead"
     tDLead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('D-Ahead'))
         .background(COLORS['gray3']);
 
     tRLead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('R-Ahead'))
         .background(COLORS['gray3']);
 
     tILead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('I-Ahead'))
         .background(COLORS['gray3']);
@@ -190,7 +189,7 @@ var formatData = function() {
 
         if (s['statename'] != 'National') {
             if (typeof s[0]['meta'] != 'undefined') {
-                s['poll_closing'] = s[0]['meta']['poll_closing'] + ' ET';
+                s['poll_closing'] = s[0]['meta']['full_poll_closing'] + ' ET';
             } else {
                 s['poll_closing'] = null;
             }

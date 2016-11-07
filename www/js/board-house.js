@@ -12,7 +12,7 @@ let data = null;
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child();
+    window.pymChild = new pym.Child();
     bigboard.initBigBoard('house-national.json', 'Key House Races', 'house');
 }
 

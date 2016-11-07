@@ -4,7 +4,6 @@ import request from 'superagent';
 import { classify, buildDataURL } from './helpers.js';
 
 // Global vars
-window.pymChild = null;
 var DATA_FILE = 'top-level-results.json';
 var LOAD_INTERVAL = 15000;
 var isElectoralInit = false;
@@ -40,21 +39,6 @@ var loadElectoralData = function() {
                 formatElectoralData();
             }
         });
-}
-
-
-/*
- * Render
- */
-var render = function(containerWidth) {
-    // only run the first time
-    if (!isBopInit) {
-        bop.initBop(containerWidth);
-        isBopInit= true;
-    // run onresize
-    } else {
-        bop.renderBop(containerWidth);
-    }
 }
 
 
