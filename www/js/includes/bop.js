@@ -87,6 +87,7 @@ exports.initBop = function(containerWidth) {
         .background('#ccc');
 
     loadData();
+    //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
     setInterval(loadData, LOAD_INTERVAL)
 }
 

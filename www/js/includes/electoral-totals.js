@@ -23,6 +23,7 @@ exports.initElectoralTotals = function() {
     electoralElement = d3.select('#electoral-totals .total-wrapper');
     loadElectoralData();
     setInterval(loadElectoralData, 5000);
+    //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
 }
 
 
