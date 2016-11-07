@@ -102,6 +102,8 @@ var loadData = function() {
                 bopData = res.body;
                 lastUpdated = res.body.last_updated;
                 formatData();
+            } else {
+                redrawChart();
             }
 
             countdown.resultsCountdown(indicator, LOAD_INTERVAL);
