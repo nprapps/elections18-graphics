@@ -34,7 +34,6 @@ var SIDEBAR_THRESHOLD = 280;
 var MOBILE_THRESHOLD = 500;
 var LOAD_INTERVAL = 15000;
 
-window.pymChild = null;
 var isInitialized = false;
 var isMobile = false;
 var lastUpdated = '';
@@ -165,7 +164,7 @@ var formatData = function() {
         });
     });
 
-    redrawChart(graphicWidth);
+    redrawChart();
 }
 
 
@@ -185,11 +184,11 @@ exports.renderBop = function(containerWidth) {
 
     graphicWidth = containerWidth;
 
-    redrawChart(containerWidth);
+    redrawChart();
 }
 
 //
-var redrawChart = function(containerWidth) {
+var redrawChart = function() {
     // Clear existing graphic (for redraw)
     var containerElement = d3.select('#bop');
     containerElement.html('');

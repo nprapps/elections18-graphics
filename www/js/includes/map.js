@@ -18,7 +18,6 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
-window.pymChild = null;
 var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 480;
