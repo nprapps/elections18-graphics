@@ -38,7 +38,7 @@ body {
         font-size: 14px;
         color: #333;
         max-width: @mm-max-width;
-        margin: 0 auto 22px auto;
+        margin: 0 0 22px 0;
         padding: 33px 10px 0 10px;
         border-top: 2px solid #eee;
     }
@@ -93,7 +93,7 @@ body {
 
     header {
         max-width: @mm-max-width;
-        margin: 0 auto 22px auto;
+        margin: 0 0 22px 0;
         .clearfix();
 
         .state-icon {
@@ -136,12 +136,14 @@ body {
     }
 
     .sorter {
-        margin: 0 auto 25px auto;
+        margin: 0 0 25px 10px;
         padding: 0;
         list-style-type: none;
         font-size: 12px;
-        text-align: center;
-        max-width: 500px;
+
+        @media screen and (max-width: @screen-xs) {
+            text-align: center;
+        }
 
         > li {
             color: @gray-medium;
@@ -164,9 +166,8 @@ body {
                 margin-bottom: 6px;
             }
 
-            &.sortButton{
-              span{
-                &.metric {
+            &.sortButton {
+                .metric {
                     color: @link-color;
                     padding: 0 5px;
 
@@ -175,31 +176,18 @@ body {
                         cursor: pointer;
                     }
                 }
-                &.pipe{
-                  color: @gray-medium;
-                  font-weight: normal;
-                }
-              }
-              &.selected {
-                  color: @gray;
-                  font-weight: bold;
+                .pipe { color: @gray-medium; }
 
-                  span{
-                    &.metric {
+                &.selected {
+                    .metric {
+                        font-weight: bold;
                         color: @gray;
-                        padding: 0 5px;
 
-                        &:hover {
-                            color: @gray;
-                            cursor: pointer;
-                        }
+                        &:hover { color: @gray; }
                     }
-                    &.pipe{
-                      color: @gray-medium;
-                      font-weight: normal;
-                    }
-                  }
-              }
+                }
+
+                &:nth-child(2) .metric { padding-left: 0; }
             }
         }
     }
@@ -222,7 +210,7 @@ body {
     .results-gubernatorial {
         max-width: @mm-max-width;
         padding-bottom: 33px;
-        margin: 0 auto;
+        margin: 0;
 
         @media screen and (min-width: @screen-sm-min) {
             table { max-width: 350px; }
@@ -239,12 +227,10 @@ body {
 
     .results-house,
     .results-ballot-measures {
-        margin: 0 auto 0 auto;
+        margin: 0;
 
         h2 {
             max-width: @mm-max-width;
-            margin-left: auto;
-            margin-right: auto;
 
             &.hidden{ display: none; }
         }
@@ -296,7 +282,7 @@ body {
         &.one-result{
           max-width: @mm-max-width;
           padding-bottom: 33px;
-          margin: 0 auto;
+          margin: 0;
 
           @media screen and (min-width: @screen-sm-min) {
             table { max-width: 350px; }
@@ -313,7 +299,7 @@ body {
 
         &.two-results{
           max-width: @mm-max-width;
-          margin: 0 auto;
+          margin: 0;
 
           .house-race,
           .ballot-measure{
@@ -329,7 +315,7 @@ body {
 
         &.three-results{
           max-width: 975px;
-          margin: 0 auto;
+          margin: 0;
 
           .house-race,
           .ballot-measure{
@@ -347,7 +333,7 @@ body {
         }
 
         &.four-results{
-          margin: 0 auto;
+          margin: 0;
 
           .house-race,
           .ballot-measure{
@@ -370,16 +356,11 @@ body {
     }
 
     .results-counties {
-        h2,
-        p {
+        h2, p {
             max-width: @mm-max-width;
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        &.hidden {
-            display: none;
-        }
+        &.hidden { display: none; }
 
         .gop,
         .ind,
@@ -448,7 +429,7 @@ body {
 
     .footer {
         max-width: @mm-max-width;
-        margin: 22px auto 0 auto;
+        margin: 22px 0 0 0;
 
         p {
             margin: 2px 0 0 0;
