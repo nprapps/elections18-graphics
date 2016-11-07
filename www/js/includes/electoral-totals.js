@@ -44,21 +44,6 @@ var loadElectoralData = function() {
 
 
 /*
- * Render
- */
-var render = function(containerWidth) {
-    // only run the first time
-    if (!isBopInit) {
-        bop.initBop(containerWidth);
-        isBopInit= true;
-    // run onresize
-    } else {
-        bop.renderBop(containerWidth);
-    }
-}
-
-
-/*
  * Format data for D3.
  */
 var formatElectoralData = function() {
