@@ -2,7 +2,6 @@
 import maquette from 'maquette';
 import request from 'superagent';
 import { buildDataURL } from './helpers.js';
-import { clintonBase64, trumpBase64 } from './illos.js';
 
 // global vars
 let dataURL = null;
@@ -38,15 +37,27 @@ exports.initBigBoard = function(filename, boardName, boardClass) {
 }
 
 const getInitialData = function() {
-    request.get(bopDataURL).end(function(err, res) {
-        bopData = res.body;
-        request.get(dataURL).end(function(err, res) {
-            lastRequestTime = new Date().toUTCString();
-            resultsData = sortData(res.body.results)
-            lastUpdated = res.body.last_updated
-            projector.scheduleRender();
+    request.get(bopDataURL)
+        .set('If-Modified-Since', '')
+        .end(function(err, res) {
+            if (res.body) {
+                bopData = res.body;            
+            } else {
+                console.warn(err);
+            }
+            request.get(dataURL)
+                .set('If-Modified-Since', '')
+                .end(function(err, res) {
+                    if (res.body) {
+                        lastRequestTime = new Date().toUTCString();
+                        resultsData = sortData(res.body.results)
+                        lastUpdated = res.body.last_updated
+                        projector.scheduleRender();
+                    } else {
+                        console.warn(err);
+                    }
+                });
         });
-    });
 }
 
 const getData = function() {
@@ -285,7 +296,7 @@ const renderElectoralBOP = function(bop) {
         },[
         h('div.results-header-group.dem', [
             h('img.candidate', {
-                src: clintonBase64,
+                src: '../assets/clinton-thumb.png',
                 classes: {
                     'hidden': hidePortraits
                 }
@@ -304,7 +315,7 @@ const renderElectoralBOP = function(bop) {
         ]),
         h('div.results-header-group.gop', [
             h('img.candidate', {
-                src: trumpBase64,
+                src: '../assets/trump-thumb.png',
                 classes: {
                     'hidden': hidePortraits
                 }

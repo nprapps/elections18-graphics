@@ -6,8 +6,8 @@
 @link-blue-hover: #AEBEDE;
 @blue-dark: #1E2E3A;
 
-@results-blue: #6d8ac4;
-@results-red: #bc453e;
+@results-blue: #5279BB;
+@results-red: #F05B4E;
 @results-red-dark: #6f3533;
 @results-red-light: #f05b4e;
 
@@ -142,7 +142,7 @@
 
         @media @screen-small-above {
             position: absolute;
-            top: .9rem;
+            top: 1.24rem;
             left: 0;
             width: 4.6rem;
             height: 3.5rem;
@@ -150,25 +150,27 @@
             padding: 0;
         }
 
-        .election-year {
-            color: @results-red;
-            font-size: 1rem;
-
-            @media @screen-small-above {
-                display: block;
-                line-height: 1;
-                font-size: 1.8rem;
-            }
-        }
-
         .election-name {
-            color: @results-blue;
-            font-size: 1rem;
+            color: @results-red;
+            font-size: 1.2rem;
             text-transform: uppercase;
 
             @media @screen-small-above {
                 display: block;
-                font-size: .85rem;
+                line-height: 1;
+                font-size: .9rem;
+            }
+        }
+
+        .election-year {
+            color: @results-blue;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+
+            @media @screen-small-above {
+                display: block;
+                line-height: 1;
+                font-size: 2rem;
             }
         }
     }

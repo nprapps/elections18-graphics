@@ -2,10 +2,8 @@
 import d3 from 'd3';
 import request from 'superagent';
 import { classify, buildDataURL } from './helpers.js';
-import { clintonBase64, trumpBase64 } from './illos.js';
 
 // Global vars
-window.pymChild = null;
 var DATA_FILE = 'top-level-results.json';
 var LOAD_INTERVAL = 15000;
 var isElectoralInit = false;
@@ -45,21 +43,6 @@ var loadElectoralData = function() {
 
 
 /*
- * Render
- */
-var render = function(containerWidth) {
-    // only run the first time
-    if (!isBopInit) {
-        bop.initBop(containerWidth);
-        isBopInit= true;
-    // run onresize
-    } else {
-        bop.renderBop(containerWidth);
-    }
-}
-
-
-/*
  * Format data for D3.
  */
 var formatElectoralData = function() {
@@ -88,13 +71,10 @@ var formatElectoralData = function() {
             electoralElement.classed('multiple', false);
             candidateWrapper.append('img')
                 .attr('src', function() {
-                    switch(d) {
-                        case 'Clinton':
-                            return clintonBase64;
-                            break;
-                        case 'Trump':
-                            return trumpBase64;
-                            break;
+                    if (d == 'Clinton') {
+                        return '../assets/clinton-thumb.png';
+                    } else if (d == 'Trump') {
+                        return '../assets/trump-thumb.png';
                     }
                 })
                 .attr('alt', 'Illustrated portrait of ' + d);

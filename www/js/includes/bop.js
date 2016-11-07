@@ -32,9 +32,8 @@ var CONGRESS = {
 var DEFAULT_WIDTH = 600;
 var SIDEBAR_THRESHOLD = 280;
 var MOBILE_THRESHOLD = 500;
-var LOAD_INTERVAL = 15000;
+var LOAD_INTERVAL = 5000;
 
-window.pymChild = null;
 var isInitialized = false;
 var isMobile = false;
 var lastUpdated = '';
@@ -165,7 +164,7 @@ var formatData = function() {
         });
     });
 
-    redrawChart(graphicWidth);
+    redrawChart();
 }
 
 
@@ -184,12 +183,13 @@ exports.renderBop = function(containerWidth) {
     }
 
     graphicWidth = containerWidth;
-
-    redrawChart(containerWidth);
+    // LoadData calls redrawChart after ensuring that the data is there
+    // for the graphic to render.
+    loadData();
 }
 
 //
-var redrawChart = function(containerWidth) {
+var redrawChart = function() {
     // Clear existing graphic (for redraw)
     var containerElement = d3.select('#bop');
     containerElement.html('');
@@ -431,4 +431,32 @@ var renderStackedBarChart = function(config) {
                 });
         }
     });
+
+    // shift xPos of independent label
+    // base positioning on the xpos/width of the "Ind." label, not the value
+    annotations.select('.party.ind')
+        .attr('x', function() {
+            var t = d3.select(this);
+            var tVal = annotations.select('.value.ind');
+            var xPos = t.attr('x');
+            var tBBox = t.node().getBBox();
+            switch(config['chart']) {
+                case 'senate':
+                    var senBBox = annotations.select('.party.dem').node().getBBox();
+                    if (tBBox['x'] < (senBBox['x'] + senBBox['width'])) {
+                        xPos = (senBBox['x'] + senBBox['width']);
+                    }
+                    break;
+                case 'house':
+                    var houseBBox = annotations.select('.party.gop').node().getBBox();
+                    if ((tBBox['x'] + tBBox['width'] + 5) > houseBBox['x']) {
+                        xPos = houseBBox['x'] - 5;
+                        tVal.attr('style', 'text-anchor: end');
+                        t.attr('style', 'text-anchor: end');
+                    }
+                    break;
+            }
+            tVal.attr('x', xPos);
+            return xPos;
+        })
 }

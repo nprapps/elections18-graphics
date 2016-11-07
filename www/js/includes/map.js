@@ -18,14 +18,14 @@ var fmtYearAbbrev = d3.time.format('%y');
 var fmtYearFull = d3.time.format('%Y');
 
 // Global vars
-window.pymChild = null;
 var DATA_FILE = 'presidential-national.json';
 var DEFAULT_WIDTH = 600;
 var MOBILE_THRESHOLD = 480;
 var LOAD_INTERVAL = 5000;
 var isHP = false;
 var isInitialized = false;
-var isMobile = Modernizr.touchevents;
+var isMobile = false;
+var isTouch = Modernizr.touchevents;
 var lastUpdated = '';
 var electoralData = [];
 var colorScale = null;
@@ -82,19 +82,19 @@ exports.initMap = function(containerWidth) {
 
     // define textures for "leading/ahead"
     tDLead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('D-Ahead'))
         .background(COLORS['gray3']);
 
     tRLead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('R-Ahead'))
         .background(COLORS['gray3']);
 
     tILead = textures.lines()
-        .size(8)
+        .size(6)
         .strokeWidth(2)
         .stroke(colorScale('I-Ahead'))
         .background(COLORS['gray3']);
@@ -122,7 +122,7 @@ var loadData = function() {
                 lastUpdated = res.body.last_updated;
                 formatData();
             }
-            countdown.resultsCountdown(indicator, LOAD_INTERVAL);    
+            countdown.resultsCountdown(indicator, LOAD_INTERVAL);
         })
 }
 
@@ -196,6 +196,7 @@ var formatData = function() {
 
             // define which legend category this fits with
             s['category'] = assignCategory(s);
+            s['category_class'] = classify(s['category']);
             s['color'] = assignColor(s['category']);
 
             if (districts) {
@@ -304,6 +305,12 @@ exports.renderMap = function(containerWidth) {
 var resetMap = function(containerWidth) {
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;
+    }
+
+    if (containerWidth <= MOBILE_THRESHOLD) {
+        isMobile = true;
+    } else {
+        isMobile = false;
     }
 
     // render legend
@@ -441,12 +448,17 @@ var updateElectoralMap = function() {
                         break;
                 }
             } else {
+                if (_.contains([ 'D-Ahead', 'I-Ahead', 'R-Ahead' ], electoralData[st]['category'])) {
+                    stBox.classed('ahead', true);
+                } else {
+                    stBox.classed('ahead', false);
+                }
                 stBox.select('rect')
                     .attr('fill', electoralData[st]['color']);
             }
 
             // tooltips
-            if (!isMobile) {
+            if (!isTouch) {
                 stBox.on('mouseover', onStateMouseover);
                 stBox.on('mouseout', onStateMouseout);
                 stBox.attr('xlink:href', COUNTY_DATA[st]['url']);
@@ -457,15 +469,15 @@ var updateElectoralMap = function() {
             }
 
             // show electoral votes on desktop; hide on small screens
-            var stLabel = stBox.select('text.state-abbr');
+            var stLabel = stBox.selectAll('text.state-abbr');
             if (stLabel[0][0] != null && st != 'ME' && st != 'NE') {
                 if (!isMobile) {
                     stLabel.attr('dy', -5);
-                    stBox.select('.votes')
+                    stBox.selectAll('.votes')
                         .classed('active', true);
                 } else {
                     stLabel.attr('dy', 0);
-                    stBox.select('.votes')
+                    stBox.selectAll('.votes')
                         .classed('active', false);
                 }
             }
@@ -565,11 +577,11 @@ var positionMapLabels = function() {
         var stRect = stBox.select('rect');
         var stLabel = stBox.select('text');
 
-        if (d['electtotal'] < 6) {
-            stLabel.classed('small', true);
-        }
-
         if (stLabel[0][0] != null && i != 'ME' && i != 'NE') {
+            if (d['electtotal'] < 6) {
+                stLabel.classed('small', true);
+            }
+
             stLabel.attr('x', function() {
                     var boxX = Number(stRect.attr('x'));
                     var boxWidth = Number(stRect.attr('width'));
@@ -583,13 +595,26 @@ var positionMapLabels = function() {
 
                     return (boxY + (boxHeight / 2) + (labelBbox.height / 3));
                 })
-                .attr('class', 'state-abbr');
+                .classed('state-abbr', true);
 
+            // add # of electoral votes (and text shadow)
+            _.each([ 'votes shadow', 'votes' ], function(cls) {
+                stBox.append('text')
+                    .attr('class', cls)
+                    .text(d['electtotal'])
+                    .attr('x', stLabel.attr('x'))
+                    .attr('y', Number(stLabel.attr('y')) + 5);
+            });
+
+            // add state label text shadow
             stBox.append('text')
-                .attr('class', 'votes')
-                .text(d['electtotal'])
+                .attr('class', stLabel.attr('class') + ' shadow')
+                .text(stLabel.text())
                 .attr('x', stLabel.attr('x'))
-                .attr('y', Number(stLabel.attr('y')) + 5);
+                .attr('y', stLabel.attr('y'))
+                .attr('dy', stLabel.attr('dy'));
+
+            stLabel.moveToFront();
         }
     });
 
@@ -610,3 +635,11 @@ var onCountySelected = function() {
     var url = d3.select(this).property('value');
     window.open(url, '_top');
 }
+
+
+// helper functions
+d3.selection.prototype.moveToFront = function() {
+    return this.each(function(){
+        this.parentNode.appendChild(this);
+    });
+};
