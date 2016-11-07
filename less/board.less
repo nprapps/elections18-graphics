@@ -12,6 +12,10 @@ html {
 body {
     margin: 0;
     padding: 0;
+
+    @media screen and (min-width: @screen-lg-min) {
+        margin: 0 30px;
+    }
 }
 
 .results-wrapper {
@@ -310,7 +314,7 @@ tr {
     &.hidden { display: none; }
 
     img {
-        width: 32%;
+        width: 28%;
         &.hidden { display: none; }
     }
 }
@@ -458,3 +462,16 @@ tr {
 //     padding: 0 10px;
 //   }
 // }
+
+.board.president {
+    .results-wrapper .results-header {
+        font-size: 1rem;
+
+        img {
+            width: 28%;
+        }
+    }
+    .results-wrapper table.races {
+        font-size: 0.9rem;
+    }
+}
