@@ -65,7 +65,6 @@ exports.initBop = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
     indicator = document.querySelector('.countdown');
     footnotes = d3.select('.footnotes');
-    console.log('containerWidth', containerWidth);
     graphicWidth = containerWidth;
 
     // define textures for "leading/ahead"
@@ -184,8 +183,9 @@ exports.renderBop = function(containerWidth) {
     }
 
     graphicWidth = containerWidth;
-    console.log('containerWidth', containerWidth);
-    redrawChart();
+    // LoadData calls redrawChart after ensuring that the data is there
+    // for the graphic to render.
+    loadData();
 }
 
 //
@@ -272,7 +272,6 @@ var renderStackedBarChart = function(config) {
     var xScale = d3.scale.linear()
         .domain([min, max])
         .rangeRound([0, chartWidth]);
-    console.log('max', max, 'chartWidth', chartWidth);
 
     /*
      * Create the root SVG element.

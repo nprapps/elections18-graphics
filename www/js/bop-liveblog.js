@@ -32,12 +32,10 @@ var onWindowLoaded = function() {
 var render = function(containerWidth) {
     // only run the first time
     if (!isBopInit) {
-        console.log('Bop-liveblog init: containerWidth', containerWidth);
         bop.initBop(containerWidth);
         isBopInit = true;
     // run onresize
     } else {
-        console.log('Bop-liveblog render: containerWidth', containerWidth)
         bop.renderBop(containerWidth);
     }
 
