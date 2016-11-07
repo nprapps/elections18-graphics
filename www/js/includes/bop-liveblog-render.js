@@ -418,4 +418,32 @@ var renderStackedBarChart = function(config) {
                 });
         }
     });
+
+    // shift xPos of independent label
+    // base positioning on the xpos/width of the "Ind." label, not the value
+    annotations.select('.party.ind')
+        .attr('x', function() {
+            var t = d3.select(this);
+            var tVal = annotations.select('.value.ind');
+            var xPos = t.attr('x');
+            var tBBox = t.node().getBBox();
+            switch(config['chart']) {
+                case 'senate':
+                    var senBBox = annotations.select('.party.dem').node().getBBox();
+                    if (tBBox['x'] < (senBBox['x'] + senBBox['width'])) {
+                        xPos = (senBBox['x'] + senBBox['width']);
+                    }
+                    break;
+                case 'house':
+                    var houseBBox = annotations.select('.party.gop').node().getBBox();
+                    if ((tBBox['x'] + tBBox['width'] + 5) > houseBBox['x']) {
+                        xPos = houseBBox['x'] - 5;
+                        tVal.attr('style', 'text-anchor: end');
+                        t.attr('style', 'text-anchor: end');
+                    }
+                    break;
+            }
+            tVal.attr('x', xPos);
+            return xPos;
+        })
 }
