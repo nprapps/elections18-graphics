@@ -41,7 +41,7 @@ const getInitialData = function() {
         .set('If-Modified-Since', '')
         .end(function(err, res) {
             if (res.body) {
-                bopData = res.body;            
+                bopData = res.body;
             } else {
                 console.warn(err);
             }
@@ -242,7 +242,7 @@ const renderCongressBOP = function(bop) {
         h('div.results-header-group.dem', [
             h('h2.party', [ 'Dem.: ' + demSeats ]),
             h('p.detail', [
-                'Pickups: ',
+                'Net gains: ',
                 h('span.change.party', demPickups >= 0 ? '+' + demPickups : demPickups),
                 h('br'),
                 'Need: ',
@@ -252,7 +252,7 @@ const renderCongressBOP = function(bop) {
         h('div.results-header-group.gop', [
             h('h2.party', 'GOP: ' + gopSeats),
             h('p.detail', [
-                'Pickups: ',
+                'Net gains: ',
                 h('span.change.party', gopPickups >= 0 ? '+' + gopPickups : gopPickups),
                 h('br'),
                 'Need: ',
@@ -262,7 +262,7 @@ const renderCongressBOP = function(bop) {
         h('div.results-header-group.other', [
             h('h2.party', 'Ind.: ' + indSeats),
             h('p.detail', [
-                'Pickups: ',
+                'Net gains: ',
                 h('span.change.party', indPickups >= 0 ? '+' + indPickups : indPickups)
             ]),
         ]),
