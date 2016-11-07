@@ -57,6 +57,8 @@ var tDExpected = null;
 var tRExpected = null;
 var tIExpected = null;
 
+var initialRender = true;
+
 var exports = module.exports = {};
 
 /*
@@ -227,6 +229,11 @@ var redrawChart = function() {
     // Update iframe
     if (window.pymChild) {
         window.pymChild.sendHeight();
+    }
+
+    if (initialRender) {
+        initialRender = false;
+        window.pymChild.sendMessage('initial-render', 'bop');
     }
 }
 
