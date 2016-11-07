@@ -89,8 +89,17 @@ body {
             }
         }
 
-        &.hide-second-column-header {
-            .last .poll-closing-group:first-child { display: none; }
+        &.dupe-second-column-header {
+            .last .poll-closing-group:first-child { 
+                display: none;
+
+                &:after {
+                    content: " (continued)";
+                }
+                @media screen and (min-width: @screen-sm) {
+                    display: block;
+                }
+            }
         }
 
         .poll-closing-group {

@@ -187,7 +187,7 @@ const renderMaquette = function() {
         ]),
         h('div.results', {
             classes: {
-                'hide-second-column-header': duplicates.length > 0
+                'dupe-second-column-header': duplicates.length > 0
             }
         }, [
             renderResultsColumn(firstColumn, 'first'),
