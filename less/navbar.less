@@ -28,20 +28,14 @@
 }
 
 // Breakpoints
-@screen-jumbo-above: ~"screen and (min-width: 1920px)";
-@screen-mega-above: ~"screen and (min-width: 1600px)";
 
-@screen-large-above: ~"screen and (min-width: 1201px)";
-@screen-large: ~"screen and (min-width: 1200px)";
+@nav-medium-above: ~"screen and (min-width: 992px)";
+@nav-medium: ~"screen and (max-width: 991px)";
 
-@screen-medium-above: ~"screen and (min-width: 992px)";
-@screen-medium: ~"screen and (max-width: 991px)";
+@nav-small-above: ~"screen and (min-width: 707px)";
+@nav-small: ~"screen and (max-width: 706px)";
 
-@screen-small-above: ~"screen and (min-width: 707px)";
-@screen-small: ~"screen and (max-width: 706px)";
 
-@screen-tiny-above: ~"screen and (min-width: 481px)";
-@screen-tiny: ~"screen and (max-width: 480px)";
 
 // results nav
 // -------------------------
@@ -52,11 +46,11 @@
     margin: 0 0 2rem 0;
 
 
-    @media @screen-small-above {
+    @media @nav-small-above {
         font-size: 13px;
     }
 
-    @media @screen-medium-above {
+    @media @nav-medium-above {
         font-size: 16px;
     }
 
@@ -69,7 +63,7 @@
     .gotham();
     border-bottom: 2px solid #ddd;
 
-    @media @screen-small-above {
+    @media @nav-small-above {
         border-bottom: 3px solid #ddd;
     }
 
@@ -85,7 +79,7 @@
     .menu {
 		display: none;
         margin: -5px 0 0 0;
-        @media @screen-small-above {
+        @media @nav-small-above {
             display: block;
             margin: 0 0 0 3.8rem;
         }
@@ -118,7 +112,7 @@
         }
 
 
-        @media @screen-small-above {
+        @media @nav-small-above {
              display: none;
         }
     }
@@ -140,7 +134,7 @@
         .knockout();
         padding: 5px 0;
 
-        @media @screen-small-above {
+        @media @nav-small-above {
             position: absolute;
             top: 1.24rem;
             left: 0;
@@ -155,7 +149,7 @@
             font-size: 1.2rem;
             text-transform: uppercase;
 
-            @media @screen-small-above {
+            @media @nav-small-above {
                 display: block;
                 line-height: 1;
                 font-size: .9rem;
@@ -167,7 +161,7 @@
             font-size: 1.2rem;
             text-transform: uppercase;
 
-            @media @screen-small-above {
+            @media @nav-small-above {
                 display: block;
                 line-height: 1;
                 font-size: 2rem;
@@ -182,7 +176,7 @@
         color:@link-blue;
     	text-decoration:none;
 
-        @media @screen-small-above {
+        @media @nav-small-above {
             padding: 1rem .7rem;
             font-size: 1rem;
         }
@@ -201,7 +195,7 @@
     	position: relative;
       .gotham();
 
-      @media @screen-small-above {
+      @media @nav-small-above {
           margin: 0 0 0 5rem;
       }
     }
@@ -213,7 +207,7 @@
         p {
             text-transform: none;
         }
-        @media @screen-small-above {
+        @media @nav-small-above {
             float: left;
             width: auto;
             border: none;
@@ -230,7 +224,7 @@
         // white-space: nowrap;
         // clear: both;
         //
-        // @media @screen-small-above {
+        // @media @nav-small-above {
         //     float: left;
         // }
 
@@ -263,7 +257,7 @@
                 font-size: 10px;
             }
 
-            @media @screen-small-above {
+            @media @nav-small-above {
                 font-size: 1rem;
                 padding: 1rem 1.4rem 1rem .7rem;
 
@@ -290,7 +284,7 @@
             overflow: auto;
             margin-left: 0;
 
-            @media @screen-small-above {
+            @media @nav-small-above {
                 position: absolute;
                 top: 3rem;
                 right: 0;
@@ -310,7 +304,7 @@
                 margin-bottom: 0;
                 border: none;
 
-                @media @screen-small-above {
+                @media @nav-small-above {
                 	position: relative;
                     padding:  .3rem;
 
@@ -332,7 +326,7 @@
             width: 33%;
             padding: 3px 0;
 
-            @media @screen-small-above {
+            @media @nav-small-above {
                 padding: 0;
             }
 
