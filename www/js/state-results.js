@@ -86,7 +86,7 @@ window.pymChild = null;
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child();
+    window.pymChild = new pym.Child();
     currentState = getParameterByName('state').toLowerCase();
     descriptions = briefingData.descriptions.find(function(el) {
       return el.state_postal === currentState;
@@ -127,7 +127,7 @@ const getData = function(forceReload) {
 
                 data = res.body.results;
                 lastUpdated = res.body.last_updated;
-                projector.resume();            
+                projector.resume();
                 projector.scheduleRender();
             }
         });
@@ -180,7 +180,7 @@ const sortCountyResults = function() {
 
 const renderMaquette = function() {
     setTimeout(pymChild.sendHeight, 0);
-    
+
     if (data && extraData) {
         if (!stateName && !statepostal && !statefaceClass) {
           stateName = data['state'][0].statename;
@@ -243,7 +243,7 @@ const renderMaquette = function() {
           ])
         ]);
     } else {
-        getData();  
+        getData();
         return h('div.results', 'Loading...');
     }
 }
