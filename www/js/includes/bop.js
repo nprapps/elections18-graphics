@@ -32,7 +32,7 @@ var CONGRESS = {
 var DEFAULT_WIDTH = 600;
 var SIDEBAR_THRESHOLD = 280;
 var MOBILE_THRESHOLD = 500;
-var LOAD_INTERVAL = 15000;
+var LOAD_INTERVAL = 5000;
 
 var isInitialized = false;
 var isMobile = false;
