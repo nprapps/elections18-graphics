@@ -21,7 +21,7 @@ var lastRequestTime = null;
 */
 var onWindowLoaded = function() {
     // init pym and render callback
-    pymChild = new pym.Child({
+    window.pymChild = new pym.Child({
         renderCallback: render
     });
 
