@@ -183,8 +183,9 @@ exports.renderBop = function(containerWidth) {
     }
 
     graphicWidth = containerWidth;
-
-    redrawChart();
+    // LoadData calls redrawChart after ensuring that the data is there
+    // for the graphic to render.
+    loadData();
 }
 
 //

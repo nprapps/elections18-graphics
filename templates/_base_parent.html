@@ -181,12 +181,7 @@
                 anchor.style.display = 'none';
                 anchor.setAttribute('href', url);
                 document.getElementById('main-section').appendChild(anchor);
-                var evt = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true,
-                });
-                anchor.dispatchEvent(evt);
+                anchor.click();
                 anchor.parentNode.removeChild(anchor);
             }
 
@@ -273,12 +268,7 @@
             anchor.style.display = 'none';
             anchor.setAttribute('href', url);
             document.getElementById('main-section').appendChild(anchor);
-            var evt = new MouseEvent('click', {
-                view: window,
-                bubbles: true,
-                cancelable: true,
-            });
-            anchor.dispatchEvent(evt);
+            anchor.click();
             anchor.parentNode.removeChild(anchor);
         }
 
