@@ -13,6 +13,7 @@ var otherCandidates = null;
 var electoralElement = null;
 var lastRequestTime = null;
 var reloadElectoralData = null;
+var initialRender = true;
 
 var exports = module.exports = {};
 
@@ -105,5 +106,10 @@ var formatElectoralData = function() {
     // Update iframe
     if (window.pymChild) {
         window.pymChild.sendHeight();
+    }
+
+    if (initialRender) {
+        initialRender = false;
+        window.pymChild.sendMessage('initial-render', 'totals');
     }
 }
