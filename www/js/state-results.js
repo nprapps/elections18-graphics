@@ -421,7 +421,7 @@ const renderStateRow = function(result){
       'winner': result['npr_winner'],
       'dem': result['npr_winner'] && result['party'] === 'Dem',
       'gop': result['npr_winner'] && result['party'] === 'GOP',
-      'ind': result['npr_winner'] && result['party'] === 'Ind',
+      'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
       'hidden': result['last'] === 'Other' && result['votecount'] === 0
     }
   }, [
@@ -686,7 +686,7 @@ const renderRow = function(result){
       'winner': result['npr_winner'],
       'dem': result['npr_winner'] && result['party'] === 'Dem',
       'gop': result['npr_winner'] && result['party'] === 'GOP',
-      'ind': result['npr_winner'] && result['party'] === 'Ind',
+      'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
       'yes': result['npr_winner'] && result['party'] === 'Yes',
       'no': result['npr_winner'] && result['party'] === 'No',
       'hidden': result['last'] === 'Other' && result['votecount'] === 0
