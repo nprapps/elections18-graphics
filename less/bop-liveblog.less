@@ -1,18 +1,25 @@
 @import "bop";
 @import "electoral-totals";
 
+@linegray: #ddd;
+
 html { -webkit-text-size-adjust: none; }
 
 body {
     margin: 0;
     padding: 0;
     font: 14px/1.4 @font-family-sans-serif;
+    /*background: #eee;*/
+}
+
+#electoral-totals .candidate {
+    border-color: @linegray;
 }
 
 .electoral-summary {
-    padding-bottom: 22px;
-    margin-bottom: 22px;
-    border-bottom: 2px solid #eee;
+    padding-bottom: 11px;
+    margin-bottom: 11px;
+    border-bottom: 2px solid @linegray;
     .clearfix();
 
     h3 {
@@ -38,7 +45,40 @@ body {
     }
 }
 
-#bop { margin-bottom: 11px; }
+#bop {
+    margin-bottom: 5px;
+    .clearfix();
+
+    .chart {
+        width: 50%;
+        box-sizing: border-box;
+        float: left;
+        
+        &.senate {
+            padding-right: 5%;
+            margin-bottom: 0;
+        }
+        
+        &.house{
+            margin-bottom: 0;
+            padding-left: 5%;
+        }
+
+        .annotations {
+            .value {
+                font-family: @font-family-sans-serif;
+
+                &.dem {
+                    fill: lighten(@dem, 20%);
+                }
+
+                &.gop {
+                    fill: lighten(@gop, 20%);
+                }
+            }
+        }
+    }
+}
 
 
 nav {
