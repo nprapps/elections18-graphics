@@ -475,14 +475,16 @@ tr {
 // }
 
 .board.president {
-    .results-wrapper .results-header {
-        font-size: 1rem;
+    @media screen and (min-width: @screen-lg-min) {
+        .results-wrapper .results-header {
+            font-size: 1rem;
 
-        img {
-            width: 28%;
+            img {
+                width: 28%;
+            }
         }
-    }
-    .results-wrapper table.races {
-        font-size: 0.9rem;
+        .results-wrapper table.races {
+            font-size: 0.9rem;
+        }
     }
 }
