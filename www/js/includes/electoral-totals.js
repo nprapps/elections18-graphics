@@ -5,7 +5,7 @@ import { classify, buildDataURL } from './helpers.js';
 
 // Global vars
 var DATA_FILE = 'top-level-results.json';
-var LOAD_INTERVAL = 15000;
+var LOAD_INTERVAL = 5000;
 var isElectoralInit = false;
 var electoralData = [];
 var allCandidates = null;
