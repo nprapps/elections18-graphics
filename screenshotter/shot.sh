@@ -25,7 +25,7 @@ if [ $LASTFILE ]; then
         aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/latest.png
         aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME
         echo "uploading to dropbox"
-        $SCRIPTDIR/dropbox_uploader.sh $FILEDIR/$FILENAME $FILENAME
+        $SCRIPTDIR/dropbox_uploader.sh upload $FILEDIR/$FILENAME $FILENAME
     fi
 else
     echo "uploading to s3"
