@@ -4,7 +4,6 @@ import commaNumber from 'comma-number';
 import navbar from '../js/includes/navbar.js';
 import briefingData from '../data/extra_data/state-briefings.json'
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
-
 const resultsWrapper = document.querySelector('#county-results');
 const projector = maquette.createProjector();
 const h = maquette.h;
@@ -224,7 +223,8 @@ const renderMaquette = function() {
               ]),
               h('p.rating', [
                   h('a', {
-                      href: 'http://www.npr.org/2016/11/07/500706879/final-npr-battleground-map-the-race-snaps-back-but-clinton-maintains-advantage'
+                      href: 'http://www.npr.org/2016/11/07/500706879/final-npr-battleground-map-the-race-snaps-back-but-clinton-maintains-advantage',
+                      onclick: onRatingClick
                   }, 'Battleground rating'),
                   ': ',
                   h('span', {
@@ -804,6 +804,15 @@ const onMetricClick = function(e) {
             ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
         }
     }
+}
+
+const onRatingClick = function(e) {
+  const domain = navbar.parseParentURL();
+  if (e.target.tagName == 'A' && pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+      pymChild.sendMessage('pjax-navigate', e.target.href);
+      e.preventDefault();
+      e.stopPropagation();
+  }
 }
 
 const toTitlecase = function(str) {
