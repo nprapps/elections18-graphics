@@ -478,7 +478,7 @@ const renderRace = function(race) {
             decideLabel(result1)
         ]),
         h('td.results-status', [
-            Math.round(result1['precinctsreportingpct'] * 100)
+            calculatePrecinctsReporting(result1['precinctsreportingpct'])
         ]),
         h('td.candidate', {
             classes: {
@@ -598,6 +598,16 @@ const determineResults = function(race) {
     }
 
     return sortedResults;
+}
+
+const calculatePrecinctsReporting = function(pct) {
+    if (0 < pct && pct < 0.005) {
+        return '< 1'
+    } else if (0.995 < pct && pct < 1) {
+        return '> 99';
+    } else {
+        return Math.round(pct * 100);
+    }
 }
 
 const decideLabel = function(race) {
