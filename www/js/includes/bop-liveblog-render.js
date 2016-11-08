@@ -89,8 +89,8 @@ exports.initBop = function(containerWidth) {
         .background('#ceeee0');
 
     loadData();
-    console.log('YOU TURNED OFF THE REFRESH INTERVAL');
-    //setInterval(loadData, LOAD_INTERVAL)
+    //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
+    setInterval(loadData, LOAD_INTERVAL)
 }
 
 /*
