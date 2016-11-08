@@ -1,7 +1,7 @@
-header.contentheader,
-h3.slug,
-.storytitle,
-#story-meta,
-#storytext {
+body.id{{ id }} header.contentheader,
+body.id{{ id }} h3.slug,
+body.id{{ id }} .storytitle,
+body.id{{ id }} #story-meta,
+body.id{{ id }} #storytext {
     display: none;
 }
