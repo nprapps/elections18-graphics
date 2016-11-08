@@ -395,14 +395,13 @@ const renderStateResults = function(results) {
     var statewideTitle = 'Statewide Results'
   }
 
-
-  results = sortResults(results);
   return h('div.results-statewide', [
     h('h2', statewideTitle),
     h('p', {
       innerHTML: descriptions.state_desc ? descriptions.state_desc : ''
     }
     ),
+    // h('p.poll-closing', [ 'Polls close at ' + results[0]['meta']['full_poll_closing'] + ' ET' ]),
     h('table.results-table', [
       h('thead', [
         h('tr', [
