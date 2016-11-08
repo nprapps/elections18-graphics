@@ -6,8 +6,11 @@ import boto
 import logging
 import shutil
 
+
 from boto.s3.connection import OrdinaryCallingFormat
 from fabric.api import local, task
+from jinja2 import Environment, FileSystemLoader
+
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -71,10 +74,14 @@ def create_state_overridecss():
     """
     Make all state override css files etc/overridestates-board/rendered
     """
+    env = Environment(loader=FileSystemLoader('etc/overridecss-states'))
     navbar = copytext.Copy(app_config.NAVBAR_PATH)
     ids = [str(int(float(row['seamusid']))) for row in navbar['states']]
     for id in ids:
-        shutil.copyfile('etc/overridecss-states/_statepages.css', 'etc/overridecss-states/rendered/id{0}.css'.format(id))
+            template = env.get_template('_statepages.css')
+            output = template.render(id=id)
+            with open('etc/overridecss-states/rendered/id{0}.css'.format(id), 'w') as f:
+                f.write(output)
 
 
 @task
