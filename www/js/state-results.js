@@ -250,12 +250,21 @@ const renderMaquette = function() {
               ]),
               ' ',
               'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ',
-              h('a', { href: 'https://censusreporter.org/tables/B19013/' }, 'Median Household Income.'),
+              h('a', { 
+                href: 'https://censusreporter.org/tables/B19013/',
+                target: '_blank' 
+              }, 'Median Household Income.'),
               ' Percent White numbers are taken from ',
-              h('a', { href: 'https://censusreporter.org/tables/B03002/' }, 'Hispanic or Latino Origin by Race'),
+              h('a', { 
+                href: 'https://censusreporter.org/tables/B03002/',
+                target: '_blank' 
+              }, 'Hispanic or Latino Origin by Race'),
               ' to find the percentage of non-Hispanic White people. ',
               'Percent College Educated is a calculation of all citizens ages 18 or older with a bachelor\'s degree or higher, taken from ',
-              h('a', { href: 'https://censusreporter.org/tables/B15001/' }, 'Sex by Age by Educational Attainment.')
+              h('a', { 
+                href: 'https://censusreporter.org/tables/B15001/',
+                target: '_blank' 
+              }, 'Sex by Age by Educational Attainment.')
             ])
           ])
         ]);
@@ -816,7 +825,7 @@ const onRatingClick = function(e) {
 }
 
 const toTitlecase = function(str) {
-    return str.replace(/\w*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    return str.replace(/\w*\s/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
 

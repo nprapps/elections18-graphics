@@ -73,20 +73,20 @@ exports.initBop = function(containerWidth) {
     tDExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#4167b0')
-        .background('#ccc');
+        .stroke('#498dcb')
+        .background('#cfdeed');
 
     tRExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#e61e1d')
-        .background('#ccc');
+        .stroke('#f05b4e')
+        .background('#f3dad8');
 
     tIExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#319269')
-        .background('#ccc');
+        .stroke('#15b16e')
+        .background('#ceeee0');
 
     loadData();
     //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
@@ -400,17 +400,19 @@ var renderStackedBarChart = function(config) {
                 break;
         }
 
-        annotations.append('text')
-            .text(lbl)
-            .attr('class', 'party ' + classify(d['name']))
-            .attr('x', xPos)
-            .attr('y', yPos)
-            .attr('dy', -6)
-            .attr('style', function() {
-                var s = '';
-                s += 'text-anchor: ' + textAnchor + '; ';
-                return s;
-            });
+        if (d['val'] > 0) {
+            annotations.append('text')
+                .text(lbl)
+                .attr('class', 'party ' + classify(d['name']))
+                .attr('x', xPos)
+                .attr('y', yPos)
+                .attr('dy', -6)
+                .attr('style', function() {
+                    var s = '';
+                    s += 'text-anchor: ' + textAnchor + '; ';
+                    return s;
+                });
+        }
 
         if (showLabel) {
             annotations.append('text')
