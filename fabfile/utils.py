@@ -4,8 +4,6 @@ import app_config
 import copytext
 import boto
 import logging
-import shutil
-
 
 from boto.s3.connection import OrdinaryCallingFormat
 from fabric.api import local, task
@@ -89,7 +87,11 @@ def create_board_overridecss():
     """
     Make all board override css files in etc/overridecss-board/rendered
     """
+    env = Environment(loader=FileSystemLoader('etc/overridecss-boards'))
     navbar = copytext.Copy(app_config.NAVBAR_PATH)
     ids = [str(int(float(row['seamusid']))) for row in navbar['nav']]
     for id in ids:
-        shutil.copyfile('etc/overridecss-boards/_boards.css', 'etc/overridecss-boards/rendered/id{0}.css'.format(id))
+        template = env.get_template('_boards.css')
+        output = template.render(id=id)
+        with open('etc/overridecss-boards/rendered/id{0}.css'.format(id), 'w') as f:
+            f.write(output)

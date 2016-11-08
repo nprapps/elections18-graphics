@@ -1,52 +1,50 @@
-body {
+body.id{{ id }} {
     min-width: 100%;
     width: 100%;
 }
 
-#main-section {
+body.id{{ id }} #main-section {
     padding: 0;
     min-height: 0;
-    /*max-height: 100vh;*/
 }
 
-.bucketwrap.statichtml {
+body.id{{ id }} .bucketwrap.statichtml {
     padding: 0;
     margin: 0;
 }
 
-header.contentheader,
-.storytitle,
-#story-meta,
-.share-tools,
-.slug,
-.ad-backstage-wrap,
-#newsletter-acquisition-callout-mount,
-.related-stories,
-.nprfooter {
+body.id{{ id }} header.contentheader,
+body.id{{ id }} .storytitle,
+body.id{{ id }} #story-meta,
+body.id{{ id }} .share-tools,
+body.id{{ id }} .slug,
+body.id{{ id }} .ad-backstage-wrap,
+body.id{{ id }} #newsletter-acquisition-callout-mount,
+body.id{{ id }} .related-stories,
+body.id{{ id }} .nprfooter {
     display: none;
 }
 
-.story { padding: 0; }
+body.id{{ id }} .story { padding: 0; }
 
-.globalheader .lead .search-wrapper {
+body.id{{ id }} .globalheader .lead .search-wrapper {
     /*right: 266px;*/
 }
 
 @media only screen and (min-width: 768px) {
-    .player-wrap-outer {
+    body.id{{ id }} .player-wrap-outer {
         right: 0;
         position: absolute;
     }
 
-    .npr-player {
+    body.id{{ id }} .npr-player {
         right: 10px;
         width: 300px
     }
 }
 
 @media only screen and (min-width: 1025px) {
-    .globalheader {
+    body.id{{ id }} .globalheader {
         padding-right: 370px;
     }
-
 }
