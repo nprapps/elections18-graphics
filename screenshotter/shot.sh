@@ -1,6 +1,9 @@
 #!/bin/bash
 
+# Run on Ubuntu server without X11
 export QT_QPA_PLATFORM=offscreen
+
+# Set up variables
 FILEDATE=`date +%Y-%m-%d-%H\:%M`
 FILEDIR=/home/ubuntu/screenshots
 FILENAME="election16-map-$FILEDATE.png"
@@ -8,9 +11,11 @@ SCRIPTDIR=/home/ubuntu/apps/elections16graphics/repository/screenshotter
 
 echo "screenshotting map at $FILEDATE"
 mkdir -p $FILEDIR
+
+# Get last file generated
 LASTFILE=`ls -t $FILEDIR | head -1`
 
-
+# Screenshot site
 phantomjs $SCRIPTDIR/screenshot.js "http://stage-apps.npr.org/elections16graphics/map-election-results-standalone/child.html?initialWidth=600&screenshot=1" $FILEDIR/$FILENAME
 
 if [ $LASTFILE ]; then
@@ -20,17 +25,12 @@ if [ $LASTFILE ]; then
     if [ $NEWMD5 = $OLDMD5 ]; then
         echo "duplicate of $LASTFILE, deleting"
         rm $FILEDIR/$FILENAME
-    else
-        echo "uploading to s3"
-        aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/latest.png
-        aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME
-        echo "uploading to dropbox"
-        $SCRIPTDIR/dropbox_uploader.sh upload $FILEDIR/$FILENAME $FILENAME
+        exit
     fi
-else
-    echo "uploading to s3"
-    aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/latest.png --acl public-read
-    aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME
-    echo "uploading to dropbox"
-    $SCRIPTDIR/dropbox_uploader.sh upload $FILEDIR/$FILENAME $FILENAME
 fi
+
+echo "uploading to s3"
+aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/latest.png --acl public-read
+aws s3 cp $FILEDIR/$FILENAME s3://stage-apps.npr.org/elections16graphics/assets/map/$FILENAME
+echo "uploading to dropbox"
+$SCRIPTDIR/dropbox_uploader.sh upload $FILEDIR/$FILENAME $FILENAME
