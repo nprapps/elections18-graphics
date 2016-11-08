@@ -1,5 +1,4 @@
 /* TODO
-- refresh counter
 - link bars to the big board
 */
 
@@ -71,19 +70,19 @@ exports.initBop = function(containerWidth) {
     tDExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#4167b0')
+        .stroke(COLORS['dem'])
         .background('#ccc');
 
     tRExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#e61e1d')
+        .stroke(COLORS['gop'])
         .background('#ccc');
 
     tIExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#319269')
+        .stroke(COLORS['ind'])
         .background('#ccc');
 
     loadData();

@@ -6,7 +6,7 @@ var COLORS = {
     'blue1': '#28556F', 'blue2': '#3D7FA6', 'blue3': '#51AADE', 'blue4': '#7DBFE6', 'blue5': '#A8D5EF', 'blue6': '#D3EAF7',
     'gray1': '#333', 'gray2': '#666', 'gray3': '#999', 'gray4': '#AAA', 'gray5': '#CCC', 'gray6': '#F1F1F1',
 
-    'gop': '#e61e1d', 'gopDim2': '#f8babb',
-    'dem': '#4167b0', 'demDim2': '#c5d1e7',
-    'ind': '#319269', 'indDim2': '#c3e1d2'
+    'gop': '#f05b4e', 'gopDim2': '#f8aba5',
+    'dem': '#498dcb', 'demDim2': '#a4c5e7',
+    'ind': '#15b16e', 'indDim2': '#b9ead3'
 };
