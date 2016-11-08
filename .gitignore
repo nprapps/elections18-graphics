@@ -65,3 +65,5 @@ www/data/extra_data/state-briefings.json
 logs/*.log
 
 www/map-election-results-standalone
+etc/overridecss-states/rendered/*
+etc/overridecss-boards/rendered/*
