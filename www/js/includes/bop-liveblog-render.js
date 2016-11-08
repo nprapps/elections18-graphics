@@ -400,17 +400,19 @@ var renderStackedBarChart = function(config) {
                 break;
         }
 
-        annotations.append('text')
-            .text(lbl)
-            .attr('class', 'party ' + classify(d['name']))
-            .attr('x', xPos)
-            .attr('y', yPos)
-            .attr('dy', -6)
-            .attr('style', function() {
-                var s = '';
-                s += 'text-anchor: ' + textAnchor + '; ';
-                return s;
-            });
+        if (d['val'] > 0) {
+            annotations.append('text')
+                .text(lbl)
+                .attr('class', 'party ' + classify(d['name']))
+                .attr('x', xPos)
+                .attr('y', yPos)
+                .attr('dy', -6)
+                .attr('style', function() {
+                    var s = '';
+                    s += 'text-anchor: ' + textAnchor + '; ';
+                    return s;
+                });
+        }
 
         if (showLabel) {
             annotations.append('text')
