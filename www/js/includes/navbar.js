@@ -1,6 +1,8 @@
 import URL from 'url-parse';
 
-const parseParentURL = function() {
+var exports = module.exports = {};
+
+exports.parseParentURL = function() {
     if (!pymChild) {
         return null;
     }
@@ -20,7 +22,7 @@ const updateMenuParent = function(e) {
 }
 
 const followNavLink = function(e) {
-    const domain = parseParentURL();
+    const domain = exports.parseParentURL();
     if (e.target.tagName == 'A' && e.target !== e.currentTarget && pymChild && (domain == 'npr.org' || domain == 'localhost')) {
         pymChild.sendMessage('pjax-navigate', e.target.href);
         e.preventDefault();
