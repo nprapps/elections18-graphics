@@ -73,24 +73,24 @@ exports.initBop = function(containerWidth) {
     tDExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#4167b0')
-        .background('#ccc');
+        .stroke('#498dcb')
+        .background('#cfdeed');
 
     tRExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#e61e1d')
-        .background('#ccc');
+        .stroke('#f05b4e')
+        .background('#f3dad8');
 
     tIExpected = textures.lines()
         .size(3)
         .strokeWidth(1)
-        .stroke('#319269')
-        .background('#ccc');
+        .stroke('#15b16e')
+        .background('#ceeee0');
 
     loadData();
-    //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
-    setInterval(loadData, LOAD_INTERVAL)
+    console.log('YOU TURNED OFF THE REFRESH INTERVAL');
+    //setInterval(loadData, LOAD_INTERVAL)
 }
 
 /*
