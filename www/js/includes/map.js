@@ -540,20 +540,6 @@ var onStateMouseover = function() {
         ttText += '<p class="precincts">' + formatPrecinctsReporting(stateData['precinctsreportingpct'], stateData['precinctsreporting'], stateData['precinctstotal']) + '% reporting</p>';
     }
 
-    function formatPrecinctsReporting(pct, reporting, total) {
-        console.log(pct, reporting, total);
-        var pctFormatted = (pct * 100).toFixed(1);
-        if (pctFormatted == 0 && reporting > 0) {
-            return '<0.1';
-        } else if (pctFormatted == 100 && reporting < total) {
-            return '>99.9';
-        } else if (pctFormatted == 100 && reporting == total) {
-            return 100;
-        } else {
-            return pctFormatted;
-        }
-    }
-
     // position the tooltip
     tooltip.html(ttText)
         .attr('style', function() {
@@ -577,6 +563,19 @@ var onStateMouseover = function() {
 
     // highlight the active state box
     t.classed('active', true);
+}
+
+var formatPrecinctsReporting = function(pct, reporting, total) {
+    var pctFormatted = (pct * 100).toFixed(1);
+    if (pctFormatted == 0 && reporting > 0) {
+        return '<0.1';
+    } else if (pctFormatted == 100 && reporting < total) {
+        return '>99.9';
+    } else if (pctFormatted == 100 && reporting == total) {
+        return 100;
+    } else {
+        return pctFormatted;
+    }
 }
 
 var onStateMouseout = function() {
