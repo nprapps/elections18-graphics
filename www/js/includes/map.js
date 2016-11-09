@@ -466,7 +466,7 @@ var updateElectoralMap = function() {
             if (!isTouch) {
                 stBox.on('mouseover', onStateMouseover);
                 stBox.on('mouseout', onStateMouseout);
-                stBox.attr('xlink:href', COUNTY_DATA[st]['url']);
+                stBox.on('click', onStateClick);
             } else {
                 stBox.on('mouseover', undefined);
                 stBox.on('mouseout', undefined);
@@ -572,6 +572,19 @@ var onStateMouseout = function() {
     tooltip.classed('active', false);
 }
 
+var onStateClick = function() {
+    const domain = parseParentURL();
+    var t = d3.select(this);
+    var st = t[0][0].getAttribute('class').split(' ')[0].toUpperCase();
+    var url = COUNTY_DATA[st]['url'];
+
+    if (pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+        pymChild.sendMessage('pjax-navigate', url);
+    } else {
+        window.open(url, '_top');
+    }
+}
+
 
 /*
  * Position map labels
@@ -638,7 +651,12 @@ var positionMapLabels = function() {
  */
 var onCountySelected = function() {
     var url = d3.select(this).property('value');
-    window.open(url, '_top');
+
+    if (pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+        pymChild.sendMessage('pjax-navigate', url);
+    } else {
+        window.open(url, '_top');
+    }
 }
 
 
@@ -648,3 +666,15 @@ d3.selection.prototype.moveToFront = function() {
         this.parentNode.appendChild(this);
     });
 };
+
+var parseParentURL = function() {
+    if (!pymChild) {
+        return null;
+    }
+    const parentUrl = new URL(window.pymChild.parentUrl, location, true);
+    if (parentUrl.hostname == '127.0.0.1') {
+        return 'localhost';
+    } else {
+        return parentUrl.hostname.split('.').slice(-2).join('.');
+    }
+}
