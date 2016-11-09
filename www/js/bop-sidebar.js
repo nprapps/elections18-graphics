@@ -38,6 +38,8 @@ var onNavLinkClick = function(e) {
     if (window.pymChild && (domain == 'npr.org' || domain == 'localhost')) {
         console.log('if statement passing');
         window.pymChild.sendMessage('pjax-navigate', url);
+        e.preventDefault();
+        e.stopPropagation();
     } else {
         console.log('if statement failing');
         window.open(url, '_top');
