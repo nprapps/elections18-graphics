@@ -663,8 +663,8 @@ var positionMapLabels = function() {
  * county selector dropdown
  */
 var onCountySelected = function() {
+    const domain = parseParentURL();
     var url = d3.select(this).property('value');
-
     if (pymChild && (domain == 'npr.org' || domain == 'localhost')) {
         pymChild.sendMessage('pjax-navigate', url);
     } else {
