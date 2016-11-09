@@ -801,7 +801,7 @@ const renderMeasurePrecincts = function(results){
   for (var result in results){
     if (results[result][0]){
       precinctReporting = results[result][0];
-      return h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
+      return h('p.precincts', [calculatePrecinctsReporting(precinctReporting) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
     }
   }
 }
