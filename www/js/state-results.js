@@ -430,7 +430,7 @@ const renderStateResults = function(results) {
         ])
       ])
     ]),
-    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
+    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
   ])
 }
 
@@ -553,9 +553,9 @@ const renderCountyRow = function(results, key, availableCandidates){
           'icon-star': isKeyCounty
         }
       }),
-      h('span.precincts.mobile', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in'])
+      h('span.precincts.mobile', [calculatePrecinctsReporting(results[0]) + '% in'])
     ]),
-    h('td.amt.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% in']),
+    h('td.amt.precincts', [calculatePrecinctsReporting(results[0]) + '% in']),
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
     h('td.vote.margin', calculateVoteMargin(keyedResults)),
     h('td.comparison', extraMetric)
@@ -658,7 +658,7 @@ const renderSenateTable = function(results){
         ])
       ])
     ]),
-    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
+    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
   ])
 }
 
@@ -694,7 +694,7 @@ const renderHouseTable = function(results){
       ])
     ])
   ]),
-  h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
+  h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
 ])
 }
 
@@ -757,7 +757,7 @@ const renderGovTable = function(results){
         ])
       ])
     ]),
-    h('p.precincts', [(results[0].precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
+    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
   ])
 }
 
@@ -801,7 +801,7 @@ const renderMeasurePrecincts = function(results){
   for (var result in results){
     if (results[result][0]){
       precinctReporting = results[result][0];
-      return h('p.precincts', [(precinctReporting.precinctsreportingpct * 100).toFixed(1) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
+      return h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
     }
   }
 }
@@ -861,6 +861,24 @@ const sortResults = function(results) {
     }
   });
   return results
+}
+
+
+function calculatePrecinctsReporting(result) {
+    var pct = result.precinctsreportingpct;
+    var reporting = result.precinctsreporting;
+    var total = result.precinctstotal;
+
+    var pctFormatted = (pct * 100).toFixed(1);
+    if (pctFormatted == 0 && reporting > 0) {
+        return '<0.1';
+    } else if (pctFormatted == 100 && reporting < total) {
+        return '>99.9';
+    } else if (pctFormatted == 100 && reporting == total) {
+        return 100;
+    } else {
+        return pctFormatted;
+    }
 }
 
 if (!Array.prototype.find) {

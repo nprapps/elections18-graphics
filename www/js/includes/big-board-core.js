@@ -602,9 +602,9 @@ const determineResults = function(race) {
 
 const calculatePrecinctsReporting = function(pct) {
     if (0 < pct && pct < 0.005) {
-        return '< 1'
+        return '<1'
     } else if (0.995 < pct && pct < 1) {
-        return '> 99';
+        return '>99';
     } else {
         return Math.round(pct * 100);
     }
