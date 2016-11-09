@@ -3,6 +3,7 @@
         {% include 'electoral-cartogram.svg' %}
     </div>
     <div id="tooltip"></div>
+    <div id="bar-chart"></div>
     <div id="county-selector">
         <select>
             <option selected>Get county-level results...</option>
@@ -11,7 +12,6 @@
             {% endfor %}
         </select>
     </div>
-    <div id="bar-chart"></div>
 </div>
 
 {% if COPY.map.footnote %}
