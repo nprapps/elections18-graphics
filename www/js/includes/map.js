@@ -537,7 +537,21 @@ var onStateMouseover = function() {
             }
         });
         ttText += '</table>';
-        ttText += '<p class="precincts">' + (stateData['precinctsreportingpct'] * 100).toFixed(0) + '% reporting</p>';
+        ttText += '<p class="precincts">' + formatPrecinctsReporting(stateData['precinctsreportingpct'], stateData['precinctsreporting'], stateData['precinctstotal']) + '% reporting</p>';
+    }
+
+    function formatPrecinctsReporting(pct, reporting, total) {
+        console.log(pct, reporting, total);
+        var pctFormatted = (pct * 100).toFixed(1);
+        if (pctFormatted == 0 && reporting > 0) {
+            return '<0.1';
+        } else if (pctFormatted == 100 && reporting < total) {
+            return '>99.9';
+        } else if (pctFormatted == 100 && reporting == total) {
+            return 100;
+        } else {
+            return pctFormatted;
+        }
     }
 
     // position the tooltip
