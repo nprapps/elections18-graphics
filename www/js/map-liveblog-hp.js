@@ -27,9 +27,26 @@ var onWindowLoaded = function() {
 
     headlineURL = buildHeadlineURL('headline.json');
     projector.append(liveblog, renderMaquette);
+    addLiveblogListener();
     getData();
     setInterval(getData, 5000);
 }
+
+const addLiveblogListener = function() {
+    const domain = parseParentURL();
+    liveblog.addEventListener('click', function(e) {
+        if(e.target && e.target.nodeName == "A") {
+            if (window.pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+                pymChild.sendMessage('pjax-navigate', e.target.href);
+                e.preventDefault();
+                e.stopPropagation();
+            } else {
+                window.open(e.target.href, '_top');
+            }
+        }
+    });
+}
+
 
 var getData = function() {
     request.get(headlineURL)
@@ -97,6 +114,18 @@ var render = function(containerWidth) {
     if (!isElectoralInit) {
         electoral.initElectoralTotals()
         isElectoralInit = true;
+    }
+}
+
+var parseParentURL = function() {
+    if (!window.pymChild) {
+        return null;
+    }
+    const parentUrl = new URL(window.pymChild.parentUrl, location, true);
+    if (parentUrl.hostname == '127.0.0.1') {
+        return 'localhost';
+    } else {
+        return parentUrl.hostname.split('.').slice(-2).join('.');
     }
 }
 
