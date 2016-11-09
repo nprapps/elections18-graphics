@@ -377,10 +377,9 @@ var renderStackedBarChart = function(config) {
         .attr('y', (barCalledHeight / 2) + 4);
 
     annotations.append('text')
-        .text('Expected*')
+        .text('Expected')
         .attr('class', 'side-label expected')
         .attr('x', -valueGap)
-        .attr('dx', 5)
         .attr('y', barCalledHeight + barGap + (barExpectedHeight / 2) + 3);
     _.each(config['dataCalled'], function(d) {
         var lbl = d['name'];
