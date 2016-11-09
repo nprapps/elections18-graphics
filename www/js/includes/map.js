@@ -149,7 +149,6 @@ var formatData = function() {
 
         var districts = null;
         if (_.contains([ 'ME', 'NE' ], i)) {
-            console.log(s);
             s['districts'] = [];
             districts = _.pluck(s, 'reportingunitname');
             districts = d3.set(districts).values()
@@ -429,7 +428,6 @@ var renderLegend = function() {
  * Draw pop vote bar chart
  */
 var updateBarChart = function(config) {
-    console.log(config['data'][0]);
     var charts = [ 0, 1, 2, 3, 4 ];
     var barChartData = [];
     _.each(charts, function(d) {
@@ -452,13 +450,13 @@ var updateBarChart = function(config) {
 
     var margins = {
         top: 0,
-        right: 80,
+        right: 150,
         bottom: 0,
         left: (labelWidth + labelMargin)
     };
 
     if (isMobile) {
-        margins['right'] = 110;
+        margins['right'] = 130;
     }
 
     var ticksX = 4;
