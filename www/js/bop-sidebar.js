@@ -33,10 +33,15 @@ var onWindowLoaded = function() {
 var onNavLinkClick = function(e) {
     const domain = parseParentURL();
     const url = e.target.href;
+    console.log('nav link click')
 
-    if (pymChild && (domain == 'npr.org' || domain == 'localhost')) {
-        pymChild.sendMessage('pjax-navigate', url);
+    if (window.pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+        console.log('if statement passing');
+        window.pymChild.sendMessage('pjax-navigate', url);
+        e.preventDefault();
+        e.stopPropagation();
     } else {
+        console.log('if statement failing');
         window.open(url, '_top');
     }
 }
