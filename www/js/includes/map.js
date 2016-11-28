@@ -39,6 +39,7 @@ var tooltip = null;
 var tDLead = null;
 var tRLead = null;
 var tILead = null;
+var countdownWrapper = null;
 var indicator = null;
 
 var exports = module.exports = {};
@@ -53,7 +54,11 @@ exports.initMap = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
     timestampScreenshot = d3.select('.phantom-footer .timestamp-screenshot');
     tooltip = d3.select('#tooltip');
+    // disable countdown
+    countdownWrapper = d3.select('.footer .countdown')
+        .style('display', 'none');
     indicator = document.querySelector('.update-indicator');
+
     if (isTouch) {
         d3.select('body').classed('touch', true);
     } else {
@@ -105,7 +110,7 @@ exports.initMap = function(containerWidth) {
 
     // load data
     loadData();
-    setInterval(loadData, LOAD_INTERVAL)
+    // setInterval(loadData, LOAD_INTERVAL)
 }
 
 
@@ -122,7 +127,7 @@ var loadData = function() {
                 lastUpdated = res.body.last_updated;
                 formatData();
             }
-            countdown.resultsCountdown(indicator, LOAD_INTERVAL);
+            // countdown.resultsCountdown(indicator, LOAD_INTERVAL);
         })
 }
 
