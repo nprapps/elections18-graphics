@@ -69,7 +69,7 @@ exports.buildDataURL = function(filename) {
         document.location.hostname === '0.0.0.0') {
         return document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/data/' + filename;
     } else {
-        return document.location.protocol + '//' + document.location.hostname + '/elections16/data/' + filename;
+        return document.location.protocol + '//' + document.location.hostname + '/elections18/data/' + filename;
     }
 }
 

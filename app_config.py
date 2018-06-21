@@ -20,20 +20,20 @@ NAMES
 """
 # Project name to be used in urls
 # Use dashes, not underscores!
-PROJECT_SLUG = 'elections16graphics'
+PROJECT_SLUG = 'elections18-graphics'
 
 # Project name to be used in file paths
-PROJECT_FILENAME = 'elections16graphics'
+PROJECT_FILENAME = 'elections18-graphics'
 
 # The name of the repository containing the source
-REPOSITORY_NAME = 'elections16graphics'
+REPOSITORY_NAME = 'elections18-graphics'
 GITHUB_USERNAME = 'nprapps'
 REPOSITORY_URL = 'git@github.com:%s/%s.git' % (GITHUB_USERNAME, REPOSITORY_NAME)
 REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME'
 
 # Project name used for assets rig
 # Should stay the same, even if PROJECT_SLUG changes
-ASSETS_SLUG = 'elections16graphics'
+ASSETS_SLUG = 'elections18-graphics'
 
 """
 DEPLOYMENT

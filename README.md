@@ -1,9 +1,9 @@
-Copyright 2015 NPR.  All rights reserved.  No part of these materials may be reproduced, modified, stored in a retrieval system, or retransmitted, in any form or by any means, electronic, mechanical or otherwise, without prior written permission from NPR.
+Copyright 2018 NPR.  All rights reserved.  No part of these materials may be reproduced, modified, stored in a retrieval system, or retransmitted, in any form or by any means, electronic, mechanical or otherwise, without prior written permission from NPR.
 
 (Want to use this code? Send an email to nprapps@npr.org!)
 
 
-Elections 2016 Graphics
+Elections 2018 Graphics
 ========================
 
 * [What is this?](#what-is-this)
@@ -24,7 +24,7 @@ Elections 2016 Graphics
 What is this?
 -------------
 
-Contains code for all graphics related to the 2016 General Election Results.
+Contains code for all graphics related to the 2018 General Election results.
 
 
 Assumptions
@@ -73,32 +73,14 @@ curl https://npmjs.org/install.sh | sh
 Then bootstrap the project:
 
 ```
-cd elections16graphics
-mkvirtualenv elections16graphics
+cd elections18-graphics
+mkvirtualenv elections18-graphics
 pip install -r requirements.txt
 npm install
 fab update
 ```
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
-
-#### Terminal shortcut
-
-Do you use [iTerm2](http://iterm2.com)? Here's [a sample AppleScript](https://github.com/nprapps/elections16graphics/blob/master/etc/iterm_elections16graphics.scpt) to automatically launch a two-paned terminal window (one for the graphics machine, one for the local webserver).
-
-You can save this locally, customize it to match your own configuration and add an alias for it to your `.bash_profile`.
-
-```
-alias elexgfx="osascript ~/PATH-TO-FILE/iterm_elections16graphics.scpt"
-
-# kill gunicorn
-function killport() {
-        lsof -i TCP:$1 | grep LISTEN | awk '{print $2}' | xargs kill -9
-}
-```
-
-(The `killport()` function is used to automatically kill a gunicorn webserver instance that might be running in the background -- say, if you closed your terminal without explicitly stopping the webserver.)
-
 
 Hide project secrets
 --------------------
@@ -318,7 +300,7 @@ Compile static assets
 Compile LESS to CSS, compile javascript templates to Javascript and minify all assets:
 
 ```
-workon elections16graphics
+workon elections18-graphics
 fab render
 ```
 
