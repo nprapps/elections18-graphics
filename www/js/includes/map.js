@@ -1,3 +1,9 @@
+/* TODO
+- popular vote
+- modernizr support? disable tooltips on touch devices.
+- refresh counter
+*/
+
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
@@ -332,7 +338,7 @@ var resetMap = function(containerWidth) {
     updateBarChart({
         container: '#bar-chart',
         width: mapWidth,
-        data: POPULAR_VOTE
+        data: electoralData['US']
     });
 
     // render legend
@@ -422,21 +428,23 @@ var renderLegend = function() {
  * Draw pop vote bar chart
  */
 var updateBarChart = function(config) {
-    var barChartData = config['data'];
-    _.each(barChartData, function(d,i) {
-        d['vote_pct'] = +d['vote_pct'];
-        d['vote_count'] = +d['vote_count'];
+    var charts = [ 0, 1, 2, 3, 4 ];
+    var barChartData = [];
+    _.each(charts, function(d) {
+        if (config['data'][d]['npr_electwon'] > 0 || config['data'][d]['last'] == 'Clinton' || config['data'][d]['last'] == 'Trump') {
+            barChartData.push({ 'last': config['data'][d]['last'], 'votecount': config['data'][d]['votecount'], 'votepct': (config['data'][d]['votepct'] * 100) });
+        }
     })
 
     /*
      * Setup
      */
-    var labelColumn = 'candidate';
-    var valueColumn = 'vote_pct';
+    var labelColumn = 'last';
+    var valueColumn = 'votepct';
 
     var barHeight = 16;
     var barGap = 2;
-    var labelWidth = 40;
+    var labelWidth = 50;
     var labelMargin = 6;
     var valueGap = 6;
 
@@ -508,11 +516,27 @@ var updateBarChart = function(config) {
         });
 
     /*
+     * Render axes to chart.
+     */
+    // chartElement.append('g')
+    //     .attr('class', 'x axis')
+    //     .attr('transform', makeTranslate(0, chartHeight))
+    //     .call(xAxis);
+
+    /*
      * Render grid to chart.
      */
     var xAxisGrid = function() {
         return xAxis;
     };
+
+    // chartElement.append('g')
+    //     .attr('class', 'x grid')
+    //     .attr('transform', makeTranslate(0, chartHeight))
+    //     .call(xAxisGrid()
+    //         .tickSize(-chartHeight, 0, 0)
+    //         .tickFormat('')
+    //     );
 
     /*
      * Render bars to chart.
@@ -593,7 +617,7 @@ var updateBarChart = function(config) {
         .enter()
         .append('text')
             .text(function(d) {
-                return d[valueColumn].toFixed(1) + '% (' + fmtComma(d['vote_count']) + ' votes)';
+                return d[valueColumn].toFixed(1) + '% (' + fmtComma(d['votecount']) + ' votes)';
             })
             .attr('x', function(d) {
                 return xScale(d[valueColumn]);
