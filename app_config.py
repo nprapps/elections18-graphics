@@ -92,13 +92,13 @@ DEBUG = True
 """
 COPY EDITING
 """
-COPY_GOOGLE_DOC_KEY = '1Rs2qSw00DYECHummasktOa6zLfrifusJWh-uP-GFgvc'
+COPY_GOOGLE_DOC_KEY = '1pfTPmeWGTQlw_7efXcnMoblarzyaz_zjDzqBfLFnLYg'
 COPY_PATH = 'data/copy.xlsx'
 
-BRIEFING_GOOGLE_DOC_KEY = '1cG6itV9fK9Fc7AA_On4ToUgqEWA8Ae5bp0JCxQdtEOw'
+BRIEFING_GOOGLE_DOC_KEY = '1zrWMnfdu36I3axyubc8p9ZmNBwS1o-GlmHXHky5EySA'
 BRIEFING_PATH = 'data/briefing.xlsx'
 
-NAVBAR_GOOGLE_DOC_KEY = '1i0hJX8VZsNLQr6bEnHGWj9wnMBH-_NYeDJrWMdb6Yfo'
+NAVBAR_GOOGLE_DOC_KEY = '1Eqp-jei3xFMpUOFJFuMHk8zP8WSGtvCwoo1a21vtloo'
 NAVBAR_PATH = 'data/navbar.xlsx'
 
 """
