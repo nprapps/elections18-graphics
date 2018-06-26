@@ -1,9 +1,8 @@
-import maquette from 'maquette';
+import { h, createProjector } from 'maquette';
 import request from 'superagent';
 
 const resultsWrapper = document.querySelector('#county-results');
-const projector = maquette.createProjector();
-const h = maquette.h;
+const projector = createProjector();
 
 let data = null;
 let dataURL = null;

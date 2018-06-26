@@ -1,7 +1,7 @@
 // npm libraries
 import electoral from '../js/includes/electoral-totals.js';
 import map from '../js/includes/map.js'
-import maquette from 'maquette';
+import { h, createProjector } from 'maquette';
 import request from 'superagent';
 import timeago from 'timeago.js';
 
@@ -9,10 +9,9 @@ import timeago from 'timeago.js';
 window.pymChild = null;
 var isMapInit = false;
 var isElectoralInit = false;
-var h = maquette.h;
 var headlineURL = null;
 var headlines = null;
-var projector = maquette.createProjector();
+var projector = createProjector();
 var liveblog = document.querySelector('#liveblog');
 var lastRequestTime = null;
 

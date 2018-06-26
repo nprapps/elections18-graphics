@@ -1,5 +1,5 @@
 // npm libraries
-import maquette from 'maquette';
+import { h, createProjector } from 'maquette';
 import request from 'superagent';
 import { buildDataURL } from './helpers.js';
 
@@ -16,8 +16,7 @@ let lastUpdated = null;
 const boardWrapper = document.querySelector('.board')
 const FIRST_COLUMN_KEYS = ['6:00 PM', '7:00 PM', '7:30 PM', '8:00 PM']
 const SECOND_COLUMN_KEYS = ['8:30 PM', '9:00 PM', '10:00 PM', '11:00 PM', '1:00 AM']
-const projector = maquette.createProjector();
-const h = maquette.h;
+const projector = createProjector();
 const coloredParties = ['Dem', 'GOP', 'Yes', 'No'];
 
 var exports = module.exports = {};
