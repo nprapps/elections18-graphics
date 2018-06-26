@@ -1,11 +1,9 @@
 // npm libraries
 import bop from '../js/includes/bop.js';
-import electoral from '../js/includes/electoral-totals.js';
 
 // Global vars
 window.pymChild = null;
 var isBopInit = false;
-var isElectoralInit = false;
 var navLinks = null;
 /*
 * Initialize the graphic.
@@ -70,11 +68,6 @@ var render = function(containerWidth) {
     // run onresize
     } else {
         bop.renderBop(containerWidth);
-    }
-
-    if (!isElectoralInit) {
-        electoral.initElectoralTotals()
-        isElectoralInit = true;
     }
 
     // Update iframe

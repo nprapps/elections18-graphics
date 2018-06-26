@@ -217,9 +217,6 @@ const renderLeaderboard = function() {
     } else if (boardTitle.indexOf('Senate') !== -1) {
         var bop = bopData['senate_bop'];
         return renderCongressBOP(bop);
-    } else if (boardTitle.indexOf('President') !== -1) {
-        var bop = bopData['electoral_college'];
-        return renderElectoralBOP(bop);
     }
     else {
         return h('div.leaderboard', '');
@@ -278,116 +275,6 @@ const renderCongressBOP = function(bop) {
                 h('br'),
                 'Called: ' + uncalledRaces
             ])
-        ])
-    ]);
-}
-
-const renderElectoralBOP = function(bop) {
-    const clintonVotes = bop['Clinton'];
-    const trumpVotes = bop['Trump'];
-    const mcMullinVotes = bop['McMullin'];
-    const johnsonVotes = bop['Johnson'];
-    const steinVotes = bop['Stein'];
-
-    let hidePortraits = false;
-    if (mcMullinVotes || johnsonVotes || steinVotes) {
-        hidePortraits = true;
-    }
-
-    return h('div.leaderboard', {
-            classes: {
-                'top-two': !hidePortraits,
-                'multiple': hidePortraits
-            }
-        },[
-        h('div.results-header-group.dem', [
-            h('img.candidate', {
-                src: '../assets/clinton-thumb.png',
-                classes: {
-                    'hidden': hidePortraits
-                }
-            }),
-            h('h2.party', [
-                'Clinton',
-                h('i.icon', {
-                    classes: {
-                        'icon-ok': clintonVotes >= 270
-                    }
-                })
-            ]),
-            h('p.total', [
-                h('span.percentage', clintonVotes)
-            ]),
-        ]),
-        h('div.results-header-group.gop', [
-            h('img.candidate', {
-                src: '../assets/trump-thumb.png',
-                classes: {
-                    'hidden': hidePortraits
-                }
-            }),
-            h('h2.party', [
-                'Trump',
-                h('i.icon', {
-                    classes: {
-                        'icon-ok': trumpVotes >= 270
-                    }
-                })
-            ]),
-            h('p.total', [
-                h('span.percentage', trumpVotes)
-            ]),
-        ]),
-        h('div.results-header-group.other', {
-            classes: {
-                'hidden': johnsonVotes === 0
-            }
-        }, [
-            h('h2.party', [
-                'Johnson',
-                h('i.icon', {
-                    classes: {
-                        'icon-ok': johnsonVotes >= 270
-                    }
-                })
-            ]),
-            h('p.total', [
-                h('span.percentage', johnsonVotes)
-            ]),
-        ]),
-        h('div.results-header-group.other', {
-            classes: {
-                'hidden': mcMullinVotes === 0
-            }
-        }, [
-            h('h2.party', [
-                'McMullin',
-                h('i.icon', {
-                    classes: {
-                        'icon-ok': mcMullinVotes >= 270
-                    }
-                })
-            ]),
-            h('p.total', [
-                h('span.percentage', mcMullinVotes)
-            ]),
-        ]),
-        h('div.results-header-group.other', {
-            classes: {
-                'hidden': steinVotes === 0
-            }
-        }, [
-            h('h2.party', [
-                'Stein',
-                h('i.icon', {
-                    classes: {
-                        'icon-ok': steinVotes >= 270
-                    }
-                })
-            ]),
-            h('p.total', [
-                h('span.percentage', steinVotes)
-            ]),
         ])
     ]);
 }
@@ -612,8 +499,6 @@ const calculatePrecinctsReporting = function(pct) {
 const decideLabel = function(race) {
     if (race['officename'] == 'U.S. House') {
         return race['statepostal'] + '-' + race['seatnum'];
-    } else if (race['officename'] === 'President' && race['level'] === 'district' && race['reportingunitname'] !== 'At Large') {
-        return race['statepostal'] + '-' + race['reportingunitname'].slice('-1');
     } else if (race['is_ballot_measure'] === true) {
         return race['statepostal'] + '-' + race['seatname'];
     } else {
@@ -688,13 +573,7 @@ const onUpdateAnimation = function(domNode, properties, previousProperties) {
 }
 
 const determineSortKey = function(result) {
-    if (result.officename === 'President') {
-        if (result.level === 'district' && result.reportingunitname !== 'At Large') {
-            return result.statepostal + '-' + result.reportingunitname.slice('-1');
-        } else {
-            return result.statepostal;
-        }
-    } else if (result.officename === 'U.S. Senate') {
+    if (result.officename === 'U.S. Senate') {
         return result.statepostal;
     } else if (result.officename === 'Governor') {
         return result.statepostal;

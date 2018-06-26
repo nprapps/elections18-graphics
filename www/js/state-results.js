@@ -171,34 +171,18 @@ const renderMaquette = function() {
 
     if (data && extraData) {
         if (!stateName && !statepostal && !statefaceClass) {
-          const anyHouseRaceID = Object.keys(data['house']['results'])[0]
-          const anyHouseCandidate = data['house']['results'][anyHouseRaceID][0]
+          // Pull the state metadata from a candidate object
+          // House races will always have a candidate, so use those
+          const anyHouseRaceID = Object.keys(data['house']['results'])[0];
+          const anyHouseCandidate = data['house']['results'][anyHouseRaceID][0];
+
           stateName = anyHouseCandidate.statename;
           statepostal = anyHouseCandidate.statepostal;
-
           statefaceClass = 'stateface-' + statepostal.toLowerCase();
         }
 
         return h('div.results', [
           h('header', [
-              h('div.switcher', {
-                classes: {
-                  'hidden': currentState === 'dc'
-                }
-              }, [
-                stateName + ' election results: ',
-                h('span#presidential', {
-                  'onclick': switchResultsView
-                }, [
-                  'Presidential'
-                ]),
-                ' | ',
-                h('span#downballot', {
-                  'onclick': switchResultsView
-                }, [
-                  'Statewide'
-                ]),
-              ]),
               h('div.state-icon', [
                 h('i.stateface', {
                     class: statefaceClass
@@ -209,23 +193,7 @@ const renderMaquette = function() {
                       stateName
                   ]),
                   resultsType
-              ]),
-              h('p.rating', [
-                  h('a', {
-                      href: 'http://www.npr.org/2016/11/07/500706879/final-npr-battleground-map-the-race-snaps-back-but-clinton-maintains-advantage',
-                      onclick: onRatingClick
-                  }, 'Battleground rating'),
-                  ': ',
-                  h('span', {
-                    classes:{
-                      'd-safe': descriptions.rating === 'D-Safe/Likely',
-                      'd-lean': descriptions.rating === 'D-Lean',
-                      'toss-up': descriptions.rating === 'Toss-up',
-                      'r-lean': descriptions.rating === 'R-Lean',
-                      'r-safe': descriptions.rating === 'R-Safe/Likely',
-                    }
-                  }, descriptions.rating)
-                ])
+              ])
           ]),
           renderResults(),
           h('div.footer', [
