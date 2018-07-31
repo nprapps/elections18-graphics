@@ -15,7 +15,7 @@
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
     "phantomjs-prebuilt": "^2.1.16",
-    "superagent": "^2.3.0",
+    "superagent": "^3.8.1",
     "textures": "^1.2.0",
     "timeago.js": "^2.0.5",
     "underscore": "^1.9.1",
