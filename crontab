@@ -1,1 +1,0 @@
-* * * * * ubuntu /bin/bash /home/ubuntu/apps/elections18-graphics/repository/screenshotter/shot.sh >> /var/log/elections18-graphics/crontab.log 2>&1

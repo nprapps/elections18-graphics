@@ -63,7 +63,7 @@ SERVER_VIRTUALENV_PATH = '%s/virtualenv' % SERVER_PROJECT_PATH
 
 # Should the crontab file be installed on the servers?
 # If True, DEPLOY_TO_SERVERS must also be True
-DEPLOY_CRONTAB = True
+DEPLOY_CRONTAB = False
 
 # Should the service configurations be installed on the servers?
 # If True, DEPLOY_TO_SERVERS must also be True
