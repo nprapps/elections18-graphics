@@ -86,8 +86,6 @@ body {
                 &.r-lean { background-color: @gopLean; }
                 &.r-safe { background-color: @gopSafe; }
             }
-
-            .tab-downballot & { display: none; }
         }
 
         &.poll-closing {
@@ -147,8 +145,7 @@ body {
             }
         }
 
-        .tab-presidential & #presidential,
-        .tab-downballot & #downballot {
+        .active {
             color: @gray;
             font-weight: bold;
         }

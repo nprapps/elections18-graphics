@@ -1,8 +1,9 @@
 import { h, createProjector } from 'maquette';
+import { without } from 'underscore';
 import request from 'superagent';
 import commaNumber from 'comma-number';
 import navbar from '../js/includes/navbar.js';
-import briefingData from '../data/extra_data/state-briefings.json'
+import briefingData from '../data/extra_data/state-briefings.json';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
 const resultsWrapper = document.querySelector('#county-results');
 const projector = createProjector();
@@ -29,19 +30,19 @@ const availableMetrics = [
         'name': '% White',
         'key': 'percent_white',
         'census': true,
-        'percent_filter': true,
+        'percent_filter': true
     },
     {
         'name': '% Black',
         'key': 'percent_black',
         'census': true,
-        'percent_filter': true,
+        'percent_filter': true
     },
     {
         'name': '% Hispanic',
         'key': 'percent_hispanic',
         'census': true,
-        'percent_filter': true,
+        'percent_filter': true
     },
     {
         'name': 'Median Income',
@@ -54,9 +55,9 @@ const availableMetrics = [
         'name': '% College-Educated',
         'key': 'percent_bachelors',
         'census': true,
-        'percent_filter': true,
-    },
-]
+        'percent_filter': true
+    }
+];
 
 let data = null;
 let extraData = null;
@@ -68,65 +69,73 @@ let descriptions = null;
 let keyCounties = null;
 let stateTotalVotes = 0;
 let dataTimer = null;
-let resultsView = 'downballot';
 let stateName = null;
 let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
-let resultsType = 'Statewide Results';
+let resultsView = 'key';
+let resultsType = 'Key Results';
 let lastDownballotRequestTime = null;
-
+let raceTypes = [
+  'Key',
+  'House',
+  'Senate',
+  'Governor'
+];
 
 window.pymChild = null;
 /*
 * Initialize the graphic.
 */
-var onWindowLoaded = function() {
-    // init pym and render callback
-    window.pymChild = new pym.Child();
-    currentState = getParameterByName('state').toLowerCase();
-    descriptions = briefingData.descriptions.find(function(el) {
-      return el.state_postal === currentState;
+var onWindowLoaded = function () {
+  // init pym and render callback
+  window.pymChild = new pym.Child();
+  currentState = getParameterByName('state').toLowerCase();
+  descriptions = briefingData.descriptions.find(function (el) {
+    return el.state_postal === currentState;
+  });
+  keyCounties = briefingData.key_counties.filter(function (el) {
+    return el.state === currentState;
+  });
+
+  const dataFilename = currentState + '.json';
+  dataURL = buildDataURL(dataFilename);
+  extraDataURL = '../data/extra_data/' + currentState + '-extra.json';
+  getExtraData();
+  dataTimer = setInterval(getData, 5000);
+};
+
+const getData = function (forceReload) {
+  var requestTime = forceReload ? lastDownballotRequestTime : '';
+
+  request.get(dataURL)
+    .set('If-Modified-Since', requestTime || '')
+    .end(function (err, res) {
+      if (res.body) {
+        lastDownballotRequestTime = new Date().toUTCString();
+
+        data = res.body.results;
+
+        // Remove tabs from navigation if that race type isn't present
+        if (Object.keys(data.senate.results).lenth === 0) {
+          raceTypes = without(raceTypes, 'Senate');
+        } else if (Object.keys(data.governor.results).length === 0) {
+          raceTypes = without(raceTypes, 'Governor');
+        }
+
+        lastUpdated = res.body.last_updated;
+        projector.resume();
+        projector.scheduleRender();
+      }
     });
-    keyCounties = briefingData.key_counties.filter(function(el) {
-      return el.state === currentState;
+};
+
+const getExtraData = function () {
+  request.get(extraDataURL)
+    .end(function (err, res) {
+      extraData = res.body;
+      projector.append(resultsWrapper, renderMaquette);
     });
-
-    const dataFilename = currentState + '.json';
-    dataURL = buildDataURL(dataFilename);
-    extraDataURL = '../data/extra_data/' + currentState + '-extra.json'
-    getExtraData();
-    dataTimer = setInterval(getData, 5000);
-}
-
-const getData = function(forceReload) {
-    resultsView = 'downballot';
-    var requestTime = lastDownballotRequestTime;
-
-    if (forceReload) {
-        var requestTime = '';
-    }
-
-    request.get(dataURL)
-        .set('If-Modified-Since', requestTime ? requestTime : '')
-        .end(function(err, res) {
-            if (res.body) {
-                lastDownballotRequestTime = new Date().toUTCString();
-
-                data = res.body.results;
-                lastUpdated = res.body.last_updated;
-                projector.resume();
-                projector.scheduleRender();
-            }
-        });
-}
-
-const getExtraData = function() {
-    request.get(extraDataURL)
-        .end(function(err, res) {
-            extraData = res.body;
-            projector.append(resultsWrapper, renderMaquette);
-        });
 }
 
 const sortCountyResults = function() {
@@ -165,133 +174,158 @@ const sortCountyResults = function() {
     return values;
 }
 
+const renderMaquette = function () {
+  setTimeout(pymChild.sendHeight, 0);
 
-const renderMaquette = function() {
-    setTimeout(pymChild.sendHeight, 0);
+  if (data && extraData) {
+    if (!stateName && !statepostal && !statefaceClass) {
+      // Pull the state metadata from a candidate object
+      // House races will always have a candidate, so use those
+      const anyHouseRaceID = Object.keys(data['house']['results'])[0];
+      const anyHouseCandidate = data['house']['results'][anyHouseRaceID][0];
 
-    if (data && extraData) {
-        if (!stateName && !statepostal && !statefaceClass) {
-          // Pull the state metadata from a candidate object
-          // House races will always have a candidate, so use those
-          const anyHouseRaceID = Object.keys(data['house']['results'])[0];
-          const anyHouseCandidate = data['house']['results'][anyHouseRaceID][0];
-
-          stateName = anyHouseCandidate.statename;
-          statepostal = anyHouseCandidate.statepostal;
-          statefaceClass = 'stateface-' + statepostal.toLowerCase();
-        }
-
-        return h('div.results', [
-          h('header', [
-              h('div.state-icon', [
-                h('i.stateface', {
-                    class: statefaceClass
-                })
-              ]),
-              h('h1', [
-                  h('span.state-name', [
-                      stateName
-                  ]),
-                  resultsType
-              ])
-          ]),
-          renderResults(),
-          h('div.footer', [
-            h('p.sources', [
-              'Sources: Current results from AP',
-              ' ',
-              h('span.timestamp', [
-                '(as of ',
-                lastUpdated,
-                ' ET).'
-              ]),
-              ' ',
-              'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ',
-              h('a', { 
-                href: 'https://censusreporter.org/tables/B19013/',
-                target: '_blank' 
-              }, 'Median Household Income.'),
-              ' Percent White numbers are taken from ',
-              h('a', { 
-                href: 'https://censusreporter.org/tables/B03002/',
-                target: '_blank' 
-              }, 'Hispanic or Latino Origin by Race'),
-              ' to find the percentage of non-Hispanic White people. ',
-              'Percent College Educated is a calculation of all citizens ages 18 or older with a bachelor\'s degree or higher, taken from ',
-              h('a', { 
-                href: 'https://censusreporter.org/tables/B15001/',
-                target: '_blank' 
-              }, 'Sex by Age by Educational Attainment.')
-            ])
-          ])
-        ]);
-    } else {
-        getData();
-        return h('div.results', 'Loading...');
+      stateName = anyHouseCandidate.statename;
+      statepostal = anyHouseCandidate.statepostal;
+      statefaceClass = 'stateface-' + statepostal.toLowerCase();
     }
-}
 
-const renderResults = function() {
-  const body = document.getElementsByTagName('BODY')[0];
+    return h('div.results', [
+      h('header', [
+        renderTabSwitcher(),
+        h('div.state-icon', [
+          h('i.stateface', {
+            class: statefaceClass
+          })
+        ]),
+        h('h1', [
+          h('span.state-name', [
+            stateName
+          ]),
+          resultsType
+        ])
+      ]),
+      renderResults(),
+      h('div.footer', [
+        h('p.sources', [
+          'Sources: Current results from AP',
+          ' ',
+          h('span.timestamp', [
+            '(as of ',
+            lastUpdated,
+            ' ET).'
+          ]),
+          ' ',
+          'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ',
+          h('a', {
+            href: 'https://censusreporter.org/tables/B19013/',
+            target: '_blank'
+          }, 'Median Household Income.'),
+          ' Percent White numbers are taken from ',
+          h('a', {
+            href: 'https://censusreporter.org/tables/B03002/',
+            target: '_blank'
+          }, 'Hispanic or Latino Origin by Race'),
+          ' to find the percentage of non-Hispanic White people. ',
+          'Percent College Educated is a calculation of all citizens ages 18 or older with a bachelor\'s degree or higher, taken from ',
+          h('a', {
+            href: 'https://censusreporter.org/tables/B15001/',
+            target: '_blank'
+          }, 'Sex by Age by Educational Attainment.')
+        ])
+      ])
+    ]);
+  } else {
+    getData();
+    return h('div.results', 'Loading...');
+  }
+};
 
-  body.classList.add('tab-downballot');
+const renderTabSwitcher = () => {
+  // Create the tab switcher, between different race types
+  // For styling on the page, these links will be split by a delimiter
+  const DELIMITER = '|';
 
-  const sortedHouseKeys = Object.keys(data['house']['results']).sort(function(a, b) {
+  const elements = raceTypes.map(tab =>
+    h(
+      `span#${tab.toLowerCase()}`,
+      {
+        onclick: switchResultsView,
+        classes: { active: resultsView === tab.toLowerCase() }
+      },
+      [tab]
+    )
+  );
+  const delimited = elements.reduce((all, el, index) => {
+    return index < elements.length - 1
+      ? all.concat([el, DELIMITER])
+      : all.concat(el);
+  }, []);
+
+  return h(
+    'div.switcher',
+    {},
+    [
+      stateName + ' election results: ',
+      ...delimited
+    ]
+  );
+};
+
+const renderResults = function () {
+  // Render race data elements, depending on which race-type tab is active
+  const sortedHouseKeys = Object.keys(data['house']['results']).sort(function (a, b) {
     return data['house']['results'][a][0]['seatnum'] - data['house']['results'][b][0]['seatnum'];
   });
 
-  const sortedBallotKeys = Object.keys(data['ballot_measures']['results']).sort(function(a, b) {
+  const sortedBallotKeys = Object.keys(data['ballot_measures']['results']).sort(function (a, b) {
     return data['ballot_measures']['results'][a][0]['seatname'].split(' - ')[0] - data['ballot_measures']['results'][b][0]['seatname'].split(' - ')[0];
   });
 
-  return h('div.downballot', [
-    Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race])),
-    h('div.results-house', {
-      classes: {
-        'one-result': Object.keys(data['house']['results']).length === 1,
-        'two-results': Object.keys(data['house']['results']).length === 2,
-        'three-results': Object.keys(data['house']['results']).length === 3,
-        'four-results': Object.keys(data['house']['results']).length === 4,
-      }
-    },[
-      h('h2', {
-        classes: {
-          'hidden': Object.keys(data['house']['results']).length === 0,
-        }
-      }, 'House'),
-      h('div.results-wrapper', [
-          sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
-      ]),
-    ]),
-    Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor']['results'][race])),
-    h('div.results-ballot-measures', {
+  let resultsElements;
+  if (resultsView === 'key') {
+    resultsElements = h('div.results-ballot-measures', {
       classes: {
         'one-result': Object.keys(data['ballot_measures']['results']).length === 1,
         'two-results': Object.keys(data['ballot_measures']['results']).length === 2,
         'three-results': Object.keys(data['ballot_measures']['results']).length === 3,
-        'four-results': Object.keys(data['ballot_measures']['results']).length === 4,
+        'four-results': Object.keys(data['ballot_measures']['results']).length === 4
       }
-    },[
+    }, [
       h('h2', {
         classes: {
-          'hidden': Object.keys(data['ballot_measures']['results']).length === 0,
+          'hidden': Object.keys(data['ballot_measures']['results']).length === 0
         }
       }, 'Ballot Measures'),
       h('div.results-wrapper', [
-          sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
+        sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
       ]),
       renderMeasurePrecincts(data['ballot_measures']['results'])
-    ])
-  ]);
-}
-
-const renderStateResults = function(results) {
-  stateTotalVotes = 0;
-  if (currentState === 'dc') {
-    var statewideTitle = 'District-Wide Results';
-  } else {
-    var statewideTitle = 'Statewide Results'
+    ]);
+  } else if (resultsView === 'house') {
+    resultsElements = h('div.results-house', {
+      classes: {
+        'one-result': Object.keys(data['house']['results']).length === 1,
+        'two-results': Object.keys(data['house']['results']).length === 2,
+        'three-results': Object.keys(data['house']['results']).length === 3,
+        'four-results': Object.keys(data['house']['results']).length === 4
+      }
+    }, [
+      h('div.results-wrapper', [
+        sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
+      ])
+    ]);
+  } else if (resultsView === 'senate') {
+    resultsElements = Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race]));
+  } else if (resultsView === 'governor') {
+    resultsElements = Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor']['results'][race]));
   }
+
+  return h('div', [resultsElements]);
+};
+
+const renderStateResults = function (results) {
+  stateTotalVotes = 0;
+  var statewideTitle = 'Statewide Results';
 
   return h('div.results-statewide', [
     h('h2', statewideTitle),
@@ -393,12 +427,6 @@ const renderCountyRow = function(results, key, availableCandidates){
       keyedResults['Trump'] = results[i];
     } else if (candidate.last == 'Clinton'){
       keyedResults['Clinton'] = results[i];
-    } else if (candidate.last == 'Johnson') {
-      keyedResults['Johnson'] = results[i];
-    } else if (candidate.last == 'McMullin') {
-      keyedResults['McMullin'] = results[i];
-    } else if (candidate.last == 'Stein') {
-      keyedResults['Stein'] = results[i];
     }
   }
 
@@ -527,7 +555,6 @@ const renderSenateTable = function(results){
   }
 
   return h('div.results-senate', [
-    h('h2', 'Senate'),
     h('table.results-table', [
       h('thead', [
         h('tr', [
@@ -626,7 +653,6 @@ const renderGovTable = function(results){
   }
 
   return h('div.results-gubernatorial', [
-    h('h2', 'Gubernatorial'),
     h('table.results-table', [
       h('thead', [
         h('tr', [
@@ -650,10 +676,10 @@ const renderGovTable = function(results){
   ])
 }
 
-const renderMeasureTable = function(results){
+const renderMeasureTable = function (results) {
   let propName = results[0].seatname;
   let totalVotes = 0;
-  for (var i = 0; i < results.length; i++){
+  for (var i = 0; i < results.length; i++) {
     totalVotes += results[i].votecount;
   }
 
@@ -662,77 +688,79 @@ const renderMeasureTable = function(results){
   }
 
   return h('div.ballot-measure', [
-  h('table.results-table', [
-    h('caption', propName),
-    h('thead', [
-      h('tr', [
-        h('th.candidate', 'Ballot Measure'),
-        h('th.amt', 'Votes'),
-        h('th.amt', 'Percent')
-      ])
-    ]),
-    h('tbody', [
-      results.map(measure => renderRow(measure))
-    ]),
-    h('tfoot', [
-      h('tr', [
-        h('td.candidate', 'Total'),
-        h('td.amt', commaNumber(totalVotes)),
-        h('td.amt', '100%')
+    h('table.results-table', [
+      h('caption', propName),
+      h('thead', [
+        h('tr', [
+          h('th.candidate', 'Ballot Measure'),
+          h('th.amt', 'Votes'),
+          h('th.amt', 'Percent')
+        ])
+      ]),
+      h('tbody', [
+        results.map(measure => renderRow(measure))
+      ]),
+      h('tfoot', [
+        h('tr', [
+          h('td.candidate', 'Total'),
+          h('td.amt', commaNumber(totalVotes)),
+          h('td.amt', '100%')
+        ])
       ])
     ])
-  ]),
-])
-}
+  ]);
+};
 
-const renderMeasurePrecincts = function(results){
+const renderMeasurePrecincts = function (results) {
   let precinctReporting = null;
-  for (var result in results){
-    if (results[result][0]){
+  for (var result in results) {
+    if (results[result][0]) {
       precinctReporting = results[result][0];
-      return h('p.precincts', [calculatePrecinctsReporting(precinctReporting) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) +' of ' + commaNumber(precinctReporting.precinctstotal) + ')'])
+      return h('p.precincts', [calculatePrecinctsReporting(precinctReporting) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) + ' of ' + commaNumber(precinctReporting.precinctstotal) + ')']);
     }
   }
-}
+};
 
 const onMetricClick = function(e) {
-    for (var i = 0; i < availableMetrics.length; i++) {
-        if (availableMetrics[i]['name'] === e.target.innerHTML) {
-            sortMetric = availableMetrics[i];
-            ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
-        }
+  for (var i = 0; i < availableMetrics.length; i++) {
+    if (availableMetrics[i]['name'] === e.target.innerHTML) {
+      sortMetric = availableMetrics[i];
+      ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
     }
-}
-
-const onRatingClick = function(e) {
-  const domain = navbar.parseParentURL();
-  if (e.target.tagName == 'A' && pymChild && (domain == 'npr.org' || domain == 'localhost')) {
-      pymChild.sendMessage('pjax-navigate', e.target.href);
-      e.preventDefault();
-      e.stopPropagation();
   }
-}
+};
 
-const toTitlecase = function(str) {
-    return str.replace(/\w*\s/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-}
+const onRatingClick = function (e) {
+  const domain = navbar.parseParentURL();
+  if (e.target.tagName === 'A' && pymChild && (domain === 'npr.org' || domain === 'localhost')) {
+    pymChild.sendMessage('pjax-navigate', e.target.href);
+    e.preventDefault();
+    e.stopPropagation();
+  }
+};
 
+const toTitlecase = function (str) {
+  return str.replace(/\w*\s/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+};
 
-const switchResultsView = function(e) {
-    projector.stop();
+const switchResultsView = function (e) {
+  // Switch which results tab is being displayed
+  projector.stop();
 
-    var dataFilename = currentState + '.json';
-    resultsType = 'Statewide Results';
-    ANALYTICS.trackEvent('statewide-view-click');
-    dataURL = buildDataURL(dataFilename);
+  resultsView = e.target.getAttribute('id');
+  resultsType = `${e.target.textContent} Results`;
+  const dataFilename = currentState + '.json';
+  dataURL = buildDataURL(dataFilename);
 
-    clearInterval(dataTimer);
-    getData(true);
-    dataTimer = setInterval(getData, 5000);
-}
+  clearInterval(dataTimer);
+  getData(true);
+  dataTimer = setInterval(getData, 5000);
+};
 
-const sortResults = function(results) {
-  results.sort(function(a, b) {
+const sortResults = function (results) {
+  results.sort(function (a, b) {
     if (a.last === 'Other') return 1;
     if (b.last === 'Other') return -1;
     if (a.votecount > 0 || a.precinctsreporting > 0) {
@@ -743,25 +771,24 @@ const sortResults = function(results) {
       return 0;
     }
   });
-  return results
-}
+  return results;
+};
 
+function calculatePrecinctsReporting (result) {
+  var pct = result.precinctsreportingpct;
+  var reporting = result.precinctsreporting;
+  var total = result.precinctstotal;
 
-function calculatePrecinctsReporting(result) {
-    var pct = result.precinctsreportingpct;
-    var reporting = result.precinctsreporting;
-    var total = result.precinctstotal;
-
-    var pctFormatted = (pct * 100).toFixed(1);
-    if (pctFormatted == 0 && reporting > 0) {
-        return '<0.1';
-    } else if (pctFormatted == 100 && reporting < total) {
-        return '>99.9';
-    } else if (pctFormatted == 100 && reporting == total) {
-        return 100;
-    } else {
-        return pctFormatted;
-    }
+  var pctFormatted = (pct * 100).toFixed(1);
+  if (pctFormatted === 0 && reporting > 0) {
+    return '<0.1';
+  } else if (pctFormatted === 100 && reporting < total) {
+    return '>99.9';
+  } else if (pctFormatted === 100 && reporting === total) {
+    return 100;
+  } else {
+    return pctFormatted;
+  }
 }
 
 if (!Array.prototype.find) {
