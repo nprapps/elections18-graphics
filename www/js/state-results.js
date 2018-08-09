@@ -117,9 +117,10 @@ const getData = function (forceReload) {
         data = res.body.results;
 
         // Remove tabs from navigation if that race type isn't present
-        if (Object.keys(data.senate.results).lenth === 0) {
+        if (Object.keys(data.senate.results).length === 0) {
           raceTypes = without(raceTypes, 'Senate');
-        } else if (Object.keys(data.governor.results).length === 0) {
+        }
+        if (Object.keys(data.governor.results).length === 0) {
           raceTypes = without(raceTypes, 'Governor');
         }
 
