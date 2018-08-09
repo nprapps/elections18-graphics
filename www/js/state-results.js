@@ -9,54 +9,54 @@ const resultsWrapper = document.querySelector('#county-results');
 const projector = createProjector();
 
 const availableMetrics = [
-    {
-        'name': 'Population',
-        'key': 'population',
-        'census': true,
-        'comma_filter': true
-    },
-    {
-        'name': '2012 Results',
-        'key': 'past_margin',
-        'census': false
-    },
-    {
-        'name': 'Unemployment',
-        'key': 'unemployment',
-        'census': false,
-        'append': '%'
-    },
-    {
-        'name': '% White',
-        'key': 'percent_white',
-        'census': true,
-        'percent_filter': true
-    },
-    {
-        'name': '% Black',
-        'key': 'percent_black',
-        'census': true,
-        'percent_filter': true
-    },
-    {
-        'name': '% Hispanic',
-        'key': 'percent_hispanic',
-        'census': true,
-        'percent_filter': true
-    },
-    {
-        'name': 'Median Income',
-        'key': 'median_income',
-        'census': true,
-        'comma_filter': true,
-        'prepend': '$'
-    },
-    {
-        'name': '% College-Educated',
-        'key': 'percent_bachelors',
-        'census': true,
-        'percent_filter': true
-    }
+  {
+    'name': 'Population',
+    'key': 'population',
+    'census': true,
+    'comma_filter': true
+  },
+  {
+    'name': '2012 Results',
+    'key': 'past_margin',
+    'census': false
+  },
+  {
+    'name': 'Unemployment',
+    'key': 'unemployment',
+    'census': false,
+    'append': '%'
+  },
+  {
+    'name': '% White',
+    'key': 'percent_white',
+    'census': true,
+    'percent_filter': true
+  },
+  {
+    'name': '% Black',
+    'key': 'percent_black',
+    'census': true,
+    'percent_filter': true
+  },
+  {
+    'name': '% Hispanic',
+    'key': 'percent_hispanic',
+    'census': true,
+    'percent_filter': true
+  },
+  {
+    'name': 'Median Income',
+    'key': 'median_income',
+    'census': true,
+    'comma_filter': true,
+    'prepend': '$'
+  },
+  {
+    'name': '% College-Educated',
+    'key': 'percent_bachelors',
+    'census': true,
+    'percent_filter': true
+  }
 ];
 
 let data = null;
@@ -112,6 +112,8 @@ const getData = function (forceReload) {
     .set('If-Modified-Since', requestTime || '')
     .end(function (err, res) {
       if (res.body) {
+        if (err) { throw err; }
+
         lastDownballotRequestTime = new Date().toUTCString();
 
         data = res.body.results;
@@ -134,46 +136,48 @@ const getData = function (forceReload) {
 const getExtraData = function () {
   request.get(extraDataURL)
     .end(function (err, res) {
+      if (err) { throw err; }
       extraData = res.body;
       projector.append(resultsWrapper, renderMaquette);
     });
-}
+};
 
-const sortCountyResults = function() {
-    let values = []
+const sortCountyResults = function () {
+  let values = [];
 
-    for (let fipscode in extraData) {
-        if (sortMetric['census']) {
-            var sorter = extraData[fipscode].census[sortMetric['key']];
-        } else {
-            var sorter = extraData[fipscode][sortMetric['key']];
-        }
-        values.push([fipscode, sorter]);
+  for (let fipscode in extraData) {
+    let sorter;
+    if (sortMetric['census']) {
+      sorter = extraData[fipscode].census[sortMetric['key']];
+    } else {
+      sorter = extraData[fipscode][sortMetric['key']];
+    }
+    values.push([fipscode, sorter]);
+  }
+
+  values.sort(function (a, b) {
+    if (sortMetric['key'] === 'past_margin') {
+      // always put Democratic wins on top
+      if (a[1][0] === 'D' && b[1][0] === 'R') return -1;
+      if (a[1][0] === 'R' && b[1][0] === 'D') return 1;
+
+      const aMargin = parseInt(a[1].split('+')[1]);
+      const bMargin = parseInt(b[1].split('+')[1]);
+
+      // if Republican, sort in ascending order
+      // if Democratic, sort in descending order
+      if (a[1][0] === 'R') {
+        return aMargin - bMargin;
+      } else {
+        return bMargin - aMargin;
+      }
     }
 
-    values.sort(function(a, b) {
-        if (sortMetric['key'] === 'past_margin') {
-            // always put Democratic wins on top
-            if (a[1][0] === 'D' && b[1][0] === 'R') return -1;
-            if (a[1][0] === 'R' && b[1][0] === 'D') return 1;
+    return b[1] - a[1];
+  });
 
-            const aMargin = parseInt(a[1].split('+')[1]);
-            const bMargin = parseInt(b[1].split('+')[1]);
-
-            // if Republican, sort in ascending order
-            // if Democratic, sort in descending order
-            if (a[1][0] === 'R') {
-                return aMargin - bMargin;
-            } else {
-                return bMargin - aMargin;
-            }
-        }
-
-        return b[1] - a[1];
-    })
-
-    return values;
-}
+  return values;
+};
 
 const renderMaquette = function () {
   setTimeout(pymChild.sendHeight, 0);
@@ -354,11 +358,11 @@ const renderStateResults = function (results) {
         ])
       ])
     ]),
-    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
-  ])
-}
+    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) + ' of ' + commaNumber(results[0].precinctstotal) + ')'])
+  ]);
+};
 
-const renderStateRow = function(result){
+const renderStateRow = function (result) {
   stateTotalVotes += parseInt(result.votecount);
 
   return h('tr', {
@@ -375,7 +379,7 @@ const renderStateRow = function(result){
       ' ',
       result.last,
       ' ',
-      result.party ? '(' + result.party + ')': '',
+      result.party ? '(' + result.party + ')' : '',
       h('i.icon', {
         classes: {
           'icon-ok': result.npr_winner
@@ -384,63 +388,68 @@ const renderStateRow = function(result){
     ]),
     h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
-  ])
-}
+  ]);
+};
 
-const renderMetricLi = function(metric) {
-  if (metric.name == '% College-Educated'){
+const renderMetricLi = function (metric) {
+  if (metric.name === '% College-Educated') {
     return h('li.sortButton', {
       onclick: onMetricClick,
       classes: {
         'selected': metric === sortMetric
       }
-    }, h('span.metric', [metric['name']]))
+    }, h('span.metric', [metric['name']]));
   } else {
-    return h('li.sortButton', {
-      onclick: onMetricClick,
-      classes: {
-        'selected': metric === sortMetric
-      }
-    }, [ h('span.metric', [metric['name']]), h('span.pipe', ' | ')])
+    return h(
+      'li.sortButton', {
+        onclick: onMetricClick,
+        classes: {
+          'selected': metric === sortMetric
+        }
+      },
+      [
+        h('span.metric', [metric['name']]), h('span.pipe', ' | ')
+      ]
+    );
   }
+};
 
-}
-
-const renderCandidateTH = function(candidate) {
+const renderCandidateTH = function (candidate) {
   return h('th.vote', {
     classes: {
       'dem': candidate === 'Clinton',
       'gop': candidate === 'Trump',
       'ind': ['Johnson', 'McMullin', 'Stein'].indexOf(candidate) !== -1
     }
-  }, h('div', h('span', candidate)))
-}
+  }, h('div', h('span', candidate)));
+};
 
-const renderCountyRow = function(results, key, availableCandidates){
+const renderCountyRow = function (results, key, availableCandidates) {
   if (key === 'state') {
     return '';
   }
 
-  let keyedResults = {}
-  for (var i = 0; i < results.length; i++){
+  let keyedResults = {};
+  for (var i = 0; i < results.length; i++) {
     let candidate = results[i];
-    if (candidate.last == 'Trump'){
+    if (candidate.last === 'Trump') {
       keyedResults['Trump'] = results[i];
-    } else if (candidate.last == 'Clinton'){
+    } else if (candidate.last === 'Clinton') {
       keyedResults['Clinton'] = results[i];
     }
   }
 
   const winner = determineWinner(keyedResults);
 
-  const isKeyCounty = keyCounties.find(function(el) {
-    return el.fips === results[0].fipscode
-  })
+  const isKeyCounty = keyCounties.find(function (el) {
+    return el.fips === results[0].fipscode;
+  });
 
+  let extraMetric;
   if (sortMetric['census']) {
-    var extraMetric = extraData[results[0].fipscode].census[sortMetric['key']]
+    extraMetric = extraData[results[0].fipscode].census[sortMetric['key']];
   } else {
-    var extraMetric = extraData[results[0].fipscode][sortMetric['key']]
+    extraMetric = extraData[results[0].fipscode][sortMetric['key']];
   }
 
   if (sortMetric['comma_filter']) {
@@ -477,21 +486,21 @@ const renderCountyRow = function(results, key, availableCandidates){
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
     h('td.vote.margin', calculateVoteMargin(keyedResults)),
     h('td.comparison', extraMetric)
-  ])
-}
+  ]);
+};
 
-const renderCountyCell = function(result, winner) {
+const renderCountyCell = function (result, winner) {
   return h('td.vote', {
-      classes: {
-        'dem': result.party === 'Dem',
-        'gop': result.party === 'GOP',
-        'ind': ['Dem', 'GOP'].indexOf(result.party) === -1,
-        'winner': winner === result
-      }
-  }, [(result.votepct * 100).toFixed(1) + '%'])
-}
+    classes: {
+      'dem': result.party === 'Dem',
+      'gop': result.party === 'GOP',
+      'ind': ['Dem', 'GOP'].indexOf(result.party) === -1,
+      'winner': winner === result
+    }
+  }, [(result.votepct * 100).toFixed(1) + '%']);
+};
 
-const determineWinner = function(keyedResults) {
+const determineWinner = function (keyedResults) {
   let winner = null;
   let winningPct = 0;
   for (var key in keyedResults) {
@@ -508,12 +517,12 @@ const determineWinner = function(keyedResults) {
   }
 
   return winner;
-}
+};
 
-const calculateVoteMargin = function(keyedResults) {
+const calculateVoteMargin = function (keyedResults) {
   let winnerVotePct = 0;
   let winner = null;
-  for (var key in keyedResults) {
+  for (let key in keyedResults) {
     let result = keyedResults[key];
 
     if (result.votepct > winnerVotePct) {
@@ -526,28 +535,29 @@ const calculateVoteMargin = function(keyedResults) {
     return '';
   }
   let winnerMargin = 100;
-  for (var key in keyedResults) {
+  for (let key in keyedResults) {
     let result = keyedResults[key];
 
     if (winner.votepct - result.votepct < winnerMargin && winner !== result) {
-      winnerMargin = winner.votepct - result.votepct
+      winnerMargin = winner.votepct - result.votepct;
     }
   }
 
+  let prefix;
   if (winner.last === 'Clinton') {
-    var prefix = 'D';
+    prefix = 'D';
   } else if (winner.last === 'Trump') {
-    var prefix = 'R';
+    prefix = 'R';
   } else {
-    var prefix = winner.last.substr(0, 1);
+    prefix = winner.last.substr(0, 1);
   }
 
   return prefix + ' +' + Math.round(winnerMargin * 100);
-}
+};
 
-const renderSenateTable = function(results){
+const renderSenateTable = function (results) {
   let totalVotes = 0;
-  for (var i = 0; i < results.length; i++){
+  for (var i = 0; i < results.length; i++) {
     totalVotes += results[i].votecount;
   }
 
@@ -576,48 +586,48 @@ const renderSenateTable = function(results){
       ])
     ]),
     h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
-  ])
-}
+  ]);
+};
 
-const renderHouseTable = function(results){
+const renderHouseTable = function (results) {
   let seatName = results[0].seatname;
   let totalVotes = 0;
-  for (var i = 0; i < results.length; i++){
+  for (var i = 0; i < results.length; i++) {
     totalVotes += results[i].votecount;
   }
 
   if (results.length > 2) {
-    results = sortResults(results)
+    results = sortResults(results);
   }
 
   return h('div.house-race', [
-   h('table.results-table', [
-    h('caption', seatName),
-    h('thead', [
-      h('tr', [
-        h('th.candidate', 'Candidate'),
-        h('th.amt', 'Votes'),
-        h('th.amt', 'Percent')
+    h('table.results-table', [
+      h('caption', seatName),
+      h('thead', [
+        h('tr', [
+          h('th.candidate', 'Candidate'),
+          h('th.amt', 'Votes'),
+          h('th.amt', 'Percent')
+        ])
+      ]),
+      h('tbody', [
+        results.map(result => renderRow(result))
+      ]),
+      h('tfoot', [
+        h('tr', [
+          h('td.candidate', 'Total'),
+          h('td.amt', commaNumber(totalVotes)),
+          h('td.amt', '100%')
+        ])
       ])
     ]),
-    h('tbody', [
-      results.map(result => renderRow(result))
-    ]),
-    h('tfoot', [
-      h('tr', [
-        h('td.candidate', 'Total'),
-        h('td.amt', commaNumber(totalVotes)),
-        h('td.amt', '100%')
-      ])
-    ])
-  ]),
-  h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
-])
-}
+    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
+  ]);
+};
 
-const renderRow = function(result){
-  let party = result.party ? '(' + result.party + ')' : ''
-  let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' ' + party
+const renderRow = function (result) {
+  let party = result.party ? '(' + result.party + ')' : '';
+  let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' ' + party;
 
   return h('tr', {
     classes: {
@@ -640,12 +650,12 @@ const renderRow = function(result){
     ]),
     h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
-  ])
-}
+  ]);
+};
 
-const renderGovTable = function(results){
+const renderGovTable = function (results) {
   let totalVotes = 0;
-  for (var i = 0; i < results.length; i++){
+  for (var i = 0; i < results.length; i++) {
     totalVotes += results[i].votecount;
   }
 
@@ -673,9 +683,9 @@ const renderGovTable = function(results){
         ])
       ])
     ]),
-    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) +' of ' + commaNumber(results[0].precinctstotal) + ')'])
-  ])
-}
+    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) + ' of ' + commaNumber(results[0].precinctstotal) + ')'])
+  ]);
+};
 
 const renderMeasureTable = function (results) {
   let propName = results[0].seatname;
@@ -722,7 +732,7 @@ const renderMeasurePrecincts = function (results) {
   }
 };
 
-const onMetricClick = function(e) {
+const onMetricClick = function (e) {
   for (var i = 0; i < availableMetrics.length; i++) {
     if (availableMetrics[i]['name'] === e.target.innerHTML) {
       sortMetric = availableMetrics[i];
@@ -794,26 +804,26 @@ function calculatePrecinctsReporting (result) {
 
 if (!Array.prototype.find) {
   Object.defineProperty(Array.prototype, 'find', {
-    value: function(predicate) {
-     'use strict';
-     if (this == null) {
-       throw new TypeError('Array.prototype.find called on null or undefined');
-     }
-     if (typeof predicate !== 'function') {
-       throw new TypeError('predicate must be a function');
-     }
-     var list = Object(this);
-     var length = list.length >>> 0;
-     var thisArg = arguments[1];
-     var value;
+    value: function (predicate) {
+      'use strict';
+      if (this == null) {
+        throw new TypeError('Array.prototype.find called on null or undefined');
+      }
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
+      }
+      var list = Object(this);
+      var length = list.length >>> 0;
+      var thisArg = arguments[1];
+      var value;
 
-     for (var i = 0; i < length; i++) {
-       value = list[i];
-       if (predicate.call(thisArg, value, i, list)) {
-         return value;
-       }
-     }
-     return undefined;
+      for (var i = 0; i < length; i++) {
+        value = list[i];
+        if (predicate.call(thisArg, value, i, list)) {
+          return value;
+        }
+      }
+      return undefined;
     }
   });
 }
