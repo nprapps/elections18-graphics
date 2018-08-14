@@ -2,6 +2,11 @@
  * Module for tracking standardized analytics.
  */
 
+// This will be transformed by Babel into only the polyfills that are needed,
+// thanks to the `"useBuiltIns": true` option in `.babelrc`
+// https://www.npmjs.com/package/babel-preset-env#usebuiltins
+import 'babel-polyfill';
+
 import URL from 'url-parse';
 
 var _gaq = _gaq || [];
