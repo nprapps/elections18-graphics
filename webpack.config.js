@@ -1,22 +1,11 @@
-'use strict';
+const common = require('./webpack.common.config.js');
 
-var webpack = require('webpack');
-var glob_entries = require('webpack-glob-entries');
-
-module.exports = {
-    entry: glob_entries('./www/js/*.js'),
-    output: {
-        path: './www/js/rendered',
-        filename: '[name].js'
-    },
-    module: {
-        loaders: [{
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: 'babel-loader'
-        }, {
-            test: /\.json$/,
-            loader: 'json-loader'
-        }]
-    },
-}
+module.exports = Object.assign(
+  {},
+  common,
+  {
+    mode: 'development',
+    devtool: 'eval-source-map',
+    watch: true
+  }
+);

@@ -1,3 +1,8 @@
+// This will be transformed by Babel into only the polyfills that are needed,
+// thanks to the `"useBuiltIns": true` option in `.babelrc`
+// https://www.npmjs.com/package/babel-preset-env#usebuiltins
+import 'babel-polyfill';
+
 import { h, createProjector } from 'maquette';
 import { without } from 'underscore';
 import request from 'superagent';
@@ -780,32 +785,6 @@ function calculatePrecinctsReporting (result) {
   } else {
     return pctFormatted;
   }
-}
-
-if (!Array.prototype.find) {
-  Object.defineProperty(Array.prototype, 'find', {
-    value: function (predicate) {
-      'use strict';
-      if (this == null) {
-        throw new TypeError('Array.prototype.find called on null or undefined');
-      }
-      if (typeof predicate !== 'function') {
-        throw new TypeError('predicate must be a function');
-      }
-      var list = Object(this);
-      var length = list.length >>> 0;
-      var thisArg = arguments[1];
-      var value;
-
-      for (var i = 0; i < length; i++) {
-        value = list[i];
-        if (predicate.call(thisArg, value, i, list)) {
-          return value;
-        }
-      }
-      return undefined;
-    }
-  });
 }
 
 /*
