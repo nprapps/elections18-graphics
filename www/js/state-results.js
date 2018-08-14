@@ -454,7 +454,7 @@ const renderCountyRow = function (results, key, availableCandidates) {
     }
   }, [
     h('td.county', [
-      toTitlecase(results[0].reportingunitname),
+      results[0].reportingunitname,
       h('i.icon', {
         classes: {
           'icon-star': isKeyCounty
@@ -728,12 +728,6 @@ const onRatingClick = function (e) {
     e.preventDefault();
     e.stopPropagation();
   }
-};
-
-const toTitlecase = function (str) {
-  return str.replace(/\w*\s/g, function (txt) {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
 };
 
 const switchResultsView = function (e) {
