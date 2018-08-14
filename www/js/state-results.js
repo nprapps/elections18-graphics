@@ -67,7 +67,6 @@ let currentState = null;
 let sortMetric = availableMetrics[0];
 let descriptions = null;
 let keyCounties = null;
-let stateTotalVotes = 0;
 let dataTimer = null;
 let stateName = null;
 let statepostal = null;
@@ -119,11 +118,15 @@ const getData = function (forceReload) {
         data = res.body.results;
 
         // Remove tabs from navigation if that race type isn't present
-        if (Object.keys(data.senate.results).length === 0) {
-          raceTypes = without(raceTypes, 'Senate');
-        }
-        if (Object.keys(data.governor.results).length === 0) {
-          raceTypes = without(raceTypes, 'Governor');
+        // Only perform this removal if the standard state file was loaded;
+        // county-level files won't be aware of which race types are available
+        if (data.senate && data.house) {
+          if (Object.keys(data.senate.results).length === 0) {
+            raceTypes = without(raceTypes, 'Senate');
+          }
+          if (Object.keys(data.governor.results).length === 0) {
+            raceTypes = without(raceTypes, 'Governor');
+          }
         }
 
         lastUpdated = res.body.last_updated;
@@ -278,16 +281,12 @@ const renderTabSwitcher = () => {
 
 const renderResults = function () {
   // Render race data elements, depending on which race-type tab is active
-  const sortedHouseKeys = Object.keys(data['house']['results']).sort(function (a, b) {
-    return data['house']['results'][a][0]['seatnum'] - data['house']['results'][b][0]['seatnum'];
-  });
-
-  const sortedBallotKeys = Object.keys(data['ballot_measures']['results']).sort(function (a, b) {
-    return data['ballot_measures']['results'][a][0]['seatname'].split(' - ')[0] - data['ballot_measures']['results'][b][0]['seatname'].split(' - ')[0];
-  });
-
   let resultsElements;
   if (resultsView === 'key') {
+    const sortedBallotKeys = Object.keys(data['ballot_measures']['results']).sort(function (a, b) {
+      return data['ballot_measures']['results'][a][0]['seatname'].split(' - ')[0] - data['ballot_measures']['results'][b][0]['seatname'].split(' - ')[0];
+    });
+
     resultsElements = h('div.results-ballot-measures', {
       classes: {
         'one-result': Object.keys(data['ballot_measures']['results']).length === 1,
@@ -307,6 +306,10 @@ const renderResults = function () {
       renderMeasurePrecincts(data['ballot_measures']['results'])
     ]);
   } else if (resultsView === 'house') {
+    const sortedHouseKeys = Object.keys(data['house']['results']).sort(function (a, b) {
+      return data['house']['results'][a][0]['seatnum'] - data['house']['results'][b][0]['seatnum'];
+    });
+
     resultsElements = h('div.results-house', {
       classes: {
         'one-result': Object.keys(data['house']['results']).length === 1,
@@ -319,76 +322,58 @@ const renderResults = function () {
         sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
       ])
     ]);
-  } else if (resultsView === 'senate') {
-    resultsElements = Object.keys(data['senate']['results']).map(race => renderSenateTable(data['senate']['results'][race]));
-  } else if (resultsView === 'governor') {
-    resultsElements = Object.keys(data['governor']['results']).map(race => renderGovTable(data['governor']['results'][race]));
+  } else if (resultsView === 'senate' || resultsView === 'governor') {
+    // Render a statewide table, and then below it a county-level table
+    const sortedStateResults = data.state
+      .filter(c => !(c.first === '' && c.last === 'Other'))
+      .sort((a, b) => b['votecount'] - a['votecount']);
+    const sortKeys = sortCountyResults();
+    const availableCandidates = sortedStateResults.map(c => c.last);
+
+    if (resultsView === 'senate') {
+      resultsElements = renderSenateTable(data.state);
+    } else {
+      resultsElements = renderGovTable(data.state);
+    }
+
+    resultsElements = [resultsElements].concat([
+      h('div.results-counties', {
+        classes: {
+          'population': sortMetric['key'] === 'population',
+          'past-results': sortMetric['key'] === 'past_margin',
+          'unemployment': sortMetric['key'] === 'unemployment',
+          'percent-white': sortMetric['key'] === 'percent_white',
+          'percent-black': sortMetric['key'] === 'percent_black',
+          'percent-hispanic': sortMetric['key'] === 'percent_hispanic',
+          'median-income': sortMetric['key'] === 'median_income',
+          'percent-college-educated': sortMetric['key'] === 'percent_bachelors'
+        }
+      }, [
+        h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
+        h('p', {
+          innerHTML: descriptions.county_desc ? descriptions.county_desc : ''
+        }),
+        h('ul.sorter', [
+          h('li.label', 'Sort Counties By'),
+          availableMetrics.map(metric => renderMetricLi(metric))
+        ]),
+        h('table.results-table', [
+          h('thead', [
+            h('tr', [
+              h('th.county', h('div', h('span', 'County'))),
+              h('th.amt.precincts', h('div', h('span', ''))),
+              availableCandidates.map(cand => renderCandidateTH(cand)),
+              h('th.vote.margin', h('div', h('span', '2016 Margin'))),
+              h('th.comparison', h('div', h('span', sortMetric['name'])))
+            ])
+          ]),
+          sortKeys.map(key => renderCountyRow(data[key[0]], key[0], availableCandidates))
+        ])
+      ])
+    ]);
   }
 
   return h('div', [resultsElements]);
-};
-
-const renderStateResults = function (results) {
-  stateTotalVotes = 0;
-  var statewideTitle = 'Statewide Results';
-
-  return h('div.results-statewide', [
-    h('h2', statewideTitle),
-    h('p', {
-      innerHTML: descriptions.state_desc ? descriptions.state_desc : ''
-    }
-    ),
-    // h('p.poll-closing', [ 'Polls close at ' + results[0]['meta']['full_poll_closing'] + ' ET' ]),
-    h('table.results-table', [
-      h('thead', [
-        h('tr', [
-          h('th.candidate', 'Candidate'),
-          h('th.amt', 'Votes'),
-          h('th.amt', 'Percent')
-        ])
-      ]),
-      h('tbody', [
-        results.map(result => renderStateRow(result))
-      ]),
-      h('tfoot', [
-        h('tr', [
-          h('td.candidate', 'Total'),
-          h('td.amt', commaNumber(stateTotalVotes)),
-          h('td.amt', '100%')
-        ])
-      ])
-    ]),
-    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) + ' of ' + commaNumber(results[0].precinctstotal) + ')'])
-  ]);
-};
-
-const renderStateRow = function (result) {
-  stateTotalVotes += parseInt(result.votecount);
-
-  return h('tr', {
-    classes: {
-      'winner': result['npr_winner'],
-      'dem': result['npr_winner'] && result['party'] === 'Dem',
-      'gop': result['npr_winner'] && result['party'] === 'GOP',
-      'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
-      'hidden': result['last'] === 'Other' && result['votecount'] === 0
-    }
-  }, [
-    h('td.candidate', [
-      result.first,
-      ' ',
-      result.last,
-      ' ',
-      result.party ? '(' + result.party + ')' : '',
-      h('i.icon', {
-        classes: {
-          'icon-ok': result.npr_winner
-        }
-      })
-    ]),
-    h('td.amt', commaNumber(result.votecount)),
-    h('td.amt', (result.votepct * 100).toFixed(1) + '%')
-  ]);
 };
 
 const renderMetricLi = function (metric) {
@@ -429,15 +414,10 @@ const renderCountyRow = function (results, key, availableCandidates) {
     return '';
   }
 
-  let keyedResults = {};
-  for (var i = 0; i < results.length; i++) {
-    let candidate = results[i];
-    if (candidate.last === 'Trump') {
-      keyedResults['Trump'] = results[i];
-    } else if (candidate.last === 'Clinton') {
-      keyedResults['Clinton'] = results[i];
-    }
-  }
+  const keyedResults = availableCandidates.reduce((obj, lastName) => {
+    obj[lastName] = results.find(c => c.last === lastName);
+    return obj;
+  }, {});
 
   const winner = determineWinner(keyedResults);
 
@@ -544,12 +524,12 @@ const calculateVoteMargin = function (keyedResults) {
   }
 
   let prefix;
-  if (winner.last === 'Clinton') {
+  if (winner.party === 'Dem') {
     prefix = 'D';
-  } else if (winner.last === 'Trump') {
+  } else if (winner.party === 'GOP') {
     prefix = 'R';
   } else {
-    prefix = winner.last.substr(0, 1);
+    prefix = 'I';
   }
 
   return prefix + ' +' + Math.round(winnerMargin * 100);
@@ -762,7 +742,13 @@ const switchResultsView = function (e) {
 
   resultsView = e.target.getAttribute('id');
   resultsType = `${e.target.textContent} Results`;
-  const dataFilename = currentState + '.json';
+
+  let dataFilename;
+  if (resultsView === 'senate' || resultsView === 'governor') {
+    dataFilename = `${currentState}-counties-${resultsView}.json`;
+  } else {
+    dataFilename = currentState + '.json';
+  }
   dataURL = buildDataURL(dataFilename);
 
   clearInterval(dataTimer);
