@@ -203,7 +203,7 @@
                     {% if slug == 'state-results' %}
                     var childUrl = childUrl + '?state=' + resultsState;
                     {% endif %}
-                    var pymParent = new pym.Parent(el.id, childUrl, {});
+                    var pymParent = new pym.Parent(el.id, childUrl, {trackscroll: true});
                     pymParent.onMessage('pjax-navigate', onPJAXNavigateMessage);
                 });
             });
@@ -288,7 +288,8 @@
             childUrl = childUrl + '?state=' + state;
         }
         var pymParent = new pym.Parent('preview', childUrl, {
-            id: '{{ slug }}'
+            id: '{{ slug }}',
+            trackscroll: true
         });
 
         pymParent.onMessage('pjax-navigate', onPJAXNavigateMessage);

@@ -4,13 +4,20 @@
 import 'babel-polyfill';
 
 import { h, createProjector } from 'maquette';
-import { without } from 'underscore';
+import {
+  sortBy,
+  values as getValues,
+  without
+} from 'underscore';
 import request from 'superagent';
 import commaNumber from 'comma-number';
+
 import navbar from '../js/includes/navbar.js';
 import briefingData from '../data/extra_data/state-briefings.json';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
-const resultsWrapper = document.querySelector('#county-results');
+import { renderRace } from './includes/big-board-core.js';
+
+const resultsWrapper = document.getElementById('state-results');
 const projector = createProjector();
 
 const availableMetrics = [
@@ -71,12 +78,12 @@ let extraDataURL = null;
 let currentState = null;
 let sortMetric = availableMetrics[0];
 let descriptions = null;
-let keyCounties = null;
 let dataTimer = null;
 let stateName = null;
 let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
+let parentScrollAboveIframeTop = null;
 let resultsView = 'key';
 let resultsType = 'Key Results';
 let lastDownballotRequestTime = null;
@@ -94,12 +101,16 @@ window.pymChild = null;
 var onWindowLoaded = function () {
   // init pym and render callback
   window.pymChild = new pym.Child();
+  // Keep track of where the user's window is, relative to the top of
+  // this `iframe`. This works in conjunction with Pym scroll-tracking:
+  // http://blog.apps.npr.org/pym.js/#optional-scroll-tracking
+  window.pymChild.onMessage('viewport-iframe-position', parentInfo => {
+    parentScrollAboveIframeTop = parentInfo.split(' ')[2];
+  });
+
   currentState = getParameterByName('state').toLowerCase();
   descriptions = briefingData.descriptions.find(function (el) {
     return el.state_postal === currentState;
-  });
-  keyCounties = briefingData.key_counties.filter(function (el) {
-    return el.state === currentState;
   });
 
   const dataFilename = currentState + '.json';
@@ -203,8 +214,7 @@ const renderMaquette = function () {
     }
 
     return h('div.results', [
-      h('header', [
-        renderTabSwitcher(),
+      h('header#state-header', [
         h('div.state-icon', [
           h('i.stateface', {
             class: statefaceClass
@@ -215,7 +225,8 @@ const renderMaquette = function () {
             stateName
           ]),
           resultsType
-        ])
+        ]),
+        renderTabSwitcher()
       ]),
       renderResults(),
       h('div.footer', [
@@ -260,9 +271,10 @@ const renderTabSwitcher = () => {
 
   const elements = raceTypes.map(tab =>
     h(
-      `span#${tab.toLowerCase()}`,
+      'span',
       {
         onclick: switchResultsView,
+        name: tab.toLowerCase(),
         classes: { active: resultsView === tab.toLowerCase() }
       },
       [tab]
@@ -278,37 +290,68 @@ const renderTabSwitcher = () => {
     'div.switcher',
     {},
     [
-      stateName + ' election results: ',
+      'Election results: ',
       ...delimited
     ]
   );
 };
 
+const renderMiniBigBoard = (title, races, linkRaceType, linkText) => h(
+  // Render a big-board-like element for a particular race type
+  'div.board',
+  { classes: { hidden: races.length === 0 } },
+  [
+    h('h2', title),
+    // Some race types don't have a link to anywhere
+    linkRaceType ? h(
+      'button',
+      {
+        name: linkRaceType,
+        onclick: switchResultsView
+      },
+      linkText
+    ) : '',
+    h('div.results-wrapper', [
+      h('div.results', [
+        h('div.column', [
+          h('table.races', [
+            races
+              // Ignore any races where a single candidate runs unopposed
+              .filter(race => race.length > 1)
+              // Trim the race down to just the top two candidates
+              .map(race => renderRace(race.slice(0, 2)))
+          ])
+        ])
+      ])
+    ])
+  ]
+);
+
 const renderResults = function () {
   // Render race data elements, depending on which race-type tab is active
   let resultsElements;
   if (resultsView === 'key') {
-    const sortedBallotKeys = Object.keys(data['ballot_measures']['results']).sort(function (a, b) {
-      return data['ballot_measures']['results'][a][0]['seatname'].split(' - ')[0] - data['ballot_measures']['results'][b][0]['seatname'].split(' - ')[0];
-    });
+    // Avoid showing too few (or no) House races, especially for small states
+    const SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS = 5;
 
-    resultsElements = h('div.results-ballot-measures', {
-      classes: {
-        'one-result': Object.keys(data['ballot_measures']['results']).length === 1,
-        'two-results': Object.keys(data['ballot_measures']['results']).length === 2,
-        'three-results': Object.keys(data['ballot_measures']['results']).length === 3,
-        'four-results': Object.keys(data['ballot_measures']['results']).length === 4
-      }
-    }, [
-      h('h2', {
-        classes: {
-          'hidden': Object.keys(data['ballot_measures']['results']).length === 0
-        }
-      }, 'Ballot Measures'),
-      h('div.results-wrapper', [
-        sortedBallotKeys.map(measure => renderMeasureTable(data['ballot_measures']['results'][measure]))
-      ]),
-      renderMeasurePrecincts(data['ballot_measures']['results'])
+    resultsElements = h('div', [
+      h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
+      h('p', descriptions.state_desc),
+      renderMiniBigBoard('Senate', getValues(data.senate.results), 'senate', 'County-level results >'),
+      renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', 'County-level results >'),
+      Object.keys(data.house.results) > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
+        ? renderMiniBigBoard(
+          'Key House Races',
+          // TO-DO: Filter this down to key races, somehow
+          getValues(data.house.results).filter(race => true),
+          'house',
+          'All House results >'
+        )
+        : renderMiniBigBoard('House Races', getValues(data.house.results), 'house', 'Detailed House results >'),
+      renderMiniBigBoard(
+        'Key Ballot Initiatives',
+        sortBy(getValues(data.ballot_measures.results), race => race[0].seatname.split(' - ')[0])
+      )
     ]);
   } else if (resultsView === 'house') {
     const sortedHouseKeys = Object.keys(data['house']['results']).sort(function (a, b) {
@@ -354,7 +397,7 @@ const renderResults = function () {
           'percent-college-educated': sortMetric['key'] === 'percent_bachelors'
         }
       }, [
-        h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
+        h('h2.section-title', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
         h('p', {
           innerHTML: descriptions.county_desc ? descriptions.county_desc : ''
         }),
@@ -426,10 +469,6 @@ const renderCountyRow = function (results, key, availableCandidates) {
 
   const winner = determineWinner(keyedResults);
 
-  const isKeyCounty = keyCounties.find(function (el) {
-    return el.fips === results[0].fipscode;
-  });
-
   let extraMetric;
   if (sortMetric['census']) {
     extraMetric = extraData[results[0].fipscode].census[sortMetric['key']];
@@ -453,18 +492,9 @@ const renderCountyRow = function (results, key, availableCandidates) {
     extraMetric = extraMetric.toFixed(1) + sortMetric['append'];
   }
 
-  return h('tr', {
-    classes: {
-      'featured': isKeyCounty
-    }
-  }, [
+  return h('tr', [
     h('td.county', [
       results[0].reportingunitname,
-      h('i.icon', {
-        classes: {
-          'icon-star': isKeyCounty
-        }
-      }),
       h('span.precincts.mobile', [calculatePrecinctsReporting(results[0]) + '% in'])
     ]),
     h('td.amt.precincts', [calculatePrecinctsReporting(results[0]) + '% in']),
@@ -672,51 +702,6 @@ const renderGovTable = function (results) {
   ]);
 };
 
-const renderMeasureTable = function (results) {
-  let propName = results[0].seatname;
-  let totalVotes = 0;
-  for (var i = 0; i < results.length; i++) {
-    totalVotes += results[i].votecount;
-  }
-
-  if (results.length > 2) {
-    results = sortResults(results);
-  }
-
-  return h('div.ballot-measure', [
-    h('table.results-table', [
-      h('caption', propName),
-      h('thead', [
-        h('tr', [
-          h('th.candidate', 'Ballot Measure'),
-          h('th.amt', 'Votes'),
-          h('th.amt', 'Percent')
-        ])
-      ]),
-      h('tbody', [
-        results.map(measure => renderRow(measure))
-      ]),
-      h('tfoot', [
-        h('tr', [
-          h('td.candidate', 'Total'),
-          h('td.amt', commaNumber(totalVotes)),
-          h('td.amt', '100%')
-        ])
-      ])
-    ])
-  ]);
-};
-
-const renderMeasurePrecincts = function (results) {
-  let precinctReporting = null;
-  for (var result in results) {
-    if (results[result][0]) {
-      precinctReporting = results[result][0];
-      return h('p.precincts', [calculatePrecinctsReporting(precinctReporting) + '% of precincts reporting (' + commaNumber(precinctReporting.precinctsreporting) + ' of ' + commaNumber(precinctReporting.precinctstotal) + ')']);
-    }
-  }
-};
-
 const onMetricClick = function (e) {
   for (var i = 0; i < availableMetrics.length; i++) {
     if (availableMetrics[i]['name'] === e.target.innerHTML) {
@@ -735,12 +720,22 @@ const onRatingClick = function (e) {
   }
 };
 
+const toTitleCase = str => {
+  // Sourced from Sonya Moisset
+  // https://gist.github.com/SonyaMoisset/aa79f51d78b39639430661c03d9b1058
+  str = str.toLowerCase().split(' ');
+  for (var i = 0; i < str.length; i++) {
+    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+  }
+  return str.join(' ');
+};
+
 const switchResultsView = function (e) {
   // Switch which results tab is being displayed
   projector.stop();
 
-  resultsView = e.target.getAttribute('id');
-  resultsType = `${e.target.textContent} Results`;
+  resultsView = e.target.getAttribute('name');
+  resultsType = `${toTitleCase(resultsView)} Results`;
 
   let dataFilename;
   if (resultsView === 'senate' || resultsView === 'governor') {
@@ -753,6 +748,14 @@ const switchResultsView = function (e) {
   clearInterval(dataTimer);
   getData(true);
   dataTimer = setInterval(getData, 5000);
+
+  // When switching tabs, if the user is below the header then
+  // scroll back up to the top of the header. Otherwise, they're
+  // stuck in the middle of a results view.
+  const headerHeight = document.getElementById('state-header').offsetHeight;
+  if (parentScrollAboveIframeTop < -headerHeight) {
+    window.pymChild.scrollParentTo('state-results');
+  }
 };
 
 const sortResults = function (results) {
