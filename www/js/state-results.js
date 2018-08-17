@@ -343,11 +343,16 @@ const renderResults = function () {
         ? renderMiniBigBoard(
           'Key House Races',
           // TO-DO: Filter this down to key races, somehow
-          getValues(data.house.results).filter(race => true),
+          sortBy(getValues(data.house.results).filter(race => true), race => parseInt(race[0].seatnum)),
           'house',
           'All House results >'
         )
-        : renderMiniBigBoard('House Races', getValues(data.house.results), 'house', 'Detailed House results >'),
+        : renderMiniBigBoard(
+          'House Races',
+          sortBy(getValues(data.house.results), race => parseInt(race[0].seatnum)),
+          'house',
+          'Detailed House results >'
+        ),
       renderMiniBigBoard(
         'Key Ballot Initiatives',
         sortBy(getValues(data.ballot_measures.results), race => race[0].seatname.split(' - ')[0])
