@@ -372,7 +372,7 @@ const renderResults = function () {
       }
     }, [
       h('div.results-wrapper', [
-        sortedHouseKeys.map(race => renderHouseTable(data['house']['results'][race]))
+        sortedHouseKeys.map(race => renderRacewideTable(data['house']['results'][race], 'house-race'))
       ])
     ]);
   } else if (resultsView === 'senate' || resultsView === 'governor') {
@@ -383,13 +383,13 @@ const renderResults = function () {
     const sortKeys = sortCountyResults();
     const availableCandidates = sortedStateResults.map(c => c.last);
 
-    if (resultsView === 'senate') {
-      resultsElements = renderSenateTable(data.state);
-    } else {
-      resultsElements = renderGovTable(data.state);
-    }
-
-    resultsElements = [resultsElements].concat([
+    resultsElements = [
+      renderRacewideTable(
+        data.state,
+        resultsView === 'senate'
+          ? 'results-senate'
+          : 'results-gubernatorial'
+      ),
       h('div.results-counties', {
         classes: {
           'population': sortMetric['key'] === 'population',
@@ -423,7 +423,7 @@ const renderResults = function () {
           sortKeys.map(key => renderCountyRow(data[key[0]], key[0], availableCandidates))
         ])
       ])
-    ]);
+    ];
   }
 
   return h('div', [resultsElements]);
@@ -575,9 +575,16 @@ const calculateVoteMargin = function (keyedResults) {
   return prefix + ' +' + Math.round(winnerMargin * 100);
 };
 
-const renderSenateTable = function (results) {
+const renderRacewideTable = function (results, tableClass) {
+  if (results.length === 1) {
+    return renderUncontestedRace(results[0], tableClass);
+  }
+
+  const seatName = results[0].officename === 'U.S. House'
+    ? results[0].seatname
+    : null;
   let totalVotes = 0;
-  for (var i = 0; i < results.length; i++) {
+  for (let i = 0; i < results.length; i++) {
     totalVotes += results[i].votecount;
   }
 
@@ -585,44 +592,9 @@ const renderSenateTable = function (results) {
     results = sortResults(results);
   }
 
-  return h('div.results-senate', [
+  return h(`div.${tableClass}`, [
     h('table.results-table', [
-      h('thead', [
-        h('tr', [
-          h('th.candidate', 'Candidate'),
-          h('th.amt', 'Votes'),
-          h('th.amt', 'Percent')
-        ])
-      ]),
-      h('tbody', [
-        results.map(key => renderRow(key))
-      ]),
-      h('tfoot', [
-        h('tr', [
-          h('td.candidate', 'Total'),
-          h('td.amt', commaNumber(totalVotes)),
-          h('td.amt', '100%')
-        ])
-      ])
-    ]),
-    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) + ' of ' + commaNumber(results[0].precinctstotal) + ')'])
-  ]);
-};
-
-const renderHouseTable = function (results) {
-  let seatName = results[0].seatname;
-  let totalVotes = 0;
-  for (var i = 0; i < results.length; i++) {
-    totalVotes += results[i].votecount;
-  }
-
-  if (results.length > 2) {
-    results = sortResults(results);
-  }
-
-  return h('div.house-race', [
-    h('table.results-table', [
-      h('caption', seatName),
+      seatName ? h('caption', seatName) : '',
       h('thead', [
         h('tr', [
           h('th.candidate', 'Candidate'),
@@ -645,23 +617,60 @@ const renderHouseTable = function (results) {
   ]);
 };
 
-const renderRow = function (result) {
+const createClassesForCandidateRow = result => {
+  return {
+    'winner': result['npr_winner'],
+    'dem': result['npr_winner'] && result['party'] === 'Dem',
+    'gop': result['npr_winner'] && result['party'] === 'GOP',
+    'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
+    'yes': result['npr_winner'] && result['party'] === 'Yes',
+    'no': result['npr_winner'] && result['party'] === 'No',
+    'hidden': result['last'] === 'Other' && result['votecount'] === 0
+  };
+};
+
+const renderCandidateName = result => {
   let party = result.party ? '(' + result.party + ')' : '';
   let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' ' + party;
+  return candidate;
+};
 
-  return h('tr', {
-    classes: {
-      'winner': result['npr_winner'],
-      'dem': result['npr_winner'] && result['party'] === 'Dem',
-      'gop': result['npr_winner'] && result['party'] === 'GOP',
-      'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
-      'yes': result['npr_winner'] && result['party'] === 'Yes',
-      'no': result['npr_winner'] && result['party'] === 'No',
-      'hidden': result['last'] === 'Other' && result['votecount'] === 0
-    }
-  }, [
+const renderUncontestedRace = (result, tableClass) => {
+  const seatName = result.officename === 'U.S. House'
+    ? result.seatname
+    : null;
+
+  return h(`div.${tableClass}`, [
+    h('table.results-table', [
+      seatName ? h('caption', seatName) : '',
+      h('thead', [
+        h('tr', [
+          h('th.candidate', 'Candidate'),
+          h('th', '')
+        ])
+      ]),
+      h('tbody',
+        h('tr', { classes: createClassesForCandidateRow(result) }, [
+          h('td.candidate', [
+            renderCandidateName(result),
+            h('i.icon', {
+              classes: {
+                'icon-ok': result.npr_winner
+              }
+            })
+          ]),
+          h('td.amt.uncontested', 'uncontested')
+        ])
+      )
+    ]),
+    h('p.precincts', ['The AP does not tabulate votes for uncontested races, and declares their winner as soon as polls close'])
+  ]);
+};
+
+const renderRow = function (result) {
+  return h('tr', { classes: createClassesForCandidateRow(result) }, [
     h('td.candidate', [
-      candidate,
+      renderCandidateName(result),
       h('i.icon', {
         classes: {
           'icon-ok': result.npr_winner
@@ -670,40 +679,6 @@ const renderRow = function (result) {
     ]),
     h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
-  ]);
-};
-
-const renderGovTable = function (results) {
-  let totalVotes = 0;
-  for (var i = 0; i < results.length; i++) {
-    totalVotes += results[i].votecount;
-  }
-
-  if (results.length > 2) {
-    results = sortResults(results);
-  }
-
-  return h('div.results-gubernatorial', [
-    h('table.results-table', [
-      h('thead', [
-        h('tr', [
-          h('th.candidate', 'Candidate'),
-          h('th.amt', 'Votes'),
-          h('th.amt', 'Percent')
-        ])
-      ]),
-      h('tbody', [
-        results.map(key => renderRow(key))
-      ]),
-      h('tfoot', [
-        h('tr', [
-          h('td.candidate', 'Total'),
-          h('td.amt', commaNumber(totalVotes)),
-          h('td.amt', '100%')
-        ])
-      ])
-    ]),
-    h('p.precincts', [calculatePrecinctsReporting(results[0]) + '% of precincts reporting (' + commaNumber(results[0].precinctsreporting) + ' of ' + commaNumber(results[0].precinctstotal) + ')'])
   ]);
 };
 
