@@ -71,6 +71,8 @@ const availableMetrics = [
   }
 ];
 
+const AP_UNCONTESTED_NOTE = 'The AP does not tabulate votes for uncontested races, and declares their winner as soon as polls close.';
+
 let data = null;
 let extraData = null;
 let dataURL = null;
@@ -231,13 +233,15 @@ const renderMaquette = function () {
       renderResults(),
       h('div.footer', [
         h('p.sources', [
-          'Sources: Current results from AP',
+          'Sources: Current results from the AP',
           ' ',
           h('span.timestamp', [
             '(as of ',
             lastUpdated,
             ' ET).'
           ]),
+          ' ',
+          AP_UNCONTESTED_NOTE,
           ' ',
           'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ',
           h('a', {
@@ -315,11 +319,8 @@ const renderMiniBigBoard = (title, races, linkRaceType, linkText) => h(
       h('div.results', [
         h('div.column', [
           h('table.races', [
-            races
-              // Ignore any races where a single candidate runs unopposed
-              .filter(race => race.length > 1)
-              // Trim the race down to just the top two candidates
-              .map(race => renderRace(race.slice(0, 2)))
+            // Trim the race down to just the top two candidates
+            races.map(race => renderRace(race.slice(0, 2)))
           ])
         ])
       ])
@@ -663,7 +664,7 @@ const renderUncontestedRace = (result, tableClass) => {
         ])
       )
     ]),
-    h('p.precincts', ['The AP does not tabulate votes for uncontested races, and declares their winner as soon as polls close'])
+    h('p.precincts', [ AP_UNCONTESTED_NOTE ])
   ]);
 };
 

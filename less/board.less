@@ -203,6 +203,8 @@ body {
                     &.gop.winner, &.no.winner { background: @gop; color: white; }
                     &.other.winner, &.yes.winner { background: @ind; color: white; }
 
+                    &.uncontested { font-style: italic; }
+
                     .party {
                         font-size: 75%;
                         font-weight: normal;
@@ -241,7 +243,7 @@ body {
                     &.other.winner, &.yes.winner { background: @ind; color: white; }
                 }
 
-                &.reporting .candidate-total {
+                &.reporting:not(.uncontested) .candidate-total {
                     &:after{
                         content:"%";
                         font-size: 80%;

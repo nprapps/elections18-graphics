@@ -307,7 +307,22 @@ const renderResultsTable = function (key, column) {
   }
 };
 
+const createClassesForBoardCells = result => {
+  return {
+    'winner': result.npr_winner,
+    'dem': result.party === 'Dem',
+    'gop': result.party === 'GOP',
+    'yes': result.party === 'Yes',
+    'no': result.party === 'No',
+    'other': !coloredParties.includes(result.party) && result.party !== 'Uncontested',
+    'uncontested': result.party === 'Uncontested',
+    'incumbent': result.incumbent
+  };
+};
+
 const renderRace = function (race) {
+  let uncontested = (race.length === 1);
+
   const results = determineResults(race);
   const result1 = results[0];
   const result2 = results[1];
@@ -334,9 +349,10 @@ const renderRace = function (race) {
   return h('tr', {
     key: result1['last'],
     classes: {
-      'called': called,
+      called,
       'party-change': change,
-      'reporting': reporting
+      reporting,
+      uncontested
     }
   }, [
     h('td.pickup', {
@@ -359,20 +375,10 @@ const renderRace = function (race) {
     }, [
       decideLabel(result1)
     ]),
-    h('td.results-status', [
+    uncontested ? h('td') : h('td.results-status', [
       calculatePrecinctsReporting(result1['precinctsreportingpct'])
     ]),
-    h('td.candidate', {
-      classes: {
-        'winner': result1['npr_winner'],
-        'dem': result1['party'] === 'Dem',
-        'gop': result1['party'] === 'GOP',
-        'yes': result1['party'] === 'Yes',
-        'no': result1['party'] === 'No',
-        'other': coloredParties.indexOf(result1['party']) < 0,
-        'incumbent': result1['incumbent']
-      }
-    }, [
+    h('td.candidate', { classes: createClassesForBoardCells(result1) }, [
       h('span.fname', [
         result1['first'] ? result1['first'] + ' ' : ''
       ]),
@@ -381,50 +387,18 @@ const renderRace = function (race) {
         insertIncumbentIcon(result1['incumbent'])
       ])
     ]),
-    h('td.candidate-total', {
-      classes: {
-        'winner': result1['npr_winner'],
-        'dem': result1['party'] === 'Dem',
-        'gop': result1['party'] === 'GOP',
-        'yes': result1['party'] === 'Yes',
-        'no': result1['party'] === 'No',
-        'other': coloredParties.indexOf(result1['party']) < 0
-      }
-    }, [
-      h('span.candidate-total-wrapper', {
+    h('td.candidate-total', { classes: createClassesForBoardCells(result1) }, [
+      uncontested ? '' : h('span.candidate-total-wrapper', {
         updateAnimation: onUpdateAnimation
-      }, [
-        Math.round(result1['votepct'] * 100)
-      ])
+      }, [ Math.round(result1['votepct'] * 100) ])
     ]),
     h('td.candidate-total-spacer'),
-    h('td.candidate-total', {
-      classes: {
-        'winner': result2['npr_winner'],
-        'dem': result2['party'] === 'Dem',
-        'gop': result2['party'] === 'GOP',
-        'yes': result2['party'] === 'Yes',
-        'no': result2['party'] === 'No',
-        'other': coloredParties.indexOf(result2['party']) < 0
-      }
-    }, [
-      h('span.candidate-total-wrapper', {
+    h('td.candidate-total', { classes: createClassesForBoardCells(result2) }, [
+      uncontested ? '' : h('span.candidate-total-wrapper', {
         updateAnimation: onUpdateAnimation
-      }, [
-        result2 ? Math.round(result2['votepct'] * 100) : 0
-      ])
+      }, [ Math.round(result2['votepct'] * 100) ])
     ]),
-    h('td.candidate', {
-      classes: {
-        'winner': result2['npr_winner'],
-        'dem': result2['party'] === 'Dem',
-        'gop': result2['party'] === 'GOP',
-        'yes': result2['party'] === 'Yes',
-        'no': result2['party'] === 'No',
-        'other': coloredParties.indexOf(result2['party']) < 0,
-        'incumbent': result2['incumbent']
-      }
-    }, [
+    h('td.candidate', { classes: createClassesForBoardCells(result2) }, [
       h('span.fname', [
         result2 ? result2['first'] : ''
       ]),
@@ -438,6 +412,22 @@ const renderRace = function (race) {
 };
 
 const determineResults = function (race) {
+  // Create a fake 'uncontested' candidate when necessary
+  if (race.length === 1) {
+    race = race.concat(Object.assign(
+      {},
+      // Borrow the race metadata from the real candidate
+      race[0],
+      {
+        first: '',
+        last: 'uncontested',
+        party: 'Uncontested',
+        incumbent: false,
+        npr_winner: false
+      }
+    ));
+  }
+
   let result1;
   let result2;
   let loopArr;
