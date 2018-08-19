@@ -335,22 +335,24 @@ const renderResults = function () {
     // Avoid showing too few (or no) House races, especially for small states
     const SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS = 5;
 
+    const houseResults = getValues(data.house.results);
+    const keyHouseResults = houseResults.filter(race => race[0].meta.key_race);
+
     resultsElements = h('div', [
       h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
       h('p', descriptions.state_desc),
       renderMiniBigBoard('Senate', getValues(data.senate.results), 'senate', 'County-level results >'),
       renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', 'County-level results >'),
-      Object.keys(data.house.results) > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
+      keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
         ? renderMiniBigBoard(
           'Key House Races',
-          // TO-DO: Filter this down to key races, somehow
-          sortBy(getValues(data.house.results).filter(race => true), race => parseInt(race[0].seatnum)),
+          sortBy(keyHouseResults, race => parseInt(race[0].seatnum)),
           'house',
           'All House results >'
         )
         : renderMiniBigBoard(
           'House Races',
-          sortBy(getValues(data.house.results), race => parseInt(race[0].seatnum)),
+          sortBy(houseResults, race => parseInt(race[0].seatnum)),
           'house',
           'Detailed House results >'
         ),
