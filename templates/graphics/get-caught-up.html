@@ -1,0 +1,21 @@
+{% extends '_base_child.html' %}
+
+{% block content %}
+
+{% if COPY.content.intro_1 %}
+<p>{{ COPY.content.intro_1 }}</p>
+{% endif %}
+{% if COPY.content.intro_2 %}
+<p>{{ COPY.content.intro_2 }}</p>
+{% endif %}
+
+<ul>
+    {% if COPY.content.bullet_1 %}<li>{{ COPY.content.bullet_1 }}</li>{% endif %}
+    {% if COPY.content.bullet_2 %}<li>{{ COPY.content.bullet_2 }}</li>{% endif %}
+    {% if COPY.content.bullet_3 %}<li>{{ COPY.content.bullet_3 }}</li>{% endif %}
+    {% if COPY.content.bullet_4 %}<li>{{ COPY.content.bullet_4 }}</li>{% endif %}
+    {% if COPY.content.bullet_5 %}<li>{{ COPY.content.bullet_5 }}</li>{% endif %}
+</ul>
+
+{% endblock %}
+
