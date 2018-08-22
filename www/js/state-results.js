@@ -233,32 +233,19 @@ const renderMaquette = function () {
       renderResults(),
       h('div.footer', [
         h('p.sources', [
-          'Sources: Current results from the AP',
+          'Sources:',
           ' ',
-          h('span.timestamp', [
-            '(as of ',
-            lastUpdated,
-            ' ET).'
-          ]),
+          'Electoral results from the AP,',
+          ' ',
+          h('span.timestamp', [ `last updated at ${lastUpdated} ET.` ]),
           ' ',
           AP_UNCONTESTED_NOTE,
           ' ',
-          'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ',
-          h('a', {
-            href: 'https://censusreporter.org/tables/B19013/',
-            target: '_blank'
-          }, 'Median Household Income.'),
-          ' Percent White numbers are taken from ',
-          h('a', {
-            href: 'https://censusreporter.org/tables/B03002/',
-            target: '_blank'
-          }, 'Hispanic or Latino Origin by Race'),
-          ' to find the percentage of non-Hispanic White people. ',
-          'Percent College Educated is a calculation of all citizens ages 18 or older with a bachelor\'s degree or higher, taken from ',
-          h('a', {
-            href: 'https://censusreporter.org/tables/B15001/',
-            target: '_blank'
-          }, 'Sex by Age by Educational Attainment.')
+          'Demographic, income, and education data from the Census Bureau.',
+          ' ',
+          'Unemployment rates from the Bureau of Labor Statistics.',
+          ' ',
+          '2016 presidential margin from the AP.'
         ])
       ])
     ]);
