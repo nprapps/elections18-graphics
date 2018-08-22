@@ -87,9 +87,9 @@ const getBopData = function () {
 
 const sortData = function (resultsData) {
   // sort each race
-  for (var time in resultsData) {
-    for (var race in resultsData[time]) {
-      resultsData[time][race].sort(function (a, b) {
+  for (var bucket in resultsData) {
+    for (var race in resultsData[bucket]) {
+      resultsData[bucket][race].sort(function (a, b) {
         if (a.npr_winner) return -1;
         if (b.npr_winner) return 1;
         return b.votecount - a.votecount;
@@ -100,6 +100,10 @@ const sortData = function (resultsData) {
   return resultsData;
 };
 
+const isBucketedByTime = bucket =>
+  bucket.includes(':') &&
+  (bucket.includes('a.m.') || bucket.includes('p.m.'));
+
 const renderMaquette = function () {
   if (!resultsData) {
     return h('div.results-wrapper', 'Loading...');
@@ -107,30 +111,32 @@ const renderMaquette = function () {
 
   let numberOfRaces = 0;
 
-  let times = [];
-  for (let time in resultsData) {
-    times.push(time);
-    const group = resultsData[time];
+  let buckets = [];
+  for (let bucket in resultsData) {
+    buckets.push(bucket);
+    const group = resultsData[bucket];
     numberOfRaces += Object.keys(group).length;
   }
 
-  const sortedTimes = times.sort(function (a, b) {
-    var aHour = parseInt(a.split(':')[0]);
-    var bHour = parseInt(b.split(':')[0]);
+  const sortedBuckets = isBucketedByTime(buckets[0])
+    ? buckets.sort(function (a, b) {
+      var aHour = parseInt(a.split(':')[0]);
+      var bHour = parseInt(b.split(':')[0]);
 
-    if (a.slice(-4) === 'a.m.') return 1;
-    if (b.slice(-4) === 'a.m.') return -1;
-    if (aHour === bHour && a.indexOf('30') !== -1) return 1;
-    if (aHour === bHour && b.indexOf('30') !== -1) return -1;
-    else return aHour - bHour;
-  });
+      if (a.slice(-4) === 'a.m.') return 1;
+      if (b.slice(-4) === 'a.m.') return -1;
+      if (aHour === bHour && a.indexOf('30') !== -1) return 1;
+      if (aHour === bHour && b.indexOf('30') !== -1) return -1;
+      else return aHour - bHour;
+    })
+    : buckets.sort();
 
-  let sortedRacesPerTime = {};
+  let sortedRacesPerBucket = {};
 
-  for (let time in resultsData) {
-    let sortedRaces = Object.keys(resultsData[time]).sort(function (a, b) {
-      const aResult = resultsData[time][a][0];
-      const bResult = resultsData[time][b][0];
+  for (let bucket in resultsData) {
+    let sortedRaces = Object.keys(resultsData[bucket]).sort(function (a, b) {
+      const aResult = resultsData[bucket][a][0];
+      const bResult = resultsData[bucket][b][0];
       const as = determineSortKey(aResult);
       const bs = determineSortKey(bResult);
 
@@ -156,7 +162,7 @@ const renderMaquette = function () {
       return 0;
     });
 
-    sortedRacesPerTime[time] = sortedRaces;
+    sortedRacesPerBucket[bucket] = sortedRaces;
   }
 
   const breakingIndex = Math.ceil(numberOfRaces / 2);
@@ -165,15 +171,15 @@ const renderMaquette = function () {
   let secondColumn = {};
   let selectedColumn = firstColumn;
 
-  sortedTimes.forEach(function (time) {
-    const group = resultsData[time];
-    sortedRacesPerTime[time].map(function (id) {
+  sortedBuckets.forEach(function (bucket) {
+    const group = resultsData[bucket];
+    sortedRacesPerBucket[bucket].map(function (id) {
       raceIndex += 1;
 
-      if (!selectedColumn[time]) {
-        selectedColumn[time] = [];
+      if (!selectedColumn[bucket]) {
+        selectedColumn[bucket] = [];
       }
-      selectedColumn[time].push(group[id]);
+      selectedColumn[bucket].push(group[id]);
 
       if (raceIndex === breakingIndex) {
         selectedColumn = secondColumn;
@@ -297,7 +303,12 @@ const renderResultsTable = function (key, column) {
 
   if (races) {
     return [
-      h('h2.poll-closing-group', h('span.time', key + ' ET')),
+      h('h2.bucketed-group', h(
+        'span',
+        isBucketedByTime(key)
+          ? key + ' ET'
+          : key
+      )),
       h('table.races', [
         races.map(race => renderRace(race))
       ])
