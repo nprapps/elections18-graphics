@@ -211,10 +211,24 @@ body {
     }
 
     table.results-table {
+        table-layout: fixed;
+        width: 100%;
+
         th { border-color: #ccc; }
         th, td {
             &.vote { text-align: center; }
             &.uncontested { font-style: italic; }
+        }
+        col.seat-status { width: 28px; }
+        col.candidate { width: 40%; }
+        span.pickup {
+            vertical-align: middle;
+            &:after{
+                font-weight: 500;
+                content: "+1";
+                font-style: italic;
+                padding-left: 3px;
+            }
         }
     }
 

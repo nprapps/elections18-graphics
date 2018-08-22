@@ -598,8 +598,15 @@ const renderRacewideTable = function (results, tableClass) {
   return h(`div.${tableClass}`, [
     h('table.results-table', [
       seatName ? h('caption', seatName) : '',
+      h('colgroup', [
+        h('col.seat-status'),
+        h('col.candidate'),
+        h('col.amt'),
+        h('col.amt')
+      ]),
       h('thead', [
         h('tr', [
+          h('th.seat-info'),
           h('th.candidate', 'Candidate'),
           h('th.amt', 'Votes'),
           h('th.amt', 'Percent')
@@ -610,6 +617,7 @@ const renderRacewideTable = function (results, tableClass) {
       ]),
       h('tfoot', [
         h('tr', [
+          h('td.seat-status'),
           h('td.candidate', 'Total'),
           h('td.amt', commaNumber(totalVotes)),
           h('td.amt', '100%')
@@ -633,9 +641,19 @@ const createClassesForCandidateRow = result => {
 };
 
 const renderCandidateName = result => {
-  let party = result.party ? '(' + result.party + ')' : '';
-  let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' ' + party;
-  return candidate;
+  // Handle `Other` candidates, which won't have a `party` property
+  const party = result.party ? ` (${result.party})` : '';
+  const candidateName = result.is_ballot_measure
+    ? result.party
+    : `${result.first} ${result.last}${party}`;
+
+  return h(
+    'td.candidate',
+    [
+      candidateName,
+      result.npr_winner ? h('i.icon', { class: 'icon-ok' }) : ''
+    ]
+  );
 };
 
 const renderUncontestedRace = (result, tableClass) => {
@@ -646,22 +664,28 @@ const renderUncontestedRace = (result, tableClass) => {
   return h(`div.${tableClass}`, [
     h('table.results-table', [
       seatName ? h('caption', seatName) : '',
+      h('colgroup', [
+        h('col.seat-status'),
+        h('col.candidate'),
+        h('col')
+      ]),
       h('thead', [
         h('tr', [
+          h('th.seat-status', ''),
           h('th.candidate', 'Candidate'),
           h('th', '')
         ])
       ]),
       h('tbody',
         h('tr', { classes: createClassesForCandidateRow(result) }, [
-          h('td.candidate', [
-            renderCandidateName(result),
-            h('i.icon', {
-              classes: {
-                'icon-ok': result.npr_winner
-              }
-            })
+          h('td.seat-status', [
+            result.pickup
+              ? h('span.pickup', { class: 'pickup' })
+              : result.incumbent
+                ? h('i.icon', { class: 'icon-incumbent' })
+                : ''
           ]),
+          renderCandidateName(result),
           h('td.amt.uncontested', 'uncontested')
         ])
       )
@@ -672,14 +696,14 @@ const renderUncontestedRace = (result, tableClass) => {
 
 const renderRow = function (result) {
   return h('tr', { classes: createClassesForCandidateRow(result) }, [
-    h('td.candidate', [
-      renderCandidateName(result),
-      h('i.icon', {
-        classes: {
-          'icon-ok': result.npr_winner
-        }
-      })
+    h('td.seat-status', [
+      result.pickup
+        ? h('span.pickup', { class: 'pickup' })
+        : result.incumbent
+          ? h('i.icon', { class: 'icon-incumbent' })
+          : ''
     ]),
+    renderCandidateName(result),
     h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ]);
