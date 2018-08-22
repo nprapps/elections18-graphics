@@ -27,6 +27,11 @@ var render = function(containerWidth) {
     // run onresize
     } else {
     }
+    
+    // Update iframe
+    if (window.pymChild) {
+        window.pymChild.sendHeight();
+    }
 }
 
 
