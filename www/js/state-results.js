@@ -28,7 +28,7 @@ const availableMetrics = [
     'comma_filter': true
   },
   {
-    'name': '2016 Results',
+    'name': '2016 Presidential Margin',
     'key': 'past_margin',
     'census': false
   },
@@ -419,7 +419,7 @@ const renderResults = function () {
               h('th.county', h('div', h('span', 'County'))),
               h('th.amt.precincts', h('div', h('span', ''))),
               availableCandidates.map(cand => renderCandidateTH(cand)),
-              h('th.vote.margin', h('div', h('span', '2016 Margin'))),
+              h('th.vote.margin', h('div', h('span', 'Margin'))),
               h('th.comparison', h('div', h('span', sortMetric['name'])))
             ])
           ]),
