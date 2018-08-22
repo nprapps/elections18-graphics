@@ -28,7 +28,7 @@ const availableMetrics = [
     'comma_filter': true
   },
   {
-    'name': '2016 Results',
+    'name': '2016 Presidential Margin',
     'key': 'past_margin',
     'census': false
   },
@@ -233,32 +233,19 @@ const renderMaquette = function () {
       renderResults(),
       h('div.footer', [
         h('p.sources', [
-          'Sources: Current results from the AP',
+          'Sources:',
           ' ',
-          h('span.timestamp', [
-            '(as of ',
-            lastUpdated,
-            ' ET).'
-          ]),
+          'Electoral results from the AP,',
+          ' ',
+          h('span.timestamp', [ `last updated at ${lastUpdated} ET.` ]),
           ' ',
           AP_UNCONTESTED_NOTE,
           ' ',
-          'Unemployment numbers from the Bureau of Labor Statistics (2015). Other statistics from the Census Bureau (American Community Survey 5-year estimates). Median Income numbers are taken from ',
-          h('a', {
-            href: 'https://censusreporter.org/tables/B19013/',
-            target: '_blank'
-          }, 'Median Household Income.'),
-          ' Percent White numbers are taken from ',
-          h('a', {
-            href: 'https://censusreporter.org/tables/B03002/',
-            target: '_blank'
-          }, 'Hispanic or Latino Origin by Race'),
-          ' to find the percentage of non-Hispanic White people. ',
-          'Percent College Educated is a calculation of all citizens ages 18 or older with a bachelor\'s degree or higher, taken from ',
-          h('a', {
-            href: 'https://censusreporter.org/tables/B15001/',
-            target: '_blank'
-          }, 'Sex by Age by Educational Attainment.')
+          'Demographic, income, and education data from the Census Bureau.',
+          ' ',
+          'Unemployment rates from the Bureau of Labor Statistics.',
+          ' ',
+          '2016 presidential margin from the AP, and may vary slightly from state-certified final results.'
         ])
       ])
     ]);
@@ -419,7 +406,7 @@ const renderResults = function () {
               h('th.county', h('div', h('span', 'County'))),
               h('th.amt.precincts', h('div', h('span', ''))),
               availableCandidates.map(cand => renderCandidateTH(cand)),
-              h('th.vote.margin', h('div', h('span', '2016 Margin'))),
+              h('th.vote.margin', h('div', h('span', 'Margin'))),
               h('th.comparison', h('div', h('span', sortMetric['name'])))
             ])
           ]),
@@ -598,8 +585,15 @@ const renderRacewideTable = function (results, tableClass) {
   return h(`div.${tableClass}`, [
     h('table.results-table', [
       seatName ? h('caption', seatName) : '',
+      h('colgroup', [
+        h('col.seat-status'),
+        h('col.candidate'),
+        h('col.amt'),
+        h('col.amt')
+      ]),
       h('thead', [
         h('tr', [
+          h('th.seat-info'),
           h('th.candidate', 'Candidate'),
           h('th.amt', 'Votes'),
           h('th.amt', 'Percent')
@@ -610,6 +604,7 @@ const renderRacewideTable = function (results, tableClass) {
       ]),
       h('tfoot', [
         h('tr', [
+          h('td.seat-status'),
           h('td.candidate', 'Total'),
           h('td.amt', commaNumber(totalVotes)),
           h('td.amt', '100%')
@@ -633,9 +628,19 @@ const createClassesForCandidateRow = result => {
 };
 
 const renderCandidateName = result => {
-  let party = result.party ? '(' + result.party + ')' : '';
-  let candidate = result.is_ballot_measure ? result.party : result.first + ' ' + result.last + ' ' + party;
-  return candidate;
+  // Handle `Other` candidates, which won't have a `party` property
+  const party = result.party ? ` (${result.party})` : '';
+  const candidateName = result.is_ballot_measure
+    ? result.party
+    : `${result.first} ${result.last}${party}`;
+
+  return h(
+    'td.candidate',
+    [
+      candidateName,
+      result.npr_winner ? h('i.icon', { class: 'icon-ok' }) : ''
+    ]
+  );
 };
 
 const renderUncontestedRace = (result, tableClass) => {
@@ -646,22 +651,28 @@ const renderUncontestedRace = (result, tableClass) => {
   return h(`div.${tableClass}`, [
     h('table.results-table', [
       seatName ? h('caption', seatName) : '',
+      h('colgroup', [
+        h('col.seat-status'),
+        h('col.candidate'),
+        h('col')
+      ]),
       h('thead', [
         h('tr', [
+          h('th.seat-status', ''),
           h('th.candidate', 'Candidate'),
           h('th', '')
         ])
       ]),
       h('tbody',
         h('tr', { classes: createClassesForCandidateRow(result) }, [
-          h('td.candidate', [
-            renderCandidateName(result),
-            h('i.icon', {
-              classes: {
-                'icon-ok': result.npr_winner
-              }
-            })
+          h('td.seat-status', [
+            result.pickup
+              ? h('span.pickup', { class: 'pickup' })
+              : result.incumbent
+                ? h('i.icon', { class: 'icon-incumbent' })
+                : ''
           ]),
+          renderCandidateName(result),
           h('td.amt.uncontested', 'uncontested')
         ])
       )
@@ -672,14 +683,14 @@ const renderUncontestedRace = (result, tableClass) => {
 
 const renderRow = function (result) {
   return h('tr', { classes: createClassesForCandidateRow(result) }, [
-    h('td.candidate', [
-      renderCandidateName(result),
-      h('i.icon', {
-        classes: {
-          'icon-ok': result.npr_winner
-        }
-      })
+    h('td.seat-status', [
+      result.pickup
+        ? h('span.pickup', { class: 'pickup' })
+        : result.incumbent
+          ? h('i.icon', { class: 'icon-incumbent' })
+          : ''
     ]),
+    renderCandidateName(result),
     h('td.amt', commaNumber(result.votecount)),
     h('td.amt', (result.votepct * 100).toFixed(1) + '%')
   ]);
