@@ -28,7 +28,7 @@ const availableMetrics = [
     'comma_filter': true
   },
   {
-    'name': '2012 Results',
+    'name': '2016 Results',
     'key': 'past_margin',
     'census': false
   },
