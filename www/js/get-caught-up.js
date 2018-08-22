@@ -23,10 +23,10 @@ var onWindowLoaded = function() {
  */
 var render = function(containerWidth) {
     // only run the first time
-    if (!isBopInit) {
+    //if (!isBopInit) {
     // run onresize
-    } else {
-    }
+    //} else {
+    //} 
     
     // Update iframe
     if (window.pymChild) {
