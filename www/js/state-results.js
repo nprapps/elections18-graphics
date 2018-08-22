@@ -245,7 +245,7 @@ const renderMaquette = function () {
           ' ',
           'Unemployment rates from the Bureau of Labor Statistics.',
           ' ',
-          '2016 presidential margin from the AP.'
+          '2016 presidential margin from the AP, and may vary slightly from state-certified final results.'
         ])
       ])
     ]);
