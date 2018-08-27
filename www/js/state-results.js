@@ -325,9 +325,22 @@ const renderResults = function () {
     const houseResults = getValues(data.house.results);
     const keyHouseResults = houseResults.filter(race => race[0].meta.key_race);
 
+    const allRaces = []
+      .concat(getValues(data.house.results))
+      .concat(getValues(data.senate.results))
+      .concat(getValues(data.governor.results))
+      .concat(getValues(data.ballot_measures.results));
+    // Poll-close time is set at a statewide level, so don't worry
+    // about which race it's extracted from
+    const pollCloseTime = allRaces[0][0].meta.poll_closing;
+    const areThereAnyVotesYet = allRaces.some(race => race.voteCount > 0);
+
     resultsElements = h('div', [
       h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
       h('p', descriptions.state_desc),
+      areThereAnyVotesYet
+        ? ''
+        : h('p', `Polls closing at ${pollCloseTime} ET.`),
       renderMiniBigBoard('Senate', getValues(data.senate.results), 'senate', 'County-level results >'),
       renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', 'County-level results >'),
       keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
