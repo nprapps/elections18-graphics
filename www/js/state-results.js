@@ -333,7 +333,7 @@ const renderResults = function () {
     // Poll-close time is set at a statewide level, so don't worry
     // about which race it's extracted from
     const pollCloseTime = allRaces[0][0].meta.poll_closing;
-    const areThereAnyVotesYet = allRaces.some(race => race.voteCount > 0);
+    const areThereAnyVotesYet = allRaces.some(race => race.some(result => result.votecount > 0));
 
     resultsElements = h('div', [
       h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
