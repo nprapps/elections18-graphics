@@ -1,14 +1,9 @@
-/* TODO
-- link bars to the big board
-*/
-
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
 import textures from 'textures';
 import request from 'superagent';
 import countdown from './countdown';
-// import textures from 'textures';
 import { classify, buildDataURL } from './helpers.js';
 
 // Global vars

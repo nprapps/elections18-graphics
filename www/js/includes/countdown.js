@@ -1,6 +1,4 @@
-var exports = module.exports = {};
-
-exports.resultsCountdown = function(indicator, loadInterval) {
+const resultsCountdown = function(indicator, loadInterval) {
     var counter = null;
     var interval = null;
 
@@ -48,5 +46,6 @@ exports.resultsCountdown = function(indicator, loadInterval) {
     }
 
     startIndicator();
+};
 
-}
+export default resultsCountdown;

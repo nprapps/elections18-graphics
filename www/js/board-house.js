@@ -4,7 +4,6 @@
 // npm libraries
 import '../js/includes/navbar.js';
 import { initBigBoard } from '../js/includes/big-board-core.js';
-import 'superagent';
 
 // global vars
 window.pymChild = null;
