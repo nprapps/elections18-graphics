@@ -90,6 +90,8 @@ var loadData = function() {
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
         .end(function(err, res) {
+            // Superagent takes anything outside of `200`-class responses to be errors
+            if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
             if (res.body) {
                 lastRequestTime = new Date().toUTCString();
                 bopData = res.body;

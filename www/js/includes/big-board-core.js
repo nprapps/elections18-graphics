@@ -37,22 +37,22 @@ const getInitialData = function () {
   request.get(bopDataURL)
     .set('If-Modified-Since', '')
     .end(function (err, res) {
+      // Superagent takes anything outside of `200`-class responses to be errors
+      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
       if (res.body) {
         bopData = res.body;
         lastBopRequestTime = new Date().toUTCString();
-      } else {
-        console.warn(err);
       }
       request.get(dataURL)
         .set('If-Modified-Since', '')
         .end(function (err, res) {
+          // Superagent takes anything outside of `200`-class responses to be errors
+          if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
           if (res.body) {
             lastRequestTime = new Date().toUTCString();
             resultsData = sortData(res.body.results);
             lastUpdated = res.body.last_updated;
             projector.scheduleRender();
-          } else {
-            console.warn(err);
           }
         });
     });
@@ -62,7 +62,8 @@ const getData = function () {
   request.get(dataURL)
     .set('If-Modified-Since', lastRequestTime || '')
     .end(function (err, res) {
-      if (err) { throw err; }
+      // Superagent takes anything outside of `200`-class responses to be errors
+      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
       if (res.body) {
         lastRequestTime = new Date().toUTCString();
         resultsData = sortData(res.body.results);
@@ -76,7 +77,8 @@ const getBopData = function () {
   request.get(bopDataURL)
     .set('If-Modified-Since', lastBopRequestTime || '')
     .end(function (err, res) {
-      if (err) { throw err; }
+      // Superagent takes anything outside of `200`-class responses to be errors
+      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
       if (res.body) {
         lastBopRequestTime = new Date().toUTCString();
         bopData = res.body;

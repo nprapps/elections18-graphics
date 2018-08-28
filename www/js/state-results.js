@@ -126,9 +126,9 @@ const getData = function (forceReload) {
   request.get(dataURL)
     .set('If-Modified-Since', requestTime || '')
     .end(function (err, res) {
+      // Superagent takes anything outside of `200`-class responses to be errors
+      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
       if (res.body) {
-        if (err) { throw err; }
-
         lastDownballotRequestTime = new Date().toUTCString();
 
         data = res.body.results;
@@ -155,7 +155,8 @@ const getData = function (forceReload) {
 const getExtraData = function () {
   request.get(extraDataURL)
     .end(function (err, res) {
-      if (err) { throw err; }
+      // Superagent takes anything outside of `200`-class responses to be errors
+      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
       extraData = res.body;
       projector.append(resultsWrapper, renderMaquette);
     });
