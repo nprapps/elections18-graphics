@@ -7,7 +7,7 @@
     "preinstall": "npm install -g concurrently"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "@babel/polyfill": "~7.0.0-beta.54",
     "comma-number": "^1.1.0",
     "d3": "^3.5.17",
     "maquette": "^2.5.4",
@@ -22,9 +22,9 @@
     "virtual-dom": "^2.1.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "~7.1.5",
-    "babel-preset-env": "^1.7.0",
+    "@babel/core": "~7.0.0-beta.54",
+    "@babel/preset-env": "~7.0.0-beta.54",
+    "babel-loader": "^8.0.0-beta.0",
     "eslint": "^4.19.1",
     "eslint-config-semistandard": "^12.0.1",
     "eslint-config-standard": "^11.0.0",

@@ -1,12 +1,12 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "targets": {
+          "browsers": [
           // Browsers defined by DM here:
           // https://confluence.npr.org/pages/viewpage.action?spaceKey=QA&title=Browser+and+OS+Support
-          "browsers": [
             "last 1 Firefox version",
             "last 1 Chrome version",
             "last 1 Safari version",
@@ -15,7 +15,7 @@
             "IE 11"
           ]
         },
-        "useBuiltIns": true
+        "useBuiltIns": "usage"
       }
     ]
   ]

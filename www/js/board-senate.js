@@ -1,29 +1,24 @@
-// This will be transformed by Babel into only the polyfills that are needed,
-// thanks to the `"useBuiltIns": true` option in `.babelrc`
-// https://www.npmjs.com/package/babel-preset-env#usebuiltins
-import 'babel-polyfill';
+// Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
+// https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
-import navbar from '../js/includes/navbar.js';
-import bigboard from '../js/includes/big-board-core.js'
-import request from 'superagent';
+import '../js/includes/navbar.js';
+import { initBigBoard } from '../js/includes/big-board-core.js';
+import 'superagent';
 
 // global vars
 window.pymChild = null;
-let dataURL = null;
-let data = null;
 
-var resultsMenu = document.querySelector(".small-screen-nav-label");
-var stateMenu = document.querySelector(".state-nav-label");
+var resultsMenu = document.querySelector('.small-screen-nav-label');
+var stateMenu = document.querySelector('.state-nav-label');
 /*
 * Initialize the graphic.
 */
-var onWindowLoaded = function() {
-    // init pym and render callback
-    window.pymChild = new pym.Child();
-    bigboard.initBigBoard('senate-national.json', 'Senate', 'senate');
-}
-
+var onWindowLoaded = function () {
+  // init pym and render callback
+  window.pymChild = new pym.Child();
+  initBigBoard('senate-national.json', 'Senate', 'senate');
+};
 
 /*
  * Initially load the graphic

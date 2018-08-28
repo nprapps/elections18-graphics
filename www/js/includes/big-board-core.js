@@ -585,7 +585,7 @@ const diffArrays = function (arr1, arr2) {
   return ret;
 };
 
-module.exports = {
+export {
   initBigBoard,
   renderRace
 };

@@ -1,7 +1,5 @@
-// This will be transformed by Babel into only the polyfills that are needed,
-// thanks to the `"useBuiltIns": true` option in `.babelrc`
-// https://www.npmjs.com/package/babel-preset-env#usebuiltins
-import 'babel-polyfill';
+// Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
+// https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 import { h, createProjector } from 'maquette';
 import {

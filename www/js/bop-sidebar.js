@@ -1,10 +1,8 @@
-// This will be transformed by Babel into only the polyfills that are needed,
-// thanks to the `"useBuiltIns": true` option in `.babelrc`
-// https://www.npmjs.com/package/babel-preset-env#usebuiltins
-import 'babel-polyfill';
+// Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
+// https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
-import bop from '../js/includes/bop.js';
+import { initBop, renderBop } from '../js/includes/bop.js';
 
 // Global vars
 window.pymChild = null;
@@ -13,74 +11,64 @@ var navLinks = null;
 /*
 * Initialize the graphic.
 */
-var onWindowLoaded = function() {
-    // init pym and render callback
-    window.pymChild = new pym.Child({
-        renderCallback: render
-    });
+var onWindowLoaded = function () {
+  // init pym and render callback
+  window.pymChild = new pym.Child({
+    renderCallback: render
+  });
 
-    navLinks = document.querySelectorAll('.nav-link');
-    for (var i = 0; i < navLinks.length; i++) {
-        navLinks[i].addEventListener('click', onNavLinkClick);
-    }
+  navLinks = document.querySelectorAll('.nav-link');
+  for (var i = 0; i < navLinks.length; i++) {
+    navLinks[i].addEventListener('click', onNavLinkClick);
+  }
+};
 
-    // pymChild.onMessage('on-screen', function(bucket) {
-    //     ANALYTICS.trackEvent('on-screen', bucket);
-    // });
-    // pymChild.onMessage('scroll-depth', function(data) {
-    //     data = JSON.parse(data);
-    //     ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
-    // });
-}
+var onNavLinkClick = function (e) {
+  const domain = parseParentURL();
+  const url = e.target.href;
+  console.log('nav link click');
 
-var onNavLinkClick = function(e) {
-    const domain = parseParentURL();
-    const url = e.target.href;
-    console.log('nav link click')
+  if (window.pymChild && (domain === 'npr.org' || domain === 'localhost')) {
+    console.log('if statement passing');
+    window.pymChild.sendMessage('pjax-navigate', url);
+    e.preventDefault();
+    e.stopPropagation();
+  } else {
+    console.log('if statement failing');
+    window.open(url, '_top');
+  }
+};
 
-    if (window.pymChild && (domain == 'npr.org' || domain == 'localhost')) {
-        console.log('if statement passing');
-        window.pymChild.sendMessage('pjax-navigate', url);
-        e.preventDefault();
-        e.stopPropagation();
-    } else {
-        console.log('if statement failing');
-        window.open(url, '_top');
-    }
-}
-
-
-var parseParentURL = function() {
-    if (!pymChild) {
-        return null;
-    }
-    const parentUrl = new URL(window.pymChild.parentUrl, location, true);
-    if (parentUrl.hostname == '127.0.0.1') {
-        return 'localhost';
-    } else {
-        return parentUrl.hostname.split('.').slice(-2).join('.');
-    }
-}
+var parseParentURL = function () {
+  if (!pymChild) {
+    return null;
+  }
+  const parentUrl = new URL(window.pymChild.parentUrl, location, true);
+  if (parentUrl.hostname == '127.0.0.1') {
+    return 'localhost';
+  } else {
+    return parentUrl.hostname.split('.').slice(-2).join('.');
+  }
+};
 
 /*
  * Render
  */
-var render = function(containerWidth) {
-    // only run the first time
-    if (!isBopInit) {
-        bop.initBop(containerWidth);
-        isBopInit = true;
-    // run onresize
-    } else {
-        bop.renderBop(containerWidth);
-    }
+var render = function (containerWidth) {
+  // only run the first time
+  if (!isBopInit) {
+    initBop(containerWidth);
+    isBopInit = true;
+  // run onresize
+  } else {
+    renderBop(containerWidth);
+  }
 
-    // Update iframe
-    if (window.pymChild) {
-        window.pymChild.sendHeight();
-    }
-}
-
+  // Update iframe
+  if (window.pymChild) {
+    window.pymChild.sendHeight();
+  }
+};
 
 /*
  * Initially load the graphic

@@ -1,49 +1,44 @@
-// This will be transformed by Babel into only the polyfills that are needed,
-// thanks to the `"useBuiltIns": true` option in `.babelrc`
-// https://www.npmjs.com/package/babel-preset-env#usebuiltins
-import 'babel-polyfill';
+// Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
+// https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
-import bop from '../js/includes/bop.js';
+import { initBop, renderBop } from '../js/includes/bop.js';
 
 // global vars
 window.pymChild = null;
 var isBopInit = false;
 
-
 /*
 * Initialize the graphic.
 */
-var onWindowLoaded = function() {
-    // init pym and render callback
-    window.pymChild = new pym.Child({
-        renderCallback: render
-    });
+var onWindowLoaded = function () {
+  // init pym and render callback
+  window.pymChild = new pym.Child({
+    renderCallback: render
+  });
 
-    // pymChild.onMessage('on-screen', function(bucket) {
-    //     ANALYTICS.trackEvent('on-screen', bucket);
-    // });
-    // pymChild.onMessage('scroll-depth', function(data) {
-    //     data = JSON.parse(data);
-    //     ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
-    // });
-}
-
+  // pymChild.onMessage('on-screen', function(bucket) {
+  //     ANALYTICS.trackEvent('on-screen', bucket);
+  // });
+  // pymChild.onMessage('scroll-depth', function(data) {
+  //     data = JSON.parse(data);
+  //     ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
+  // });
+};
 
 /*
  * Render
  */
-var render = function(containerWidth) {
-    // only run the first time
-    if (!isBopInit) {
-        bop.initBop(containerWidth);
-        isBopInit= true;
-    // run onresize
-    } else {
-        bop.renderBop(containerWidth);
-    }
-}
-
+var render = function (containerWidth) {
+  // only run the first time
+  if (!isBopInit) {
+    initBop(containerWidth);
+    isBopInit = true;
+  // run onresize
+  } else {
+    renderBop(containerWidth);
+  }
+};
 
 /*
  * Initially load the graphic

@@ -59,12 +59,10 @@ var tIExpected = null;
 
 var initialRender = true;
 
-var exports = module.exports = {};
-
 /*
  * Initialize the graphic.
  */
-exports.initBop = function(containerWidth) {
+const initBop = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
     footnotes = d3.select('.footnotes');
     graphicWidth = containerWidth;
@@ -184,7 +182,7 @@ var formatData = function() {
 /*
  * Render the graphic(s). Called by pym with the container width.
  */
-exports.renderBop = function(containerWidth) {
+const renderBop = function(containerWidth) {
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;
     }
@@ -457,3 +455,8 @@ var renderStackedBarChart = function(config) {
             return xPos;
         })
 }
+
+export {
+  initBop,
+  renderBop
+};
