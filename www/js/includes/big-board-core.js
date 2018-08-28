@@ -6,8 +6,8 @@ import { buildDataURL } from './helpers.js';
 // global vars
 let dataURL = null;
 let bopDataURL = null;
-let lastRequestTime = null;
-let lastBopRequestTime = null;
+let lastRequestTime = '';
+let lastBopRequestTime = '';
 let boardTitle = null;
 let resultsData = null;
 let bopData = null;
@@ -35,19 +35,15 @@ function initBigBoard (filename, boardName, boardClass) {
 
 const getInitialData = function () {
   request.get(bopDataURL)
-    .set('If-Modified-Since', '')
     .end(function (err, res) {
-      // Superagent takes anything outside of `200`-class responses to be errors
-      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
+      if (err) { throw err; }
       if (res.body) {
         bopData = res.body;
         lastBopRequestTime = new Date().toUTCString();
       }
       request.get(dataURL)
-        .set('If-Modified-Since', '')
         .end(function (err, res) {
-          // Superagent takes anything outside of `200`-class responses to be errors
-          if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
+          if (err) { throw err; }
           if (res.body) {
             lastRequestTime = new Date().toUTCString();
             resultsData = sortData(res.body.results);
@@ -60,7 +56,7 @@ const getInitialData = function () {
 
 const getData = function () {
   request.get(dataURL)
-    .set('If-Modified-Since', lastRequestTime || '')
+    .set('If-Modified-Since', lastRequestTime)
     .end(function (err, res) {
       // Superagent takes anything outside of `200`-class responses to be errors
       if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
@@ -75,7 +71,7 @@ const getData = function () {
 
 const getBopData = function () {
   request.get(bopDataURL)
-    .set('If-Modified-Since', lastBopRequestTime || '')
+    .set('If-Modified-Since', lastBopRequestTime)
     .end(function (err, res) {
       // Superagent takes anything outside of `200`-class responses to be errors
       if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }

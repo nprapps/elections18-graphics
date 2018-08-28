@@ -37,7 +37,7 @@ var bopData = [];
 var reloadData = null;
 var graphicWidth = null;
 var timestamp = null;
-var lastRequestTime = null;
+var lastRequestTime = '';
 var footnotes = null;
 
 var senateCalled = [];
@@ -90,7 +90,7 @@ const initBop = function(containerWidth) {
  */
 var loadData = function() {
     request.get(buildDataURL(DATA_FILE))
-        .set('If-Modified-Since', lastRequestTime ? lastRequestTime : '')
+        .set('If-Modified-Since', lastRequestTime)
         .end(function(err, res) {
             // Superagent takes anything outside of `200`-class responses to be errors
             if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }

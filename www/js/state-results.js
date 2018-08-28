@@ -86,7 +86,7 @@ let lastUpdated = null;
 let parentScrollAboveIframeTop = null;
 let resultsView = 'key';
 let resultsType = 'Key Results';
-let lastDownballotRequestTime = null;
+let lastDownballotRequestTime = '';
 let raceTypes = [
   'Key',
   'House',
@@ -121,10 +121,8 @@ var onWindowLoaded = function () {
 };
 
 const getData = function (forceReload) {
-  var requestTime = forceReload ? lastDownballotRequestTime : '';
-
   request.get(dataURL)
-    .set('If-Modified-Since', requestTime || '')
+    .set('If-Modified-Since', forceReload ? '' : lastDownballotRequestTime)
     .end(function (err, res) {
       // Superagent takes anything outside of `200`-class responses to be errors
       if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
@@ -146,7 +144,6 @@ const getData = function (forceReload) {
         }
 
         lastUpdated = res.body.last_updated;
-        projector.resume();
         projector.scheduleRender();
       }
     });
@@ -155,8 +152,7 @@ const getData = function (forceReload) {
 const getExtraData = function () {
   request.get(extraDataURL)
     .end(function (err, res) {
-      // Superagent takes anything outside of `200`-class responses to be errors
-      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
+      if (err) { throw err; }
       extraData = res.body;
       projector.append(resultsWrapper, renderMaquette);
     });
@@ -729,8 +725,6 @@ const toTitleCase = str => {
 
 const switchResultsView = function (e) {
   // Switch which results tab is being displayed
-  projector.stop();
-
   resultsView = e.target.getAttribute('name');
   resultsType = `${toTitleCase(resultsView)} Results`;
 
