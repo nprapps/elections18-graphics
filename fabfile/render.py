@@ -7,7 +7,6 @@ Commands for rendering various parts of the app stack.
 from glob import glob
 import logging
 import os
-import subprocess
 
 from fabric.api import local, task
 from fabric.state import env
@@ -19,11 +18,13 @@ logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
 logger.setLevel(app_config.LOG_LEVEL)
 
+
 def _fake_context(path):
     """
     Create a fact request context for a given path.
     """
     return app.app.test_request_context(path=path)
+
 
 def _view_from_name(name):
     """
@@ -39,6 +40,7 @@ def _view_from_name(name):
         module = 'app'
 
     return globals()[module].__dict__[name]
+
 
 @task
 def less():
@@ -56,6 +58,7 @@ def less():
             logger.error('It looks like "lessc" isn\'t installed. Try running: "npm install"')
             raise
 
+
 @task
 def jst():
     """
@@ -65,6 +68,7 @@ def jst():
         local('node_modules/universal-jst/bin/jst.js --template underscore jst www/js/templates.js')
     except:
         logger.error('It looks like "jst" isn\'t installed. Try running: "npm install"')
+
 
 @task
 def app_config_js():
@@ -79,6 +83,7 @@ def app_config_js():
     with open('www/js/app_config.js', 'w') as f:
         f.write(response.data)
 
+
 @task
 def copytext_js():
     """
@@ -92,22 +97,17 @@ def copytext_js():
     with open('www/js/copy.js', 'w') as f:
         f.write(response.data)
 
+
 @task(default=True)
 def render(slug):
     """
     Render HTML templates and compile assets.
     """
-    _render_special_css()
     if slug:
         _render_graphics(['templates/graphics/%s' % slug])
     else:
         _render_graphics(glob('templates/graphics/*'))
 
-
-def _render_special_css():
-    content = subprocess.check_output(["node_modules/less/bin/lessc", "-x", 'less/screenshot.less'])
-    with open('www/css/rendered/screenshot.css', 'w') as writefile:
-        writefile.write(content)
 
 def _render_graphics(paths):
     """
@@ -125,7 +125,7 @@ def _render_graphics(paths):
         with app.app.test_request_context(path='%s/' % slug):
             g.compile_includes = True
             g.compiled_includes = {}
-            
+
             view = app.__dict__['parent']
             content = view(slug).data
 
