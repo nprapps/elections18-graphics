@@ -73,33 +73,11 @@ const buildDataURL = function(filename) {
     }
 }
 
-const injectCustomCSS = function() {
-    var link = document.createElement('link')
-    link.setAttribute('rel', 'stylesheet')
-    link.setAttribute('type', 'text/css')
-    if (APP_CONFIG.DEPLOYMENT_TARGET == 'production' || APP_CONFIG.DEPLOYMENT_TARGET == 'staging') {
-        link.setAttribute('href', '../css/rendered/screenshot.css');
-    } else {
-        link.setAttribute('href', '../less/screenshot.less');
-    }
-    document.getElementsByTagName('head')[0].appendChild(link)
-}
-
-// Evaluate custom css injection onload
-if (Boolean(getParameterByName('screenshot'))) {
-    if (document.readyState !== 'loading'){
-        injectCustomCSS();
-    } else {
-        document.addEventListener('DOMContentLoaded', injectCustomCSS);
-    }
-}
-
 export {
     classify,
     formatStyle,
     makeTranslate,
     getParameterByName,
     urlToLocation,
-    buildDataURL,
-    injectCustomCSS
+    buildDataURL
 };

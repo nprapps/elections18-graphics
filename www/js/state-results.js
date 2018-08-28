@@ -10,7 +10,7 @@ import {
 import request from 'superagent';
 import commaNumber from 'comma-number';
 
-import navbar from '../js/includes/navbar.js';
+import '../js/includes/navbar.js';
 import briefingData from '../data/extra_data/state-briefings.json';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
@@ -713,15 +713,6 @@ const onMetricClick = function (e) {
       sortMetric = availableMetrics[i];
       ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
     }
-  }
-};
-
-const onRatingClick = function (e) {
-  const domain = navbar.parseParentURL();
-  if (e.target.tagName === 'A' && pymChild && (domain === 'npr.org' || domain === 'localhost')) {
-    pymChild.sendMessage('pjax-navigate', e.target.href);
-    e.preventDefault();
-    e.stopPropagation();
   }
 };
 

@@ -4,7 +4,7 @@
 <head>
     <!-- CHARTBEAT -->
     <script type="text/javascript">
-        var _sf_startpt=(new Date()).getTime();
+        var _sf_startpt = (new Date()).getTime();
     </script>
 
     <title></title>
@@ -27,23 +27,14 @@
 </head>
 <body>
     <script src="../js/app_config.js"></script>
-    <!-- ANALYTICS JAVASCRIPT -->
-    {% if DEPLOYMENT_TARGET %}
-    <script src="../js/rendered/analytics.min.js"></script>
-    {% else %}
     <script src="../js/rendered/analytics.js"></script>
-    {% endif %}
 
     {% block content %}
     {% endblock content %}
 
     <script src="//pym.nprapps.org/pym.v1.min.js" type="text/javascript"></script>
     <script src="../js/includes/colors.js" type="text/javascript"></script>
-    {% if DEPLOYMENT_TARGET %}
 
-    <script src="../js/rendered/{{ slug }}.min.js"></script>
-    {% else %}
     <script src="../js/rendered/{{ slug }}.js"></script>
-    {% endif %}    
 </body>
 </html>

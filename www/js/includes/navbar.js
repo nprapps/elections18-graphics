@@ -21,14 +21,19 @@ const updateMenuParent = function (e) {
 
 const followNavLink = function (e) {
   const domain = parseParentURL();
-  if (e.target.tagName == 'A' && e.target !== e.currentTarget && pymChild && (domain === 'npr.org' || domain === 'localhost')) {
+  if (
+    e.target.tagName === 'A' &&
+    e.target !== e.currentTarget &&
+    pymChild &&
+    (domain === 'npr.org' || domain === 'localhost')
+  ) {
     pymChild.sendMessage('pjax-navigate', e.target.href);
     e.preventDefault();
     e.stopPropagation();
   }
 };
 
-const initNavBar = () => {
+const setNavBarHandlers = () => {
   var resultsMenuButton = document.querySelector('.small-screen-nav-label');
   var resultsMenu = document.querySelector('.menu');
   resultsMenuButton.addEventListener('click', updateMenuParent);
@@ -40,7 +45,8 @@ const initNavBar = () => {
   stateMenuButton.addEventListener('click', updateMenuParent);
 };
 
-export default initNavBar;
+// Set the handlers when this module is imported for its side-effects
+setNavBarHandlers();
 export {
   parseParentURL
 };
