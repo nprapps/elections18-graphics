@@ -76,7 +76,7 @@ var loadData = function() {
                 redrawChart();
             }
 
-            countdown.resultsCountdown(indicator, LOAD_INTERVAL);
+            countdown(indicator, LOAD_INTERVAL);
         });
 }
 
