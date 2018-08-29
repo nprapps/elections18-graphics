@@ -42,13 +42,7 @@ var indicator = null;
 var footnotes = null;
 
 var senateCalled = [];
-var senateExpected = [];
 var houseCalled = [];
-var houseExpected = [];
-
-var tDExpected = null;
-var tRExpected = null;
-var tIExpected = null;
 
 /*
  * Initialize the graphic.
@@ -58,25 +52,6 @@ const initBop = function(containerWidth) {
     indicator = document.querySelector('.countdown');
     footnotes = d3.select('.footnotes');
     graphicWidth = containerWidth;
-
-    // define textures for "leading/ahead"
-    tDExpected = textures.lines()
-        .size(3)
-        .strokeWidth(1)
-        .stroke(COLORS['dem'])
-        .background('#ccc');
-
-    tRExpected = textures.lines()
-        .size(3)
-        .strokeWidth(1)
-        .stroke(COLORS['gop'])
-        .background('#ccc');
-
-    tIExpected = textures.lines()
-        .size(3)
-        .strokeWidth(1)
-        .stroke(COLORS['ind'])
-        .background('#ccc');
 
     loadData();
     //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
@@ -117,15 +92,6 @@ var formatData = function() {
         { 'name': 'Not yet called', 'val': sData['uncalled_races'] },
         { 'name': 'GOP', 'val': sData['GOP']['seats'] }
     ];
-    senateExpected = [
-        { 'name': 'Dem.', 'val': sData['Dem']['seats'] },
-        { 'name': 'Ind.', 'val': sData['Other']['seats'] },
-        { 'name': 'Dem.-expected', 'val': sData['Dem']['expected'] },
-        { 'name': 'Ind.-expected', 'val': sData['Other']['expected'] },
-        { 'name': 'Not yet called', 'val': (sData['uncalled_races'] - sData['Dem']['expected'] - sData['GOP']['expected'] - sData['Other']['expected']) },
-        { 'name': 'GOP-expected', 'val': sData['GOP']['expected'] },
-        { 'name': 'GOP', 'val': sData['GOP']['seats'] }
-    ];
     CONGRESS['senate']['total'] = sData['total_seats'];
     CONGRESS['senate']['majority'] = sData['majority'];
 
@@ -136,22 +102,10 @@ var formatData = function() {
         { 'name': 'Ind.', 'val': hData['Other']['seats'] },
         { 'name': 'GOP', 'val': hData['GOP']['seats'] }
     ];
-    houseExpected = [
-        { 'name': 'Dem.', 'val': hData['Dem']['seats'] },
-        { 'name': 'Dem.-expected', 'val': hData['Dem']['expected'] },
-        { 'name': 'Not yet called', 'val': (hData['uncalled_races'] - hData['Dem']['expected'] - hData['GOP']['expected'] - hData['Other']['expected']) },
-        { 'name': 'Ind.-expected', 'val': hData['Other']['expected'] },
-        { 'name': 'Ind.', 'val': hData['Other']['seats'] },
-        { 'name': 'GOP-expected', 'val': hData['GOP']['expected'] },
-        { 'name': 'GOP', 'val': hData['GOP']['seats'] }
-    ];
     CONGRESS['house']['total'] = hData['total_seats'];
     CONGRESS['house']['majority'] = hData['majority'];
 
-    // console.log(senateExpected[0]['value'] + senateExpected[1]['value'] + senateExpected[2]['value'] + senateExpected[3]['value'] + senateExpected[4]['value'] + senateExpected[5]['value'] + senateExpected[6]['value']);
-    // console.log(houseExpected[0]['value'] + houseExpected[1]['value'] + houseExpected[2]['value'] + houseExpected[3]['value'] + houseExpected[4]['value'] + houseExpected[5]['value'] + houseExpected[6]['value']);
-
-    _.each([ senateCalled, senateExpected, houseCalled, houseExpected ], function(d, i) {
+    _.each([ senateCalled, houseCalled ], function(d, i) {
         var x0 = 0;
 
         _.each(d, function(v, k) {
@@ -200,7 +154,6 @@ var redrawChart = function() {
             container: '#bop .chart.' + classify(d),
             width: graphicWidth,
             dataCalled: eval(classify(d) + 'Called'),
-            dataExpected: eval(classify(d) + 'Expected'),
             chart: d
         });
     })
@@ -224,7 +177,6 @@ var renderStackedBarChart = function(config) {
     var labelColumn = 'label';
 
     var barCalledHeight = 35;
-    var barExpectedHeight = 15;
     var barGap = 2;
     var valueGap = 6;
 
@@ -232,7 +184,7 @@ var renderStackedBarChart = function(config) {
         top: 46,
         right: 1,
         bottom: 0,
-        left: 57
+        left: 1
     };
 
     var chamber = config['chart'];
@@ -250,7 +202,7 @@ var renderStackedBarChart = function(config) {
 
     // Calculate actual chart dimensions
     var chartWidth = config['width'] - margins['left'] - margins['right'];
-    var chartHeight = barCalledHeight + barGap + barExpectedHeight;
+    var chartHeight = barCalledHeight;
 
     // footnotes.attr('style', 'margin-left: ' + margins['left'] + 'px;');
 
@@ -282,16 +234,11 @@ var renderStackedBarChart = function(config) {
         .append('g')
         .attr('transform', 'translate(' + margins['left'] + ',' + margins['top'] + ')');
 
-    chartElement.call(tDExpected);
-    chartElement.call(tRExpected);
-    chartElement.call(tIExpected);
-
-
     /*
      * Render bars to chart.
      */
     var group = chartElement.selectAll('.group')
-        .data([ config['dataCalled'], config['dataExpected'] ])
+        .data([ config['dataCalled'] ])
         .enter().append('g')
             .attr('class', function(d, i) {
                 return 'group group-' + i;
@@ -321,27 +268,10 @@ var renderStackedBarChart = function(config) {
                 var t = d3.select(this.parentNode)[0][0].getAttribute('class').split(' ')[1].split('-');
                 var tIndex = t[1];
 
-                if (tIndex == 0) {
-                    return barCalledHeight;
-                } else if (tIndex == 1) {
-                    return barExpectedHeight;
-                }
+                return barCalledHeight;
             })
             .attr('class', function(d) {
                 return classify(d['name']);
-            })
-            .attr('fill', function(d) {
-                switch(d['name']) {
-                    case 'Dem.-expected':
-                        return tDExpected.url();
-                        break;
-                    case 'GOP-expected':
-                        return tRExpected.url();
-                        break;
-                    case 'Ind.-expected':
-                        return tIExpected.url();
-                        break;
-                }
             });
 
     /*
@@ -365,17 +295,6 @@ var renderStackedBarChart = function(config) {
     var annotations = chartElement.append('g')
         .attr('class', 'annotations');
 
-    annotations.append('text')
-        .text('Called')
-        .attr('class', 'side-label called')
-        .attr('x', -valueGap)
-        .attr('y', (barCalledHeight / 2) + 4);
-
-    annotations.append('text')
-        .text('Expected')
-        .attr('class', 'side-label expected')
-        .attr('x', -valueGap)
-        .attr('y', barCalledHeight + barGap + (barExpectedHeight / 2) + 3);
     _.each(config['dataCalled'], function(d) {
         var lbl = d['name'];
         var textAnchor = null;
@@ -395,7 +314,7 @@ var renderStackedBarChart = function(config) {
             default:
                 xPos = xScale(d['x0'] + ((d['x1'] - d['x0']) / 2));
                 textAnchor = 'middle';
-                if (_.contains([ 'Not yet called', 'Dem-expected', 'GOP-expected', 'Other-expected' ], d['name']) || d['val'] == 0) {
+                if (_.contains([ 'Not yet called' ], d['name']) || d['val'] == 0) {
                     showLabel = false;
                 }
                 break;
@@ -458,6 +377,6 @@ var renderStackedBarChart = function(config) {
 }
 
 export {
-  initBop,
-  renderBop
+    initBop,
+    renderBop
 };
