@@ -70,6 +70,7 @@ const availableMetrics = [
 ];
 
 const AP_UNCONTESTED_NOTE = 'The AP does not tabulate votes for uncontested races, and declares their winner as soon as polls close.';
+const STATES_WITHOUT_COUNTY_INFO = [ 'AK' ];
 
 let data = null;
 let extraData = null;
@@ -144,8 +145,9 @@ const getData = function (forceReload) {
         }
 
         lastUpdated = res.body.last_updated;
-        projector.scheduleRender();
       }
+      projector.resume();
+      projector.scheduleRender();
     });
 };
 
@@ -330,14 +332,16 @@ const renderResults = function () {
     const pollCloseTime = allRaces[0][0].meta.poll_closing;
     const areThereAnyVotesYet = allRaces.some(race => race.some(result => result.votecount > 0));
 
+    const showCountyResults = !STATES_WITHOUT_COUNTY_INFO.includes(allRaces[0][0].statepostal);
+
     resultsElements = h('div', [
       h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
       h('p', descriptions.state_desc),
       areThereAnyVotesYet
         ? ''
         : h('p', `Polls closing at ${pollCloseTime} ET.`),
-      renderMiniBigBoard('Senate', getValues(data.senate.results), 'senate', 'County-level results >'),
-      renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', 'County-level results >'),
+      renderMiniBigBoard('Senate', getValues(data.senate.results), 'senate', showCountyResults ? 'County-level results >' : 'Detailed Senate results >'),
+      renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results >' : 'Detailed gubernatorial results >'),
       keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
         ? renderMiniBigBoard(
           'Key House Races',
@@ -374,54 +378,58 @@ const renderResults = function () {
       ])
     ]);
   } else if (resultsView === 'senate' || resultsView === 'governor') {
-    // Render a statewide table, and then below it a county-level table
-    const sortedStateResults = data.state
-      .filter(c => !(c.first === '' && c.last === 'Other'))
-      .sort((a, b) => b['votecount'] - a['votecount']);
-    const sortKeys = sortCountyResults();
-    const availableCandidates = sortedStateResults.map(c => c.last);
-
     resultsElements = [
       renderRacewideTable(
         data.state,
         resultsView === 'senate'
           ? 'results-senate'
           : 'results-gubernatorial'
-      ),
-      h('div.results-counties', {
-        classes: {
-          'population': sortMetric['key'] === 'population',
-          'past-results': sortMetric['key'] === 'past_margin',
-          'unemployment': sortMetric['key'] === 'unemployment',
-          'percent-white': sortMetric['key'] === 'percent_white',
-          'percent-black': sortMetric['key'] === 'percent_black',
-          'percent-hispanic': sortMetric['key'] === 'percent_hispanic',
-          'median-income': sortMetric['key'] === 'median_income',
-          'percent-college-educated': sortMetric['key'] === 'percent_bachelors'
-        }
-      }, [
-        h('h2.section-title', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
-        h('p', {
-          innerHTML: descriptions.county_desc ? descriptions.county_desc : ''
-        }),
-        h('ul.sorter', [
-          h('li.label', 'Sort Counties By'),
-          availableMetrics.map(metric => renderMetricLi(metric))
-        ]),
-        h('table.results-table', [
-          h('thead', [
-            h('tr', [
-              h('th.county', h('div', h('span', 'County'))),
-              h('th.amt.precincts', h('div', h('span', ''))),
-              availableCandidates.map(cand => renderCandidateTH(cand)),
-              h('th.vote.margin', h('div', h('span', 'Margin'))),
-              h('th.comparison', h('div', h('span', sortMetric['name'])))
-            ])
-          ]),
-          sortKeys.map(key => renderCountyRow(data[key[0]], key[0], availableCandidates))
-        ])
-      ])
+      )
     ];
+
+    const stateResults = data.state
+      .filter(c => !(c.first === '' && c.last === 'Other'));
+    if (!STATES_WITHOUT_COUNTY_INFO.includes(stateResults[0].statepostal)) {
+      // Render a county-level table below
+      const sortKeys = sortCountyResults();
+      const availableCandidates = stateResults.map(c => c.last);
+
+      resultsElements = resultsElements.concat(
+        h('div.results-counties', {
+          classes: {
+            'population': sortMetric['key'] === 'population',
+            'past-results': sortMetric['key'] === 'past_margin',
+            'unemployment': sortMetric['key'] === 'unemployment',
+            'percent-white': sortMetric['key'] === 'percent_white',
+            'percent-black': sortMetric['key'] === 'percent_black',
+            'percent-hispanic': sortMetric['key'] === 'percent_hispanic',
+            'median-income': sortMetric['key'] === 'median_income',
+            'percent-college-educated': sortMetric['key'] === 'percent_bachelors'
+          }
+        }, [
+          h('h2.section-title', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
+          h('p', {
+            innerHTML: descriptions.county_desc ? descriptions.county_desc : ''
+          }),
+          h('ul.sorter', [
+            h('li.label', 'Sort Counties By'),
+            availableMetrics.map(metric => renderMetricLi(metric))
+          ]),
+          h('table.results-table', [
+            h('thead', [
+              h('tr', [
+                h('th.county', h('div', h('span', 'County'))),
+                h('th.amt.precincts', h('div', h('span', ''))),
+                availableCandidates.map(cand => renderCandidateTH(cand)),
+                h('th.vote.margin', h('div', h('span', 'Margin'))),
+                h('th.comparison', h('div', h('span', sortMetric['name'])))
+              ])
+            ]),
+            sortKeys.map(key => renderCountyRow(data[key[0]], key[0], availableCandidates))
+          ])
+        ])
+      );
+    }
   }
 
   return h('div', [resultsElements]);
@@ -725,6 +733,8 @@ const toTitleCase = str => {
 
 const switchResultsView = function (e) {
   // Switch which results tab is being displayed
+  projector.stop();
+
   resultsView = e.target.getAttribute('name');
   resultsType = `${toTitleCase(resultsView)} Results`;
 
