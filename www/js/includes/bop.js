@@ -1,3 +1,9 @@
+/*
+ TODO:
+ - render pickups
+ - pull static text out into a spreadsheet
+*/
+
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
@@ -10,17 +16,17 @@ import { classify, buildDataURL } from './helpers.js';
 var DATA_FILE = 'top-level-results.json';
 
 var CONGRESS = {
-    'senate': {
-        'half': 50,
-        'Dem': 34,
-        'GOP': 30,
-        'Other': 2
-    },
     'house': {
         'half': 217.5,
         'Dem': 0,
         'GOP': 0,
         'Other': 0
+    },
+    'senate': {
+        'half': 50,
+        'Dem': 34,
+        'GOP': 30,
+        'Other': 2
     }
 }
 var DEFAULT_WIDTH = 600;
@@ -41,8 +47,8 @@ var lastRequestTime = '';
 var indicator = null;
 var footnotes = null;
 
-var senateCalled = [];
 var houseCalled = [];
+var senateCalled = [];
 
 /*
  * Initialize the graphic.
@@ -85,16 +91,6 @@ var loadData = function() {
  * Format graphic data for processing by D3.
  */
 var formatData = function() {
-    var sData = bopData['senate_bop'];
-    senateCalled = [
-        { 'name': 'Dem.', 'val': sData['Dem']['seats'] },
-        { 'name': 'Ind.', 'val': sData['Other']['seats'] },
-        { 'name': 'Not yet called', 'val': sData['uncalled_races'] },
-        { 'name': 'GOP', 'val': sData['GOP']['seats'] }
-    ];
-    CONGRESS['senate']['total'] = sData['total_seats'];
-    CONGRESS['senate']['majority'] = sData['majority'];
-
     var hData = bopData['house_bop'];
     houseCalled = [
         { 'name': 'Dem.', 'val': hData['Dem']['seats'] },
@@ -104,8 +100,22 @@ var formatData = function() {
     ];
     CONGRESS['house']['total'] = hData['total_seats'];
     CONGRESS['house']['majority'] = hData['majority'];
+    CONGRESS['house']['uncalled_races'] = hData['uncalled_races'];
+    CONGRESS['house']['label'] = 'U.S. House';
 
-    _.each([ senateCalled, houseCalled ], function(d, i) {
+    var sData = bopData['senate_bop'];
+    senateCalled = [
+        { 'name': 'Dem.', 'val': sData['Dem']['seats'] },
+        { 'name': 'Ind.', 'val': sData['Other']['seats'] },
+        { 'name': 'Not yet called', 'val': sData['uncalled_races'] },
+        { 'name': 'GOP', 'val': sData['GOP']['seats'] }
+    ];
+    CONGRESS['senate']['total'] = sData['total_seats'];
+    CONGRESS['senate']['majority'] = sData['majority'];
+    CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
+    CONGRESS['senate']['label'] = 'U.S. Senate';
+
+    _.each([ houseCalled, senateCalled ], function(d, i) {
         var x0 = 0;
 
         _.each(d, function(v, k) {
@@ -139,11 +149,23 @@ const renderBop = function(containerWidth) {
     loadData();
 }
 
-//
 var redrawChart = function() {
     // Clear existing graphic (for redraw)
     var containerElement = d3.select('#bop');
     containerElement.html('');
+
+    containerElement.append('h2')
+        .text('Party Shifts: Seat Pickups');
+
+    renderPickups({
+        // container: '#bop .chart.' + classify(d),
+        // width: graphicWidth,
+        // dataCalled: eval(classify(d) + 'Called'),
+        // chart: d
+    });
+
+    containerElement.append('h2')
+        .text('Races Called So Far');
 
     _.each(charts, function(d, i) {
         var chartDiv = containerElement.append('div')
@@ -168,6 +190,13 @@ var redrawChart = function() {
 }
 
 /*
+ * Render pickups
+ */
+var renderPickups = function(config) {
+    //
+}
+
+/*
  * Render a stacked bar chart.
  */
 var renderStackedBarChart = function(config) {
@@ -176,40 +205,30 @@ var renderStackedBarChart = function(config) {
      */
     var labelColumn = 'label';
 
-    var barCalledHeight = 35;
-    var barGap = 2;
+    var barHeight = 20;
     var valueGap = 6;
 
     var margins = {
-        top: 46,
-        right: 1,
-        bottom: 0,
-        left: 1
+        top: 5,
+        right: 0,
+        bottom: 19,
+        left: 0
     };
 
     var chamber = config['chart'];
     var majority = CONGRESS[chamber]['majority'];
+    var uncalled = CONGRESS[chamber]['uncalled_races'];
     var half = CONGRESS[chamber]['half'];
-    var ticksX = 4;
     var roundTicksFactor = 1;
-
-    if (isMobile) {
-        ticksX = 2;
-    }
-    if (config['width'] <= SIDEBAR_THRESHOLD) {
-        margins['left'] = 46;
-    }
 
     // Calculate actual chart dimensions
     var chartWidth = config['width'] - margins['left'] - margins['right'];
-    var chartHeight = barCalledHeight;
-
-    // footnotes.attr('style', 'margin-left: ' + margins['left'] + 'px;');
+    var chartHeight = barHeight;
 
     // Clear existing graphic (for redraw)
     var containerElement = d3.select(config['container']);
     containerElement.append('h3')
-        .text(config['chart'])
+        .text(CONGRESS[chamber]['label'])
         .attr('style', 'margin-left: ' + margins['left'] + 'px; margin-right: ' + margins['right'] + 'px;');
 
     /*
@@ -242,15 +261,6 @@ var renderStackedBarChart = function(config) {
         .enter().append('g')
             .attr('class', function(d, i) {
                 return 'group group-' + i;
-            })
-            .attr('transform', function(d, i) {
-                var yPos = null;
-                if (i == 0) {
-                    yPos = 0;
-                } else if (i == 1) {
-                    yPos = barCalledHeight + barGap;
-                }
-                return 'translate(0,' + yPos + ')';
             });
 
     group.selectAll('rect')
@@ -258,21 +268,16 @@ var renderStackedBarChart = function(config) {
             return d;
         })
         .enter().append('rect')
+            .attr('class', function(d) {
+                return classify(d['name']);
+            })
             .attr('x', function(d) {
                 return xScale(d['x0']);
             })
             .attr('width', function(d) {
                 return Math.abs(xScale(d['x1']) - xScale(d['x0']));
             })
-            .attr('height', function(d) {
-                var t = d3.select(this.parentNode)[0][0].getAttribute('class').split(' ')[1].split('-');
-                var tIndex = t[1];
-
-                return barCalledHeight;
-            })
-            .attr('class', function(d) {
-                return classify(d['name']);
-            });
+            .attr('height', barHeight);
 
     /*
      * Render majority line.
@@ -282,12 +287,8 @@ var renderStackedBarChart = function(config) {
     majorityMarker.append('line')
         .attr('x1', xScale(half))
         .attr('x2', xScale(half))
-        .attr('y1', -valueGap)
-        .attr('y2', chartHeight);
-    majorityMarker.append('text')
-        .attr('x', xScale(half))
-        .attr('y', (-margins['top'] + 10))
-        .text(majority + ' needed for majority');
+        .attr('y1', -margins['top'])
+        .attr('y2', (barHeight + margins['top']));
 
     /*
      * Annotations
@@ -299,7 +300,7 @@ var renderStackedBarChart = function(config) {
         var lbl = d['name'];
         var textAnchor = null;
         var xPos = null;
-        var yPos = -18;
+        var yPos = barHeight + 18;
         var showLabel = true;
         switch(d['name']) {
             case 'Dem.':
@@ -322,23 +323,11 @@ var renderStackedBarChart = function(config) {
 
         if (showLabel) {
             annotations.append('text')
-                .text(lbl)
+                .text(lbl + ': ' + d['val'])
                 .attr('class', 'party ' + classify(d['name']))
                 .attr('x', xPos)
                 .attr('y', yPos)
                 .attr('dy', 0)
-                .attr('style', function() {
-                    var s = '';
-                    s += 'text-anchor: ' + textAnchor + '; ';
-                    return s;
-                });
-
-            annotations.append('text')
-                .text(d['val'])
-                .attr('class', 'value ' + classify(d['name']))
-                .attr('x', xPos)
-                .attr('y', yPos)
-                .attr('dy', 13)
                 .attr('style', function() {
                     var s = '';
                     s += 'text-anchor: ' + textAnchor + '; ';
@@ -373,7 +362,11 @@ var renderStackedBarChart = function(config) {
             }
             tVal.attr('x', xPos);
             return xPos;
-        })
+        });
+
+    // majority and seats remaining
+    chartWrapper.append('h4')
+        .text(majority + ' needed for majority | ' + uncalled + ' not yet called');
 }
 
 export {

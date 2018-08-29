@@ -14,22 +14,36 @@ svg { overflow: hidden; }
 #bop {
     font: 14px/1.4 @font-family-sans-serif;
     color: #555;
+    margin-bottom: 22px;
+
+    h2 {
+        -webkit-font-smoothing: antialiased;
+        color: #333;
+        font-family: @gotham;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 0 10px 0;
+    }
 
     .chart {
-        &:first-child { margin-bottom: 22px; }
+        &.house { margin-bottom: 22px; }
 
         h3 {
-            margin: 0 0 2px 0;
-            font-family: @knockout;
-            font-weight: normal;
-            text-transform: uppercase;
-            padding-top: 0;
-            line-height: 1.2;
-            letter-spacing: 0.05em;
             -webkit-font-smoothing: antialiased;
-            font-size: 12px;
-            color: #333;
-            text-align: center;
+            color: #454545;
+            font-family: @gotham;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 0 0 3px 0;
+        }
+
+        h4 {
+            -webkit-font-smoothing: antialiased;
+            color: #666;
+            font-family: @gotham;
+            font-size: 11px;
+            font-weight: normal;
+            margin: 2px 0 0 0;
         }
     }
 
@@ -41,54 +55,18 @@ svg { overflow: hidden; }
     }
 
     .majority-marker {
-        line { stroke: #454545; }
-        text {
-            text-anchor: middle;
-            font-style: italic;
-            fill: #999;
-            font-size: 11px;
-        }
+        line { stroke: #666; }
     }
 
     .annotations {
+        -webkit-font-smoothing: antialiased;
         font-family: @gotham;
-        font-size: 11px;
+        font-size: 12px;
+        font-weight: bold;
 
-        .side-label {
-            font-family: @knockout;
-            font-weight: normal;
-            text-transform: uppercase;
-            line-height: 1.2;
-            letter-spacing: 0.05em;
-            -webkit-font-smoothing: antialiased;
-            text-anchor: end;
-
-            &.called {
-                font-size: 12px;
-                fill: #333;
-
-                @media screen and (max-width: 280px) { font-size: 11px; }
-            }
-            &.expected {
-                font-size: 10px;
-                fill: #999;
-
-                @media screen and (max-width: 280px) { font-size: 8.5px; }
-            }
-        }
-
-        .party {
-            font-weight: bold;
-
-            &.dem   { fill: @dem; }
-            &.gop   { fill: @gop; }
-            &.ind   { fill: @ind; }
-        }
-
-        .value {
-            font-size: 10px;
-            fill: #999;
-        }
+        .dem   { fill: @dem; }
+        .gop   { fill: @gop; }
+        .ind   { fill: @ind; }
     }
 }
 

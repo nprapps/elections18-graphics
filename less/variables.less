@@ -86,3 +86,22 @@
     -ms-user-select: none;
     user-select: none;
 }
+
+// Normal Knockout
+.knockout() {
+    font-family: @knockout;
+    font-weight: normal;
+}
+
+// Knockout, uppercased
+.knockout-upper() {
+    .knockout();
+    text-transform: uppercase;
+}
+
+// Knockout for headings
+.knockout-header() {
+    .knockout-upper();
+    letter-spacing: 0.05em;
+    -webkit-font-smoothing: antialiased;
+}
