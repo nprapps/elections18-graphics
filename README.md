@@ -151,6 +151,16 @@ fab app
 
 Visit [localhost:8000](http://localhost:8000) in your browser.
 
+To load the project using a different port, run `fab app:$PORT_NUMBER` (for example `fab app:1111`). (You might want to do this if you're already using port 8000 locally for anther project and need to switch between them.)
+
+
+### iTerm2 shortcut
+
+If you use [iTerm2](https://www.iterm2.com/) as your terminal app, [you can use this AppleScript](https://github.com/nprapps/elections18-graphics/blob/master/etc/iterm_elections18graphics.scpt) to launch this in a two-paned terminal window. The right pane runs the webserver. The left pane lets you do your command line work. You can make an alias to launch this in your `~/.bash_profile`:
+
+```
+alias elexgfx="osascript ~/src/elections18-graphics/etc/iterm_elections18graphics.scpt"
+```
 
 
 COPY configuration
