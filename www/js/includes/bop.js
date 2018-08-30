@@ -1,7 +1,6 @@
 /*
  TODO:
  - render pickups
- - pull static text out into a spreadsheet
 */
 
 // npm libraries
@@ -60,7 +59,7 @@ const initBop = function(containerWidth) {
     graphicWidth = containerWidth;
 
     loadData();
-    //console.log('YOU TURNED OFF THE REFRESH INTERVAL');
+    // console.log('YOU TURNED OFF THE REFRESH INTERVAL');
     setInterval(loadData, LOAD_INTERVAL)
 }
 
@@ -98,10 +97,22 @@ var formatData = function() {
         { 'name': 'Ind.', 'val': hData['Other']['seats'] },
         { 'name': 'GOP', 'val': hData['GOP']['seats'] }
     ];
+
     CONGRESS['house']['total'] = hData['total_seats'];
     CONGRESS['house']['majority'] = hData['majority'];
     CONGRESS['house']['uncalled_races'] = hData['uncalled_races'];
-    CONGRESS['house']['label'] = 'U.S. House';
+    CONGRESS['house']['label'] = BOP_LABELS['label_house'];
+
+    if (hData['Dem']['pickups'] > hData['GOP']['pickups']) {
+        CONGRESS['house']['pickup_seats'] = hData['Dem']['pickups'];
+        CONGRESS['house']['pickup_party'] = 'Dem';
+    } else if (hData['GOP']['pickups'] > hData['Dem']['pickups']) {
+        CONGRESS['house']['pickup_seats'] = hData['GOP']['pickups'];
+        CONGRESS['house']['pickup_party'] = 'GOP';
+    } else {
+        CONGRESS['house']['pickup_seats'] = '0';
+        CONGRESS['house']['party'] = null;
+    }
 
     var sData = bopData['senate_bop'];
     senateCalled = [
@@ -113,7 +124,18 @@ var formatData = function() {
     CONGRESS['senate']['total'] = sData['total_seats'];
     CONGRESS['senate']['majority'] = sData['majority'];
     CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
-    CONGRESS['senate']['label'] = 'U.S. Senate';
+    CONGRESS['senate']['label'] = BOP_LABELS['label_senate'];
+
+    if (sData['Dem']['pickups'] > sData['GOP']['pickups']) {
+        CONGRESS['senate']['pickup_seats'] = sData['Dem']['pickups'];
+        CONGRESS['senate']['pickup_party'] = 'Dem';
+    } else if (sData['GOP']['pickups'] > sData['Dem']['pickups']) {
+        CONGRESS['senate']['pickup_seats'] = sData['GOP']['pickups'];
+        CONGRESS['senate']['pickup_party'] = 'GOP';
+    } else {
+        CONGRESS['senate']['pickup_seats'] = '0';
+        CONGRESS['senate']['party'] = null;
+    }
 
     _.each([ houseCalled, senateCalled ], function(d, i) {
         var x0 = 0;
@@ -154,18 +176,20 @@ var redrawChart = function() {
     var containerElement = d3.select('#bop');
     containerElement.html('');
 
-    containerElement.append('h2')
-        .text('Party Shifts: Seat Pickups');
+    if (BOP_LABELS['show_pickups'] == 'yes') {
+        containerElement.append('h2')
+            .text(BOP_LABELS['hed_pickups']);
 
-    renderPickups({
-        // container: '#bop .chart.' + classify(d),
-        // width: graphicWidth,
-        // dataCalled: eval(classify(d) + 'Called'),
-        // chart: d
-    });
+        containerElement.append('div')
+            .attr('class', 'pickups');
+
+        renderPickups({
+            container: '#bop .pickups'
+        });
+    }
 
     containerElement.append('h2')
-        .text('Races Called So Far');
+        .text(BOP_LABELS['hed_bars']);
 
     _.each(charts, function(d, i) {
         var chartDiv = containerElement.append('div')
@@ -193,7 +217,37 @@ var redrawChart = function() {
  * Render pickups
  */
 var renderPickups = function(config) {
-    //
+    var containerElement = d3.select(config['container']);
+
+    charts.forEach(function(d,i) {
+        var chamberElement = containerElement.append('div')
+            .attr('class', 'chamber ' + classify(d));
+
+        chamberElement.append('h3')
+            .text(BOP_LABELS['label_' + d]);
+
+        chamberElement.append('p')
+            .attr('class', 'desc')
+            .html(BOP_LABELS['pickups_' + d]);
+
+        var gainElement = chamberElement.append('p')
+            .attr('class', 'net-gain');
+        gainElement.append('b')
+            .attr('class', classify(CONGRESS[d]['pickup_party']))
+            .text(function() {
+                if (CONGRESS[d]['pickup_party']) {
+                    var p = CONGRESS[d]['pickup_party'];
+                    if (p == 'Dem') {
+                        p = 'Dem.'
+                    }
+                    return p + ' +' + CONGRESS[d]['pickup_seats'];
+                } else {
+                    CONGRESS[d]['pickup_seats'];
+                }
+            });
+        gainElement.append('i')
+            .text(BOP_LABELS['pickups_gain']);
+    });
 }
 
 /*

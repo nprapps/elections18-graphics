@@ -10,8 +10,10 @@ const resultsCountdown = function(indicator, loadInterval) {
     var spanTag = document.createElement('span');
     spanTag.classList.add('text');
 
-    bTag.appendChild(spanTag);
+    // bTag.appendChild(spanTag);
+    // indicator.appendChild(bTag);
     indicator.appendChild(bTag);
+    indicator.appendChild(spanTag);
 
     var indicatorSpinner = indicator.querySelector('.icon');
     var indicatorText = indicator.querySelector('.text');
