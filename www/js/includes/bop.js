@@ -59,8 +59,8 @@ const initBop = function(containerWidth) {
     graphicWidth = containerWidth;
 
     loadData();
-    // console.log('YOU TURNED OFF THE REFRESH INTERVAL');
-    setInterval(loadData, LOAD_INTERVAL)
+    console.log('YOU TURNED OFF THE REFRESH INTERVAL');
+    // setInterval(loadData, LOAD_INTERVAL)
 }
 
 /*
@@ -232,15 +232,25 @@ var renderPickups = function(config) {
 
         var gainElement = chamberElement.append('p')
             .attr('class', 'net-gain');
-        gainElement.append('b')
+        gainElement.append('abbr')
             .attr('class', classify(CONGRESS[d]['pickup_party']))
+            .attr('title', function() {
+                var party = CONGRESS[d]['pickup_party'].toLowerCase();
+                var t = BOP_LABELS['pickups_none'];
+                if (party) {
+                    t = BOP_LABELS['pickups_' + party];
+                    t = t.replace('___PICKUPS___', CONGRESS[d]['pickup_seats']);
+                }
+
+                return t;
+            })
             .text(function() {
                 if (CONGRESS[d]['pickup_party']) {
-                    var p = CONGRESS[d]['pickup_party'];
-                    if (p == 'Dem') {
-                        p = 'Dem.'
+                    var party = CONGRESS[d]['pickup_party'];
+                    if (party == 'Dem') {
+                        party = 'Dem.'
                     }
-                    return p + ' +' + CONGRESS[d]['pickup_seats'];
+                    return party + ' +' + CONGRESS[d]['pickup_seats'];
                 } else {
                     CONGRESS[d]['pickup_seats'];
                 }
