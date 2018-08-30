@@ -55,6 +55,7 @@
 
 // Breakpoints
 // --------------------------------------------------
+@screen-xxs:                 290px;  // Sidebar
 @screen-xs:                  480px;  // Extra small screen / phone
 @screen-sm:                  768px;  // Small screen / tablet
 @screen-md:                  992px;  // Medium screen / desktop
@@ -63,6 +64,7 @@
 @screen-big-board:          1920px;  // HDTV
 
 // So media queries don't overlap when required, provide a minimum
+@screen-xs-min:              (@screen-xxs + 1);
 @screen-sm-min:              (@screen-xs + 1);
 @screen-md-min:              (@screen-sm + 1);
 @screen-lg-min:              (@screen-md + 1);

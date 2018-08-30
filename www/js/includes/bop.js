@@ -178,7 +178,7 @@ var redrawChart = function() {
 
     if (BOP_LABELS['show_pickups'] == 'yes') {
         containerElement.append('h2')
-            .text(BOP_LABELS['hed_pickups']);
+            .html(BOP_LABELS['hed_pickups']);
 
         containerElement.append('div')
             .attr('class', 'pickups');
@@ -189,7 +189,7 @@ var redrawChart = function() {
     }
 
     containerElement.append('h2')
-        .text(BOP_LABELS['hed_bars']);
+        .html(BOP_LABELS['hed_bars']);
 
     _.each(charts, function(d, i) {
         var chartDiv = containerElement.append('div')

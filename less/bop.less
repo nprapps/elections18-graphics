@@ -1,24 +1,24 @@
 @import "variables";
 
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-[class^="icon-"].animate-spin,
-[class*=" icon-"].animate-spin {
-    -webkit-animation: spin 5s infinite linear;
-    -o-animation: spin 5s infinite linear;
-    animation: spin 5s infinite linear;
-    display: inline-block;
-}
-
 .countdown {
     color: @gray;
     font-size: 11px;
     font-family: @gotham;
     margin-top: 11px;
+
+    [class^="icon-"]:before,
+    [class*=" icon-"]:before {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    [class^="icon-"].animate-spin,
+    [class*=" icon-"].animate-spin {
+        -webkit-animation: spin 5s infinite linear;
+        -o-animation: spin 5s infinite linear;
+        animation: spin 5s infinite linear;
+        display: inline-block;
+    }
 
     b { font-weight: normal; }
     span { margin-left: 3px; }
@@ -48,8 +48,7 @@ svg { overflow: hidden; }
     }
 
     h4 {
-        -webkit-font-smoothing: antialiased;
-        color: #666;
+        color: #787878;
         font-size: 11px;
         font-weight: normal;
         margin: 0;
@@ -69,7 +68,10 @@ svg { overflow: hidden; }
     }
 
     .majority-marker {
-        line { stroke: #666; }
+        line {
+            stroke: #666;
+            stroke-width: 2px;
+        }
     }
 
     .annotations {
@@ -92,11 +94,11 @@ svg { overflow: hidden; }
             width: 50%;
 
             &.house {
-                padding-right: 11px;
+                padding-right: 15px;
             }
             &.senate {
-                padding-left: 11px;
-                border-left: 1px solid #eee;
+                padding-left: 15px;
+                border-left: 2px solid #eee;
             }
         }
 
@@ -117,7 +119,7 @@ svg { overflow: hidden; }
         }
 
         .net-gain {
-            color: #666;
+            color: #787878;
             font-size: 11px;
             line-height: 30px;
             margin: 0;
@@ -131,7 +133,7 @@ svg { overflow: hidden; }
                 margin-right: 6px;
                 text-align: center;
                 white-space: nowrap;
-                width: 75px;
+                width: 70px;
 
                 &.dem {
                     background-color: @dem;
@@ -144,6 +146,20 @@ svg { overflow: hidden; }
             }
 
             i { white-space: nowrap; }
+
+            // teeny screens
+            @media screen and (max-width: @screen-xxs) {
+                line-height: 1;
+
+                b {
+                    font-size: 12px;
+                    line-height: 30px;
+                }
+                i {
+                    display: block;
+                    margin-top: 3px;
+                }
+            }
         }
     }
 }
