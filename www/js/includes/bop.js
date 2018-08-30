@@ -1,8 +1,3 @@
-/*
- TODO:
- - render pickups
-*/
-
 // npm libraries
 import d3 from 'd3';
 import * as _ from 'underscore';
@@ -59,8 +54,8 @@ const initBop = function(containerWidth) {
     graphicWidth = containerWidth;
 
     loadData();
-    console.log('YOU TURNED OFF THE REFRESH INTERVAL');
-    // setInterval(loadData, LOAD_INTERVAL)
+    // console.log('YOU TURNED OFF THE REFRESH INTERVAL');
+    setInterval(loadData, LOAD_INTERVAL)
 }
 
 /*
