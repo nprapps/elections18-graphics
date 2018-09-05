@@ -166,7 +166,7 @@
         {% endif %}
         <textarea rows="30" cols="100">
 <div id="responsive-embed-{{ slug }}"></div>
-<script type=text/javascript>
+<script>
     (function(jQuery) {
         if (typeof jQuery !== 'undefined' && typeof jQuery.getScript === 'function') {
             {% if slug == 'state-results' %}
@@ -263,7 +263,7 @@
             previewWrapperEl.style.width = '100%';
         }
     </script>
-    <script src="//pym.nprapps.org/pym.v1.min.js"></script>
+    <script src="//pym.nprapps.org/pym.v0.min.js"></script>
     <script>
         var onPJAXNavigateMessage = function(url) {
             console.log('triggering synthetic click');
