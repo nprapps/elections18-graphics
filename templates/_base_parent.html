@@ -218,12 +218,12 @@
 
 <!-- textarea contents -->
     <textarea readonly="readonly" rows="5" cols="100">
-<p data-pym-src="http://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html">Loading...</p><script src="//pym.nprapps.org/child-tracker-loader.v1.min.js" type="text/javascript"></script>
+<p data-pym-src="http://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html">Loading...</p><script src="//pym.nprapps.org/child-tracker-loader.v1.min.js"></script>
     </textarea>
 <!-- end textarea contents -->
     </div>
 
-    <script type="text/javascript">
+    <script>
         var resizeSidebarEl = document.querySelector('#resize-sidebar');
         var resizeMobileEl = document.querySelector('#resize-mobile');
         var resizeDesktopEl = document.querySelector('#resize-desktop');
@@ -263,7 +263,7 @@
             previewWrapperEl.style.width = '100%';
         }
     </script>
-    <script src="//pym.nprapps.org/pym.v1.min.js" type="text/javascript"></script>
+    <script src="//pym.nprapps.org/pym.v1.min.js"></script>
     <script>
         var onPJAXNavigateMessage = function(url) {
             console.log('triggering synthetic click');
