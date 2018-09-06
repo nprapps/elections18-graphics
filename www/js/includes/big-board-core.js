@@ -392,8 +392,7 @@ const renderRace = function (race) {
         result1['first'] ? result1['first'] + ' ' : ''
       ]),
       h('span.lname', [
-        result1['last'],
-        insertIncumbentIcon(result1['incumbent'])
+        result1['last']
       ])
     ]),
     h('td.candidate-total', { classes: createClassesForBoardCells(result1) }, [
@@ -413,8 +412,7 @@ const renderRace = function (race) {
       ]),
       ' ',
       h('span.lname', [
-        result2 ? result2['last'] : '',
-        insertIncumbentIcon(result2['incumbent'])
+        result2 ? result2['last'] : ''
       ])
     ])
   ]);

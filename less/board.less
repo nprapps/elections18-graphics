@@ -193,6 +193,8 @@ body {
                 }
 
                 .candidate {
+                    font-size: 90%;
+
                     width: 30%;
 
                     &.dem { background: @demDim; }
@@ -213,11 +215,13 @@ body {
                     }
 
                     &.incumbent {
-                        .lname { white-space: nowrap; }
-                        .icon-incumbent {
-                            margin-left: .1em;
+                        .lname {
+                            font-size: 95%;
+                            text-transform: uppercase;
 
-                            &::before { font-size: .8rem; }
+                            &:after {
+                                content: '*';
+                            }
                         }
                     }
 
