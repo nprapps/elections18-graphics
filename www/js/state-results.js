@@ -261,8 +261,11 @@ const renderTabSwitcher = () => {
     h(
       'span',
       {
+        role: 'button',
         onclick: switchResultsView,
         name: tab.toLowerCase(),
+        //'aria-pressed': { 'true': resultsView === tab.toLowerCase() }, note: the aria-pressed attribute does not render for some reason.
+
         classes: { active: resultsView === tab.toLowerCase() }
       },
       [tab]
@@ -609,10 +612,10 @@ const renderRacewideTable = function (results, tableClass) {
       ]),
       h('thead', [
         h('tr', [
-          h('th.seat-info'),
-          h('th.candidate', 'Candidate'),
-          h('th.amt', 'Votes'),
-          h('th.amt', 'Percent')
+          h('th.seat-info', { scope: 'col' }),
+          h('th.candidate', { scope: 'col' }, 'Candidate'),
+          h('th.amt', { scope: 'col' }, 'Votes'),
+          h('th.amt', { scope: 'col' }, 'Percent')
         ])
       ]),
       h('tbody', [
@@ -621,7 +624,7 @@ const renderRacewideTable = function (results, tableClass) {
       h('tfoot', [
         h('tr', [
           h('td.seat-status'),
-          h('td.candidate', 'Total'),
+          h('th.candidate', { scope: 'row' }, 'Total'),
           h('td.amt', commaNumber(totalVotes)),
           h('td.amt', '100%')
         ])
@@ -651,7 +654,7 @@ const renderCandidateName = result => {
     : `${result.first} ${result.last}${party}`;
 
   return h(
-    'td.candidate',
+    'td.candidate', { scope: 'col' },
     [
       candidateName,
       result.npr_winner ? h('i.icon', { class: 'icon-ok' }) : ''
