@@ -794,6 +794,16 @@ function calculatePrecinctsReporting (result) {
   }
 }
 
+// Watch the space bar for elements with 'role="button"',
+// per https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role#Keyboard_and_focus
+document.body.onkeyup = function(e){
+    if(e.keyCode == 32 || e.key === ' ') {
+        if ( document.activeElement.getAttribute('role') === 'button' ) {
+            document.activeElement.click();
+        }
+    }
+}
+
 /*
  * Initially load the graphic
  * (NB: Use window.load to ensure all images have loaded)
