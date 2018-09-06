@@ -634,6 +634,7 @@ const renderRacewideTable = function (results, tableClass) {
 const createClassesForCandidateRow = result => {
   return {
     'winner': result['npr_winner'],
+    'incumbent': result['incumbent'],
     'dem': result['npr_winner'] && result['party'] === 'Dem',
     'gop': result['npr_winner'] && result['party'] === 'GOP',
     'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
@@ -653,7 +654,10 @@ const renderCandidateName = result => {
   return h(
     'td.candidate',
     [
-      candidateName,
+      h('span.fname', result.first),
+      ' ',
+      h('span.lname', result.last),
+      party,
       result.npr_winner ? h('i.icon', { class: 'icon-ok' }) : ''
     ]
   );
@@ -684,9 +688,7 @@ const renderUncontestedRace = (result, tableClass) => {
           h('td.seat-status', [
             result.pickup
               ? h('span.pickup', { class: 'pickup' })
-              : result.incumbent
-                ? h('i.icon', { class: 'icon-incumbent' })
-                : ''
+              : ''
           ]),
           renderCandidateName(result),
           h('td.amt.uncontested', 'uncontested')
@@ -702,9 +704,7 @@ const renderRow = function (result) {
     h('td.seat-status', [
       result.pickup
         ? h('span.pickup', { class: 'pickup' })
-        : result.incumbent
-          ? h('i.icon', { class: 'icon-incumbent' })
-          : ''
+        : ''
     ]),
     renderCandidateName(result),
     h('td.amt', commaNumber(result.votecount)),

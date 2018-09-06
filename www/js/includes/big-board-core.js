@@ -518,17 +518,6 @@ const insertRunoffImage = function (race) {
   }
 };
 
-const insertIncumbentIcon = function (incumbency) {
-  if (incumbency) {
-    return h('i.icon-incumbent', { });
-    // return h('img.img-responsive', {
-    //   src: '../assets/incumbent.svg'
-    // })
-  } else {
-    return '';
-  }
-};
-
 const onUpdateAnimation = function (domNode, properties, previousProperties) {
   const parent = domNode.parentNode;
 
