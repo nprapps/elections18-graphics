@@ -118,6 +118,11 @@ This will generate:
 
 And trigger the webpack build once to generate the necessary rendered files.
 
+### Notes on editing the javascript and the markup
+
+* The javascript's `h()` function is a [hyperscript function call](https://github.com/hyperhype/hyperscript).
+* [Jinja template language documentation](http://jinja.pocoo.org/docs/2.10/templates/)
+
 
 Managing Javascript Dependencies
 ---------------------------------
