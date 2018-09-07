@@ -15,6 +15,7 @@ var onWindowLoaded = function() {
     window.pymChild = new pym.Child({
         renderCallback: render
     });
+    addLinkListener();
 }
 
 
@@ -34,6 +35,24 @@ var render = function(containerWidth) {
     }
 }
 
+/*
+ * Make sure links open in _top
+ * Cribbed from https://github.com/nprapps/elections16graphics/blob/master/www/js/map-liveblog-hp.js#L35-L48
+ */
+const addLinkListener = function() {
+    const domain = parseParentURL();
+    liveblog.addEventListener('click', function(e) {
+        if(e.target && e.target.nodeName == "A") {
+            if (window.pymChild && (domain == 'npr.org' || domain == 'localhost')) {
+                pymChild.sendMessage('pjax-navigate', e.target.href);
+                e.preventDefault();
+                e.stopPropagation();
+            } else {
+                window.open(e.target.href, '_top');
+            }
+        }
+    });
+}
 
 /*
  * Initially load the graphic
