@@ -1,8 +1,3 @@
-// This will be transformed by Babel into only the polyfills that are needed,
-// thanks to the `"useBuiltIns": true` option in `.babelrc`
-// https://www.npmjs.com/package/babel-preset-env#usebuiltins
-import 'babel-polyfill';
-
 // global vars
 window.pymChild = null;
 
