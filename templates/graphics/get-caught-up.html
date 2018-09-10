@@ -4,8 +4,6 @@
 {{ CSS.push('less/%s.less' % slug) }}
 {{ CSS.render('css/rendered/%s.min.css' % slug) }}
 <script src="../js/rendered/{{ slug }}.js"></script>
-{# {{COPY.get_caught_up.published}} #}
-{% if COPY.get_caught_up.published and COPY.get_caught_up.published|lower == 'yes' %}
 <h2>Get Caught Up</h2>
 
 {% if COPY.get_caught_up.intro_1 %}
@@ -22,6 +20,5 @@
     {% if COPY.get_caught_up.bullet_4 %}<li>{{ COPY.get_caught_up.bullet_4 }}</li>{% endif %}
     {% if COPY.get_caught_up.bullet_5 %}<li>{{ COPY.get_caught_up.bullet_5 }}</li>{% endif %}
 </ul>
-{% endif %}{# comment: this endif closes the published == 'yes' logic check at the start of the content block #}
 
 {% endblock %}
