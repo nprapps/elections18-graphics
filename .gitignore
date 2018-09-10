@@ -49,6 +49,7 @@ www/bop*
 www/county*
 www/map*
 www/state*
+www/get-caught-up*
 
 # Local data
 data/gdoc*.csv
