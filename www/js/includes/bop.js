@@ -10,18 +10,8 @@ import { classify, buildDataURL } from './helpers.js';
 var DATA_FILE = 'top-level-results.json';
 
 var CONGRESS = {
-    'house': {
-        'half': 217.5,
-        'Dem': 0,
-        'GOP': 0,
-        'Other': 0
-    },
-    'senate': {
-        'half': 50,
-        'Dem': 34,
-        'GOP': 30,
-        'Other': 2
-    }
+    'house': {},
+    'senate': {}
 }
 var DEFAULT_WIDTH = 600;
 var SIDEBAR_THRESHOLD = 280;
@@ -275,9 +265,9 @@ var renderStackedBarChart = function(config) {
     };
 
     var chamber = config['chart'];
-    var majority = CONGRESS[chamber]['majority'];
     var uncalled = CONGRESS[chamber]['uncalled_races'];
-    var half = CONGRESS[chamber]['half'];
+    var half = CONGRESS[chamber]['total'] / 2;
+    var majority = Math.ceil(half);
     var roundTicksFactor = 1;
 
     // Calculate actual chart dimensions
