@@ -10,9 +10,9 @@ import { classify, buildDataURL } from './helpers.js';
 var DATA_FILE = 'top-level-results.json';
 
 var CONGRESS = {
-    'house': {},
-    'senate': {}
-}
+    house: {},
+    senate: {}
+};
 var DEFAULT_WIDTH = 600;
 var SIDEBAR_THRESHOLD = 280;
 var MOBILE_THRESHOLD = 500;
@@ -84,7 +84,6 @@ var formatData = function() {
     ];
 
     CONGRESS['house']['total'] = hData['total_seats'];
-    CONGRESS['house']['majority'] = hData['majority'];
     CONGRESS['house']['uncalled_races'] = hData['uncalled_races'];
     CONGRESS['house']['label'] = BOP_LABELS['label_house'];
 
@@ -107,7 +106,6 @@ var formatData = function() {
         { 'name': 'GOP', 'val': sData['GOP']['seats'] }
     ];
     CONGRESS['senate']['total'] = sData['total_seats'];
-    CONGRESS['senate']['majority'] = sData['majority'];
     CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
     CONGRESS['senate']['label'] = BOP_LABELS['label_senate'];
 
@@ -267,7 +265,9 @@ var renderStackedBarChart = function(config) {
     var chamber = config['chart'];
     var uncalled = CONGRESS[chamber]['uncalled_races'];
     var half = CONGRESS[chamber]['total'] / 2;
-    var majority = Math.ceil(half);
+    // Want to display 50%+1 seats, even for Senate; see discussion:
+    // https://github.com/nprapps/elections18-graphics/issues/118
+    var majority = Math.floor(half + 1);
     var roundTicksFactor = 1;
 
     // Calculate actual chart dimensions
