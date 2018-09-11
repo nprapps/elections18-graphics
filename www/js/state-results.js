@@ -228,6 +228,7 @@ const renderMaquette = function () {
         renderTabSwitcher()
       ]),
       renderResults(),
+      renderBigBoardKey(),
       h('div.footer', [
         h('p.sources', [
           'Sources:',
@@ -283,6 +284,12 @@ const renderTabSwitcher = () => {
     ]
   );
 };
+
+const renderBigBoardKey = () => {
+    return h('div.key', {
+        innerHTML: bigBoardKey
+    });
+}
 
 const renderMiniBigBoard = (title, races, linkRaceType, linkText) => h(
   // Render a big-board-like element for a particular race type
@@ -358,7 +365,7 @@ const renderResults = function () {
       renderMiniBigBoard(
         'Key Ballot Initiatives',
         sortBy(getValues(data.ballot_measures.results), race => race[0].seatname.split(' - ')[0])
-      )
+      ),
     ]);
   } else if (resultsView === 'house') {
     const sortedHouseKeys = Object.keys(data['house']['results']).sort(function (a, b) {
