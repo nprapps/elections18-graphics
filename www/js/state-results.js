@@ -325,7 +325,7 @@ const getBoardClasses = function (boardClass, races) {
     if (races.length === 0) {
         c.push('hidden');
     }
-    return c.join(', ');
+    return c.join(' ');
 }
 
 const renderResults = function () {
