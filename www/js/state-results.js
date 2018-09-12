@@ -451,7 +451,7 @@ const renderResults = function () {
     }
   }
 
-  return h('div', [resultsElements]);
+  return h('div.results-elements', [resultsElements]);
 };
 
 const renderMetricLi = function (metric) {

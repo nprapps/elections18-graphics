@@ -375,9 +375,6 @@ const renderRace = function (race) {
     }, [
       decideLabel(result1)
     ]),
-    uncontested ? h('td') : h('td.results-status', [
-      calculatePrecinctsReporting(result1['precinctsreportingpct'])
-    ]),
     h('td.candidate', { classes: createClassesForBoardCells(result1) }, [
       h('span.fname', [
         result1['first'] ? result1['first'] + ' ' : ''
@@ -405,6 +402,9 @@ const renderRace = function (race) {
       h('span.lname', [
         result2 ? result2['last'] : ''
       ])
+    ]),
+    uncontested ? h('td') : h('td.results-status', [
+      calculatePrecinctsReporting(result1['precinctsreportingpct'])
     ])
   ]);
 };

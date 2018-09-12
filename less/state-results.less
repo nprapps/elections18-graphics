@@ -11,7 +11,8 @@ body {
     padding: 0;
 }
 
-#state-results {
+#state-results header,
+#state-results .results-elements {
     font: 14px/1.4 Helvetica, Arial, sans-serif;
 
     h1, h2, h3, h4, h5, h6,
@@ -50,12 +51,16 @@ body {
         max-width: @mm-max-width;
         margin: 0 0 22px 0;
         padding: 33px 10px 0 10px;
+        
         &.section-title {
             border-top: 2px solid #eee;
         }
         &.hidden { display: none; }
     }
 
+}
+
+#state-results .results-elements {
     p {
         font-size: 12px;
         line-height: 1.6;
@@ -74,25 +79,6 @@ body {
             border-radius: 3px;
         }
 
-        &.rating {
-            color: @gray-medium;
-            font-size: 12px;
-            margin-bottom: 0;
-            padding-top: 11px;
-            clear: both;
-
-            span {
-                color: #fff;
-                padding: 5px;
-
-                &.d-safe { background-color: @demSafe; }
-                &.d-lean { background-color: @demLean; }
-                &.toss-up { background-color: @yellow; }
-                &.r-lean { background-color: @gopLean; }
-                &.r-safe { background-color: @gopSafe; }
-            }
-        }
-
         &.poll-closing {
             font-style: italic;
             font-size: 14px;
@@ -106,51 +92,6 @@ body {
             color: #999;
             font-size: 11px;
             font-style: italic;
-        }
-    }
-
-    header {
-        max-width: @mm-max-width;
-        margin: 0;
-        .clearfix();
-
-        .state-icon {
-            font-size: 80px;
-            float: left;
-            line-height: .9;
-            color: @gray-light;
-        }
-
-        .state-name {
-            font-size: 40%;
-            display: block;
-            padding-top: 7px;
-            margin-bottom: -2px;
-        }
-    }
-
-    .switcher {
-        margin: 0;
-        padding-left: 10px;
-        padding-right: 10px;
-        font-size: 12px;
-        color: @gray-medium;
-
-        &.hidden { display: none; }
-
-        span {
-            margin: 0 6px;
-            color: @link-color;
-
-            &:hover {
-                color: @link-hover-color;
-                cursor: pointer;
-            }
-        }
-
-        .active {
-            color: @gray;
-            font-weight: bold;
         }
     }
 
@@ -242,12 +183,6 @@ body {
         }
     }
 
-    i.stateface {
-        font-style: normal;
-        display: inline-block;
-        margin-right: 5px;
-    }
-
     .results-statewide,
     .results-senate,
     .results-gubernatorial {
@@ -304,22 +239,13 @@ body {
                 width: 20%;
             }
 
-            // @screen-sm-min:              (@screen-xs + 1);
-            // @screen-md-min:              (@screen-sm + 1);
-            // @screen-lg-min:              (@screen-md + 1);
-            // @screen-xl-min:              (@screen-lg + 1);
-            // @screen-big-board-min:       (@screen-xl + 1);
-
-
             .precincts{
               font-style: italic;
               color: #999;
               font-size: 10px;
               border-bottom: none;
             }
-
         }
-
 
         &.one-result{
           max-width: @mm-max-width;
@@ -480,6 +406,57 @@ body {
             font-style: italic;
 
             em { font-style: normal; }
+        }
+    }
+}
+
+#state-header {
+    max-width: @mm-max-width;
+    margin: 0;
+    .clearfix();
+
+    i.stateface {
+        font-style: normal;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .state-icon {
+        font-size: 80px;
+        float: left;
+        line-height: .9;
+        color: @gray-light;
+    }
+
+    .state-name {
+        font-size: 40%;
+        display: block;
+        padding-top: 7px;
+        margin-bottom: -2px;
+    }
+
+    .switcher {
+        margin: 0;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 12px;
+        color: @gray-medium;
+
+        &.hidden { display: none; }
+
+        span {
+            margin: 0 6px;
+            color: @link-color;
+
+            &:hover {
+                color: @link-hover-color;
+                cursor: pointer;
+            }
+        }
+
+        .active {
+            color: @gray;
+            font-weight: bold;
         }
     }
 }
