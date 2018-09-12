@@ -78,16 +78,18 @@ body {
 
             // stack on small screens,
             // side-by-side on larger screens
-            @media screen and (min-width: @screen-sm-min) {
-                padding: 0 1%;
-                float: left;
-                width: 50%;
+            .big-board & {
+                @media screen and (min-width: @screen-sm-min) {
+                    padding: 0 1%;
+                    float: left;
+                    width: 50%;
 
-                &.first { padding-left: 0; }
-                &.last { padding-right: 0; }
-            }
-            @media screen and (max-width: @screen-xs) {
-                &.last { margin-top: -0.2rem; }
+                    &.first { padding-left: 0; }
+                    &.last { padding-right: 0; }
+                }
+                @media screen and (max-width: @screen-xs) {
+                    &.last { margin-top: -0.2rem; }
+                }
             }
         }
 
@@ -98,8 +100,11 @@ body {
                 &:after {
                     content: " (continued)";
                 }
-                @media screen and (min-width: @screen-sm-min) {
-                    display: block;
+
+                .big-board & {
+                    @media screen and (min-width: @screen-sm-min) {
+                        display: block;
+                    }
                 }
             }
         }
