@@ -235,9 +235,6 @@ const renderCongressBOP = function (bop) {
   const gopPickups = bop['GOP']['pickups'];
   const indPickups = bop['Other']['pickups'];
 
-  const demNeed = bop['Dem']['needed'];
-  const gopNeed = bop['GOP']['needed'];
-
   const uncalledRaces = bop['uncalled_races'];
 
   return h('div.leaderboard', [
@@ -245,20 +242,14 @@ const renderCongressBOP = function (bop) {
       h('h2.party', [ 'Dem.: ' + demSeats ]),
       h('p.detail', [
         'Net gains: ',
-        h('span.change.party', demPickups > 0 ? '+' + demPickups : demPickups),
-        h('br'),
-        'Need: ',
-        h('span.needed.party', demNeed)
+        h('span.change.party', demPickups > 0 ? '+' + demPickups : demPickups)
       ])
     ]),
     h('div.results-header-group.gop', [
       h('h2.party', 'GOP: ' + gopSeats),
       h('p.detail', [
         'Net gains: ',
-        h('span.change.party', gopPickups > 0 ? '+' + gopPickups : gopPickups),
-        h('br'),
-        'Need: ',
-        h('span.needed.party', gopNeed)
+        h('span.change.party', gopPickups > 0 ? '+' + gopPickups : gopPickups)
       ])
     ]),
     h('div.results-header-group.other', [
