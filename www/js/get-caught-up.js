@@ -1,37 +1,17 @@
 // Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
-// global vars
+import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
+
 window.pymChild = null;
 
-
-/*
-* Initialize the graphic.
-*/
-var onWindowLoaded = function() {
-    // init pym and render callback
-    window.pymChild = new pym.Child({
-        renderCallback: render
-    });
-    addLinkListener();
-}
-
-
-/*
- * Render
- */
-var render = function(containerWidth) {
-    // only run the first time
-    //if (!isBopInit) {
-    // run onresize
-    //} else {
-    //} 
-    
-    // Update iframe
-    if (window.pymChild) {
-        window.pymChild.sendHeight();
-    }
-}
+var onWindowLoaded = function () {
+  // init pym and render callback
+  window.pymChild = new pym.Child({
+    renderCallback: render
+  });
+ addLinkListener();
+};
 
 /*
  * Make sure links open in _top
@@ -51,9 +31,8 @@ const addLinkListener = function() {
         }
     });
 }
+var render = function (containerWidth) {
+  renderGetCaughtUp(containerWidth);
+};
 
-/*
- * Initially load the graphic
- * (NB: Use window.load to ensure all images have loaded)
- */
 window.onload = onWindowLoaded;
