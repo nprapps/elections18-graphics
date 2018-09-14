@@ -10,9 +10,9 @@ import { classify, buildDataURL } from './helpers.js';
 var DATA_FILE = 'top-level-results.json';
 
 var CONGRESS = {
-    'house': {},
-    'senate': {}
-}
+    house: {},
+    senate: {}
+};
 var DEFAULT_WIDTH = 600;
 var SIDEBAR_THRESHOLD = 280;
 var MOBILE_THRESHOLD = 500;
@@ -45,16 +45,16 @@ const initBop = function(containerWidth) {
 
     loadData();
     // console.log('YOU TURNED OFF THE REFRESH INTERVAL');
-    setInterval(loadData, LOAD_INTERVAL)
+    setInterval(loadData, LOAD_INTERVAL);
 }
 
 /*
  * Load a datafile
  */
-var loadData = function() {
+var loadData = function () {
     request.get(buildDataURL(DATA_FILE))
         .set('If-Modified-Since', lastRequestTime)
-        .end(function(err, res) {
+        .end(function (err, res) {
             // Superagent takes anything outside of `200`-class responses to be errors
             if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
             if (res.body) {
@@ -68,13 +68,12 @@ var loadData = function() {
 
             countdown(indicator, LOAD_INTERVAL);
         });
-}
-
+};
 
 /*
  * Format graphic data for processing by D3.
  */
-var formatData = function() {
+var formatData = function () {
     var hData = bopData['house_bop'];
     houseCalled = [
         { 'name': 'Dem.', 'val': hData['Dem']['seats'] },
@@ -84,7 +83,6 @@ var formatData = function() {
     ];
 
     CONGRESS['house']['total'] = hData['total_seats'];
-    CONGRESS['house']['majority'] = hData['majority'];
     CONGRESS['house']['uncalled_races'] = hData['uncalled_races'];
     CONGRESS['house']['label'] = BOP_LABELS['label_house'];
 
@@ -107,7 +105,6 @@ var formatData = function() {
         { 'name': 'GOP', 'val': sData['GOP']['seats'] }
     ];
     CONGRESS['senate']['total'] = sData['total_seats'];
-    CONGRESS['senate']['majority'] = sData['majority'];
     CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
     CONGRESS['senate']['label'] = BOP_LABELS['label_senate'];
 
@@ -122,24 +119,23 @@ var formatData = function() {
         CONGRESS['senate']['party'] = null;
     }
 
-    _.each([ houseCalled, senateCalled ], function(d, i) {
+    _.each([ houseCalled, senateCalled ], function (d, i) {
         var x0 = 0;
 
-        _.each(d, function(v, k) {
+        _.each(d, function (v, k) {
             v['x0'] = x0;
-            v['x1'] = x0 + v['val']
+            v['x1'] = x0 + v['val'];
             x0 = v['x1'];
         });
     });
 
     redrawChart();
-}
-
+};
 
 /*
  * Render the graphic(s). Called by pym with the container width.
  */
-const renderBop = function(containerWidth) {
+const renderBop = function (containerWidth) {
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;
     }
@@ -154,14 +150,14 @@ const renderBop = function(containerWidth) {
     // LoadData calls redrawChart after ensuring that the data is there
     // for the graphic to render.
     loadData();
-}
+};
 
-var redrawChart = function() {
+var redrawChart = function () {
     // Clear existing graphic (for redraw)
     var containerElement = d3.select('#bop');
     containerElement.html('');
 
-    if (BOP_LABELS['show_pickups'] == 'yes') {
+    if (BOP_LABELS['show_pickups'] === 'yes') {
         containerElement.append('h2')
             .html(BOP_LABELS['hed_pickups']);
 
@@ -176,7 +172,7 @@ var redrawChart = function() {
     containerElement.append('h2')
         .html(BOP_LABELS['hed_bars']);
 
-    _.each(charts, function(d, i) {
+    _.each(charts, function (d, i) {
         var chartDiv = containerElement.append('div')
             .attr('class', 'chart ' + classify(d));
 
@@ -184,10 +180,10 @@ var redrawChart = function() {
         renderStackedBarChart({
             container: '#bop .chart.' + classify(d),
             width: graphicWidth,
-            dataCalled: eval(classify(d) + 'Called'),
+            dataCalled: d === 'house' ? houseCalled : senateCalled,
             chart: d
         });
-    })
+    });
 
     // update timestamp
     timestamp.html('(as of ' + lastUpdated + ' ET)');
@@ -196,15 +192,15 @@ var redrawChart = function() {
     if (window.pymChild) {
         window.pymChild.sendHeight();
     }
-}
+};
 
 /*
  * Render pickups
  */
-var renderPickups = function(config) {
+var renderPickups = function (config) {
     var containerElement = d3.select(config['container']);
 
-    charts.forEach(function(d,i) {
+    charts.forEach(function (d, i) {
         var chamberElement = containerElement.append('div')
             .attr('class', 'chamber ' + classify(d));
 
@@ -219,7 +215,7 @@ var renderPickups = function(config) {
             .attr('class', 'net-gain');
         gainElement.append('abbr')
             .attr('class', classify(CONGRESS[d]['pickup_party']))
-            .attr('title', function() {
+            .attr('title', function () {
                 var party = CONGRESS[d]['pickup_party'].toLowerCase();
                 var t = BOP_LABELS['pickups_none'];
                 if (party) {
@@ -229,26 +225,26 @@ var renderPickups = function(config) {
 
                 return t;
             })
-            .text(function() {
+            .text(function () {
                 if (CONGRESS[d]['pickup_party']) {
                     var party = CONGRESS[d]['pickup_party'];
-                    if (party == 'Dem') {
-                        party = 'Dem.'
+                    if (party === 'Dem') {
+                        party = 'Dem.';
                     }
                     return party + ' +' + CONGRESS[d]['pickup_seats'];
                 } else {
-                    CONGRESS[d]['pickup_seats'];
+                    return CONGRESS[d]['pickup_seats'];
                 }
             });
         gainElement.append('i')
             .text(BOP_LABELS['pickups_gain']);
     });
-}
+};
 
 /*
  * Render a stacked bar chart.
  */
-var renderStackedBarChart = function(config) {
+var renderStackedBarChart = function (config) {
     /*
      * Setup
      */
@@ -267,7 +263,9 @@ var renderStackedBarChart = function(config) {
     var chamber = config['chart'];
     var uncalled = CONGRESS[chamber]['uncalled_races'];
     var half = CONGRESS[chamber]['total'] / 2;
-    var majority = Math.ceil(half);
+    // Want to display 50%+1 seats, even for Senate; see discussion:
+    // https://github.com/nprapps/elections18-graphics/issues/118
+    var majority = Math.floor(half + 1);
     var roundTicksFactor = 1;
 
     // Calculate actual chart dimensions
@@ -308,22 +306,22 @@ var renderStackedBarChart = function(config) {
     var group = chartElement.selectAll('.group')
         .data([ config['dataCalled'] ])
         .enter().append('g')
-            .attr('class', function(d, i) {
+            .attr('class', function (d, i) {
                 return 'group group-' + i;
             });
 
     group.selectAll('rect')
-        .data(function(d) {
+        .data(function (d) {
             return d;
         })
         .enter().append('rect')
-            .attr('class', function(d) {
+            .attr('class', function (d) {
                 return classify(d['name']);
             })
-            .attr('x', function(d) {
+            .attr('x', function (d) {
                 return xScale(d['x0']);
             })
-            .attr('width', function(d) {
+            .attr('width', function (d) {
                 return Math.abs(xScale(d['x1']) - xScale(d['x0']));
             })
             .attr('height', barHeight);
@@ -345,13 +343,13 @@ var renderStackedBarChart = function(config) {
     var annotations = chartElement.append('g')
         .attr('class', 'annotations');
 
-    _.each(config['dataCalled'], function(d) {
+    _.each(config['dataCalled'], function (d) {
         var lbl = d['name'];
         var textAnchor = null;
         var xPos = null;
         var yPos = barHeight + 18;
         var showLabel = true;
-        switch(d['name']) {
+        switch (d['name']) {
             case 'Dem.':
                 xPos = xScale(d['x0']);
                 textAnchor = 'start';
@@ -377,7 +375,7 @@ var renderStackedBarChart = function(config) {
                 .attr('x', xPos)
                 .attr('y', yPos)
                 .attr('dy', 0)
-                .attr('style', function() {
+                .attr('style', function () {
                     var s = '';
                     s += 'text-anchor: ' + textAnchor + '; ';
                     return s;
@@ -388,12 +386,12 @@ var renderStackedBarChart = function(config) {
     // shift xPos of independent label
     // base positioning on the xpos/width of the "Ind." label, not the value
     annotations.select('.party.ind')
-        .attr('x', function() {
+        .attr('x', function () {
             var t = d3.select(this);
             var tVal = annotations.select('.value.ind');
             var xPos = t.attr('x');
             var tBBox = t.node().getBBox();
-            switch(config['chart']) {
+            switch (config['chart']) {
                 case 'senate':
                     var senBBox = annotations.select('.party.dem').node().getBBox();
                     if (tBBox['x'] < (senBBox['x'] + senBBox['width'])) {
@@ -416,7 +414,7 @@ var renderStackedBarChart = function(config) {
     // majority and seats remaining
     chartWrapper.append('h4')
         .text(majority + ' needed for majority | ' + uncalled + ' not yet called');
-}
+};
 
 export {
     initBop,
