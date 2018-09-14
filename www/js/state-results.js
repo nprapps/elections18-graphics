@@ -371,9 +371,11 @@ const renderResults = function () {
       areThereAnyVotesYet
         ? ''
         : h('p', `Polls closing at ${pollCloseTime} ET.`),
-      renderMiniBigBoard('Senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
-      renderMiniBigBoard('Senate Special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
-      renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
+      renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results >' : 'Detailed Senate results >'),
+      renderMiniBigBoard('Senate Special', 'senate senate-special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results >' : 'Detailed Senate Special results >'),
+      // renderMiniBigBoard('Senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
+      // renderMiniBigBoard('Senate Special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
+      renderMiniBigBoard('Governor', 'governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
       keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
         ? renderMiniBigBoard(
           'Key House Races',
