@@ -20,8 +20,11 @@ a:hover, a:active {
     color: @link-hover-color;
 }
 
-#state-header {
+#state-results {
     max-width: @mm-max-width;
+}
+
+#state-header {
     margin: 0 0 33px 0;
     .clearfix();
 
@@ -95,7 +98,6 @@ a:hover, a:active {
         font-size: 18px;
         font-weight: normal;
         margin: 0 0 6px 0;
-        max-width: @mm-max-width;
         padding: 0 10px 0 10px;
         -webkit-font-smoothing: antialiased;
 
@@ -124,6 +126,11 @@ a:hover, a:active {
         margin: 0 0 0 6px;
         white-space: nowrap;
         -webkit-font-smoothing: antialiased;
+
+        &:hover {
+            color: @link-hover-color;
+            cursor: pointer;
+        }
     }
 
     p {
@@ -253,7 +260,6 @@ a:hover, a:active {
     .results-statewide,
     .results-senate,
     .results-gubernatorial {
-        max-width: @mm-max-width;
         padding-bottom: 33px;
         margin: 0;
 
@@ -274,8 +280,6 @@ a:hover, a:active {
         margin: 0;
 
         h2 {
-            max-width: @mm-max-width;
-
             &.hidden { display: none; }
         }
 
@@ -315,7 +319,6 @@ a:hover, a:active {
         }
 
         &.one-result{
-          max-width: @mm-max-width;
           padding-bottom: 33px;
           margin: 0;
 
@@ -333,7 +336,6 @@ a:hover, a:active {
         }
 
         &.two-results{
-          max-width: @mm-max-width;
           margin: 0;
 
           .house-race,
@@ -391,10 +393,6 @@ a:hover, a:active {
     }
 
     .results-counties {
-        h2, p {
-            max-width: @mm-max-width;
-        }
-
         &.hidden { display: none; }
 
         .gop,
@@ -462,7 +460,6 @@ a:hover, a:active {
     }
 
     .footer {
-        max-width: @mm-max-width;
         margin: 22px 0 0 0;
 
         p {
