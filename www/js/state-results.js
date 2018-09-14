@@ -297,16 +297,17 @@ const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) =>
   // { classes: { hidden: races.length === 0 } },
   { class: getBoardClasses(boardClass, races) },
   [
-    h('h2', title),
-    // Some race types don't have a link to anywhere
-    linkRaceType ? h(
-      'button',
-      {
-        name: linkRaceType,
-        onclick: switchResultsView
-      },
-      linkText
-    ) : '',
+    h('h2', [ title,
+        // Some race types don't have a link to anywhere
+        linkRaceType ? h(
+          'button',
+          {
+            name: linkRaceType,
+            onclick: switchResultsView
+          },
+          linkText
+      ) : ''],
+    ),
     h('div.results-wrapper', [
       h('div.results', [
         h('div.column', [
@@ -351,27 +352,29 @@ const renderResults = function () {
     const showCountyResults = !STATES_WITHOUT_COUNTY_INFO.includes(allRaces[0][0].statepostal);
 
     resultsElements = h('div', [
-      h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
-      h('p', descriptions.state_desc),
+      h('div.state-briefing', [
+          h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
+          h('p', { innerHTML: descriptions.state_desc })
+      ]),
       areThereAnyVotesYet
         ? ''
         : h('p', `Polls closing at ${pollCloseTime} ET.`),
-      renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results), 'senate', showCountyResults ? 'County-level results >' : 'Detailed Senate results >'),
-      renderMiniBigBoard('Governor', 'governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results >' : 'Detailed gubernatorial results >'),
+      renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
+      renderMiniBigBoard('Governor', 'governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
       keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
         ? renderMiniBigBoard(
           'Key House Races',
           'house',
           sortBy(keyHouseResults, race => parseInt(race[0].seatnum)),
           'house',
-          'All House results >'
+          'All House results \u203a'
         )
         : renderMiniBigBoard(
           'House Races',
           'house',
           sortBy(houseResults, race => parseInt(race[0].seatnum)),
           'house',
-          'Detailed House results >'
+          'Detailed House results \u203a'
         ),
       renderMiniBigBoard(
         'Key Ballot Initiatives',

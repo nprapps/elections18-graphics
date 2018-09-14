@@ -7,51 +7,98 @@
 @mm-max-width: 650px;
 
 body {
+    font: 14px/1.4 Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
-#state-results header,
-#state-results .results-elements {
-    font: 14px/1.4 Helvetica, Arial, sans-serif;
+a, a:link, a:hover {
+    color: @link-color;
+    text-decoration: none;
+}
+a:hover, a:active {
+    color: @link-hover-color;
+}
 
-    h1, h2, h3, h4, h5, h6,
-    p, ul, li {
-        margin: 0;
-        padding: 0;
-    }
-
-    a, a:link, a:hover {
-        color: @link-color;
-        text-decoration: none;
-    }
-    a:hover, a:active {
-        color: @link-hover-color;
-    }
+#state-header {
+    max-width: @mm-max-width;
+    margin: 0 0 33px 0;
+    .clearfix();
 
     h1 {
-        margin: 0;
-        font-size: 35px;
         color: #333;
         font-family: @gotham;
-        font-weight: 400;
+        font-size: 35px;
+        font-weight: 700;
         line-height: 1.2;
+        margin: 0;
+        text-transform: uppercase;
         -webkit-font-smoothing: antialiased;
+
+        .state-name {
+            display: block;
+            font-size: 40%;
+            font-weight: normal;
+            margin-bottom: 1px;
+            padding-top: 7px;
+        }
     }
 
-    h2 {
-        font-family: @knockout;
-        font-weight: normal;
-        text-transform: uppercase;
-        line-height: 1.2;
-        letter-spacing: 0.05em;
+    .state-icon {
+        font-size: 80px;
+        float: left;
+        line-height: .9;
+        color: @gray-light;
+
+        i.stateface {
+            font-style: normal;
+            display: inline-block;
+            margin-right: 5px;
+        }
+    }
+
+    .switcher {
+        // clear: both;
+        color: @gray;
+        font-family: @gotham;
+        font-size: 13px;
+        margin: 4px 0 0 0;
+        padding-left: 10px;
+        padding-right: 10px;
         -webkit-font-smoothing: antialiased;
-        font-size: 14px;
+
+        &.hidden { display: none; }
+
+        span {
+            color: @link-color;
+            padding: 0 11px;
+
+            &:hover {
+                color: @link-hover-color;
+                cursor: pointer;
+            }
+        }
+
+        .active {
+            color: @gray-dark;
+            font-weight: bold;
+        }
+    }
+}
+
+
+
+#state-results .results-elements {
+    h2 {
         color: #333;
+        font-family: @gotham;
+        font-size: 18px;
+        font-weight: normal;
+        margin: 0 0 6px 0;
         max-width: @mm-max-width;
-        margin: 0 0 22px 0;
-        padding: 33px 10px 0 10px;
-        
+        padding: 0 10px 0 10px;
+        -webkit-font-smoothing: antialiased;
+
         &.section-title {
             border-top: 2px solid #eee;
         }
@@ -61,6 +108,24 @@ body {
 }
 
 #state-results .results-elements {
+    .state-briefing,
+    .board {
+        margin-bottom: 33px;
+    }
+
+    button {
+        border: none;
+        color: @link-color;
+        display: inline-block;
+        font-family: @gotham;
+        font-size: 11px;
+        font-weight: bold;
+        padding: none;
+        margin: 0 0 0 6px;
+        white-space: nowrap;
+        -webkit-font-smoothing: antialiased;
+    }
+
     p {
         font-size: 12px;
         line-height: 1.6;
@@ -94,6 +159,8 @@ body {
             font-style: italic;
         }
     }
+
+    .state-briefing p { margin-bottom: 0; }
 
     .sorter {
         margin: 0 0 25px 10px;
@@ -410,55 +477,10 @@ body {
     }
 }
 
-#state-header {
-    max-width: @mm-max-width;
-    margin: 0;
-    .clearfix();
-
-    i.stateface {
-        font-style: normal;
-        display: inline-block;
-        margin-right: 5px;
-    }
-
-    .state-icon {
-        font-size: 80px;
-        float: left;
-        line-height: .9;
-        color: @gray-light;
-    }
-
-    .state-name {
-        font-size: 40%;
-        display: block;
-        padding-top: 7px;
-        margin-bottom: -2px;
-    }
-
-    .switcher {
-        margin: 0;
-        padding-left: 10px;
-        padding-right: 10px;
-        font-size: 12px;
-        color: @gray-medium;
-
-        &.hidden { display: none; }
-
-        span {
-            margin: 0 6px;
-            color: @link-color;
-
-            &:hover {
-                color: @link-hover-color;
-                cursor: pointer;
-            }
-        }
-
-        .active {
-            color: @gray;
-            font-weight: bold;
-        }
-    }
+// big board overrides
+#state-results {
+    .board-key li.time { display: none; }
+    .board.governor { min-height: unset; }
 }
 
 
@@ -473,25 +495,30 @@ body {
 
 // mobile only
 @media screen and (max-width: @screen-xs) {
-    #state-results {
-        h2,
-        p,
+    #state-header {
+        h1 {
+            font-size: 22px;
+
+            .state-name {
+                padding-top: 2px;
+                margin-bottom: 0;
+                font-size: 60%;
+            }
+        }
+
+        .state-icon { font-size: 60px; }
+
         .switcher {
             padding-left: 2px;
             padding-right: 2px;
         }
+    }
 
-        header {
-            .state-icon { font-size: 60px; }
-            h1 {
-                font-size: 22px;
-
-                .state-name {
-                    padding-top: 2px;
-                    margin-bottom: 0;
-                    font-size: 60%;
-                }
-            }
+    #state-results {
+        h2,
+        p {
+            padding-left: 2px;
+            padding-right: 2px;
         }
         .results-table {
             caption {
@@ -524,6 +551,9 @@ body {
 }
 
 @media screen and (max-width: 600px) {
+    #state-header .switcher {
+        clear: both;
+    }
     #state-results .results-counties table.results-table {
         th {
             text-align: left;
