@@ -6,8 +6,11 @@
 
 @mm-max-width: 650px;
 
-body {
+html {
     font: 14px/1.4 Helvetica, Arial, sans-serif;
+}
+
+body {
     margin: 0;
     padding: 0;
 }
@@ -120,8 +123,8 @@ a:hover, a:active {
         color: @link-color;
         display: inline-block;
         font-family: @gotham;
-        font-size: 11px;
-        font-weight: bold;
+        font-size: 12px;
+        font-weight: normal;
         padding: none;
         margin: 0 0 0 6px;
         white-space: nowrap;
@@ -477,9 +480,19 @@ a:hover, a:active {
 // big board overrides
 #state-results {
     .board-key li.time { display: none; }
-    .board.governor { min-height: unset; }
-}
+    .board {
+        font: 14px/1.4 Helvetica, Arial, sans-serif;
 
+        @media screen and (min-width: @screen-big-board-min) { font-size: 18px; }
+        @media screen and (max-width: @screen-md) { font-size: 13px; }
+        @media screen and (max-width: @screen-sm) { font-size: 12px; }
+        @media screen and (max-width: @screen-xs) { font-size: 11px; }
+
+        &.governor { min-height: unset; }
+        .results .races tr td { line-height: 1.4; }
+        .results .races tr .state { font-size: 95%; }
+    }
+}
 
 // desktop only
 @media screen and (min-width: @screen-sm-min) {
