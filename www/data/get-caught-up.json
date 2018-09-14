@@ -1,15 +1,1 @@
-{
-  "meta": {
-    "published": "yes",
-    "last_updated": "Sept. 11, 2018, 1:59 p.m."
-  },
-  "content": {
-    "intro_1": "This is the first paragraph.",
-    "intro_2": "<a href=\"/\">This is a link in the second paragraph</a>, and this is <strong>more</strong> text in the second paragraph hey \nthis is what happens when a line breaks is put right before the word \"this.\"",
-    "bullet_1": "bullet one",
-    "bullet_2": "bullet two",
-    "bullet_3": "",
-    "bullet_4": "bullet four (there's no bullet three)",
-    "bullet_5": "This is the last bullet, there can be no more than five bullets."
-  }
-}
+{"meta": {"published": "yes", "last_updated": "Sept. 13, 2018, 3:15 p.m."}, "content": {"intro_1": "This is the first paragraph.", "intro_2": "<a href=\"/\">This is a link in the second paragraph</a>, and this is <strong>more</strong> text in the second paragraph hey \nthis is what happens when a line breaks is put right before the word \"this.\"", "bullet_1": "bullet one", "bullet_2": "bullet two", "bullet_3": "", "bullet_4": "bullet four (there's no bullet three)", "bullet_5": "This is the last bullet, there can be no more than five bullets."}}

@@ -92,6 +92,7 @@ let raceTypes = [
   'Key',
   'House',
   'Senate',
+  'Senate Special',
   'Governor'
 ];
 
@@ -138,7 +139,18 @@ const getData = function (forceReload) {
         if (data.senate && data.house) {
           if (Object.keys(data.senate.results).length === 0) {
             raceTypes = without(raceTypes, 'Senate');
+            raceTypes = without(raceTypes, 'Senate Special');
+          } else if (Object.keys(data.senate.results).length === 1) {
+            const isSpecial = data.senate
+              .results[Object.keys(data.senate.results)[0]][0]
+              .is_special_election;
+            if (isSpecial) {
+              raceTypes = without(raceTypes, 'Senate');
+            } else {
+              raceTypes = without(raceTypes, 'Senate Special');
+            }
           }
+
           if (Object.keys(data.governor.results).length === 0) {
             raceTypes = without(raceTypes, 'Governor');
           }
@@ -359,8 +371,9 @@ const renderResults = function () {
       areThereAnyVotesYet
         ? ''
         : h('p', `Polls closing at ${pollCloseTime} ET.`),
-      renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
-      renderMiniBigBoard('Governor', 'governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
+      renderMiniBigBoard('Senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
+      renderMiniBigBoard('Senate Special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
+      renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
       keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
         ? renderMiniBigBoard(
           'Key House Races',
@@ -399,7 +412,11 @@ const renderResults = function () {
         sortedHouseKeys.map(race => renderRacewideTable(data['house']['results'][race], 'house-race'))
       ])
     ]);
-  } else if (resultsView === 'senate' || resultsView === 'governor') {
+  } else if (
+    resultsView === 'senate' ||
+    resultsView === 'senate special' ||
+    resultsView === 'governor'
+  ) {
     resultsElements = [
       renderRacewideTable(
         data.state,
@@ -763,6 +780,8 @@ const switchResultsView = function (e) {
   let dataFilename;
   if (resultsView === 'senate' || resultsView === 'governor') {
     dataFilename = `${currentState}-counties-${resultsView}.json`;
+  } else if (resultsView === 'senate special') {
+    dataFilename = `${currentState}-counties-senate-special.json`;
   } else {
     dataFilename = currentState + '.json';
   }
