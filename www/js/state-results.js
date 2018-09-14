@@ -12,7 +12,7 @@ import commaNumber from 'comma-number';
 
 import '../js/includes/navbar.js';
 import briefingData from '../data/extra_data/state-briefings.json';
-import { getParameterByName, buildDataURL } from './includes/helpers.js';
+import { classify, getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
 
 const resultsWrapper = document.getElementById('state-results');
@@ -240,6 +240,7 @@ const renderMaquette = function () {
         renderTabSwitcher()
       ]),
       renderResults(),
+      renderBigBoardKey(),
       h('div.footer', [
         h('p.sources', [
           'Sources:',
@@ -296,21 +297,29 @@ const renderTabSwitcher = () => {
   );
 };
 
-const renderMiniBigBoard = (title, races, linkRaceType, linkText) => h(
+const renderBigBoardKey = () => {
+    return h('div.key', {
+        innerHTML: bigBoardKey
+    });
+}
+
+const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) => h(
   // Render a big-board-like element for a particular race type
   'div.board',
-  { classes: { hidden: races.length === 0 } },
+  // { classes: { hidden: races.length === 0 } },
+  { class: getBoardClasses(boardClass, races) },
   [
-    h('h2', title),
-    // Some race types don't have a link to anywhere
-    linkRaceType ? h(
-      'button',
-      {
-        name: linkRaceType,
-        onclick: switchResultsView
-      },
-      linkText
-    ) : '',
+    h('h2', [ title,
+        // Some race types don't have a link to anywhere
+        linkRaceType ? h(
+          'button',
+          {
+            name: linkRaceType,
+            onclick: switchResultsView
+          },
+          linkText
+      ) : ''],
+    ),
     h('div.results-wrapper', [
       h('div.results', [
         h('div.column', [
@@ -323,6 +332,14 @@ const renderMiniBigBoard = (title, races, linkRaceType, linkText) => h(
     ])
   ]
 );
+
+const getBoardClasses = function (boardClass, races) {
+    var c = [ boardClass ];
+    if (races.length === 0) {
+        c.push('hidden');
+    }
+    return c.join(' ');
+}
 
 const renderResults = function () {
   // Render race data elements, depending on which race-type tab is active
@@ -347,31 +364,36 @@ const renderResults = function () {
     const showCountyResults = !STATES_WITHOUT_COUNTY_INFO.includes(allRaces[0][0].statepostal);
 
     resultsElements = h('div', [
-      h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
-      h('p', descriptions.state_desc),
+      h('div.state-briefing', [
+          h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
+          h('p', { innerHTML: descriptions.state_desc })
+      ]),
       areThereAnyVotesYet
         ? ''
         : h('p', `Polls closing at ${pollCloseTime} ET.`),
-      renderMiniBigBoard('Senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results >' : 'Detailed Senate results >'),
-      renderMiniBigBoard('Senate Special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results >' : 'Detailed Senate Special results >'),
-      renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results >' : 'Detailed gubernatorial results >'),
+      renderMiniBigBoard('Senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
+      renderMiniBigBoard('Senate Special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
+      renderMiniBigBoard('Governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
       keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
         ? renderMiniBigBoard(
           'Key House Races',
+          'house',
           sortBy(keyHouseResults, race => parseInt(race[0].seatnum)),
           'house',
-          'All House results >'
+          'All House results \u203a'
         )
         : renderMiniBigBoard(
           'House Races',
+          'house',
           sortBy(houseResults, race => parseInt(race[0].seatnum)),
           'house',
-          'Detailed House results >'
+          'Detailed House results \u203a'
         ),
       renderMiniBigBoard(
         'Key Ballot Initiatives',
+        'ballot-measures',
         sortBy(getValues(data.ballot_measures.results), race => race[0].seatname.split(' - ')[0])
-      )
+      ),
     ]);
   } else if (resultsView === 'house') {
     const sortedHouseKeys = Object.keys(data['house']['results']).sort(function (a, b) {
@@ -449,7 +471,7 @@ const renderResults = function () {
     }
   }
 
-  return h('div', [resultsElements]);
+  return h('div.results-elements', [resultsElements]);
 };
 
 const renderMetricLi = function (metric) {

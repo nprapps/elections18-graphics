@@ -78,16 +78,18 @@ body {
 
             // stack on small screens,
             // side-by-side on larger screens
-            @media screen and (min-width: @screen-sm-min) {
-                padding: 0 1%;
-                float: left;
-                width: 50%;
+            .big-board & {
+                @media screen and (min-width: @screen-sm-min) {
+                    padding: 0 1%;
+                    float: left;
+                    width: 50%;
 
-                &.first { padding-left: 0; }
-                &.last { padding-right: 0; }
-            }
-            @media screen and (max-width: @screen-xs) {
-                &.last { margin-top: -0.2rem; }
+                    &.first { padding-left: 0; }
+                    &.last { padding-right: 0; }
+                }
+                @media screen and (max-width: @screen-xs) {
+                    &.last { margin-top: -0.2rem; }
+                }
             }
         }
 
@@ -98,8 +100,11 @@ body {
                 &:after {
                     content: " (continued)";
                 }
-                @media screen and (min-width: @screen-sm-min) {
-                    display: block;
+
+                .big-board & {
+                    @media screen and (min-width: @screen-sm-min) {
+                        display: block;
+                    }
                 }
             }
         }
@@ -120,10 +125,10 @@ body {
                 padding: 0.2rem 0.4rem;
                 line-height: 1.1;
 
-                &:nth-child(4) { border-radius: 0.4rem 0 0 0.4rem; }
-                &:nth-child(5) { border-radius: 0 0.4rem 0.4rem 0; }
-                &:nth-child(7) { border-radius: 0.4rem 0 0 0.4rem; }
-                &:nth-child(8) { border-radius: 0 0.4rem 0.4rem 0; }
+                &:nth-child(3) { border-radius: 0.3rem 0 0 0.3rem; }
+                &:nth-child(4) { border-radius: 0 0.3rem 0.3rem 0; }
+                &:nth-child(6) { border-radius: 0.3rem 0 0 0.3rem; }
+                &:nth-child(7) { border-radius: 0 0.3rem 0.3rem 0; }
 
                 &.candidate-total-spacer {
                     padding: 0;
@@ -134,7 +139,7 @@ body {
             tr {
                 .results-status {
                     color: #ccc;
-                    width: 12%;
+                    width: 11%;
                     white-space: nowrap;
                     text-align: center;
 
@@ -288,7 +293,7 @@ body {
 
 
 // board-specific styles
-.ballot-measures .results .races {
+.ballot-measures .results .races tr {
     .pickup { display: none; }
     .state {
         width: 46%;
@@ -297,7 +302,7 @@ body {
         white-space: normal;
     }
     .candidate {
-        width: 11%;
+        width: 14%;
 
         .fname { display: none; }
         &:nth-child(4) { padding-right: 0; }
