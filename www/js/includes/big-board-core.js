@@ -299,6 +299,18 @@ const renderResultsTable = function (key, column) {
           : key
       )),
       h('table.races', [
+        h('thead', { class: 'screen-reader-only' }, [
+          h('tr', [
+            h('th', { scope: 'col', class: 'pickup' }, 'Pick-up?'),
+            h('th', { scope: 'col' }, 'Name'),
+            h('th', { scope: 'col' }, 'Percent reported'),
+            h('th', { scope: 'col' }, 'Candidate one name'),
+            h('th', { scope: 'col' }, 'Candidate one vote percent'),
+            h('th', { scope: 'col' }, ''),
+            h('th', { scope: 'col' }, 'Candidate two vote percent'),
+            h('th', { scope: 'col' }, 'Candidate two name'),
+          ]),
+        ]),
         races.map(race => renderRace(race))
       ])
     ];
@@ -365,7 +377,8 @@ const renderRace = function (race) {
     }, [
       insertRunoffImage(race)
     ]),
-    h('td.state', {
+    h('th.state', {
+      scope: 'row',
       classes: {
         'winner': winningResult,
         'dem': winningResult && winningResult['party'] === 'Dem',
