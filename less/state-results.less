@@ -24,9 +24,12 @@ a:hover, a:active {
 }
 
 #state-results {
-    max-width: @mm-max-width;
+    margin-left: 10px;
+    margin-right: 10px;
+    // max-width: @mm-max-width;
 }
 
+// header
 #state-header {
     margin: 0 0 33px 0;
     .clearfix();
@@ -64,13 +67,11 @@ a:hover, a:active {
     }
 
     .switcher {
-        // clear: both;
+        clear: both;
         color: @gray;
         font-family: @gotham;
-        font-size: 13px;
+        font-size: 12px;
         margin: 4px 0 0 0;
-        padding-left: 10px;
-        padding-right: 10px;
         -webkit-font-smoothing: antialiased;
 
         &.hidden { display: none; }
@@ -88,34 +89,23 @@ a:hover, a:active {
         .active {
             color: @gray-dark;
             font-weight: bold;
+
+            &:hover { color: @gray; }
         }
     }
 }
 
-
-
+// general results view / key races styles
 #state-results .results-elements {
     h2 {
-        color: #333;
+        color: @gray-dark;
         font-family: @gotham;
-        font-size: 18px;
-        font-weight: normal;
+        font-size: 16px;
+        font-weight: 700;
         margin: 0 0 6px 0;
-        padding: 0 10px 0 10px;
         -webkit-font-smoothing: antialiased;
 
-        &.section-title {
-            border-top: 2px solid #eee;
-        }
         &.hidden { display: none; }
-    }
-
-}
-
-#state-results .results-elements {
-    .state-briefing,
-    .board {
-        margin-bottom: 33px;
     }
 
     button {
@@ -125,7 +115,7 @@ a:hover, a:active {
         font-family: @gotham;
         font-size: 12px;
         font-weight: normal;
-        padding: none;
+        padding: 0;
         margin: 0 0 0 6px;
         white-space: nowrap;
         -webkit-font-smoothing: antialiased;
@@ -140,16 +130,14 @@ a:hover, a:active {
         font-size: 12px;
         line-height: 1.6;
         margin-bottom: 22px;
-        color: #454545;
-        padding-left: 10px;
-        padding-right: 10px;
+        color: @gray;
 
-        strong { color: #121212; }
+        strong { color: @gray-darker; }
 
         .featured {
             background-color: #f1f1f1;
             padding: 4px 2px 4px 4px;
-            color: #333;
+            color: @gray-dark;
             font-weight: bold;
             border-radius: 3px;
         }
@@ -164,115 +152,36 @@ a:hover, a:active {
         &.precincts {
             margin-top: 11px;
             margin-bottom: 0;
-            color: #999;
+            color: @gray-light;
             font-size: 11px;
             font-style: italic;
         }
     }
 
+    .state-briefing,
+    .board {
+        margin-bottom: 33px;
+    }
+
     .state-briefing p { margin-bottom: 0; }
+}
 
-    .sorter {
-        margin: 0 0 25px 10px;
-        padding: 0;
-        list-style-type: none;
-        font-size: 12px;
-
-        @media screen and (max-width: @screen-xs) {
-            text-align: center;
-        }
-
-        > li {
-            color: @gray-medium;
-            white-space: nowrap;
-            line-height: 25px;
-            display: inline-block;
-            margin: 0 2px 0 0;
-            .unselectable;
-
-            &.label {
-                display: block;
-                font-size: 11px;
-                font-family: @knockout;
-                font-weight: normal;
-                text-transform: uppercase;
-                padding-top: 0;
-                line-height: 1.2;
-                letter-spacing: 0.05em;
-                -webkit-font-smoothing: antialiased;
-                margin-bottom: 6px;
-            }
-
-            &.sortButton {
-                .metric {
-                    color: @link-color;
-                    padding: 0 5px;
-
-                    &:hover {
-                        color: @link-hover-color;
-                        cursor: pointer;
-                    }
-                }
-                .pipe { color: @gray-medium; }
-
-                &.selected {
-                    .metric {
-                        font-weight: bold;
-                        color: @gray;
-
-                        &:hover { color: @gray; }
-                    }
-                }
-
-                &:nth-child(2) .metric { padding-left: 0; }
-            }
-        }
-    }
-
-    table.results-table {
-        table-layout: fixed;
-        width: 100%;
-
-        th { border-color: #ccc; }
-        th, td {
-            &.vote { text-align: center; }
-            &.uncontested { font-style: italic; }
-        }
-        col.seat-status { width: 28px; }
-        col.candidate { width: 40%; }
-        span.pickup {
-            vertical-align: middle;
-            &:after{
-                font-weight: 500;
-                content: "+1";
-                font-style: italic;
-                padding-left: 3px;
-            }
-        }
-
-        .incumbent .lname {
-            font-size: 95%;
-            text-transform: uppercase;
-
-            &:after {
-                content: '*';
-            }
-        }
-    }
-
+// conventional results table layout (used in 2018 for House races)
+// see also: results-table.less
+#state-results {
     .results-statewide,
     .results-senate,
     .results-gubernatorial {
-        padding-bottom: 33px;
         margin: 0;
+        padding: 5px 0 33px 0;
 
         @media screen and (min-width: @screen-sm-min) {
             table { max-width: 350px; }
         }
 
-        .precincts{
+        .precincts {
           font-style: italic;
-          color: #999;
+          color: @gray-light;
           font-size: 10px;
           border-bottom: none;
         }
@@ -315,7 +224,7 @@ a:hover, a:active {
 
             .precincts{
               font-style: italic;
-              color: #999;
+              color: @gray-light;
               font-size: 10px;
               border-bottom: none;
             }
@@ -372,11 +281,11 @@ a:hover, a:active {
           }
         }
 
-        &.four-results{
+        &.four-results {
           margin: 0;
 
           .house-race,
-          .ballot-measure{
+          .ballot-measure {
             margin-bottom: 33px;
 
             @media screen and (min-width: @screen-sm-min) {
@@ -394,16 +303,72 @@ a:hover, a:active {
         }
 
     }
+}
 
-    .results-counties {
-        &.hidden { display: none; }
+// county results tables
+#state-results .results-counties {
+    border-top: 1px solid #eee;
+    padding-top: 22px;
 
-        .gop,
-        .ind,
-        .margin {
-            border-left: 1px solid #eee;
+    &.hidden { display: none; }
+
+    .sorter {
+        font-family: @gotham;
+        font-size: 12px;
+        list-style-type: none;
+        margin: 0 0 25px 0;
+        padding: 0;
+
+        // @media screen and (max-width: @screen-xs) { text-align: center; }
+
+        > li {
+            color: @gray-medium;
+            white-space: nowrap;
+            line-height: 25px;
+            display: inline-block;
+            margin: 0 2px 0 0;
+            .unselectable();
+
+            &.label {
+                display: block;
+                font-size: 11px;
+                font-family: @knockout;
+                font-weight: normal;
+                text-transform: uppercase;
+                padding-top: 0;
+                line-height: 1.2;
+                letter-spacing: 0.05em;
+                -webkit-font-smoothing: antialiased;
+                margin-bottom: 6px;
+            }
+
+            &.sortButton {
+                .metric {
+                    color: @link-color;
+                    padding: 0 5px;
+
+                    &:hover {
+                        color: @link-hover-color;
+                        cursor: pointer;
+                    }
+                }
+                .pipe { color: @gray-medium; }
+
+                &.selected {
+                    .metric {
+                        color: @gray-dark;
+                        font-weight: bold;
+
+                        &:hover { color: @gray-dark; }
+                    }
+                }
+
+                &:nth-child(2) .metric { padding-left: 0; }
+            }
         }
+    }
 
+    .results-table {
         .leading {
             &.dem { background-color: @demDim; }
             &.gop { background-color: @gopDim; }
@@ -417,69 +382,71 @@ a:hover, a:active {
             &.ind { background-color: @ind; }
         }
 
+        td { vertical-align: middle; }
+
         th, td {
+            border-left: 1px solid #eee;
+
+            &:first-child { padding-left: 0; }
+            &:last-child { padding-right: 0; }
+
             &.county {
-                width: 15%;
+                border-left: none;
                 text-align: left;
             }
+
             &.precincts {
-                font-style: italic;
-                color: #999;
-                font-size: 10px;
+                border-left: none;
                 border-right: 1px solid #ccc;
+                color: @gray-light;
+                font-size: 10px;
+                font-style: italic;
                 text-align: right;
-                width: 5%;
+                white-space: nowrap;
+                width: 13%;
             }
-            &.dem,
-            &.gop,
-            &.ind {
-                width: 15%;
+
+            &.vote,
+            &.margin {
+                width: 16%;
             }
+
             &.comparison {
-                width: 15%;
                 border-left: 1px solid #ccc;
                 text-align: right;
             }
         }
-        &.past-results .comparison { text-align: center; }
-
-        td { vertical-align: middle; }
-
-        .featured td {
-            background-color: #f1f1f1;
-            font-weight: bold;
-
-            &.county {
-                font-weight: bold;
-                color: #333;
-            }
-            &.gop,
-            &.ind,
-            &.margin {
-                border-left-color: #dcdcdc;
-            }
-            .icon { font-size: 90%; }
-        }
     }
+    &.past-results th.comparison,
+    &.past-results td.comparison {
+        text-align: center;
+    }
+}
 
-    .footer {
-        margin: 22px 0 0 0;
+// footer
+#state-results .footer {
+    margin: 22px 0 0 0;
+    padding-bottom: 10px;
 
-        p {
-            margin: 2px 0 0 0;
-            font-size: 11px;
-            line-height: 1.7;
-            color: #999;
-            font-style: italic;
+    p {
+        color: @gray-light;
+        font-size: 12px;
+        font-style: italic;
+        line-height: 1.4;
+        margin: 2px 0 0 0;
 
-            em { font-style: normal; }
-        }
+        em { font-style: normal; }
     }
 }
 
 // big board overrides
 #state-results {
-    .board-key li.time { display: none; }
+    .board-key {
+        margin-left: 0;
+        margin-right: 0;
+
+        li.time { display: none; }
+    }
     .board {
         font: 14px/1.4 Helvetica, Arial, sans-serif;
 
@@ -489,8 +456,12 @@ a:hover, a:active {
         @media screen and (max-width: @screen-xs) { font-size: 11px; }
 
         &.governor { min-height: unset; }
-        .results .races tr td { line-height: 1.4; }
-        .results .races tr .state { font-size: 95%; }
+        .results .races tr {
+            td { line-height: 1.4; }
+            .results-status { font-size: 0.9rem; }
+            .state { font-size: 95%; }
+        }
+        .results-wrapper { padding: 0; }
     }
 }
 
@@ -517,91 +488,59 @@ a:hover, a:active {
         }
 
         .state-icon { font-size: 60px; }
-
-        .switcher {
-            padding-left: 2px;
-            padding-right: 2px;
-        }
     }
 
     #state-results {
-        h2,
-        p {
-            padding-left: 2px;
-            padding-right: 2px;
-        }
         .results-table {
             caption {
                 padding-left: 2px;
                 padding-right: 2px;
-                font-size: 11px;
             }
             th {
-                font-size: 10px;
+                font-size: 11px;
                 padding: 0 2px 5px 2px;
             }
-            td {
-                font-size: 11px;
-                padding: 5px 2px;
-            }
+            td { padding: 5px; }
         }
         .results-counties .results-table {
+            th {
+                &.county { padding: 5px 0; }
+
+                &.vote,
+                &.comparison {
+                    text-align: left;
+                    line-height: 1;
+                    padding: 0 0 5px 0;
+
+                    div {
+                        position: relative;
+                        height: 70px;
+                        width: 100%;
+                    }
+
+                    span {
+                        position: absolute;
+                        bottom: 55%;
+                        left: 50%;
+                        -webkit-transform: translateX(-50%) translateY(50%) rotate(-90deg);
+                        transform: translateX(-50%) translateY(50%) rotate(-90deg);
+                        width: 70px;
+                        text-align: left;
+                    }
+                }
+            }
+
             th, td {
-                &.dem { border-left: 1px solid #ccc; }
+                &:nth-child(3) { border-left: 1px solid #ccc; }
                 &.precincts { display: none; }
             }
+
             .precincts.mobile {
                 display: block;
                 font-size: 9px;
                 font-style: italic;
-                color: #999;
+                color: @gray-light;
             }
-        }
-    }
-}
-
-@media screen and (max-width: 600px) {
-    #state-header .switcher {
-        clear: both;
-    }
-    #state-results .results-counties table.results-table {
-        th {
-            text-align: left;
-            line-height: 1;
-            padding: 0 0 5px 0;
-
-            &.vote, &.comparison {
-                text-align: left;
-            }
-
-            div {
-                position: relative;
-                height: 70px;
-                width: 100%;
-            }
-
-            span {
-                position: absolute;
-                bottom: 55%;
-                left: 50%;
-                -webkit-transform: translateX(-50%) translateY(50%) rotate(-90deg);
-                transform: translateX(-50%) translateY(50%) rotate(-90deg);
-                width: 70px;
-            }
-        }
-
-        td {
-            padding: 5px 0;
-            font-size: 9px;
-            width: 10%;
-        }
-
-        th.vote, td.vote {
-            width: 10%;
-        }
-
-        th.county, td.county {
-            width: 20%;
         }
     }
 }

@@ -85,6 +85,7 @@ let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
 let parentScrollAboveIframeTop = null;
+// let resultsView = 'key';
 let resultsView = 'key';
 let resultsType = 'Key Results';
 let lastDownballotRequestTime = '';
@@ -374,10 +375,8 @@ const renderResults = function () {
       areThereAnyVotesYet
         ? ''
         : h('p', `Polls closing at ${pollCloseTime} ET.`),
-      renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results >' : 'Detailed Senate results >'),
-      renderMiniBigBoard('Senate Special', 'senate senate-special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results >' : 'Detailed Senate Special results >'),
-      // renderMiniBigBoard('Senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
-      // renderMiniBigBoard('Senate Special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
+      renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
+      renderMiniBigBoard('Senate Special', 'senate senate-special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
       renderMiniBigBoard('Governor', 'governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
       keyHouseResults.length && Object.keys(data.house.results).length > SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS
         ? renderMiniBigBoard(
@@ -423,6 +422,7 @@ const renderResults = function () {
     resultsView === 'governor'
   ) {
     resultsElements = [
+      h('h2', 'Statewide Results'),
       renderRacewideTable(
         data.state,
         resultsView === 'senate'
@@ -451,7 +451,7 @@ const renderResults = function () {
             'percent-college-educated': sortMetric['key'] === 'percent_bachelors'
           }
         }, [
-          h('h2.section-title', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
+          h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
           h('p', {
             innerHTML: descriptions.county_desc ? descriptions.county_desc : ''
           }),
@@ -465,7 +465,7 @@ const renderResults = function () {
                 h('th.county', h('div', h('span', 'County'))),
                 h('th.amt.precincts', h('div', h('span', ''))),
                 availableCandidates.map(cand => renderCandidateTH(cand)),
-                h('th.vote.margin', h('div', h('span', 'Margin'))),
+                h('th.vote.margin', h('div', h('span', 'Vote margin'))),
                 h('th.comparison', h('div', h('span', sortMetric['name'])))
               ])
             ]),

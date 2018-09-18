@@ -1,8 +1,9 @@
 table.results-table {
-    width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
     color: #666;
+    font-size: 12px;
+    table-layout: fixed;
+    width: 100%;
 
     caption {
         text-align: left;
@@ -14,17 +15,21 @@ table.results-table {
         padding: 0 10px 7px 10px;
     }
 
+    col.seat-status { width: 28px; }
+    col.candidate { width: 40%; }
+
     tr { vertical-align: top; }
 
     th {
-        vertical-align: bottom;
-        padding: 0 10px 10px 10px;
-        text-align: left;
+        border-color: #ccc;
         font-family: @knockout;
         font-weight: normal;
-        text-transform: uppercase;
-        line-height: 1.2;
         letter-spacing: 0.05em;
+        line-height: 1.2;
+        padding: 0 10px 10px 10px;
+        text-align: left;
+        text-transform: uppercase;
+        vertical-align: bottom;
         -webkit-font-smoothing: antialiased;
     }
     thead th, tbody th {
@@ -38,6 +43,8 @@ table.results-table {
 
     th, td {
         &.amt { text-align: right; }
+        &.uncontested { font-style: italic; }
+        &.vote { text-align: center; }
     }
 
     tfoot td {
@@ -45,8 +52,15 @@ table.results-table {
         border-bottom: none;
     }
 
-    .hidden {
-        display: none;
+    .hidden { display: none; }
+
+    .incumbent .lname {
+        font-size: 95%;
+        text-transform: uppercase;
+
+        &:after {
+            content: '*';
+        }
     }
 
     .winner {
@@ -57,9 +71,20 @@ table.results-table {
         &.dem td { background-color: @dem; }
         &.gop td { background-color: @gop; }
         &.ind td { background-color: @ind; }
-        &.no td{ background-color: @gop; }
-        &.yes td{ background-color: @ind; }
+        &.no td  { background-color: @gop; }
+        &.yes td { background-color: @ind; }
 
         .icon { color: #fff; }
+    }
+
+    span.pickup {
+        vertical-align: middle;
+
+        &:after {
+            font-weight: 500;
+            content: "+1";
+            font-style: italic;
+            padding-left: 3px;
+        }
     }
 }
