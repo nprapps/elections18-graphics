@@ -76,15 +76,16 @@ var loadData = function () {
 var formatData = function () {
     var hData = bopData['house_bop'];
     houseCalled = [
-        { 'name': 'Dem.', 'val': hData['Dem']['seats'] },
+        { 'name': 'Dem.', 'val': hData['Dem']['seats'], 'isWinner': (hData['npr_winner'] === 'Dem' ? true : false) },
         { 'name': 'Not yet called', 'val': hData['uncalled_races'] },
-        { 'name': 'Ind.', 'val': hData['Other']['seats'] },
-        { 'name': 'GOP', 'val': hData['GOP']['seats'] }
+        { 'name': 'Ind.', 'val': hData['Other']['seats'], 'isWinner': (hData['npr_winner'] === 'Ind' ? true : false) },
+        { 'name': 'GOP', 'val': hData['GOP']['seats'], 'isWinner': (hData['npr_winner'] === 'GOP' ? true : false) }
     ];
 
     CONGRESS['house']['total'] = hData['total_seats'];
     CONGRESS['house']['uncalled_races'] = hData['uncalled_races'];
     CONGRESS['house']['label'] = BOP_LABELS['label_house'];
+    CONGRESS['house']['winner'] = hData['npr_winner'];
 
     if (hData['Dem']['pickups'] > hData['GOP']['pickups']) {
         CONGRESS['house']['pickup_seats'] = hData['Dem']['pickups'];
@@ -99,14 +100,15 @@ var formatData = function () {
 
     var sData = bopData['senate_bop'];
     senateCalled = [
-        { 'name': 'Dem.', 'val': sData['Dem']['seats'] },
-        { 'name': 'Ind.', 'val': sData['Other']['seats'] },
+        { 'name': 'Dem.', 'val': sData['Dem']['seats'], 'isWinner': (sData['npr_winner'] === 'Dem' ? true : false) },
+        { 'name': 'Ind.', 'val': sData['Other']['seats'], 'isWinner': (sData['npr_winner'] === 'Ind' ? true : false) },
         { 'name': 'Not yet called', 'val': sData['uncalled_races'] },
-        { 'name': 'GOP', 'val': sData['GOP']['seats'] }
+        { 'name': 'GOP', 'val': sData['GOP']['seats'], 'isWinner': (sData['npr_winner'] === 'GOP' ? true : false) }
     ];
     CONGRESS['senate']['total'] = sData['total_seats'];
     CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
     CONGRESS['senate']['label'] = BOP_LABELS['label_senate'];
+    CONGRESS['senate']['winner'] = sData['npr_winner'];
 
     if (sData['Dem']['pickups'] > sData['GOP']['pickups']) {
         CONGRESS['senate']['pickup_seats'] = sData['Dem']['pickups'];
@@ -353,11 +355,12 @@ var renderStackedBarChart = function (config) {
             case 'Dem.':
                 xPos = xScale(d['x0']);
                 textAnchor = 'start';
-                lbl = 'Dem.';
+                lbl = (d['isWinner'] ? '\u2714 Dem.' : 'Dem.');
                 break;
             case 'GOP':
                 xPos = xScale(d['x1']);
                 textAnchor = 'end';
+                lbl = (d['isWinner'] ? '\u2714 GOP' : 'GOP');
                 break;
             default:
                 xPos = xScale(d['x0'] + ((d['x1'] - d['x0']) / 2));
