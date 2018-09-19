@@ -82,7 +82,7 @@ body {
 
             // stack on small screens,
             // side-by-side on larger screens
-            .big-board & {
+            .big-board& {
                 @media screen and (min-width: @screen-sm-min) {
                     padding: 0 1%;
                     float: left;
@@ -105,7 +105,7 @@ body {
                     content: " (continued)";
                 }
 
-                .big-board & {
+                .big-board& {
                     @media screen and (min-width: @screen-sm-min) {
                         display: block;
                     }
@@ -297,7 +297,7 @@ body {
 
 
 // board-specific styles
-.ballot-measures .results .races tr {
+.board.ballot-measures .results .races tr {
     .pickup { display: none; }
     .state {
         width: 46%;
@@ -314,9 +314,9 @@ body {
     }
 }
 
-.governor { min-height: 340px; }
+.board.governor { min-height: 340px; }
 
-.house .results .races {
+.board.house .results .races {
     .state { width: 15%; }
 }
 
