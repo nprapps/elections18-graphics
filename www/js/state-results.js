@@ -11,8 +11,7 @@ import request from 'superagent';
 import commaNumber from 'comma-number';
 
 import '../js/includes/navbar.js';
-import briefingData from '../data/extra_data/state-briefings.json';
-import { classify, getParameterByName, buildDataURL } from './includes/helpers.js';
+import { getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
 
 const resultsWrapper = document.getElementById('state-results');
@@ -78,7 +77,6 @@ let dataURL = null;
 let extraDataURL = null;
 let currentState = null;
 let sortMetric = availableMetrics[0];
-let descriptions = null;
 let dataTimer = null;
 let stateName = null;
 let statepostal = null;
@@ -112,9 +110,6 @@ var onWindowLoaded = function () {
   });
 
   currentState = getParameterByName('state').toLowerCase();
-  descriptions = briefingData.descriptions.find(function (el) {
-    return el.state_postal === currentState;
-  });
 
   const dataFilename = currentState + '.json';
   dataURL = buildDataURL(dataFilename);
@@ -368,10 +363,6 @@ const renderResults = function () {
     const showCountyResults = !STATES_WITHOUT_COUNTY_INFO.includes(allRaces[0][0].statepostal);
 
     resultsElements = h('div', [
-      h('div.state-briefing', [
-          h('h2', {classes: { hidden: !descriptions.state_desc }}, 'State Briefing'),
-          h('p', { innerHTML: descriptions.state_desc })
-      ]),
       areThereAnyVotesYet
         ? ''
         : h('p', `Polls closing at ${pollCloseTime} ET.`),
@@ -451,10 +442,7 @@ const renderResults = function () {
             'percent-college-educated': sortMetric['key'] === 'percent_bachelors'
           }
         }, [
-          h('h2', descriptions.county_desc ? ['Counties To Watch', h('i.icon.icon-star')] : 'Results By County'),
-          h('p', {
-            innerHTML: descriptions.county_desc ? descriptions.county_desc : ''
-          }),
+          h('h2', 'Results By County'),
           h('ul.sorter', [
             h('li.label', 'Sort Counties By'),
             availableMetrics.map(metric => renderMetricLi(metric))

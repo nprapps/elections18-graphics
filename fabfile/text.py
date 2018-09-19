@@ -5,8 +5,6 @@ Commands related to syncing copytext from Google Docs.
 """
 
 import app_config
-import copytext
-import simplejson as json
 import logging
 
 from fabric.api import task
@@ -16,12 +14,13 @@ logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
 logger.setLevel(app_config.LOG_LEVEL)
 
+
 @task(default=True)
 def update():
     """
     Downloads a Google Doc as an Excel file.
     """
-    if app_config.COPY_GOOGLE_DOC_KEY == None:
+    if app_config.COPY_GOOGLE_DOC_KEY is None:
         logger.warn('You have set COPY_GOOGLE_DOC_KEY to None. If you want to use a Google Sheet, set COPY_GOOGLE_DOC_KEY  to the key of your sheet in app_config.py')
         return
 
@@ -33,9 +32,3 @@ def update():
 
     get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
     get_document(app_config.NAVBAR_GOOGLE_DOC_KEY, app_config.NAVBAR_PATH)
-
-    get_document(app_config.BRIEFING_GOOGLE_DOC_KEY, app_config.BRIEFING_PATH)
-    with open('www/data/extra_data/state-briefings.json', 'w') as f:
-        copy = copytext.Copy(app_config.BRIEFING_PATH)
-        output = copy.json()
-        f.write(output)
