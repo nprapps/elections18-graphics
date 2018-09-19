@@ -19,6 +19,7 @@ logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
 logger.setLevel(app_config.LOG_LEVEL)
 
+
 class BetterJSONEncoder(json.JSONEncoder):
     """
     A JSON encoder that intelligently handles datetimes.
@@ -30,6 +31,7 @@ class BetterJSONEncoder(json.JSONEncoder):
             encoded_object = json.JSONEncoder.default(self, obj)
 
         return encoded_object
+
 
 class Includer(object):
     """
@@ -96,6 +98,7 @@ class Includer(object):
 
         return markup
 
+
 class JavascriptIncluder(Includer):
     """
     Psuedo-template tag that handles collecting Javascript and serving appropriate clean or compressed versions.
@@ -124,6 +127,7 @@ class JavascriptIncluder(Includer):
 
         return '\n'.join(output)
 
+
 class CSSIncluder(Includer):
     """
     Psuedo-template tag that handles collecting CSS and serving appropriate clean or compressed versions.
@@ -145,7 +149,7 @@ class CSSIncluder(Includer):
             try:
                 compressed_src = subprocess.check_output(["node_modules/less/bin/lessc", "-x", src])
                 output.append(compressed_src)
-            except:
+            except subprocess.CalledProcessError:
                 logger.error('It looks like "lessc" isn\'t installed. Try running: "npm install"')
                 raise
 
@@ -155,8 +159,8 @@ class CSSIncluder(Includer):
         header = render_template('_css_header.css', **context)
         output.insert(0, header)
 
-
         return '\n'.join(output)
+
 
 def flatten_app_config():
     """
@@ -171,6 +175,7 @@ def flatten_app_config():
             config[k] = v
 
     return config
+
 
 def make_context(asset_depth=0):
     """
@@ -194,6 +199,7 @@ def make_context(asset_depth=0):
 
     return context
 
+
 def urlencode_filter(s):
     """
     Filter to urlencode strings.
@@ -210,6 +216,7 @@ def urlencode_filter(s):
 
     return Markup(s)
 
+
 def smarty_filter(s):
     """
     Filter to smartypants strings.
@@ -220,7 +227,6 @@ def smarty_filter(s):
     # Evaulate COPY elements
     if type(s) is not unicode:
         s = unicode(s)
-
 
     s = s.encode('utf-8')
     s = smartypants(s)
