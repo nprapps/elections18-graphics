@@ -258,7 +258,7 @@ var renderStackedBarChart = function (config) {
     var margins = {
         top: 5,
         right: 0,
-        bottom: 19,
+        bottom: 5,
         left: 0
     };
 
@@ -340,78 +340,71 @@ var renderStackedBarChart = function (config) {
         .attr('y2', (barHeight + margins['top']));
 
     /*
-     * Annotations
+     * Bar labels
      */
-    var annotations = chartElement.append('g')
-        .attr('class', 'annotations');
+    var barLabels = chartWrapper.append('div')
+        .attr('class', 'bar-labels');
 
     _.each(config['dataCalled'], function (d) {
         var lbl = d['name'];
         var textAnchor = null;
         var xPos = null;
-        var yPos = barHeight + 18;
+        var sPos = null; // css for xPos
         var showLabel = true;
         switch (d['name']) {
             case 'Dem.':
                 xPos = xScale(d['x0']);
-                textAnchor = 'start';
-                lbl = (d['isWinner'] ? '\u2714 Dem.' : 'Dem.');
+                sPos = 'left: 0px; ';
+                lbl = (d['isWinner'] ? '<i class="icon icon-ok"></i>Dem.' : 'Dem.');
                 break;
             case 'GOP':
                 xPos = xScale(d['x1']);
-                textAnchor = 'end';
-                lbl = (d['isWinner'] ? '\u2714 GOP' : 'GOP');
+                sPos = 'right: 0px; ';
+                lbl = (d['isWinner'] ? '<i class="icon icon-ok"></i>GOP' : 'GOP');
                 break;
             default:
                 xPos = xScale(d['x0'] + ((d['x1'] - d['x0']) / 2));
-                textAnchor = 'middle';
-                if (_.contains([ 'Not yet called' ], d['name']) || d['val'] == 0) {
+                sPos = 'left: ' + xPos + 'px; ';
+                if (d['name'] == 'Not yet called' || d['val'] == 0) {
                     showLabel = false;
                 }
                 break;
         }
 
         if (showLabel) {
-            annotations.append('text')
-                .text(lbl + ': ' + d['val'])
+            barLabels.append('label')
+                .html(lbl + ': ' + d['val'])
                 .attr('class', 'party ' + classify(d['name']))
-                .attr('x', xPos)
-                .attr('y', yPos)
-                .attr('dy', 0)
                 .attr('style', function () {
                     var s = '';
-                    s += 'text-anchor: ' + textAnchor + '; ';
+                    s += 'top: ' + 0 + '; ';
+                    s += sPos;
                     return s;
                 });
         }
     });
 
     // shift xPos of independent label
-    // base positioning on the xpos/width of the "Ind." label, not the value
-    annotations.select('.party.ind')
-        .attr('x', function () {
-            var t = d3.select(this);
-            var tVal = annotations.select('.value.ind');
-            var xPos = t.attr('x');
-            var tBBox = t.node().getBBox();
-            switch (config['chart']) {
-                case 'senate':
-                    var senBBox = annotations.select('.party.dem').node().getBBox();
-                    if (tBBox['x'] < (senBBox['x'] + senBBox['width'])) {
-                        xPos = (senBBox['x'] + senBBox['width']);
-                    }
-                    break;
-                case 'house':
-                    var houseBBox = annotations.select('.party.gop').node().getBBox();
-                    if ((tBBox['x'] + tBBox['width'] + 5) > houseBBox['x']) {
-                        xPos = houseBBox['x'] - 5;
-                        tVal.attr('style', 'text-anchor: end');
-                        t.attr('style', 'text-anchor: end');
-                    }
-                    break;
+    // base positioning on the xpos/width of the "Dem." label
+    barLabels.select('.party.ind')
+        .attr('style', function() {
+            var bbox = this.getBoundingClientRect();
+            var bboxDem = document.querySelector('label.dem').getBoundingClientRect();
+            var bboxDemOffset = valueGap;
+            if (CONGRESS[chamber]['winner'] == 'Dem') {
+                bboxDemOffset = 18; // account for possible icon width
             }
-            tVal.attr('x', xPos);
-            return xPos;
+            var bboxDemValue = bboxDem['x'] + bboxDem['width'] + bboxDemOffset;
+
+            var xPos = bbox['x'] - (bbox['width'] / 2);
+            if (xPos < bboxDemValue) {
+                xPos = bboxDemValue;
+            }
+
+            var s = '';
+            s += 'top: ' + 0 + '; ';
+            s += 'left: ' + xPos + 'px;';
+            return s;
         });
 
     // majority and seats remaining

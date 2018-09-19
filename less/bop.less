@@ -74,14 +74,34 @@ svg { overflow: hidden; }
         }
     }
 
-    .annotations {
+    .bar-labels {
+        .clearfix();
+        height: 18px;
+        position: relative;
         -webkit-font-smoothing: antialiased;
-        font-size: 12px;
-        font-weight: bold;
 
-        .dem   { fill: @dem; }
-        .gop   { fill: @gop; }
-        .ind   { fill: @ind; }
+        label {
+            font-size: 12px;
+            font-weight: bold;
+            position: absolute;
+
+            &.dem   {
+                color: @dem;
+                text-align: left;
+            }
+            &.gop   {
+                color: @gop;
+                text-align: right;
+            }
+            &.ind   {
+                color: @ind;
+                text-align: center;
+            }
+
+            &.dem, &.gop, &.ind {
+                .icon.icon-ok { color: @gray-dark; }
+            }
+        }
     }
 
     .pickups {
