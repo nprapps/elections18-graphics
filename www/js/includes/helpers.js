@@ -32,7 +32,7 @@ const getParameterByName = function (name) {
 };
 
 function isLocalhost (hostname) {
-  return Boolean(hostname) && ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
+  return hostname !== null && ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
 }
 
 function isNPRHost (hostname) {
