@@ -2,8 +2,8 @@ import { isLocalhost, isNPRHost, identifyParentDomain } from './helpers.js';
 
 const updateMenuParent = function (e) {
   // Update iframe
-  if (pymChild) {
-    setTimeout(pymChild.sendHeight, 0);
+  if (window.pymChild) {
+    setTimeout(window.pymChild.sendHeight, 0);
   }
 };
 
@@ -13,10 +13,10 @@ const followNavLink = function (e) {
   if (
     e.target.tagName === 'A' &&
     e.target !== e.currentTarget &&
-    pymChild &&
+    window.pymChild &&
     (isNPRHost(domain) || isLocalhost(domain))
   ) {
-    pymChild.sendMessage('pjax-navigate', e.target.href);
+    window.pymChild.sendMessage('pjax-navigate', e.target.href);
     e.preventDefault();
     e.stopPropagation();
   }

@@ -101,7 +101,7 @@ window.pymChild = null;
 */
 var onWindowLoaded = function () {
   // init pym and render callback
-  window.pymChild = new pym.Child();
+  window.pymChild = new window.pym.Child();
   // Keep track of where the user's window is, relative to the top of
   // this `iframe`. This works in conjunction with Pym scroll-tracking:
   // http://blog.apps.npr.org/pym.js/#optional-scroll-tracking
@@ -206,7 +206,7 @@ const sortCountyResults = function () {
 };
 
 const renderMaquette = function () {
-  setTimeout(pymChild.sendHeight, 0);
+  setTimeout(window.pymChild.sendHeight, 0);
 
   if (data && extraData) {
     if (!stateName && !statepostal && !statefaceClass) {
@@ -273,8 +273,6 @@ const renderTabSwitcher = () => {
         role: 'button',
         onclick: switchResultsView,
         name: tab.toLowerCase(),
-        //'aria-pressed': { 'true': resultsView === tab.toLowerCase() }, note: the aria-pressed attribute does not render for some reason.
-
         classes: { active: resultsView === tab.toLowerCase() }
       },
       [tab]
@@ -297,10 +295,10 @@ const renderTabSwitcher = () => {
 };
 
 const renderBigBoardKey = () => {
-    return h('div.key', {
-        innerHTML: bigBoardKey
-    });
-}
+  return h('div.key', {
+    innerHTML: bigBoardKey
+  });
+};
 
 const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) => h(
   // Render a big-board-like element for a particular race type
@@ -309,15 +307,15 @@ const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) =>
   { class: getBoardClasses(boardClass, races) },
   [
     h('h2', [ title,
-        // Some race types don't have a link to anywhere
-        linkRaceType ? h(
-          'button',
-          {
-            name: linkRaceType,
-            onclick: switchResultsView
-          },
-          linkText
-      ) : ''],
+      // Some race types don't have a link to anywhere
+      linkRaceType ? h(
+        'button',
+        {
+          name: linkRaceType,
+          onclick: switchResultsView
+        },
+        linkText
+      ) : '']
     ),
     h('div.results-wrapper', [
       h('div.results', [
@@ -333,12 +331,12 @@ const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) =>
 );
 
 const getBoardClasses = function (boardClass, races) {
-    var c = [ boardClass ];
-    if (races.length === 0) {
-        c.push('hidden');
-    }
-    return c.join(' ');
-}
+  var c = [ boardClass ];
+  if (races.length === 0) {
+    c.push('hidden');
+  }
+  return c.join(' ');
+};
 
 const renderResults = function () {
   // Render race data elements, depending on which race-type tab is active
@@ -388,7 +386,7 @@ const renderResults = function () {
         'Key Ballot Initiatives',
         'ballot-measures',
         sortBy(getValues(data.ballot_measures.results), race => race[0].seatname.split(' - ')[0])
-      ),
+      )
     ]);
   } else if (resultsView === 'house') {
     const sortedHouseKeys = Object.keys(data['house']['results']).sort(function (a, b) {
@@ -679,9 +677,6 @@ const createClassesForCandidateRow = result => {
 const renderCandidateName = result => {
   // Handle `Other` candidates, which won't have a `party` property
   const party = result.party ? ` (${result.party})` : '';
-  const candidateName = result.is_ballot_measure
-    ? result.party
-    : `${result.first} ${result.last}${party}`;
 
   return h(
     'td.candidate', { scope: 'col' },
@@ -827,13 +822,13 @@ function calculatePrecinctsReporting (result) {
 
 // Watch the space bar for elements with 'role="button"',
 // per https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques/Using_the_button_role#Keyboard_and_focus
-document.body.onkeyup = function(e){
-    if(e.keyCode == 32 || e.key === ' ') {
-        if ( document.activeElement.getAttribute('role') === 'button' ) {
-            document.activeElement.click();
-        }
+document.body.addEventListener('keyup', function (e) {
+  if (e.keyCode === 32 || e.key === ' ') {
+    if (document.activeElement.getAttribute('role') === 'button') {
+      document.activeElement.click();
     }
-}
+  }
+});
 
 /*
  * Initially load the graphic

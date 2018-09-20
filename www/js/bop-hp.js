@@ -13,7 +13,7 @@ var isBopInit = false;
 */
 var onWindowLoaded = function () {
   // init pym and render callback
-  window.pymChild = new pym.Child({
+  window.pymChild = new window.pym.Child({
     renderCallback: render
   });
 

@@ -41,7 +41,7 @@ function isNPRHost (hostname) {
 }
 
 const identifyParentDomain = function () {
-  return typeof pymChild === 'undefined'
+  return typeof window.pymChild === 'undefined'
     ? null
     : new URL(window.pymChild.parentUrl, document.location, true).hostname;
 };

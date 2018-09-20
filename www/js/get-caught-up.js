@@ -8,7 +8,7 @@ window.pymChild = null;
 
 var onWindowLoaded = function () {
   // init pym and render callback
-  window.pymChild = new pym.Child({
+  window.pymChild = new window.pym.Child({
     renderCallback: render
   });
   addLinkListener();
@@ -21,7 +21,7 @@ const addLinkListener = function () {
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
       if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
-        pymChild.sendMessage('pjax-navigate', e.target.href);
+        window.pymChild.sendMessage('pjax-navigate', e.target.href);
         e.preventDefault();
         e.stopPropagation();
       } else {

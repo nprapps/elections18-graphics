@@ -13,7 +13,7 @@ window.pymChild = null;
 */
 var onWindowLoaded = function () {
   // init pym and render callback
-  window.pymChild = new pym.Child();
+  window.pymChild = new window.pym.Child();
   initBigBoard('senate-national.json', 'Senate', 'senate');
 };
 

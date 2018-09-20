@@ -43,7 +43,7 @@ function renderMaquette () {
   if (!data) {
     return h('div.get-caught-up-wrapper', 'Loading...');
   } else {
-    setTimeout(pymChild.sendHeight, 0);
+    setTimeout(window.pymChild.sendHeight, 0);
 
     return h('div.get-caught-up-wrapper', [
       h('h2', 'Get Caught Up'),
