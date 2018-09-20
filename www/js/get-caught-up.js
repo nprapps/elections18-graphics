@@ -35,4 +35,4 @@ var render = function (containerWidth) {
   renderGetCaughtUp(containerWidth);
 };
 
-window.onload = onWindowLoaded;
+window.addEventListener('load', onWindowLoaded);

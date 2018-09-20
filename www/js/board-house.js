@@ -21,4 +21,4 @@ var onWindowLoaded = function () {
  * Initially load the graphic
  * (NB: Use window.load to ensure all images have loaded)
  */
-window.onload = onWindowLoaded;
+window.addEventListener('load', onWindowLoaded);
