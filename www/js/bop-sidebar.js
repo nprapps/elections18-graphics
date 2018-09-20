@@ -2,8 +2,8 @@
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
-import { initBop, renderBop } from '../js/includes/bop.js';
-import { isLocalhost } from './includes/helpers.js';
+import { initBop, renderBop } from './includes/bop.js';
+import { isLocalhost, isNPRHost, identifyParentDomain } from './includes/helpers.js';
 
 // Global vars
 window.pymChild = null;
@@ -25,30 +25,16 @@ var onWindowLoaded = function () {
 };
 
 var onNavLinkClick = function (e) {
-  const domain = parseParentURL();
+  const domain = identifyParentDomain();
   const url = e.target.href;
-  console.log('nav link click');
 
-  if (window.pymChild && (domain === 'npr.org' || domain === 'localhost')) {
-    console.log('if statement passing');
+  if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
     window.pymChild.sendMessage('pjax-navigate', url);
     e.preventDefault();
     e.stopPropagation();
   } else {
     console.log('if statement failing');
     window.open(url, '_top');
-  }
-};
-
-var parseParentURL = function () {
-  if (!pymChild) {
-    return null;
-  }
-  const parentUrl = new URL(window.pymChild.parentUrl, location, true);
-  if (isLocalhost(parentUrl.hostname)) {
-    return 'localhost';
-  } else {
-    return parentUrl.hostname.split('.').slice(-2).join('.');
   }
 };
 

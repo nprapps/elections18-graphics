@@ -1,3 +1,5 @@
+import URL from 'url-parse';
+
 /*
  * Basic Javascript helpers used in analytics.js and graphics code.
  */
@@ -30,8 +32,19 @@ const getParameterByName = function (name) {
 };
 
 function isLocalhost (hostname) {
-  return ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
+  return Boolean(hostname) && ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
 }
+
+function isNPRHost (hostname) {
+  // Handle NPR subdomains, too
+  return hostname !== null && (hostname === 'npr.org' || hostname.endsWith('.npr.org'));
+}
+
+const identifyParentDomain = function () {
+  return typeof pymChild === 'undefined'
+    ? null
+    : new URL(window.pymChild.parentUrl, document.location, true).hostname;
+};
 
 const buildDataURL = function (filename) {
   if (isLocalhost(document.location.hostname)) {
@@ -45,5 +58,7 @@ export {
   classify,
   getParameterByName,
   isLocalhost,
+  isNPRHost,
+  identifyParentDomain,
   buildDataURL
 };

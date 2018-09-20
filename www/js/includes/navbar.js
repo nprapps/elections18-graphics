@@ -1,18 +1,4 @@
-import URL from 'url-parse';
-
-import { isLocalhost } from './helpers.js';
-
-const parseParentURL = function () {
-  if (!pymChild) {
-    return null;
-  }
-  const parentUrl = new URL(window.pymChild.parentUrl, document.location, true);
-  if (isLocalhost(parentUrl.hostname)) {
-    return 'localhost';
-  } else {
-    return parentUrl.hostname.split('.').slice(-2).join('.');
-  }
-};
+import { isLocalhost, isNPRHost, identifyParentDomain } from './helpers.js';
 
 const updateMenuParent = function (e) {
   // Update iframe
@@ -22,12 +8,13 @@ const updateMenuParent = function (e) {
 };
 
 const followNavLink = function (e) {
-  const domain = parseParentURL();
+  // Make sure links open in `_top`
+  const domain = identifyParentDomain();
   if (
     e.target.tagName === 'A' &&
     e.target !== e.currentTarget &&
     pymChild &&
-    (domain === 'npr.org' || domain === 'localhost')
+    (isNPRHost(domain) || isLocalhost(domain))
   ) {
     pymChild.sendMessage('pjax-navigate', e.target.href);
     e.preventDefault();
@@ -47,8 +34,18 @@ const setNavBarHandlers = () => {
   stateMenuButton.addEventListener('click', updateMenuParent);
 };
 
-// Set the handlers when this module is imported for its side-effects
-setNavBarHandlers();
-export {
-  parseParentURL
+const showNavbarIfNotStationEmbed = () => {
+  // Want to disable navigation on all embeds on member-station sites
+  // Would make more sense to hide-if-member-station, but because of JS
+  // load order and HTML rendering order, that would cause the navbar
+  // to show briefly, then disappear
+  const domain = identifyParentDomain();
+  if (!domain || isNPRHost(domain) || isLocalhost(domain)) {
+    const navbarWrapper = document.getElementById('results-nav-wrapper');
+    navbarWrapper.classList.remove('hidden');
+  }
 };
+
+// Set the handlers when this ES6 module is imported for its side-effects
+showNavbarIfNotStationEmbed();
+setNavBarHandlers();
