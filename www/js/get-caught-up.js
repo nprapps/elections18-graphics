@@ -1,7 +1,8 @@
 // Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
-import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
+import { renderGetCaughtUp } from './includes/get-caught-up.js';
+import { isLocalhost } from './includes/helpers.js';
 
 window.pymChild = null;
 
@@ -22,7 +23,7 @@ var parseParentURL = function () {
     return null;
   }
   const parentUrl = new URL(window.pymChild.parentUrl, document.location, true);
-  if (parentUrl.hostname === '127.0.0.1') {
+  if (isLocalhost(parentUrl.hostname)) {
     return 'localhost';
   } else {
     return parentUrl.hostname.split('.').slice(-2).join('.');

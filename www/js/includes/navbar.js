@@ -1,11 +1,13 @@
 import URL from 'url-parse';
 
+import { isLocalhost } from './helpers.js';
+
 const parseParentURL = function () {
   if (!pymChild) {
     return null;
   }
   const parentUrl = new URL(window.pymChild.parentUrl, document.location, true);
-  if (parentUrl.hostname === '127.0.0.1') {
+  if (isLocalhost(parentUrl.hostname)) {
     return 'localhost';
   } else {
     return parentUrl.hostname.split('.').slice(-2).join('.');

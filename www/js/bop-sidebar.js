@@ -3,6 +3,7 @@
 
 // npm libraries
 import { initBop, renderBop } from '../js/includes/bop.js';
+import { isLocalhost } from './includes/helpers.js';
 
 // Global vars
 window.pymChild = null;
@@ -44,7 +45,7 @@ var parseParentURL = function () {
     return null;
   }
   const parentUrl = new URL(window.pymChild.parentUrl, location, true);
-  if (parentUrl.hostname == '127.0.0.1') {
+  if (isLocalhost(parentUrl.hostname)) {
     return 'localhost';
   } else {
     return parentUrl.hostname.split('.').slice(-2).join('.');

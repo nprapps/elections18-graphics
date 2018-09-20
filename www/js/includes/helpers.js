@@ -25,14 +25,16 @@ const classify = function (str) {
 const getParameterByName = function (name) {
   name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
   const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-  const results = regex.exec(location.search);
-  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, " "));
+  const results = regex.exec(document.location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
+function isLocalhost (hostname) {
+  return ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
+}
+
 const buildDataURL = function (filename) {
-  if (document.location.hostname === '127.0.0.1' ||
-      document.location.hostname === 'localhost' ||
-      document.location.hostname === '0.0.0.0') {
+  if (isLocalhost(document.location.hostname)) {
     return document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/data/' + filename;
   } else {
     return document.location.protocol + '//' + document.location.hostname + '/elections18-graphics/data/' + filename;
@@ -42,5 +44,6 @@ const buildDataURL = function (filename) {
 export {
   classify,
   getParameterByName,
+  isLocalhost,
   buildDataURL
 };
