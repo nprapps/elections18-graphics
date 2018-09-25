@@ -148,7 +148,7 @@
 
                 {% if DEPLOYMENT_TARGET != 'production' %}
                 <div class="segment">
-                    <a class="btn production" href="http://apps.npr.org/{{ PROJECT_SLUG }}/{{ slug }}/" target="_blank">production &raquo;</a>
+                    <a class="btn production" href="https://apps.npr.org/{{ PROJECT_SLUG }}/{{ slug }}/" target="_blank">production &raquo;</a>
                 </div>
                 {% endif %}
             {% endif %}
@@ -192,13 +192,13 @@
             // add randomness to id to support for multiple graphic instances in one story
             var el = document.getElementById("responsive-embed-{{ slug }}");
             el.id = el.id + "-" + Math.random().toString(36).substr(2,5);
-            jQuery.getScript("//pym.nprapps.org/pym.v1.min.js").done(function () {
+            jQuery.getScript("https://pym.nprapps.org/pym.v1.min.js").done(function () {
                 jQuery(function () { // Wait for page load
                     var stage = Boolean(getParameterByName('live'));
                     if (stage) {
                         var childUrl =  'http://{{ STAGING_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
                     } else {
-                        var childUrl =  'http://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
+                        var childUrl =  'https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
                     }
                     {% if slug == 'state-results' %}
                     var childUrl = childUrl + '?state=' + resultsState;
@@ -218,7 +218,7 @@
 
 <!-- textarea contents -->
     <textarea readonly="readonly" rows="5" cols="100">
-<p data-pym-src="http://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html">Loading...</p><script src="//pym.nprapps.org/child-tracker-loader.v1.min.js"></script>
+<p data-pym-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html">Loading...</p><script src="https://pym.nprapps.org/child-tracker-loader.v1.min.js"></script>
     </textarea>
 <!-- end textarea contents -->
     </div>
