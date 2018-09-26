@@ -1,4 +1,4 @@
-import { isLocalhost, isNPRHost, identifyParentDomain } from './helpers.js';
+import { isLocalhost, isNPRHost, identifyParentHostname } from './helpers.js';
 
 const updateMenuParent = function (e) {
   // Update iframe
@@ -9,7 +9,7 @@ const updateMenuParent = function (e) {
 
 const followNavLink = function (e) {
   // Make sure links open in `_top`
-  const domain = identifyParentDomain();
+  const domain = identifyParentHostname();
   if (
     e.target.tagName === 'A' &&
     e.target !== e.currentTarget &&
@@ -39,7 +39,7 @@ const showNavbarIfNotStationEmbed = () => {
   // Would make more sense to hide-if-member-station, but because of JS
   // load order and HTML rendering order, that would cause the navbar
   // to show briefly, then disappear
-  const domain = identifyParentDomain();
+  const domain = identifyParentHostname();
   if (!domain || isNPRHost(domain) || isLocalhost(domain)) {
     const navbarWrapper = document.getElementById('results-nav-wrapper');
     navbarWrapper.classList.remove('hidden');
@@ -47,5 +47,10 @@ const showNavbarIfNotStationEmbed = () => {
 };
 
 // Set the handlers when this ES6 module is imported for its side-effects
-showNavbarIfNotStationEmbed();
-setNavBarHandlers();
+window.addEventListener('load', () => {
+  // Need to wait briefly, until `window.pymChild` can be instantiated elsewhere
+  setTimeout(() => {
+    showNavbarIfNotStationEmbed();
+    setNavBarHandlers();
+  }, 0);
+});
