@@ -3,7 +3,7 @@
 
 // npm libraries
 import { initBop, renderBop } from './includes/bop.js';
-import { isLocalhost, isNPRHost, identifyParentDomain } from './includes/helpers.js';
+import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
 
 // Global vars
 window.pymChild = null;
@@ -25,7 +25,7 @@ var onWindowLoaded = function () {
 };
 
 var onNavLinkClick = function (e) {
-  const domain = identifyParentDomain();
+  const domain = identifyParentHostname();
   const url = e.target.href;
 
   if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {

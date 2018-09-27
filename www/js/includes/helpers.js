@@ -32,18 +32,18 @@ const getParameterByName = function (name) {
 };
 
 function isLocalhost (hostname) {
-  return hostname !== null && ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
+  return ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
 }
 
 function isNPRHost (hostname) {
   // Handle NPR subdomains, too
-  return hostname !== null && (hostname === 'npr.org' || hostname.endsWith('.npr.org'));
+  return hostname === 'npr.org' || hostname.endsWith('.npr.org');
 }
 
-const identifyParentDomain = function () {
+const identifyParentHostname = function () {
   return typeof window.pymChild === 'undefined'
-    ? null
-    : new URL(window.pymChild.parentUrl, document.location, true).hostname;
+    ? window.location.hostname
+    : new URL(window.pymChild.parentUrl).hostname;
 };
 
 const buildDataURL = function (filename) {
@@ -59,6 +59,6 @@ export {
   getParameterByName,
   isLocalhost,
   isNPRHost,
-  identifyParentDomain,
+  identifyParentHostname,
   buildDataURL
 };

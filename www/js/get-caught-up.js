@@ -2,7 +2,7 @@
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 import { renderGetCaughtUp } from './includes/get-caught-up.js';
-import { isLocalhost, isNPRHost, identifyParentDomain } from './includes/helpers.js';
+import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
 
 window.pymChild = null;
 
@@ -16,7 +16,7 @@ var onWindowLoaded = function () {
 
 const addLinkListener = function () {
   // Make sure links open in `_top`
-  const domain = identifyParentDomain();
+  const domain = identifyParentHostname();
   const getCaughtUp = document.getElementById('get-caught-up-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
