@@ -1,10 +1,9 @@
 {% extends '_base_child.html' %}
-{% block title %}{% endblock title %}
 {% block content %}
 {% include 'navbar.html' %}
 <div id="state-results"></div>
 
 <script type="text/javascript">
-  const bigBoardKey = `{% include '_board_key.html' %}`;
+  window.bigBoardKey = `{% include '_board_key.html' %}`;
 </script>
 {% endblock %}

@@ -498,8 +498,21 @@ const calculatePrecinctsReporting = function (pct) {
 const decideLabel = function (race) {
   if (race['officename'] === 'U.S. House') {
     return race['statepostal'] + '-' + race['seatnum'];
-  } else if (race['is_ballot_measure'] === true) {
-    return race['statepostal'] + '-' + race['seatname'];
+  } else if (race['is_ballot_measure']) {
+    // The AP provides ballot measure names in inconsistent formats
+    const splitName = race.seatname.split(' - ');
+    if (splitName.length === 1) {
+      // Sometimes there's no identifier, such as: 'Legislative Pay'
+      return `${race.statepostal}: ${race.seatname}`;
+    } else if (splitName.length === 2) {
+      // Usually, there's an identifier with a ` - ` delimiter, eg:
+      // 'S - Crime Victim Rights'
+      // '1464 - Campaign Finance'
+      return `${race.statepostal}-${splitName[0]}: ${splitName[1]}`;
+    } else {
+      console.error('Cannot properly parse the ballot measure name');
+      return `${race.statepostal} - ${race.seatname}`;
+    }
   } else {
     return race['statepostal'];
   }

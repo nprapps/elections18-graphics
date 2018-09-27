@@ -83,7 +83,6 @@ let statepostal = null;
 let statefaceClass = null;
 let lastUpdated = null;
 let parentScrollAboveIframeTop = null;
-// let resultsView = 'key';
 let resultsView = 'key';
 let resultsType = 'Key Results';
 let lastDownballotRequestTime = '';
@@ -272,7 +271,8 @@ const renderTabSwitcher = () => {
       {
         role: 'button',
         onclick: switchResultsView,
-        name: tab.toLowerCase(),
+        name: 'race-type-nav',
+        'data-hook': tab.toLowerCase(),
         classes: { active: resultsView === tab.toLowerCase() }
       },
       [tab]
@@ -296,7 +296,7 @@ const renderTabSwitcher = () => {
 
 const renderBigBoardKey = () => {
   return h('div.key', {
-    innerHTML: bigBoardKey
+    innerHTML: window.bigBoardKey
   });
 };
 
@@ -311,7 +311,8 @@ const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) =>
       linkRaceType ? h(
         'button',
         {
-          name: linkRaceType,
+          name: 'see-more-nav',
+          'data-hook': linkRaceType,
           onclick: switchResultsView
         },
         linkText
@@ -743,7 +744,7 @@ const onMetricClick = function (e) {
   for (var i = 0; i < availableMetrics.length; i++) {
     if (availableMetrics[i]['name'] === e.target.innerHTML) {
       sortMetric = availableMetrics[i];
-      ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
+      window.ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
     }
   }
 };
@@ -762,7 +763,7 @@ const switchResultsView = function (e) {
   // Switch which results tab is being displayed
   projector.stop();
 
-  resultsView = e.target.getAttribute('name');
+  resultsView = e.target.getAttribute('data-hook');
   resultsType = `${toTitleCase(resultsView)} Results`;
 
   let dataFilename;
@@ -786,6 +787,10 @@ const switchResultsView = function (e) {
   if (parentScrollAboveIframeTop < -headerHeight) {
     window.pymChild.scrollParentTo('state-results');
   }
+
+  // Track both which tab is switched to, and what element linked to it
+  window.ANALYTICS.trackEvent('switch-state-tab', resultsView);
+  window.ANALYTICS.trackEvent('switch-state-tab-using', e.target.getAttribute('name'));
 };
 
 const sortResults = function (results) {

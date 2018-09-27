@@ -7,12 +7,11 @@
 
 import URL from 'url-parse';
 
-var _gaq = _gaq || [];
+var _gaq = window._gaq || [];
 var _sf_async_config = {};
-var _comscore = _comscore || [];
+var _comscore = window._comscore || [];
 
 window.ANALYTICS = (function () {
-
     // Global time tracking variables
     var slideStartTime =  new Date();
     var timeOnLastSlide = null;
@@ -26,16 +25,16 @@ window.ANALYTICS = (function () {
     }
 
     var setupVizAnalytics = function() {
-        var startUrl = location.host + location.pathname;
+        var startUrl = window.location.host + window.location.pathname;
 
         var parentUrl = new URL(decodeURIComponent(getParameterByName('parentUrl')));
         var state = getParameterByName('state');
         
         var gaLocation = startUrl + '?parentUrl=' + parentUrl.hostname + '&state=' + state;
-        var gaPath = location.pathname.substring(1) + '?parentUrl=' + parentUrl.hostname + '&state=' + state;
+        var gaPath = window.location.pathname.substring(1) + '?parentUrl=' + parentUrl.hostname + '&state=' + state;
 
-        ga('create', APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
-        ga('send', {
+        window.ga('create', window.APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
+        window.ga('send', {
             hitType: 'pageview',
             location: gaLocation,
             page: gaPath
@@ -60,7 +59,7 @@ window.ANALYTICS = (function () {
     var trackEvent = function(eventName, label, value) {
         var eventData = {
             'hitType': 'event',
-            'eventCategory': APP_CONFIG.PROJECT_SLUG,
+            'eventCategory': window.APP_CONFIG.PROJECT_SLUG,
             'eventAction': eventName
         }
 
@@ -69,10 +68,10 @@ window.ANALYTICS = (function () {
         }
 
         if (value) {
-            eventData['eventValue'] = value
+            eventData['eventValue'] = value;
         }
 
-        ga('send', eventData);
+        window.ga('send', eventData);
     }
 
     // SHARING
@@ -123,44 +122,8 @@ window.ANALYTICS = (function () {
         }
     }
 
-    var completeTwentyFivePercent =  function() {
-        trackEvent('completion', '0.25');
-    }
-
-    var completeFiftyPercent =  function() {
-        trackEvent('completion', '0.5');
-    }
-
-    var completeSeventyFivePercent =  function() {
-        trackEvent('completion', '0.75');
-    }
-
-    var completeOneHundredPercent =  function() {
-        trackEvent('completion', '1');
-    }
-
-    var startFullscreen = function() {
-        trackEvent('fullscreen-start');
-    }
-
-    var stopFullscreen = function() {
-        trackEvent('fullscreen-stop');
-    }
-
     var begin = function(location) {
         trackEvent('begin', location);
-    }
-
-    var readyChromecast = function() {
-        trackEvent('chromecast-ready');
-    }
-
-    var startChromecast = function() {
-        trackEvent('chromecast-start');
-    }
-
-    var stopChromecast = function() {
-        trackEvent('chromecast-stop');
     }
 
     // SLIDES
@@ -186,16 +149,35 @@ window.ANALYTICS = (function () {
         'actOnFeaturedFacebook': actOnFeaturedFacebook,
         'copySummary': copySummary,
         'useKeyboardNavigation': useKeyboardNavigation,
-        'completeTwentyFivePercent': completeTwentyFivePercent,
-        'completeFiftyPercent': completeFiftyPercent,
-        'completeSeventyFivePercent': completeSeventyFivePercent,
-        'completeOneHundredPercent': completeOneHundredPercent,
         'exitSlide': exitSlide,
-        'startFullscreen': startFullscreen,
-        'stopFullscreen': stopFullscreen,
-        'begin': begin,
-        'readyChromecast': readyChromecast,
-        'startChromecast': startChromecast,
-        'stopChromecast': stopChromecast
+        'begin': begin
     };
 }());
+
+// Register a "completion" event when a user scrolls to or past
+// the bottom of an embed's iframe
+var wasIframeBottomVisibleOrPassed = false;
+function checkIfIframeBottomVisibleOrPassed (viewPixelsAboveIframeTop) {
+  const iframeHeight = Number(window.pymChild.sendHeight());
+  const viewPixelsAboveIframeBottom = viewPixelsAboveIframeTop + iframeHeight;
+  const parentWindowHeight = window.parent.window.innerHeight;
+
+  const isIframeBottomVisibleOrPassed = ((viewPixelsAboveIframeBottom - parentWindowHeight) <= 0);
+  return isIframeBottomVisibleOrPassed;
+}
+window.addEventListener('load', () => {
+  // Queue this listener until Pym is ready
+  setTimeout(() => {
+    window.pymChild.onMessage('viewport-iframe-position', parentInfo => {
+      const viewPixelsAboveIframeTop = Number(parentInfo.split(' ')[2]);
+      if (
+        // No need to run computation if the event already happened
+        !wasIframeBottomVisibleOrPassed &&
+        checkIfIframeBottomVisibleOrPassed(viewPixelsAboveIframeTop)
+      ) {
+        wasIframeBottomVisibleOrPassed = true;
+        window.ANALYTICS.trackEvent('finished-graphic', document.title);
+      }
+    });
+  }, 0);
+});
