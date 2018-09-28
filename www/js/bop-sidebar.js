@@ -2,6 +2,9 @@
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
+import './includes/app_config.js';
+import './includes/analytics.js';
+import './includes/colors.js';
 import { initBop, renderBop } from './includes/bop.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
 

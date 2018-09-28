@@ -39,19 +39,14 @@
     {% endblock extra_head %}
 </head>
 <body>
-    <script src="../js/app_config.js"></script>
-    <script src="../js/rendered/analytics.js"></script>
-
     {% if COPY.content.is_test_data|string == 'yes' %}
-    <div class="test-flag">{{ COPY.content.test_label }}</div>
+        <div class="test-flag">{{ COPY.content.test_label }}</div>
     {% endif %}
 
     {% block content %}
     {% endblock content %}
 
     <script src="//pym.nprapps.org/pym.v1.min.js"></script>
-    <script src="../js/includes/colors.js"></script>
-
     <script src="../js/rendered/{{ slug }}.js"></script>
 </body>
 </html>

@@ -2,9 +2,6 @@
  * Module for tracking standardized analytics.
  */
 
-// Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
-// https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
-
 import URL from 'url-parse';
 
 var _gaq = window._gaq || [];

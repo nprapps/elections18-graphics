@@ -77,10 +77,10 @@ def app_config_js():
     """
     from static import _app_config_js
 
-    with _fake_context('/js/app_config.js'):
+    with _fake_context('/js/includes/app_config.js'):
         response = _app_config_js()
 
-    with open('www/js/app_config.js', 'w') as f:
+    with open('www/js/includes/app_config.js', 'w') as f:
         f.write(response.data)
 
 
@@ -91,10 +91,10 @@ def copytext_js():
     """
     from static import _copy_js
 
-    with _fake_context('/js/copytext.js'):
+    with _fake_context('/js/includes/copy.js'):
         response = _copy_js()
 
-    with open('www/js/copy.js', 'w') as f:
+    with open('www/js/includes/copy.js', 'w') as f:
         f.write(response.data)
 
 

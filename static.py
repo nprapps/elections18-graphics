@@ -32,7 +32,7 @@ def _less(filename):
     return make_response(r, 200, { 'Content-Type': 'text/css' })
 
 # Render application configuration
-@static.route('/js/app_config.js')
+@static.route('/js/includes/app_config.js')
 def _app_config_js():
     config = flatten_app_config()
     js = 'window.APP_CONFIG = ' + json.dumps(config, cls=BetterJSONEncoder)
@@ -40,7 +40,7 @@ def _app_config_js():
     return make_response(js, 200, { 'Content-Type': 'application/javascript' })
 
 # Render copytext
-@static.route('/js/copy.js')
+@static.route('/js/includes/copy.js')
 def _copy_js():
     copy = 'window.COPY = ' + copytext.Copy(app_config.COPY_PATH).json()
 
