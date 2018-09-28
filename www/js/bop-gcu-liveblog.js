@@ -2,7 +2,6 @@
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
-import '../js/includes/navbar.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';
@@ -23,23 +22,6 @@ var onWindowLoaded = function () {
 };
 
 /*
- * Render
- */
-var render = function (containerWidth) {
-    var bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
-
-  // only run the first time
-  if (!isBopInit) {
-    initBop(bopWidth);
-    isBopInit = true;
-  // run onresize
-  } else {
-    renderBop(bopWidth);
-  }
-  renderGetCaughtUp(containerWidth);
-};
-
-/*
  * On NPR.org, open links w/ PJAX (so it doesn't disrupt the persistent audio player)
  */
 const addLinkListener = function () {
@@ -57,6 +39,23 @@ const addLinkListener = function () {
       }
     }
   });
+};
+
+/*
+ * Render
+ */
+var render = function (containerWidth) {
+    var bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
+
+  // only run the first time
+  if (!isBopInit) {
+    initBop(bopWidth);
+    isBopInit = true;
+  // run onresize
+  } else {
+    renderBop(bopWidth);
+  }
+  renderGetCaughtUp(containerWidth);
 };
 
 /*
