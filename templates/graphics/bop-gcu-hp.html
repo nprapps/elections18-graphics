@@ -1,0 +1,26 @@
+{% extends '_base_child.html' %}
+{% block content %}
+<div id="bop-gcu">
+    <div id="gcu-wrapper">
+        {% include '_get-caught-up.html' %}
+    </div>
+
+    <div id="bop-wrapper">
+        {% include '_bop.html' %}
+
+        {% if COPY.bop.footnote %}
+        <div class="footnotes">
+            <p>{{ COPY.bop.footnote|smarty }}</p>
+        </div>
+        {% endif %}
+
+        <div class="footer">
+            {% if COPY.bop.source %}<p>Source: {{ COPY.bop.source|smarty }}</p>{% endif %}
+            {% if COPY.bop.credit %}<p>Credit: {{ COPY.bop.credit|smarty }}</p>{% endif %}
+            <div class="countdown">
+                <span class="update-indicator">Next update: <b class="icon icon-spin3"></b> <span class="text"></span></span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

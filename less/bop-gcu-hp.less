@@ -1,0 +1,39 @@
+@import "bop";
+@import "get-caught-up";
+
+html { -webkit-text-size-adjust: none; }
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+@media screen and (min-width: @screen-sm-min) {
+    #bop-gcu {
+        display: flex;
+
+        > div {
+            box-sizing: border-box;
+            width: 50%;
+
+            &:nth-child(1) {
+                // border-right: 1px solid #eee;
+                // padding-right: 22px;
+            }
+            &:nth-child(2) { padding-left: 22px; }
+        }
+    }
+
+    #gcu-wrapper {
+        background-color: #f1f1f1;
+        padding: 22px;
+    }
+}
+
+@media screen and (max-width: @screen-xs) {
+    #gcu-wrapper {
+        border-bottom: 2px solid #eee;
+        margin-bottom: 33px;
+        padding-bottom: 22px;
+    }
+}
