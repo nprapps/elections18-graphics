@@ -2,9 +2,7 @@
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
-import './includes/app_config.js';
 import './includes/analytics.js';
-import './includes/colors.js';
 import '../js/includes/navbar.js';
 import { initBigBoard } from '../js/includes/big-board-core.js';
 

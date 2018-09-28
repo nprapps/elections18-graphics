@@ -2,6 +2,8 @@
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
 // npm libraries
+import './includes/analytics.js';
+import '../js/includes/navbar.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';

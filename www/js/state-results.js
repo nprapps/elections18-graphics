@@ -10,9 +10,7 @@ import {
 import request from 'superagent';
 import commaNumber from 'comma-number';
 
-import './includes/app_config.js';
 import './includes/analytics.js';
-import './includes/colors.js';
 import '../js/includes/navbar.js';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';

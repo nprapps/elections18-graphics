@@ -1,9 +1,7 @@
 // Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
 
-import './includes/app_config.js';
 import './includes/analytics.js';
-import './includes/colors.js';
 import { renderGetCaughtUp } from './includes/get-caught-up.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
 

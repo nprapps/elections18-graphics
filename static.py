@@ -35,14 +35,14 @@ def _less(filename):
 @static.route('/js/includes/app_config.js')
 def _app_config_js():
     config = flatten_app_config()
-    js = 'window.APP_CONFIG = ' + json.dumps(config, cls=BetterJSONEncoder)
+    js = 'const appConfig = ' + json.dumps(config, cls=BetterJSONEncoder) + ';\nexport default appConfig;\n'
 
     return make_response(js, 200, { 'Content-Type': 'application/javascript' })
 
 # Render copytext
 @static.route('/js/includes/copy.js')
 def _copy_js():
-    copy = 'window.COPY = ' + copytext.Copy(app_config.COPY_PATH).json()
+    copy = 'const copy = ' + copytext.Copy(app_config.COPY_PATH).json() + ';\nexport default copy;\n'
 
     return make_response(copy, 200, { 'Content-Type': 'application/javascript' })
 

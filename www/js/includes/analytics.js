@@ -2,6 +2,7 @@
  * Module for tracking standardized analytics.
  */
 
+import appConfig from './app_config.js';
 import URL from 'url-parse';
 
 var _gaq = window._gaq || [];
@@ -30,7 +31,7 @@ window.ANALYTICS = (function () {
         var gaLocation = startUrl + '?parentUrl=' + parentUrl.hostname + '&state=' + state;
         var gaPath = window.location.pathname.substring(1) + '?parentUrl=' + parentUrl.hostname + '&state=' + state;
 
-        window.ga('create', window.APP_CONFIG.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
+        window.ga('create', appConfig.VIZ_GOOGLE_ANALYTICS.ACCOUNT_ID, 'auto');
         window.ga('send', {
             hitType: 'pageview',
             location: gaLocation,
@@ -56,7 +57,7 @@ window.ANALYTICS = (function () {
     var trackEvent = function(eventName, label, value) {
         var eventData = {
             'hitType': 'event',
-            'eventCategory': window.APP_CONFIG.PROJECT_SLUG,
+            'eventCategory': appConfig.PROJECT_SLUG,
             'eventAction': eventName
         }
 
