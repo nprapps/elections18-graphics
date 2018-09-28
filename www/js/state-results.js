@@ -792,8 +792,7 @@ const switchResultsView = function (e) {
   }
 
   // Track both which tab is switched to, and what element linked to it
-  window.ANALYTICS.trackEvent('switch-state-tab', resultsView);
-  window.ANALYTICS.trackEvent('switch-state-tab-using', e.target.getAttribute('name'));
+  window.ANALYTICS.trackEvent('switch-state-tab', `${resultsView}-via-${e.target.getAttribute('name')}`);
 };
 
 const sortResults = function (results) {
