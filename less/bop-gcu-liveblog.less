@@ -1,4 +1,3 @@
-@import "navbar";
 @import "bop";
 @import "get-caught-up";
 
@@ -9,7 +8,15 @@ body {
     padding: 0;
 }
 
-#results-nav-wrapper { margin-bottom: 1rem; }
+#bop-gcu {
+    background-color: #eee;
+    padding: 22px;
+}
+
+#bop .pickups,
+#bop .pickups .chamber.senate {
+    border-color: #fff;
+}
 
 @media screen and (min-width: @screen-sm-min) {
     #bop-gcu {
@@ -19,6 +26,8 @@ body {
             box-sizing: border-box;
 
             &:nth-child(1) {
+                border-right: 2px solid #fff;
+                padding-right: 22px;
                 width: 40%;
             }
             &:nth-child(2) {
@@ -26,11 +35,6 @@ body {
                 width: 60%;
             }
         }
-    }
-
-    #gcu-wrapper {
-        background-color: #f1f1f1;
-        padding: 22px;
     }
 }
 
