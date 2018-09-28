@@ -335,7 +335,6 @@ The Google Analytics events tracked in this application are:
 
 |Category|Action|Label|Value|
 |--------|------|-----|-----|
-|elections18-graphics|switch-state-tab|which view selected||
-|elections18-graphics|switch-state-tab-using|element used to navigate||
+|elections18-graphics|switch-state-tab|${which view selected}-via-${element used to navigate}||
 |elections18-graphics|county-sort-click|metric||
 |elections18-graphics|finished-graphic|embed slug||
