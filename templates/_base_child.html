@@ -14,9 +14,6 @@
     <!-- META TAGS -->
     {% include '_meta.html' %}
 
-    <!-- FONTS -->
-    {% include '_fonts.html' %}
-
     <!-- CSS -->
     {{ CSS.push('less/%s.less' % slug) }}
     {% block extra_css %}{% endblock extra_css %}
@@ -48,5 +45,8 @@
 
     <script src="//pym.nprapps.org/pym.v1.min.js"></script>
     <script src="../js/rendered/{{ slug }}.js"></script>
+
+    <!-- FONTS -->
+    {% include '_fonts.html' %}
 </body>
 </html>
