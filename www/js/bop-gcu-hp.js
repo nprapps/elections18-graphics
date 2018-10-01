@@ -27,7 +27,7 @@ var onWindowLoaded = function () {
  * Render
  */
 var render = function (containerWidth) {
-    var bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
+  var bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
 
   // only run the first time
   if (!isBopInit) {
@@ -46,7 +46,7 @@ var render = function (containerWidth) {
 const addLinkListener = function () {
   // Make sure links open in `_top`
   const domain = identifyParentHostname();
-  const getCaughtUp = document.getElementById('get-caught-up-wrapper');
+  const getCaughtUp = document.getElementById('gcu-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
       if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
