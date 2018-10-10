@@ -50,7 +50,7 @@ const buildDataURL = function (filename) {
   if (isLocalhost(document.location.hostname)) {
     return document.location.protocol + '//' + document.location.hostname + ':' + document.location.port + '/data/' + filename;
   } else {
-    return document.location.protocol + '//' + document.location.hostname + '/elections18-graphics/data/' + filename;
+    return document.location.protocol + '//' + document.location.hostname + '/elections18/data/' + filename;
   }
 };
 
