@@ -23,15 +23,19 @@ const followNavLink = function (e) {
 };
 
 const setNavBarHandlers = () => {
+  // Show navigation drop-down on mobile widths
   var resultsMenuButton = document.querySelector('.small-screen-nav-label');
-  var resultsMenu = document.querySelector('.menu');
   resultsMenuButton.addEventListener('click', updateMenuParent);
-  resultsMenu.addEventListener('click', followNavLink);
 
+  // Show state-list drop-down, on both desktop and mobile
   var stateMenuButton = document.querySelector('.state-nav-label');
+  stateMenuButton.addEventListener('click', updateMenuParent);
+
+  // Follow navigation clicks
+  var resultsMenu = document.querySelector('.menu');
+  resultsMenu.addEventListener('click', followNavLink);
   var stateMenu = document.querySelector('.state-nav');
   stateMenu.addEventListener('click', followNavLink);
-  stateMenuButton.addEventListener('click', updateMenuParent);
 };
 
 const showNavbarIfNotStationEmbed = () => {

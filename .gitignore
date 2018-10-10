@@ -50,6 +50,7 @@ www/county*
 www/map*
 www/state*
 www/get-caught-up*
+www/navbar-liveblog*
 
 # Local data
 data/gdoc*.csv
