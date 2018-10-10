@@ -194,12 +194,7 @@
             el.id = el.id + "-" + Math.random().toString(36).substr(2,5);
             jQuery.getScript("https://pym.nprapps.org/pym.v1.min.js").done(function () {
                 jQuery(function () { // Wait for page load
-                    var stage = Boolean(getParameterByName('live'));
-                    if (stage) {
-                        var childUrl =  'http://{{ STAGING_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
-                    } else {
-                        var childUrl =  'https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
-                    }
+                    var childUrl =  'https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
                     {% if slug == 'state-results' %}
                     var childUrl = childUrl + '?state=' + resultsState;
                     {% endif %}
