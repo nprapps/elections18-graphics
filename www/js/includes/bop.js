@@ -216,11 +216,16 @@ var renderPickups = function (config) {
         var gainElement = chamberElement.append('p')
             .attr('class', 'net-gain');
         gainElement.append('abbr')
-            .attr('class', classify(CONGRESS[d]['pickup_party']))
+            .attr('class', function() {
+                if (CONGRESS[d]['pickup_party']) {
+                    return classify(CONGRESS[d]['pickup_party']);
+                }
+            })
             .attr('title', function () {
-                var party = CONGRESS[d]['pickup_party'].toLowerCase();
+                var party = CONGRESS[d]['pickup_party'];
                 var t = BOP_LABELS['pickups_none'];
                 if (party) {
+                    party = party.toLowerCase();
                     t = BOP_LABELS['pickups_' + party];
                     t = t.replace('___PICKUPS___', CONGRESS[d]['pickup_seats']);
                 }
