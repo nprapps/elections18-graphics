@@ -345,7 +345,7 @@ const renderResults = function () {
   let resultsElements;
   if (resultsView === 'key') {
     // Avoid showing too few (or no) House races, especially for small states
-    const SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS = 5;
+    const SHOW_ONLY_KEY_HOUSE_RACES_IF_MORE_THAN_N_DISTRICTS = 10;
 
     const houseResults = getValues(data.house.results);
     const keyHouseResults = houseResults.filter(race => race[0].meta.key_race);
