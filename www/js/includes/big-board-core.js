@@ -235,18 +235,25 @@ const renderCongressBOP = function (bop) {
   const gopPickups = bop['GOP']['pickups'];
   const indPickups = bop['Other']['pickups'];
 
+  const chamberWinner = bop['npr_winner'];
   const uncalledRaces = bop['uncalled_races'];
 
   return h('div.leaderboard', [
     h('div.results-header-group.dem', [
-      h('h2.party', [ 'Dem.: ' + demSeats ]),
+      h('h2.party', [
+        chamberWinner === 'Dem' ? h('i.icon.icon-ok') : '',
+        'Dem.: ' + demSeats
+      ]),
       h('p.detail', [
         'Net gains: ',
         h('span.change.party', demPickups > 0 ? '+' + demPickups : demPickups)
       ])
     ]),
     h('div.results-header-group.gop', [
-      h('h2.party', 'GOP: ' + gopSeats),
+      h('h2.party', [
+        chamberWinner === 'GOP' ? h('i.icon.icon-ok') : '',
+        'GOP: ' + gopSeats
+      ]),
       h('p.detail', [
         'Net gains: ',
         h('span.change.party', gopPickups > 0 ? '+' + gopPickups : gopPickups)
