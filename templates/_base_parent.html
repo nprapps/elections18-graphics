@@ -162,15 +162,15 @@
 
         <h2><span class="production">Production</span> embed code (for Seamus)</h2>
         {% if slug == 'state-results' %}
-        <p><em>Change the <code>resultsState</code> variable to the name of the state you wish to load (e.g. <code>'wv'</code> for West Viriginia)</em>.</p>
+        <p  class="state-postal-explainer"><em>Replace the <code>TWO_LETTER_STATE_POSTAL_ABBREVIATION</code> text for the state you wish to load (e.g. <code>wv</code> for West Viriginia)</em>.</p>
         {% endif %}
-        <textarea rows="30" cols="100">
+        <textarea readonly="readonly" rows="30" cols="100">
 <div id="responsive-embed-{{ slug }}"></div>
 <script>
     (function(jQuery) {
         if (typeof jQuery !== 'undefined' && typeof jQuery.getScript === 'function') {
             {% if slug == 'state-results' %}
-            var resultsState = '<STATEPOSTAL>';
+            var resultsState = 'TWO_LETTER_STATE_POSTAL_ABBREVIATION';
             {% endif %}
 
             var getParameterByName = function(name) {
@@ -210,10 +210,16 @@
         </textarea>
 
         <h2><span class="production">Production</span> autoinit embed code for member stations</h2>
+        {% if slug == 'state-results' %}
+        <p class="state-postal-explainer"><em>Replace the <code>TWO_LETTER_STATE_POSTAL_ABBREVIATION</code> text for the state you wish to load (e.g. <code>wv</code> for West Viriginia)</em>.</p>
+        {% endif %}
 
 <!-- textarea contents -->
     <textarea readonly="readonly" rows="5" cols="100">
-<p data-pym-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html">Loading...</p><script src="https://pym.nprapps.org/child-tracker-loader.v1.min.js"></script>
+<p data-pym-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html{% if slug == 'state-results' %}?state=TWO_LETTER_STATE_POSTAL_ABBREVIATION{% endif %}">
+    Loading...
+</p>
+<script src="https://pym.nprapps.org/child-tracker-loader.v1.min.js"></script>
     </textarea>
 <!-- end textarea contents -->
     </div>
@@ -289,6 +295,28 @@
 
         pymParent.onMessage('pjax-navigate', onPJAXNavigateMessage);
     </script>
+
+    {% if slug == 'state-results' %}
+        <script>
+            // Handle the possibility of a browser not supporting
+            // `URLSearchParams`, such as IE
+            if (typeof window.URLSearchParams !== 'undefined') {
+                var urlParams = new URLSearchParams(window.location.search);
+                var statePostal = urlParams.get('state');
+
+                var textareas = document.querySelectorAll('textarea');
+                textareas.forEach(function (t) {
+                    t.innerHTML = t.innerHTML.replace('TWO_LETTER_STATE_POSTAL_ABBREVIATION', statePostal);
+                });
+
+                // Remove explainer text, which is no longer necessary
+                var explainers = document.querySelectorAll('.state-postal-explainer');
+                explainers.forEach(function (e) {
+                    e.parentNode.removeChild(e);
+                });
+            }
+        </script>
+    {% endif %}
 
 </body>
 </html>
