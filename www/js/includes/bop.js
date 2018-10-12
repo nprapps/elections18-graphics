@@ -128,8 +128,6 @@ var formatData = function () {
         CONGRESS['senate']['party'] = null;
     }
 
-    console.log(CONGRESS['house']['pickup_party'], CONGRESS['senate']['pickup_party']);
-
     _.each([ houseCalled, senateCalled ], function (d, i) {
         var x0 = 0;
 
