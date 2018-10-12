@@ -74,6 +74,13 @@ var loadData = function () {
  * Format graphic data for processing by D3.
  */
 var formatData = function () {
+    // reset vars
+    houseCalled = [];
+    senateCalled = [];
+    CONGRESS['house'] = [];
+    CONGRESS['senate'] = [];
+
+    // redefine based on newly-updated data
     var hData = bopData['house_bop'];
     houseCalled = [
         { 'name': 'Dem.', 'val': hData['Dem']['seats'], 'isWinner': (hData['npr_winner'] === 'Dem' ? true : false) },
@@ -120,6 +127,8 @@ var formatData = function () {
         CONGRESS['senate']['pickup_seats'] = '0';
         CONGRESS['senate']['party'] = null;
     }
+
+    console.log(CONGRESS['house']['pickup_party'], CONGRESS['senate']['pickup_party']);
 
     _.each([ houseCalled, senateCalled ], function (d, i) {
         var x0 = 0;
