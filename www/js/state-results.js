@@ -672,8 +672,7 @@ const createClassesForCandidateRow = result => {
     'gop': result['npr_winner'] && result['party'] === 'GOP',
     'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
     'yes': result['npr_winner'] && result['party'] === 'Yes',
-    'no': result['npr_winner'] && result['party'] === 'No',
-    'hidden': result['last'] === 'Other' && result['votecount'] === 0
+    'no': result['npr_winner'] && result['party'] === 'No'
   };
 };
 
