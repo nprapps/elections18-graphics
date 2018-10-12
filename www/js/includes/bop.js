@@ -41,6 +41,10 @@ const initBop = function(containerWidth) {
     timestamp = d3.select('.footer .timestamp');
     indicator = document.querySelector('.countdown');
     footnotes = d3.select('.footnotes');
+
+    if (!containerWidth) {
+        containerWidth = DEFAULT_WIDTH;
+    }
     graphicWidth = containerWidth;
 
     loadData();
@@ -145,10 +149,6 @@ var formatData = function () {
  * Render the graphic(s). Called by pym with the container width.
  */
 const renderBop = function (containerWidth) {
-    if (!containerWidth) {
-        containerWidth = DEFAULT_WIDTH;
-    }
-
     if (containerWidth <= MOBILE_THRESHOLD) {
         isMobile = true;
     } else {
