@@ -22,21 +22,31 @@ var onWindowLoaded = function () {
   setTimeout(addLinkListener, 0);
 };
 
-/*
- * On NPR.org, open links w/ PJAX (so it doesn't disrupt the persistent audio player)
- */
 const addLinkListener = function () {
-  // Make sure links open in `_top`
   const domain = identifyParentHostname();
   const getCaughtUp = document.getElementById('gcu-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
-      if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
-        window.pymChild.sendMessage('pjax-navigate', e.target.href);
+      const href = e.target.href;
+
+      if (
+        window.pymChild &&
+        href.includes('npr.org') &&
+        href.includes('/sharecard/')
+      ) {
+        // Open liveblog links within the liveblog
+        e.preventDefault();
+        e.stopPropagation();
+        const slug = href.split('/').slice(-1)[0].replace('.html', '');
+        window.pymChild.scrollParentTo(slug);
+      } else if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
+        // On NPR.org, open external links w/ PJAX (so it doesn't disrupt the persistent audio player)
+        window.pymChild.sendMessage('pjax-navigate', href);
         e.preventDefault();
         e.stopPropagation();
       } else {
-        window.open(e.target.href, '_top');
+        // Otherwise, open external links in a new tab/window
+        window.open(href, '_top');
       }
     }
   });
