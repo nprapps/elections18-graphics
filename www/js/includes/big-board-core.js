@@ -429,6 +429,11 @@ const renderRace = function (race) {
   ]);
 };
 
+const areCandidatesSame = (c1, c2) =>
+  c1.first === c2.first &&
+  c1.last === c2.last &&
+  c1.party === c2.party;
+
 const determineResults = function (race) {
   // Create a fake 'uncontested' candidate when necessary
   if (race.length === 1) {
@@ -468,15 +473,22 @@ const determineResults = function (race) {
     }
   }
 
-  // handle the case where there are two GOP results to show
-  if (!result1 && race[0] !== result2) {
-    result1 = race[0];
-  } else if (!result1 && race[0] !== result1) {
-    result1 = race[1];
+  // Handle when there're two candidates of one party, and
+  // ensure that the same candidate isn't used twice
+  if (!result1) {
+    result1 = race.filter(r => !areCandidatesSame(r, result2))[0];
+  } else if (!result2) {
+    result2 = race.filter(r => !areCandidatesSame(r, result1))[0];
   }
 
-  if (!result2) {
-    result2 = race[1];
+  // Since GOP candidates default to the right side, make sure that the
+  // GOP winner goes on the right side if both candidates are GOP
+  if (
+    result1.party === 'GOP' &&
+    result2.party === 'GOP' &&
+    result1.votepct > result2.votepct
+  ) {
+    [result1, result2] = [result2, result1];
   }
 
   // if we have the same party, ensure we order by votepct
