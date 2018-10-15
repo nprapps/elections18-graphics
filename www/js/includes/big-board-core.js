@@ -516,9 +516,16 @@ const decideLabel = function (race) {
   } else if (race['is_ballot_measure']) {
     // The AP provides ballot measure names in inconsistent formats
     const splitName = race.seatname.split(' - ');
-    if (splitName.length === 1) {
+    const isHyphenatedMeasureName = Boolean(race.seatname.match(/^[A-Z\d]+-[A-Z\d]+ /));
+
+    if (splitName.length === 1 && !isHyphenatedMeasureName) {
       // Sometimes there's no identifier, such as: 'Legislative Pay'
       return `${race.statepostal}: ${race.seatname}`;
+    } else if (splitName.length === 1 && isHyphenatedMeasureName) {
+      // Sometimes there's a compound identifier, such as '18-1 Legalize Marijuana'
+      const [number, ...identifierParts] = race.seatname.split(' ');
+      const identifier = identifierParts.join(' ');
+      return `${race.statepostal}-${number}: ${identifier}`;
     } else if (splitName.length === 2) {
       // Usually, there's an identifier with a ` - ` delimiter, eg:
       // 'S - Crime Victim Rights'
