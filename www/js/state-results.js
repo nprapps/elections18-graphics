@@ -243,7 +243,7 @@ const renderMaquette = function () {
           ' ',
           'Electoral results from the AP,',
           ' ',
-          h('span.timestamp', [ `last updated at ${lastUpdated} ET.` ]),
+          h('span.timestamp', [ `last updated ${lastUpdated} ET.` ]),
           ' ',
           copy.content.ap_uncontested_note,
           ' ',
