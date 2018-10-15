@@ -553,7 +553,7 @@ const renderCountyCell = function (result, winner) {
     classes: {
       'dem': result.party === 'Dem',
       'gop': result.party === 'GOP',
-      'ind': ['Dem', 'GOP'].indexOf(result.party) === -1,
+      'ind': !['Dem', 'GOP'].includes(result.party),
       'winner': winner === result
     }
   }, [(result.votepct * 100).toFixed(1) + '%']);
@@ -670,7 +670,7 @@ const createClassesForCandidateRow = result => {
     'incumbent': result['incumbent'],
     'dem': result['npr_winner'] && result['party'] === 'Dem',
     'gop': result['npr_winner'] && result['party'] === 'GOP',
-    'ind': result['npr_winner'] && ['Dem', 'GOP'].indexOf(result['party']) === -1,
+    'ind': result['npr_winner'] && !['Dem', 'GOP'].includes(result['party']),
     'yes': result['npr_winner'] && result['party'] === 'Yes',
     'no': result['npr_winner'] && result['party'] === 'No'
   };
