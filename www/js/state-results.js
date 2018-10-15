@@ -12,6 +12,7 @@ import commaNumber from 'comma-number';
 
 import './includes/analytics.js';
 import '../js/includes/navbar.js';
+import copy from './includes/copy.js';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
 
@@ -69,7 +70,6 @@ const availableMetrics = [
   }
 ];
 
-const AP_UNCONTESTED_NOTE = 'The AP does not tabulate votes for uncontested races, and declares their winner as soon as polls close.';
 const STATES_WITHOUT_COUNTY_INFO = [ 'AK' ];
 
 let data = null;
@@ -245,13 +245,9 @@ const renderMaquette = function () {
           ' ',
           h('span.timestamp', [ `last updated at ${lastUpdated} ET.` ]),
           ' ',
-          AP_UNCONTESTED_NOTE,
+          copy.content.ap_uncontested_note,
           ' ',
-          'Demographic, income, and education data from the Census Bureau.',
-          ' ',
-          'Unemployment rates from the Bureau of Labor Statistics.',
-          ' ',
-          '2016 presidential margin from the AP, and may vary slightly from state-certified final results.'
+          copy.content.state_data_credit
         ])
       ])
     ]);
@@ -366,7 +362,6 @@ const renderResults = function () {
       areThereAnyVotesYet
         ? ''
         : h('p.poll-closing', `Polls close at ${pollCloseTime} ET.`),
-      // h('p.poll-closing', `Polls close at ${pollCloseTime} ET.`),
       renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
       renderMiniBigBoard('Senate Special', 'senate senate-special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
       renderMiniBigBoard('Governor', 'governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
@@ -724,7 +719,7 @@ const renderUncontestedRace = (result, tableClass) => {
         ])
       )
     ]),
-    h('p.precincts', [ AP_UNCONTESTED_NOTE ])
+    h('p.precincts', [ copy.content.ap_uncontested_note ])
   ]);
 };
 

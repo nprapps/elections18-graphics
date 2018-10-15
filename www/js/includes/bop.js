@@ -5,6 +5,7 @@ import textures from 'textures';
 import request from 'superagent';
 import countdown from './countdown';
 import { classify, buildDataURL } from './helpers.js';
+import copy from './copy.js';
 
 // Global vars
 var DATA_FILE = 'top-level-results.json';
@@ -95,7 +96,7 @@ var formatData = function () {
 
     CONGRESS['house']['total'] = hData['total_seats'];
     CONGRESS['house']['uncalled_races'] = hData['uncalled_races'];
-    CONGRESS['house']['label'] = BOP_LABELS['label_house'];
+    CONGRESS['house']['label'] = copy.bop['label_house'];
     CONGRESS['house']['winner'] = hData['npr_winner'];
 
     if (hData['Dem']['pickups'] > hData['GOP']['pickups']) {
@@ -118,7 +119,7 @@ var formatData = function () {
     ];
     CONGRESS['senate']['total'] = sData['total_seats'];
     CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
-    CONGRESS['senate']['label'] = BOP_LABELS['label_senate'];
+    CONGRESS['senate']['label'] = copy.bop['label_senate'];
     CONGRESS['senate']['winner'] = sData['npr_winner'];
 
     if (sData['Dem']['pickups'] > sData['GOP']['pickups']) {
@@ -166,9 +167,9 @@ var redrawChart = function () {
     var containerElement = d3.select('#bop');
     containerElement.html('');
 
-    if (BOP_LABELS['show_pickups'] === 'yes') {
+    if (copy.bop['show_pickups'] === 'yes') {
         containerElement.append('h2')
-            .html(BOP_LABELS['hed_pickups']);
+            .html(copy.bop['hed_pickups']);
 
         containerElement.append('div')
             .attr('class', 'pickups');
@@ -179,7 +180,7 @@ var redrawChart = function () {
     }
 
     containerElement.append('h2')
-        .html(BOP_LABELS['hed_bars']);
+        .html(copy.bop['hed_bars']);
 
     _.each(charts, function (d, i) {
         var chartDiv = containerElement.append('div')
@@ -214,11 +215,11 @@ var renderPickups = function (config) {
             .attr('class', 'chamber ' + classify(d));
 
         chamberElement.append('h3')
-            .text(BOP_LABELS['label_' + d]);
+            .text(copy.bop['label_' + d]);
 
         chamberElement.append('p')
             .attr('class', 'desc')
-            .html(BOP_LABELS['pickups_' + d]);
+            .html(copy.bop['pickups_' + d]);
 
         var gainElement = chamberElement.append('p')
             .attr('class', 'net-gain');
@@ -230,10 +231,10 @@ var renderPickups = function (config) {
             })
             .attr('title', function () {
                 var party = CONGRESS[d]['pickup_party'];
-                var t = BOP_LABELS['pickups_none'];
+                var t = copy.bop['pickups_none'];
                 if (party) {
                     party = party.toLowerCase();
-                    t = BOP_LABELS['pickups_' + party];
+                    t = copy.bop['pickups_' + party];
                     t = t.replace('___PICKUPS___', CONGRESS[d]['pickup_seats']);
                 }
 
@@ -251,7 +252,7 @@ var renderPickups = function (config) {
                 }
             });
         gainElement.append('i')
-            .text(BOP_LABELS['pickups_gain']);
+            .text(copy.bop['pickups_gain']);
     });
 };
 
