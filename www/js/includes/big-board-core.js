@@ -481,24 +481,20 @@ const determineResults = function (race) {
     result2 = race.filter(r => !areCandidatesSame(r, result1))[0];
   }
 
-  // Since GOP candidates default to the right side, make sure that the
-  // GOP winner goes on the right side if both candidates are GOP
-  if (
-    result1.party === 'GOP' &&
-    result2.party === 'GOP' &&
-    result1.votepct > result2.votepct
-  ) {
-    [result1, result2] = [result2, result1];
-  }
+  let sortedResults = [result1, result2];
 
-  // if we have the same party, ensure we order by votepct
-  let sortedResults;
-  if (result1['party'] === result2['party']) {
-    sortedResults = [result1, result2].sort(function (a, b) {
+  // If both candidates are GOP, put the leader on the right side
+  // Otherwise, put the leader on the left side
+  if (result1.party === result2.party) {
+    sortedResults = sortedResults.sort(function (a, b) {
       return b['votepct'] - a['votepct'];
     });
-  } else {
-    sortedResults = [result1, result2];
+  }
+  if (
+    sortedResults[0].party === 'GOP' &&
+    sortedResults[1].party === 'GOP'
+  ) {
+    sortedResults = sortedResults.reverse();
   }
 
   return sortedResults;
