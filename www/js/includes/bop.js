@@ -376,7 +376,7 @@ var renderStackedBarChart = function (config) {
                 lbl = (d['isWinner'] ? '<i class="icon icon-ok"></i>GOP' : 'GOP');
                 break;
             default:
-                xPos = xScale(d['x0'] + ((d['x1'] - d['x0']) / 2));
+                xPos = xScale(d['x0'] + ((d['x1'] - d['x0']) / 2)) - 30;
                 sPos = 'left: ' + xPos + 'px; ';
                 if (d['name'] == 'Not yet called' || d['val'] == 0) {
                     showLabel = false;
@@ -399,25 +399,24 @@ var renderStackedBarChart = function (config) {
 
     // shift xPos of independent label
     // base positioning on the xpos/width of the "Dem." label
-    barLabels.select('.party.ind')
-        .attr('style', function() {
-            var bbox = this.getBoundingClientRect();
-            var bboxDem = document.querySelector('label.dem').getBoundingClientRect();
-            var bboxDemOffset = valueGap;
+    var indLabel = barLabels.select('.party.ind')
+        .style('left', function() {
+            var indX = parseInt(d3.select(this).style('left'));
+
+            var demOffset = valueGap;
             if (CONGRESS[chamber]['winner'] == 'Dem') {
-                bboxDemOffset = 18; // account for possible icon width
-            }
-            var bboxDemValue = bboxDem['x'] + bboxDem['width'] + bboxDemOffset;
-
-            var xPos = bbox['x'] - (bbox['width'] / 2);
-            if (xPos < bboxDemValue) {
-                xPos = bboxDemValue;
+                demOffset = 18; // account for icon width
             }
 
-            var s = '';
-            s += 'top: ' + 0 + '; ';
-            s += 'left: ' + xPos + 'px;';
-            return s;
+            var demX = parseInt(barLabels.select('.party.dem').style('left'));
+            var demWidth = document.querySelector('label.dem').getBoundingClientRect()['width'];
+            var demExtent = demX + demWidth + demOffset;
+
+            if (indX < demExtent) {
+                indX = demExtent;
+            }
+
+            return Math.ceil(indX) + 'px';
         });
 
     // majority and seats remaining
