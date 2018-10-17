@@ -1,6 +1,9 @@
+// Polyfills that aren't covered by `babel-preset-env`
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
+
 // npm libraries
 import { h, createProjector } from 'maquette';
-import request from 'superagent';
 import { buildDataURL } from './helpers.js';
 
 // global vars
@@ -27,60 +30,50 @@ function initBigBoard (filename, boardName, boardClass) {
   bopDataURL = buildDataURL('top-level-results.json');
   dataURL = buildDataURL(filename);
   projector.append(boardWrapper, renderMaquette);
-  getInitialData();
 
+  getBopData();
+  getData();
   setInterval(getBopData, 5000);
   setInterval(getData, 5000);
 }
 
-const getInitialData = function () {
-  request.get(bopDataURL)
-    .end(function (err, res) {
-      if (err) { throw err; }
-      if (res.body) {
-        bopData = res.body;
-        lastBopRequestTime = new Date().toUTCString();
-      }
-      request.get(dataURL)
-        .end(function (err, res) {
-          if (err) { throw err; }
-          if (res.body) {
-            lastRequestTime = new Date().toUTCString();
-            resultsData = sortData(res.body.results);
-            lastUpdated = res.body.last_updated;
-            projector.scheduleRender();
-          }
-        });
-    });
-};
-
 const getData = function () {
-  request.get(dataURL)
-    .set('If-Modified-Since', lastRequestTime)
-    .end(function (err, res) {
-      // Superagent takes anything outside of `200`-class responses to be errors
-      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
-      if (res.body) {
-        lastRequestTime = new Date().toUTCString();
-        resultsData = sortData(res.body.results);
-        lastUpdated = res.body.last_updated;
-        projector.scheduleRender();
-      }
-    });
+  window.fetch(
+    dataURL,
+    { headers: { 'If-Modified-Since': lastRequestTime } }
+  ).then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      throw Error(res.statusText);
+    }
+  }).then(res => {
+    lastRequestTime = new Date().toUTCString();
+    resultsData = sortData(res.results);
+    lastUpdated = res.last_updated;
+    projector.scheduleRender();
+  }).catch(err =>
+    console.warn(err)
+  );
 };
 
 const getBopData = function () {
-  request.get(bopDataURL)
-    .set('If-Modified-Since', lastBopRequestTime)
-    .end(function (err, res) {
-      // Superagent takes anything outside of `200`-class responses to be errors
-      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
-      if (res.body) {
-        lastBopRequestTime = new Date().toUTCString();
-        bopData = res.body;
-        projector.scheduleRender();
-      }
-    });
+  window.fetch(
+    bopDataURL,
+    { headers: { 'If-Modified-Since': lastBopRequestTime } }
+  ).then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      throw Error(res.statusText);
+    }
+  }).then(res => {
+    bopData = res;
+    lastBopRequestTime = new Date().toUTCString();
+    projector.scheduleRender();
+  }).catch(err =>
+    console.warn(err)
+  );
 };
 
 const sortData = function (resultsData) {
@@ -103,7 +96,7 @@ const isBucketedByTime = bucket =>
   (bucket.includes('a.m.') || bucket.includes('p.m.'));
 
 const renderMaquette = function () {
-  if (!resultsData) {
+  if (!bopData || !resultsData) {
     return h('div.results-wrapper', 'Loading...');
   }
 

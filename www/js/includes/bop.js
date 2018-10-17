@@ -1,7 +1,10 @@
+// Polyfills that aren't covered by `babel-preset-env`
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
+
 // npm libraries
-import d3 from 'd3';
-import * as _ from 'underscore';
-import request from 'superagent';
+import { scaleLinear } from 'd3-scale';
+import { select } from 'd3-selection';
 import countdown from './countdown';
 import { classify, buildDataURL } from './helpers.js';
 import copyBop from './copy.bop.js';
@@ -21,7 +24,7 @@ var LOAD_INTERVAL = 5000;
 var isInitialized = false;
 var isMobile = false;
 var lastUpdated = '';
-var charts = d3.keys(CONGRESS);
+var charts = Object.keys(CONGRESS);
 var skipLabels = [ 'label', 'values' ];
 var bopData = [];
 var reloadData = null;
@@ -56,22 +59,25 @@ const initBop = function(containerWidth) {
  * Load a datafile
  */
 var loadData = function () {
-    request.get(buildDataURL(DATA_FILE))
-        .set('If-Modified-Since', lastRequestTime)
-        .end(function (err, res) {
-            // Superagent takes anything outside of `200`-class responses to be errors
-            if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
-            if (res.body) {
-                lastRequestTime = new Date().toUTCString();
-                bopData = res.body;
-                lastUpdated = res.body.last_updated;
-                formatData();
-            } else {
-                redrawChart();
-            }
-
-            countdown(indicator, LOAD_INTERVAL);
-        });
+  window.fetch(
+    buildDataURL(DATA_FILE),
+    { headers: { 'If-Modified-Since': lastRequestTime } }
+  ).then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      throw Error(res.statusText);
+    }
+  }).then(res => {
+    lastRequestTime = new Date().toUTCString();
+    bopData = res;
+    lastUpdated = res.last_updated;
+    formatData();
+    // redrawChart();
+    countdown(indicator, LOAD_INTERVAL);
+  }).catch(err =>
+    console.warn(err)
+  );
 };
 
 /*
@@ -132,10 +138,10 @@ var formatData = function () {
         CONGRESS['senate']['party'] = null;
     }
 
-    _.each([ houseCalled, senateCalled ], function (d, i) {
+    [ houseCalled, senateCalled ].forEach(function (d, i) {
         var x0 = 0;
 
-        _.each(d, function (v, k) {
+        d.forEach(function (v, k) {
             v['x0'] = x0;
             v['x1'] = x0 + v['val'];
             x0 = v['x1'];
@@ -163,7 +169,7 @@ const renderBop = function (containerWidth) {
 
 var redrawChart = function () {
     // Clear existing graphic (for redraw)
-    var containerElement = d3.select('#bop');
+    var containerElement = select('#bop');
     containerElement.html('');
 
     if (copyBop['show_pickups'] === 'yes') {
@@ -181,7 +187,7 @@ var redrawChart = function () {
     containerElement.append('h2')
         .html(copyBop['hed_bars']);
 
-    _.each(charts, function (d, i) {
+    charts.forEach(function (d, i) {
         var chartDiv = containerElement.append('div')
             .attr('class', 'chart ' + classify(d));
 
@@ -212,7 +218,7 @@ var redrawChart = function () {
  * Render pickups
  */
 var renderPickups = function (config) {
-    var containerElement = d3.select(config['container']);
+    var containerElement = select(config['container']);
 
     charts.forEach(function (d, i) {
         var chamberElement = containerElement.append('div')
@@ -297,7 +303,7 @@ var renderStackedBarChart = function (config) {
     var chartHeight = barHeight;
 
     // Clear existing graphic (for redraw)
-    var containerElement = d3.select(config['container']);
+    var containerElement = select(config['container']);
     containerElement.append('h3')
         .text(CONGRESS[chamber]['label'])
         .attr('style', 'margin-left: ' + margins['left'] + 'px; margin-right: ' + margins['right'] + 'px;');
@@ -308,7 +314,7 @@ var renderStackedBarChart = function (config) {
     var min = 0;
     var max = CONGRESS[chamber]['total'];
 
-    var xScale = d3.scale.linear()
+    var xScale = scaleLinear()
         .domain([min, max])
         .rangeRound([0, chartWidth]);
 
@@ -367,7 +373,7 @@ var renderStackedBarChart = function (config) {
     var barLabels = chartWrapper.append('div')
         .attr('class', 'bar-labels');
 
-    _.each(config['dataCalled'], function (d) {
+    config['dataCalled'].forEach(function (d) {
         var lbl = d['name'];
         var textAnchor = null;
         var xPos = null;
@@ -410,7 +416,7 @@ var renderStackedBarChart = function (config) {
     // base positioning on the xpos/width of the "Dem." label
     var indLabel = barLabels.select('.party.ind')
         .style('left', function() {
-            var indX = parseInt(d3.select(this).style('left'));
+            var indX = parseInt(select(this).style('left'));
 
             var demOffset = valueGap;
             if (CONGRESS[chamber]['winner'] == 'Dem') {

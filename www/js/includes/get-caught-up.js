@@ -1,5 +1,8 @@
+// Polyfills that aren't covered by `babel-preset-env`
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
+
 import { h, createProjector } from 'maquette';
-import request from 'superagent';
 import { buildDataURL } from './helpers.js';
 
 var dataURL;
@@ -22,18 +25,23 @@ function renderGetCaughtUp () {
   }
 }
 
-const getData = function () {
-  request.get(dataURL)
-    .set('If-Modified-Since', lastRequestTime)
-    .end(function (err, res) {
-      // Superagent takes anything outside of `200`-class responses to be errors
-      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
-      if (res.body) {
-        lastRequestTime = new Date().toUTCString();
-        data = res.body.content;
-        projector.scheduleRender();
-      }
-    });
+var getData = function () {
+  window.fetch(
+    dataURL,
+    { headers: { 'If-Modified-Since': lastRequestTime } }
+  ).then(res => {
+    if (res.ok) {
+      return res.json();
+    } else {
+      throw Error(res.statusText);
+    }
+  }).then(res => {
+    lastRequestTime = new Date().toUTCString();
+    data = res.content;
+    projector.scheduleRender();
+  }).catch(err =>
+    console.warn(err)
+  );
 };
 
 function renderMaquette () {
@@ -53,8 +61,6 @@ function renderMaquette () {
         .filter(k => k.startsWith(INTRO_KEY_PREFIX))
         .filter(k => data[k] !== '')
         .sort(k => Number(k.split('_')[1]))
-        // Sort ascending
-        .reverse()
         .map(k => h('p', { key: k, innerHTML: data[k] })),
 
       // Render bullet points
@@ -64,8 +70,6 @@ function renderMaquette () {
           .filter(k => k.startsWith(BULLET_KEY_PREFIX))
           .filter(k => data[k] !== '')
           .sort(k => Number(k.split('_')[1]))
-          // Sort ascending
-          .reverse()
           .map(k => h('li', { key: k, innerHTML: data[k] }))
       )
     ]);
