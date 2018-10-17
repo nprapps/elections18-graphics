@@ -41,9 +41,9 @@ var senateCalled = [];
  * Initialize the graphic.
  */
 const initBop = function(containerWidth) {
-    timestamp = d3.select('.footer .timestamp');
+    timestamp = select('.footer .timestamp');
     indicator = document.querySelector('.countdown');
-    footnotes = d3.select('.footnotes');
+    footnotes = select('.footnotes');
 
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;

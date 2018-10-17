@@ -293,12 +293,6 @@ const renderTabSwitcher = () => {
   );
 };
 
-const renderBigBoardKey = () => {
-  return h('div.key', {
-    innerHTML: window.bigBoardKey
-  });
-};
-
 const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) => h(
   // Render a big-board-like element for a particular race type
   'div.board',

@@ -2,8 +2,11 @@
 {% block content %}
 {% include 'navbar.html' %}
 <div id="state-results"></div>
+{% include '_board_key.html' %}
+<div class="footer">
+	<p class="sources">
+		Sources: Electoral results from the AP, <span class="timestamp" id="last-updated-timestamp"></span> ET. {{ COPY.content.ap_uncontested_note }} {{ COPY.content.state_data_credit }}
+	</p>
+</div>
 
-<script type="text/javascript">
-  window.bigBoardKey = `{% include '_board_key.html' %}`;
-</script>
 {% endblock %}
