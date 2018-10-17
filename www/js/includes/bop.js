@@ -4,7 +4,7 @@ import * as _ from 'underscore';
 import request from 'superagent';
 import countdown from './countdown';
 import { classify, buildDataURL } from './helpers.js';
-import { bop as copyBop } from './copy.js';
+import copyBop from './copy.bop.js';
 
 // Global vars
 var DATA_FILE = 'top-level-results.json';

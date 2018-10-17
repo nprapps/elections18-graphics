@@ -12,7 +12,7 @@ import commaNumber from 'comma-number';
 
 import './includes/analytics.js';
 import '../js/includes/navbar.js';
-import { content as copyContent } from './includes/copy.js';
+import copyContent from './includes/copy.content.js';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
 
@@ -299,7 +299,6 @@ const renderBigBoardKey = () => {
 const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) => h(
   // Render a big-board-like element for a particular race type
   'div.board',
-  // { classes: { hidden: races.length === 0 } },
   { class: getBoardClasses(boardClass, races) },
   [
     h('h2', [ title,
