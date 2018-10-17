@@ -74,7 +74,14 @@ table.results-table {
         &.no td  { background-color: @gop; }
         &.yes td { background-color: @ind; }
 
-        .icon { color: #fff; }
+        .icon {
+            color: #fff;
+
+            &:before {
+                display: inline;
+                padding-left: 3px;
+            }
+        }
     }
 
     span.pickup {
