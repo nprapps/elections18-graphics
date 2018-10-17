@@ -12,7 +12,7 @@ import commaNumber from 'comma-number';
 
 import './includes/analytics.js';
 import '../js/includes/navbar.js';
-import copy from './includes/copy.js';
+import { content as copyContent } from './includes/copy.js';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
 
@@ -244,9 +244,9 @@ const renderMaquette = function () {
           ' ',
           h('span.timestamp', [ `last updated ${lastUpdated} ET.` ]),
           ' ',
-          copy.content.ap_uncontested_note,
+          copyContent.ap_uncontested_note,
           ' ',
-          copy.content.state_data_credit
+          copyContent.state_data_credit
         ])
       ])
     ]);
@@ -718,7 +718,7 @@ const renderUncontestedRace = (result, tableClass) => {
         ])
       )
     ]),
-    h('p.precincts', [ copy.content.ap_uncontested_note ])
+    h('p.precincts', [ copyContent.ap_uncontested_note ])
   ]);
 };
 

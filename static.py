@@ -42,7 +42,11 @@ def _app_config_js():
 # Render copytext
 @static.route('/js/includes/copy.js')
 def _copy_js():
-    copy = 'const copy = ' + copytext.Copy(app_config.COPY_PATH).json() + ';\nexport default copy;\n'
+    # Split each sheet into its own export, to improve tree-shaking
+    copy_object = copytext.Copy(app_config.COPY_PATH)._serialize()
+    copy = '\n'.join([
+        'const {} = {};'.format(sheetName, json.dumps(sheetContents)) for sheetName, sheetContents in copy_object.items()
+    ]) + '\nexport { ' + ', '.join(copy_object.keys()) + ' };\n'
 
     return make_response(copy, 200, { 'Content-Type': 'application/javascript' })
 
