@@ -186,6 +186,11 @@ var redrawChart = function () {
         var chartDiv = containerElement.append('div')
             .attr('class', 'chart ' + classify(d));
 
+        chartDiv.on('click', function() {
+            var thisLink = copy.bop['board_url_' + classify(d)] + '?live=1';
+            window.open(thisLink);
+        });
+
         // Render the chart!
         renderStackedBarChart({
             container: '#bop .chart.' + classify(d),
@@ -213,6 +218,11 @@ var renderPickups = function (config) {
     charts.forEach(function (d, i) {
         var chamberElement = containerElement.append('div')
             .attr('class', 'chamber ' + classify(d));
+
+        chamberElement.on('click', function() {
+            var thisLink = copy.bop['board_url_' + classify(d)] + '?live=1';
+            window.open(thisLink);
+        });
 
         chamberElement.append('h3')
             .text(copy.bop['label_' + d]);

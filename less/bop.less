@@ -55,6 +55,13 @@ svg { overflow: hidden; }
     }
 
     .chart {
+        &:hover {
+            cursor: pointer;
+            opacity: 0.9;
+
+            h3 { color: @link-color; }
+        }
+
         &.house { margin-bottom: 22px; }
 
         h4 { margin-top: 2px; }
@@ -109,6 +116,13 @@ svg { overflow: hidden; }
 
         .chamber {
             width: 50%;
+
+            &:hover {
+                cursor: pointer;
+                opacity: 0.9;
+
+                h3 { color: @link-color; }
+            }
 
             &.house {
                 padding-right: 15px;
