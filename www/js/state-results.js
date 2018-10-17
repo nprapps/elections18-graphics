@@ -95,7 +95,6 @@ let raceTypes = [
   'Governor'
 ];
 
-window.pymChild = null;
 /*
 * Initialize the graphic.
 */

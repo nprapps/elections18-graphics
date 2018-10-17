@@ -7,7 +7,6 @@ import { initBop, renderBop } from './includes/bop.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
 
 // Global vars
-window.pymChild = null;
 var isBopInit = false;
 var navLinks = null;
 /*

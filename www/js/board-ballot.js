@@ -6,9 +6,6 @@ import './includes/analytics.js';
 import '../js/includes/navbar.js';
 import { initBigBoard } from '../js/includes/big-board-core.js';
 
-// global vars
-window.pymChild = null;
-
 /*
 * Initialize the graphic.
 */

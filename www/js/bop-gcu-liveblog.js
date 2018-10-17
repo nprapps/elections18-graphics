@@ -8,7 +8,6 @@ import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';
 
 // global vars
-window.pymChild = null;
 var isBopInit = false;
 
 /*

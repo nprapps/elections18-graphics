@@ -4,9 +4,6 @@
 // npm libraries
 import '../js/includes/navbar.js';
 
-// global vars
-window.pymChild = null;
-
 /*
 * Initialize the graphic.
 */
