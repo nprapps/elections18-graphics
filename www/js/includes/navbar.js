@@ -14,7 +14,7 @@ const followNavLink = function (e) {
     e.target.tagName === 'A' &&
     e.target !== e.currentTarget &&
     window.pymChild &&
-    (isNPRHost(domain) || isLocalhost(domain))
+    isNPRHost(domain)
   ) {
     window.pymChild.sendMessage('pjax-navigate', e.target.href);
     e.preventDefault();
@@ -51,10 +51,19 @@ const showNavbarIfNotStationEmbed = () => {
 };
 
 // Set the handlers when this ES6 module is imported for its side-effects
-window.addEventListener('load', () => {
-  // Need to wait briefly, until `window.pymChild` can be instantiated elsewhere
+if (document.readyState === 'complete') {
+  // Handle the case where this module is imported _after_ the page loads,
+  // as with the special liveblog embed
   setTimeout(() => {
     showNavbarIfNotStationEmbed();
     setNavBarHandlers();
   }, 0);
-});
+} else {
+  window.addEventListener('load', () => {
+    // Need to wait briefly, until `window.pymChild` can be instantiated elsewhere
+    setTimeout(() => {
+      showNavbarIfNotStationEmbed();
+      setNavBarHandlers();
+    }, 0);
+  });
+}

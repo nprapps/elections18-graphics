@@ -9,12 +9,18 @@ import '../js/includes/navbar.js';
 */
 var onWindowLoaded = function () {
   // init pym and render callback
-  window.pymChild = new window.pym.Child();
-  setTimeout(window.pymChild.sendHeight, 0);
+  if (!window.pymChild) {
+    window.pymChild = new window.pym.Child();
+    setTimeout(window.pymChild.sendHeight, 0);
+  }
 };
 
 /*
  * Initially load the graphic
  * (NB: Use window.load to ensure all images have loaded)
  */
-window.addEventListener('load', onWindowLoaded);
+if (document.readyState === 'complete') {
+  onWindowLoaded();
+} else {
+  window.addEventListener('load', onWindowLoaded);
+}
