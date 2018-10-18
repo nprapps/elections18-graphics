@@ -42,16 +42,21 @@ const getData = function () {
     dataURL,
     { headers: { 'If-Modified-Since': lastRequestTime } }
   ).then(res => {
-    if (res.ok) {
+    if (res.status === 304) {
+      // There is no body to decode in a `304` response
+      return new Promise(() => null);
+    } else if (res.ok) {
       return res.json();
     } else {
       throw Error(res.statusText);
     }
   }).then(res => {
     lastRequestTime = new Date().toUTCString();
-    resultsData = sortData(res.results);
-    lastUpdated = res.last_updated;
-    projector.scheduleRender();
+    if (res) {
+      resultsData = sortData(res.results);
+      lastUpdated = res.last_updated;
+      projector.scheduleRender();
+    }
   }).catch(err =>
     console.warn(err)
   );
@@ -62,15 +67,20 @@ const getBopData = function () {
     bopDataURL,
     { headers: { 'If-Modified-Since': lastBopRequestTime } }
   ).then(res => {
-    if (res.ok) {
+    if (res.status === 304) {
+      // There is no body to decode in a `304` response
+      return new Promise(() => null);
+    } else if (res.ok) {
       return res.json();
     } else {
       throw Error(res.statusText);
     }
   }).then(res => {
-    bopData = res;
-    lastBopRequestTime = new Date().toUTCString();
-    projector.scheduleRender();
+    if (res) {
+      bopData = res;
+      lastBopRequestTime = new Date().toUTCString();
+      projector.scheduleRender();
+    }
   }).catch(err =>
     console.warn(err)
   );
