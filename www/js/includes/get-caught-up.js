@@ -30,18 +30,21 @@ var getData = function () {
     dataURL,
     { headers: { 'If-Modified-Since': lastRequestTime } }
   ).then(res => {
-    if (res.ok) {
+    if (res.status === 304) {
+      // There is no body to decode in a `304` response
+      return new Promise(() => null);
+    } else if (res.ok) {
       return res.json();
     } else {
       throw Error(res.statusText);
     }
   }).then(res => {
     lastRequestTime = new Date().toUTCString();
-    data = res.content;
-    projector.scheduleRender();
-  }).catch(err =>
-    console.warn(err)
-  );
+    if (res) {
+      data = res.content;
+      projector.scheduleRender();
+    }
+  }).catch(err => console.warn(err));
 };
 
 function renderMaquette () {

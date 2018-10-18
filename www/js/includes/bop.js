@@ -63,21 +63,23 @@ var loadData = function () {
     buildDataURL(DATA_FILE),
     { headers: { 'If-Modified-Since': lastRequestTime } }
   ).then(res => {
-    if (res.ok) {
+    if (res.status === 304) {
+      // There is no body to decode in a `304` response
+      return new Promise(() => null);
+    } else if (res.ok) {
       return res.json();
     } else {
       throw Error(res.statusText);
     }
   }).then(res => {
     lastRequestTime = new Date().toUTCString();
-    bopData = res;
-    lastUpdated = res.last_updated;
-    formatData();
-    // redrawChart();
+    if (res) {
+      bopData = res;
+      lastUpdated = res.last_updated;
+      formatData();
+    }
     countdown(indicator, LOAD_INTERVAL);
-  }).catch(err =>
-    console.warn(err)
-  );
+  }).catch(err => console.warn(err));
 };
 
 /*

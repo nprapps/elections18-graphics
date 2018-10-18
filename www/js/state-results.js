@@ -126,7 +126,10 @@ const getData = function (forceReload) {
       }
     }
   ).then(res => {
-    if (res.ok) {
+    if (res.status === 304) {
+      // There is no body to decode in a `304` response
+      return new Promise(() => null);
+    } else if (res.ok) {
       return res.json();
     } else {
       throw Error(res.statusText);
@@ -134,54 +137,57 @@ const getData = function (forceReload) {
   }).then(res => {
     lastDownballotRequestTime = new Date().toUTCString();
 
-    data = res.results;
+    if (res) {
+      data = res.results;
 
-    // Remove tabs from navigation if that race type isn't present
-    // Only perform this removal if the standard state file was loaded;
-    // county-level files won't be aware of which race types are available
-    if (data.senate && data.house) {
-      if (Object.keys(data.senate.results).length === 0) {
-        raceTypes = without(raceTypes, 'Senate');
-        raceTypes = without(raceTypes, 'Senate Special');
-      } else if (Object.keys(data.senate.results).length === 1) {
-        const isSpecial = data.senate
-          .results[Object.keys(data.senate.results)[0]][0]
-          .is_special_election;
-        if (isSpecial) {
+      // Remove tabs from navigation if that race type isn't present
+      // Only perform this removal if the standard state file was loaded;
+      // county-level files won't be aware of which race types are available
+      if (data.senate && data.house) {
+        if (Object.keys(data.senate.results).length === 0) {
           raceTypes = without(raceTypes, 'Senate');
-        } else {
           raceTypes = without(raceTypes, 'Senate Special');
+        } else if (Object.keys(data.senate.results).length === 1) {
+          const isSpecial = data.senate
+            .results[Object.keys(data.senate.results)[0]][0]
+            .is_special_election;
+          if (isSpecial) {
+            raceTypes = without(raceTypes, 'Senate');
+          } else {
+            raceTypes = without(raceTypes, 'Senate Special');
+          }
+        }
+
+        if (Object.keys(data.governor.results).length === 0) {
+          raceTypes = without(raceTypes, 'Governor');
         }
       }
 
-      if (Object.keys(data.governor.results).length === 0) {
-        raceTypes = without(raceTypes, 'Governor');
-      }
+      document.querySelector('#last-updated-timestamp').innerText = res.last_updated;
     }
-
-    document.querySelector('#last-updated-timestamp').innerText = res.last_updated;
 
     projector.resume();
     projector.scheduleRender();
-  }).catch(err =>
-    console.warn(err)
-  );
+  }).catch(err => console.warn(err));
 };
 
 const getExtraData = function () {
   window.fetch(extraDataURL)
     .then(res => {
-      if (res.ok) {
+      if (res.status === 304) {
+        // There is no body to decode in a `304` response
+        return new Promise(() => null);
+      } else if (res.ok) {
         return res.json();
       } else {
         throw Error(res.statusText);
       }
     }).then(res => {
-      extraData = res;
-      return projector.append(resultsWrapper, renderMaquette);
-    }).catch(err =>
-      console.warn(err)
-    );
+      if (res) {
+        extraData = res;
+        return projector.append(resultsWrapper, renderMaquette);
+      }
+    }).catch(err => console.warn(err));
 };
 
 const sortCountyResults = function () {
