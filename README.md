@@ -63,21 +63,14 @@ The project contains the following folders and important files:
 Bootstrap the project
 ---------------------
 
-Node.js is required for the static asset pipeline. If you don't already have it, get it like this:
-
-```
-brew install node
-curl https://npmjs.org/install.sh | sh
-```
-
-Then bootstrap the project:
+Bootstrap the project using:
 
 ```
 cd elections18-graphics
-mkvirtualenv elections18-graphics
+mkvirtualenv elections18-graphics --python="$(which python2)"
 pip install -r requirements.txt
 npm install
-fab update
+fab text.update
 ```
 
 **Problems installing requirements?** You may need to run the pip command as ``ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future pip install -r requirements.txt`` to work around an issue with OSX.
