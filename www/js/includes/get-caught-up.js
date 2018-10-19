@@ -63,8 +63,7 @@ function renderMaquette () {
       ...Object.keys(data)
         .filter(k => k.startsWith(INTRO_KEY_PREFIX))
         .filter(k => data[k] !== '')
-        .sort(k => Number(k.split('_')[1]))
-        .reverse()
+        .sort((a, b) => a > b)
         .map(k => h('p', { key: k, innerHTML: data[k] })),
 
       // Render bullet points
@@ -73,8 +72,7 @@ function renderMaquette () {
         Object.keys(data)
           .filter(k => k.startsWith(BULLET_KEY_PREFIX))
           .filter(k => data[k] !== '')
-          .sort(k => Number(k.split('_')[1]))
-          .reverse()
+          .sort((a, b) => a > b)
           .map(k => h('li', { key: k, innerHTML: data[k] }))
       )
     ]);
