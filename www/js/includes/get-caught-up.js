@@ -9,6 +9,7 @@ var dataURL;
 var lastRequestTime;
 var data;
 var initialized = false;
+var isValidMarkup;
 
 const projector = createProjector();
 
@@ -16,13 +17,24 @@ function renderGetCaughtUp () {
   const wrapper = document.querySelector('.get-caught-up-wrapper');
   projector.replace(wrapper, renderMaquette);
 
-  if (!initialized) {
-    initialized = true;
-    dataURL = buildDataURL('get-caught-up.json');
-    getData();
-    // This `setInterval` will persist across re-renderings
-    setInterval(getData, 5000);
-  }
+  // Have to delay so that `window.pymChild` is instantiated
+  setTimeout(
+    () => {
+      if (!initialized) {
+        initialized = true;
+        // Allow loading of the debug `get-caught-up` file instead
+        const useDebug = window.pymChild
+          ? window.pymChild.parentUrl.includes('?') && window.pymChild.parentUrl.split('?')[1].includes('gcu-debug=1')
+          : document.location.search.includes('gcu-debug=1');
+        dataURL = useDebug
+          ? buildDataURL('get-caught-up-debug.json')
+          : buildDataURL('get-caught-up.json');
+        getData();
+        // This `setInterval` will persist across re-renderings
+        setInterval(getData, 5000);
+      }
+    }, 0
+  );
 }
 
 var getData = function () {
@@ -42,6 +54,7 @@ var getData = function () {
     lastRequestTime = new Date().toUTCString();
     if (res) {
       data = res.content;
+      isValidMarkup = res.meta.is_valid_markup;
       projector.scheduleRender();
     }
   }).catch(err => console.warn(err));
@@ -56,26 +69,33 @@ function renderMaquette () {
   } else {
     setTimeout(window.pymChild.sendHeight, 0);
 
-    return h('div.get-caught-up-wrapper', [
-      h('h2', 'Get Caught Up'),
+    if (!isValidMarkup) {
+      return h('div.get-caught-up-wrapper', [
+        h('h2', 'Get Caught Up'),
+        h('p', data)
+      ]);
+    } else {
+      return h('div.get-caught-up-wrapper', [
+        h('h2', 'Get Caught Up'),
 
-      // Render intro paragraphs
-      ...Object.keys(data)
-        .filter(k => k.startsWith(INTRO_KEY_PREFIX))
-        .filter(k => data[k] !== '')
-        .sort((a, b) => a > b)
-        .map(k => h('p', { key: k, innerHTML: data[k] })),
-
-      // Render bullet points
-      h(
-        'ul',
-        Object.keys(data)
-          .filter(k => k.startsWith(BULLET_KEY_PREFIX))
+        // Render intro paragraphs
+        ...Object.keys(data)
+          .filter(k => k.startsWith(INTRO_KEY_PREFIX))
           .filter(k => data[k] !== '')
           .sort((a, b) => a > b)
-          .map(k => h('li', { key: k, innerHTML: data[k] }))
-      )
-    ]);
+          .map(k => h('p', { key: k, innerHTML: data[k] })),
+
+        // Render bullet points
+        h(
+          'ul',
+          Object.keys(data)
+            .filter(k => k.startsWith(BULLET_KEY_PREFIX))
+            .filter(k => data[k] !== '')
+            .sort((a, b) => a > b)
+            .map(k => h('li', { key: k, innerHTML: data[k] }))
+        )
+      ]);
+    }
   }
 }
 
