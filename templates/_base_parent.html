@@ -160,69 +160,15 @@
         {% block content %}
         {% endblock content %}
 
-        <h2><span class="production">Production</span> embed code (for Seamus)</h2>
+        <h2><span class="production">Production</span> embed code (for Seamus and NPR stations)</h2>
         {% if slug == 'state-results' %}
         <p  class="state-postal-explainer"><em>Replace the <code>TWO_LETTER_STATE_POSTAL_ABBREVIATION</code> text for the state you wish to load (e.g. <code>wv</code> for West Viriginia)</em>.</p>
         {% endif %}
-        <textarea readonly="readonly" rows="30" cols="100">
-<div id="responsive-embed-{{ slug }}"></div>
-<script>
-    (function(jQuery) {
-        if (typeof jQuery !== 'undefined' && typeof jQuery.getScript === 'function') {
-            {% if slug == 'state-results' %}
-            var resultsState = 'TWO_LETTER_STATE_POSTAL_ABBREVIATION';
-            {% endif %}
-
-            var getParameterByName = function(name) {
-                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                    results = regex.exec(location.search);
-                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-            }
-
-            var onPJAXNavigateMessage = function(url) {
-                var anchor = document.createElement('a');
-                anchor.style.display = 'none';
-                anchor.setAttribute('href', url);
-                document.getElementById('main-section').appendChild(anchor);
-                anchor.click();
-                anchor.parentNode.removeChild(anchor);
-            }
-
-            // add randomness to id to support for multiple graphic instances in one story
-            var el = document.getElementById("responsive-embed-{{ slug }}");
-            el.id = el.id + "-" + Math.random().toString(36).substr(2,5);
-            jQuery.getScript("https://pym.nprapps.org/pym.v1.min.js").done(function () {
-                jQuery(function () { // Wait for page load
-                    var childUrl =  'https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html';
-                    {% if slug == 'state-results' %}
-                    var childUrl = childUrl + '?state=' + resultsState;
-                    {% endif %}
-                    var pymParent = new pym.Parent(el.id, childUrl, {trackscroll: true});
-                    pymParent.onMessage('pjax-navigate', onPJAXNavigateMessage);
-                });
-            });
-        } else {
-            console.error('could not load graphic: jQuery is not on the page.');
-        }
-    })(window.jQuery);
-</script>
+        <textarea id="embed-code" readonly="readonly" rows="10" cols="80">
+<p data-pym-loader data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html{% if slug == 'state-results' %}?state=TWO_LETTER_STATE_POSTAL_ABBREVIATION{% endif %}" id="responsive-embed-{{ slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script>
         </textarea>
-
-        <h2><span class="production">Production</span> autoinit embed code for member stations</h2>
-        {% if slug == 'state-results' %}
-        <p class="state-postal-explainer"><em>Replace the <code>TWO_LETTER_STATE_POSTAL_ABBREVIATION</code> text for the state you wish to load (e.g. <code>wv</code> for West Viriginia)</em>.</p>
-        {% endif %}
-
-<!-- textarea contents -->
-    <textarea readonly="readonly" rows="5" cols="100">
-<p data-pym-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html{% if slug == 'state-results' %}?state=TWO_LETTER_STATE_POSTAL_ABBREVIATION{% endif %}">
-    Loading...
-</p>
-<script src="https://pym.nprapps.org/child-tracker-loader.v1.min.js"></script>
-    </textarea>
-<!-- end textarea contents -->
     </div>
+
 
     <script>
         var resizeSidebarEl = document.querySelector('#resize-sidebar');
