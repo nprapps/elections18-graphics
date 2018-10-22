@@ -1,9 +1,10 @@
 // Polyfills that aren't covered by `babel-preset-env`
 import 'promise-polyfill/src/polyfill';
 import 'whatwg-fetch';
+import URL from 'url-parse';
 
 import { h, createProjector } from 'maquette';
-import { buildDataURL, getTopLevelPymEmbed } from './helpers.js';
+import { buildDataURL, getHighestPymEmbed } from './helpers.js';
 
 var dataURL;
 var lastRequestTime;
@@ -24,9 +25,9 @@ function renderGetCaughtUp () {
       if (!initialized) {
         initialized = true;
         // Allow loading of the debug `get-caught-up` file instead
-        useDebug = window.pymChild
-          ? getTopLevelPymEmbed(window).parentUrl.includes('?') && getTopLevelPymEmbed(window).parentUrl.split('?')[1].includes('gcu-debug=1')
-          : document.location.search.includes('gcu-debug=1');
+        const highestPymChildParentUrl = window.pymChild && getHighestPymEmbed(window).parentUrl;
+        const urlToCheck = highestPymChildParentUrl || document.URL;
+        useDebug = URL(urlToCheck, true).query['gcu-debug'] === '1';
         dataURL = useDebug
           ? buildDataURL('get-caught-up-debug.json')
           : buildDataURL('get-caught-up.json');
