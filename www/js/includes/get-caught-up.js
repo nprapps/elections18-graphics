@@ -24,6 +24,7 @@ function renderGetCaughtUp () {
     () => {
       if (!initialized) {
         initialized = true;
+
         // Allow loading of the debug `get-caught-up` file instead
         const highestPymChildParentUrl = window.pymChild && getHighestPymEmbed(window).parentUrl;
         const urlToCheck = highestPymChildParentUrl || document.URL;
@@ -32,6 +33,7 @@ function renderGetCaughtUp () {
           ? buildDataURL('get-caught-up-debug.json')
           : buildDataURL('get-caught-up.json');
         getData();
+
         // This `setInterval` will persist across re-renderings
         setInterval(getData, 5000);
       }
