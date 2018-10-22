@@ -11,7 +11,6 @@ const resultsCountdown = function(indicator, loadInterval) {
     spanTag.classList.add('text');
 
     // bTag.appendChild(spanTag);
-    // indicator.appendChild(bTag);
     indicator.appendChild(bTag);
     indicator.appendChild(spanTag);
 

@@ -65,6 +65,7 @@ var loadData = function () {
   ).then(res => {
     if (res.status === 304) {
       // There is no body to decode in a `304` response
+      countdown(indicator, LOAD_INTERVAL);
       return new Promise(() => null);
     } else if (res.ok) {
       return res.json();
@@ -77,8 +78,8 @@ var loadData = function () {
       bopData = res;
       lastUpdated = res.last_updated;
       formatData();
+      countdown(indicator, LOAD_INTERVAL);
     }
-    countdown(indicator, LOAD_INTERVAL);
   }).catch(err => console.warn(err));
 };
 

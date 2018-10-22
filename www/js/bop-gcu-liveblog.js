@@ -33,7 +33,7 @@ const addLinkListener = function () {
         href.includes('npr.org') &&
         href.includes('/sharecard/')
       ) {
-        // Open liveblog links within the liveblog
+        // Open liveblog links by scrolling within the liveblog
         e.preventDefault();
         e.stopPropagation();
         const slug = href.split('/').slice(-1)[0].replace('.html', '');
