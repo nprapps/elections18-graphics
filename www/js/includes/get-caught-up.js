@@ -73,12 +73,12 @@ function renderMaquette () {
 
     if (!isValidMarkup) {
       return h('div.get-caught-up-wrapper', [
-        h('h2', useDebug ? 'Get Caught Up [DEBUG]' : 'Get Caught Up'),
+        h('h2', useDebug ? 'Latest Election Headlines Up [DEBUG]' : 'Latest Election Headlines'),
         h('p', data)
       ]);
     } else {
       return h('div.get-caught-up-wrapper', [
-        h('h2', useDebug ? 'Get Caught Up [DEBUG]' : 'Get Caught Up'),
+        h('h2', useDebug ? 'Latest Election Headlines [DEBUG]' : 'Latest Election Headlines'),
 
         // Render intro paragraphs
         ...Object.keys(data)
