@@ -116,10 +116,6 @@
         </div>
 
         <div class="segment">
-            <a id="resize-sidebar" class="btn" href="#">Sidebar (180px)</a>
-        </div>
-
-        <div class="segment">
             <a id="resize-mobile" class="btn" href="#">Mobile (300px)</a>
         </div>
 
@@ -225,17 +221,10 @@
     </div>
 
     <script>
-        var resizeSidebarEl = document.querySelector('#resize-sidebar');
         var resizeMobileEl = document.querySelector('#resize-mobile');
         var resizeDesktopEl = document.querySelector('#resize-desktop');
         var resizeFluidEl = document.querySelector('#resize-fluid');
         var previewWrapperEl = document.querySelector('#preview-wrapper');
-        resizeSidebarEl.addEventListener('click', function(e) {
-            e.preventDefault();
-            previewWrapperEl.style.width = '180px';
-            pymParent.sendWidth();
-            window.location.hash = 'sidebar';
-        });
         resizeMobileEl.addEventListener('click', function(e) {
             e.preventDefault();
             previewWrapperEl.style.width = '300px';
@@ -254,9 +243,7 @@
             pymParent.sendWidth();
             window.location.hash = 'fluid';
         });
-        if (window.location.hash == '#sidebar') {
-            previewWrapperEl.style.width = '180px';
-        } else if (window.location.hash == '#mobile') {
+        if (window.location.hash == '#mobile') {
             previewWrapperEl.style.width = '300px';
         } else if (window.location.hash == '#desktop') {
             previewWrapperEl.style.width = '730px';

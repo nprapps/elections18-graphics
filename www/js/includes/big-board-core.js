@@ -318,8 +318,8 @@ const renderResultsTable = function (key, column) {
             h('th', { scope: 'col' }, 'Candidate one vote percent'),
             h('th', { scope: 'col' }, ''),
             h('th', { scope: 'col' }, 'Candidate two vote percent'),
-            h('th', { scope: 'col' }, 'Candidate two name'),
-          ]),
+            h('th', { scope: 'col' }, 'Candidate two name')
+          ])
         ]),
         races.map(race => renderRace(race))
       ])
