@@ -1,3 +1,8 @@
+/*
+ * ELECTION 2018 BIG BOARD OVERRIDES
+ * Restyle multimedia page layout to be fluid at large screen widths.
+ */
+
 body.id{{ id }} {
     min-width: 100%;
     width: 100%;
@@ -18,6 +23,7 @@ body.id{{ id }} .storytitle,
 body.id{{ id }} #story-meta,
 body.id{{ id }} .share-tools,
 body.id{{ id }} .slug,
+body.id{{ id }} .story > .slug-wrap,
 body.id{{ id }} .ad-backstage-wrap,
 body.id{{ id }} #newsletter-acquisition-callout-mount,
 body.id{{ id }} .related-stories,
@@ -25,13 +31,10 @@ body.id{{ id }} .nprfooter {
     display: none;
 }
 
-body.id{{ id }} .story { padding: 0; }
+body.id{{ id }} #storytext > p { display: none; }
 
-body.id{{ id }} .globalheader .lead .search-wrapper {
-    /*right: 266px;*/
-}
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 769px) {
     body.id{{ id }} .player-wrap-outer {
         right: 0;
         position: absolute;
@@ -41,6 +44,8 @@ body.id{{ id }} .globalheader .lead .search-wrapper {
         right: 10px;
         width: 300px
     }
+
+    body.id{{ id }} .story { padding: 0; }
 }
 
 @media only screen and (min-width: 1025px) {

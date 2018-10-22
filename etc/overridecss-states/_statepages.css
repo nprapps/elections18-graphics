@@ -1,7 +1,12 @@
+/*
+ * ELECTION 2018 STATE PAGE OVERRIDES
+ * Restyle story page layout to hide the section, headline, pubdate and byline.
+ */
+
 body.id{{ id }} header.contentheader,
 body.id{{ id }} h3.slug,
 body.id{{ id }} .storytitle,
 body.id{{ id }} #story-meta,
-body.id{{ id }} #storytext {
+body.id{{ id }} #storytext > p {
     display: none;
 }
