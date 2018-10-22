@@ -54,11 +54,23 @@ const buildDataURL = function (filename) {
   }
 };
 
+const getTopLevelPymEmbed = window => {
+  // For when there may be Pym iframes inside Pym iframes, recursively
+  // determine which object the highest-level Pym child (ie, which
+  // embed is the child of the overall parent window)
+  if (window.parent.pymChild) {
+    return getTopLevelPymEmbed(window.parent);
+  } else {
+    return window.pymChild || null;
+  }
+};
+
 export {
   classify,
   getParameterByName,
   isLocalhost,
   isNPRHost,
   identifyParentHostname,
-  buildDataURL
+  buildDataURL,
+  getTopLevelPymEmbed
 };

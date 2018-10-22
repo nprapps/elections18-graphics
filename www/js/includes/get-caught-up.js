@@ -3,12 +3,13 @@ import 'promise-polyfill/src/polyfill';
 import 'whatwg-fetch';
 
 import { h, createProjector } from 'maquette';
-import { buildDataURL } from './helpers.js';
+import { buildDataURL, getTopLevelPymEmbed } from './helpers.js';
 
 var dataURL;
 var lastRequestTime;
 var data;
 var initialized = false;
+var useDebug = false;
 var isValidMarkup;
 
 const projector = createProjector();
@@ -23,8 +24,8 @@ function renderGetCaughtUp () {
       if (!initialized) {
         initialized = true;
         // Allow loading of the debug `get-caught-up` file instead
-        const useDebug = window.pymChild
-          ? window.pymChild.parentUrl.includes('?') && window.pymChild.parentUrl.split('?')[1].includes('gcu-debug=1')
+        useDebug = window.pymChild
+          ? getTopLevelPymEmbed(window).parentUrl.includes('?') && getTopLevelPymEmbed(window).parentUrl.split('?')[1].includes('gcu-debug=1')
           : document.location.search.includes('gcu-debug=1');
         dataURL = useDebug
           ? buildDataURL('get-caught-up-debug.json')
@@ -71,12 +72,12 @@ function renderMaquette () {
 
     if (!isValidMarkup) {
       return h('div.get-caught-up-wrapper', [
-        h('h2', 'Get Caught Up'),
+        h('h2', useDebug ? 'Get Caught Up [DEBUG]' : 'Get Caught Up'),
         h('p', data)
       ]);
     } else {
       return h('div.get-caught-up-wrapper', [
-        h('h2', 'Get Caught Up'),
+        h('h2', useDebug ? 'Get Caught Up [DEBUG]' : 'Get Caught Up'),
 
         // Render intro paragraphs
         ...Object.keys(data)
