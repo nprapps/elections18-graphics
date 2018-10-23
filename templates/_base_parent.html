@@ -161,7 +161,7 @@
         <p  class="state-postal-explainer"><em>Replace the <code>TWO_LETTER_STATE_POSTAL_ABBREVIATION</code> text for the state you wish to load (e.g. <code>wv</code> for West Viriginia)</em>.</p>
         {% endif %}
         <textarea id="embed-code" readonly="readonly" rows="10" cols="80">
-<p data-pym-loader data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html{% if slug == 'state-results' %}?state=TWO_LETTER_STATE_POSTAL_ABBREVIATION{% endif %}" id="responsive-embed-{{ slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script>
+<p data-pym-loader data-pym-trackscroll data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html{% if slug == 'state-results' %}?state=TWO_LETTER_STATE_POSTAL_ABBREVIATION{% endif %}" id="responsive-embed-{{ slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script>
         </textarea>
     </div>
 
