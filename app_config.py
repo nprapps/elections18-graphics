@@ -35,6 +35,17 @@ REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME
 # Should stay the same, even if PROJECT_SLUG changes
 ASSETS_SLUG = 'elections18-graphics'
 
+
+"""
+PYM
+"""
+
+PYM = {
+    'pym_url': 'https://pym.nprapps.org/pym.v1.min.js',
+    'pym_loader_url': 'https://pym.nprapps.org/npr-pym-loader.v2.min.js',
+}
+
+
 """
 DEPLOYMENT
 """
