@@ -154,24 +154,18 @@ window.ANALYTICS = (function () {
 
 // Register a "completion" event when a user scrolls to or past
 // the bottom of an embed's iframe
-var wasIframeBottomVisibleOrPassed = false;
-function checkIfIframeBottomVisibleOrPassed (viewPixelsAboveIframeTop) {
-  const iframeHeight = Number(window.pymChild.sendHeight());
-  const viewPixelsAboveIframeBottom = viewPixelsAboveIframeTop + iframeHeight;
-  const parentWindowHeight = window.parent.window.innerHeight;
-
-  const isIframeBottomVisibleOrPassed = ((viewPixelsAboveIframeBottom - parentWindowHeight) <= 0);
-  return isIframeBottomVisibleOrPassed;
-}
 window.addEventListener('load', () => {
   // Queue this listener until Pym is ready
   setTimeout(() => {
+    let wasIframeBottomVisibleOrPassed = false;
     window.pymChild.onMessage('viewport-iframe-position', parentInfo => {
-      const viewPixelsAboveIframeTop = Number(parentInfo.split(' ')[2]);
+      const parentWindowHeight = Number(parentInfo.split(' ')[1]);
+      const iframeBottom = Number(parentInfo.split(' ')[4]);
+      const isIframeBottomVisibleOrPassed = (parentWindowHeight > iframeBottom);
       if (
         // No need to run computation if the event already happened
         !wasIframeBottomVisibleOrPassed &&
-        checkIfIframeBottomVisibleOrPassed(viewPixelsAboveIframeTop)
+        isIframeBottomVisibleOrPassed
       ) {
         wasIframeBottomVisibleOrPassed = true;
         window.ANALYTICS.trackEvent('finished-graphic', document.title);
