@@ -1,0 +1,63 @@
+{% extends '_base_child.html' %}
+{% block content %}
+
+<style type="text/css">
+#nav-list {
+    width: 100%;
+}
+#nav-list tr:nth-child(even) {
+    background-color: #f1f1f1;
+}
+#nav-list th,
+#nav-list td {
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    text-align: left;
+}
+#nav-list textarea {
+    height: 80px;
+    width: 80%;
+}
+
+#nav-list .state { width: 100px; }
+#nav-list .link { width: 100px; }
+</style>
+
+<h1>State Pages</h2>
+<table id="nav-list">
+<tr>
+    <th class="state">state</th>
+    <th class="embed">embed</th>
+    <th class="link">preview link</th>
+</tr>
+{% for state in NAVBAR.states %}
+<tr>
+    <td>{{ state.label }}</td>
+    <td><textarea><p data-pym-loader data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/state-results/child.html?state={{ state.slug }}" id="responsive-embed-{{ state.slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script></textarea></td>
+    <td><a href="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/state-results/?state={{ state.slug }}#desktop">Preview</a></td>
+</tr>
+{% endfor %}
+</table>
+
+<h1>Liveblog and Big Boards</h2>
+<table id="nav-list">
+<tr>
+    <th class="state">state</th>
+    <th class="embed">embed</th>
+    <th class="link">preview link</th>
+</tr>
+{% for state in NAVBAR.nav %}
+<tr>
+    <td>{{ state.slug }}</td>
+    {% if state.slug == 'liveblog' %}
+    <td><textarea><p data-pym-liveblog-loader data-child-src="https://apps.npr.org/liveblogs/20181106-elections/child.html" id="responsive-embed-20181106-elections">Loading...</p><script type="text/javascript" src="https://pym.nprapps.org/npr-pym-liveblog-loader.v2.min.js"></script></textarea></td>
+    <td><a href="https://apps.npr.org/liveblogs/20181106-elections/#desktop">Preview</a></td>
+    {% else %}
+    <td><textarea><p data-pym-loader data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/board-{{ state.slug }}/child.html" id="responsive-embed-{{ state.slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script></textarea></td>
+    <td><a href="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/board-{{ state.slug }}#fluid">Preview</a></td>
+    {% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
