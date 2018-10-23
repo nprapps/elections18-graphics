@@ -499,21 +499,20 @@ a:hover, a:active {
     }
 
     #state-results {
+        margin-left: 0;
+        margin-right: 0;
+
         .results-table {
+            font-size: 11px;
             caption {
                 padding-left: 2px;
                 padding-right: 2px;
             }
-            th {
-                font-size: 11px;
-                padding: 0 2px 5px 2px;
-            }
+            th { padding: 0 2px 5px 2px; }
             td { padding: 5px; }
         }
         .results-counties .results-table {
             th {
-                &.county { padding: 5px 0; }
-
                 &.vote,
                 &.comparison {
                     text-align: left;
@@ -539,8 +538,20 @@ a:hover, a:active {
             }
 
             th, td {
+                padding-left: 2px;
+                padding-right: 2px;
+
                 &:nth-child(3) { border-left: 1px solid #ccc; }
                 &.precincts { display: none; }
+                &.vote { width: 15%; }
+                &.comparison { width: 20%; }
+            }
+
+            &.candidates-3 {
+                th, td {
+                    &.vote { width: 14%; }
+                    &.comparison { width: 16%; }
+                }
             }
 
             .precincts.mobile {

@@ -446,7 +446,7 @@ const renderResults = function () {
             h('li.label', 'Sort Counties By'),
             availableMetrics.map(metric => renderMetricLi(metric))
           ]),
-          h('table.results-table', [
+          h('table', { class: 'results-table candidates-' + availableCandidates.length }, [
             h('thead', [
               h('tr', [
                 h('th.county', h('div', h('span', 'County'))),
