@@ -40,10 +40,16 @@ def _app_config_js():
     return make_response(js, 200, { 'Content-Type': 'application/javascript' })
 
 # Render copytext
-@static.route('/js/includes/copy.js')
-def _copy_js():
-    copy = 'const copy = ' + copytext.Copy(app_config.COPY_PATH).json() + ';\nexport default copy;\n'
-
+# Split each sheet into its own file, to improve tree-shaking
+@static.route('/js/includes/copy.bop.js')
+def _copy_bop_js():
+    copy_object = copytext.Copy(app_config.COPY_PATH)._serialize()
+    copy = 'const copy = {};\nexport default copy;\n'.format(json.dumps(copy_object['bop']))
+    return make_response(copy, 200, { 'Content-Type': 'application/javascript' })
+@static.route('/js/includes/copy.content.js')
+def _copy_content_js():
+    copy_object = copytext.Copy(app_config.COPY_PATH)._serialize()
+    copy = 'const copy = {};\nexport default copy;\n'.format(json.dumps(copy_object['content']))
     return make_response(copy, 200, { 'Content-Type': 'application/javascript' })
 
 # Server arbitrary static files on-demand

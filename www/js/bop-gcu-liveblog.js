@@ -8,7 +8,6 @@ import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';
 
 // global vars
-window.pymChild = null;
 var isBopInit = false;
 
 /*
@@ -34,7 +33,7 @@ const addLinkListener = function () {
         href.includes('npr.org') &&
         href.includes('/sharecard/')
       ) {
-        // Open liveblog links within the liveblog
+        // Open liveblog links by scrolling within the liveblog
         e.preventDefault();
         e.stopPropagation();
         const slug = href.split('/').slice(-1)[0].replace('.html', '');

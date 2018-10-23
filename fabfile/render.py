@@ -87,14 +87,19 @@ def app_config_js():
 @task
 def copytext_js():
     """
-    Render COPY to copy.js.
+    Render COPY sheets to copy.{}.js.
     """
-    from static import _copy_js
+    from static import _copy_bop_js
+    from static import _copy_content_js
 
-    with _fake_context('/js/includes/copy.js'):
-        response = _copy_js()
+    with _fake_context('/js/includes/copy.bop.js'):
+        response = _copy_bop_js()
+    with open('www/js/includes/copy.bop.js', 'w') as f:
+        f.write(response.data)
 
-    with open('www/js/includes/copy.js', 'w') as f:
+    with _fake_context('/js/includes/copy.content.js'):
+        response = _copy_content_js()
+    with open('www/js/includes/copy.content.js', 'w') as f:
         f.write(response.data)
 
 

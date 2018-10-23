@@ -9,6 +9,7 @@ import logging
 
 from fabric.api import task
 from oauth import get_document, get_credentials
+from render import app_config_js, copytext_js
 
 logging.basicConfig(format=app_config.LOG_FORMAT)
 logger = logging.getLogger(__name__)
@@ -32,3 +33,7 @@ def update():
 
     get_document(app_config.COPY_GOOGLE_DOC_KEY, app_config.COPY_PATH)
     get_document(app_config.NAVBAR_GOOGLE_DOC_KEY, app_config.NAVBAR_PATH)
+
+    # Generate the JS data files
+    app_config_js()
+    copytext_js()

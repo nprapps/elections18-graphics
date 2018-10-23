@@ -1,11 +1,13 @@
+// Polyfills that aren't covered by `babel-preset-env`
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
+
 // npm libraries
-import d3 from 'd3';
-import * as _ from 'underscore';
-import textures from 'textures';
-import request from 'superagent';
+import { scaleLinear } from 'd3-scale';
+import { select } from 'd3-selection';
 import countdown from './countdown';
 import { classify, buildDataURL } from './helpers.js';
-import copy from './copy.js';
+import copyBop from './copy.bop.js';
 
 // Global vars
 var DATA_FILE = 'top-level-results.json';
@@ -22,7 +24,7 @@ var LOAD_INTERVAL = 5000;
 var isInitialized = false;
 var isMobile = false;
 var lastUpdated = '';
-var charts = d3.keys(CONGRESS);
+var charts = Object.keys(CONGRESS);
 var skipLabels = [ 'label', 'values' ];
 var bopData = [];
 var reloadData = null;
@@ -39,9 +41,9 @@ var senateCalled = [];
  * Initialize the graphic.
  */
 const initBop = function(containerWidth) {
-    timestamp = d3.select('.footer .timestamp');
+    timestamp = select('.footer .timestamp');
     indicator = document.querySelector('.countdown');
-    footnotes = d3.select('.footnotes');
+    footnotes = select('.footnotes');
 
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;
@@ -57,22 +59,28 @@ const initBop = function(containerWidth) {
  * Load a datafile
  */
 var loadData = function () {
-    request.get(buildDataURL(DATA_FILE))
-        .set('If-Modified-Since', lastRequestTime)
-        .end(function (err, res) {
-            // Superagent takes anything outside of `200`-class responses to be errors
-            if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
-            if (res.body) {
-                lastRequestTime = new Date().toUTCString();
-                bopData = res.body;
-                lastUpdated = res.body.last_updated;
-                formatData();
-            } else {
-                redrawChart();
-            }
-
-            countdown(indicator, LOAD_INTERVAL);
-        });
+  window.fetch(
+    buildDataURL(DATA_FILE),
+    { headers: { 'If-Modified-Since': lastRequestTime } }
+  ).then(res => {
+    if (res.status === 304) {
+      // There is no body to decode in a `304` response
+      countdown(indicator, LOAD_INTERVAL);
+      return new Promise(() => null);
+    } else if (res.ok) {
+      return res.json();
+    } else {
+      throw Error(res.statusText);
+    }
+  }).then(res => {
+    lastRequestTime = new Date().toUTCString();
+    if (res) {
+      bopData = res;
+      lastUpdated = res.last_updated;
+      formatData();
+      countdown(indicator, LOAD_INTERVAL);
+    }
+  }).catch(err => console.warn(err));
 };
 
 /*
@@ -96,7 +104,7 @@ var formatData = function () {
 
     CONGRESS['house']['total'] = hData['total_seats'];
     CONGRESS['house']['uncalled_races'] = hData['uncalled_races'];
-    CONGRESS['house']['label'] = copy.bop['label_house'];
+    CONGRESS['house']['label'] = copyBop['label_house'];
     CONGRESS['house']['winner'] = hData['npr_winner'];
 
     if (hData['Dem']['pickups'] > hData['GOP']['pickups']) {
@@ -119,7 +127,7 @@ var formatData = function () {
     ];
     CONGRESS['senate']['total'] = sData['total_seats'];
     CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
-    CONGRESS['senate']['label'] = copy.bop['label_senate'];
+    CONGRESS['senate']['label'] = copyBop['label_senate'];
     CONGRESS['senate']['winner'] = sData['npr_winner'];
 
     if (sData['Dem']['pickups'] > sData['GOP']['pickups']) {
@@ -133,10 +141,10 @@ var formatData = function () {
         CONGRESS['senate']['party'] = null;
     }
 
-    _.each([ houseCalled, senateCalled ], function (d, i) {
+    [ houseCalled, senateCalled ].forEach(function (d, i) {
         var x0 = 0;
 
-        _.each(d, function (v, k) {
+        d.forEach(function (v, k) {
             v['x0'] = x0;
             v['x1'] = x0 + v['val'];
             x0 = v['x1'];
@@ -164,12 +172,12 @@ const renderBop = function (containerWidth) {
 
 var redrawChart = function () {
     // Clear existing graphic (for redraw)
-    var containerElement = d3.select('#bop');
+    var containerElement = select('#bop');
     containerElement.html('');
 
-    if (copy.bop['show_pickups'] === 'yes') {
+    if (copyBop['show_pickups'] === 'yes') {
         containerElement.append('h2')
-            .html(copy.bop['hed_pickups']);
+            .html(copyBop['hed_pickups']);
 
         containerElement.append('div')
             .attr('class', 'pickups');
@@ -180,11 +188,16 @@ var redrawChart = function () {
     }
 
     containerElement.append('h2')
-        .html(copy.bop['hed_bars']);
+        .html(copyBop['hed_bars']);
 
-    _.each(charts, function (d, i) {
+    charts.forEach(function (d, i) {
         var chartDiv = containerElement.append('div')
             .attr('class', 'chart ' + classify(d));
+
+        chartDiv.on('click', function() {
+            var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
+            window.open(thisLink);
+        });
 
         // Render the chart!
         renderStackedBarChart({
@@ -208,18 +221,23 @@ var redrawChart = function () {
  * Render pickups
  */
 var renderPickups = function (config) {
-    var containerElement = d3.select(config['container']);
+    var containerElement = select(config['container']);
 
     charts.forEach(function (d, i) {
         var chamberElement = containerElement.append('div')
             .attr('class', 'chamber ' + classify(d));
 
+        chamberElement.on('click', function() {
+            var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
+            window.open(thisLink);
+        });
+
         chamberElement.append('h3')
-            .text(copy.bop['label_' + d]);
+            .text(copyBop['label_' + d]);
 
         chamberElement.append('p')
             .attr('class', 'desc')
-            .html(copy.bop['pickups_' + d]);
+            .html(copyBop['pickups_' + d]);
 
         var gainElement = chamberElement.append('p')
             .attr('class', 'net-gain');
@@ -231,10 +249,10 @@ var renderPickups = function (config) {
             })
             .attr('title', function () {
                 var party = CONGRESS[d]['pickup_party'];
-                var t = copy.bop['pickups_none'];
+                var t = copyBop['pickups_none'];
                 if (party) {
                     party = party.toLowerCase();
-                    t = copy.bop['pickups_' + party];
+                    t = copyBop['pickups_' + party];
                     t = t.replace('___PICKUPS___', CONGRESS[d]['pickup_seats']);
                 }
 
@@ -252,7 +270,7 @@ var renderPickups = function (config) {
                 }
             });
         gainElement.append('i')
-            .text(copy.bop['pickups_gain']);
+            .text(copyBop['pickups_gain']);
     });
 };
 
@@ -288,7 +306,7 @@ var renderStackedBarChart = function (config) {
     var chartHeight = barHeight;
 
     // Clear existing graphic (for redraw)
-    var containerElement = d3.select(config['container']);
+    var containerElement = select(config['container']);
     containerElement.append('h3')
         .text(CONGRESS[chamber]['label'])
         .attr('style', 'margin-left: ' + margins['left'] + 'px; margin-right: ' + margins['right'] + 'px;');
@@ -299,7 +317,7 @@ var renderStackedBarChart = function (config) {
     var min = 0;
     var max = CONGRESS[chamber]['total'];
 
-    var xScale = d3.scale.linear()
+    var xScale = scaleLinear()
         .domain([min, max])
         .rangeRound([0, chartWidth]);
 
@@ -358,7 +376,7 @@ var renderStackedBarChart = function (config) {
     var barLabels = chartWrapper.append('div')
         .attr('class', 'bar-labels');
 
-    _.each(config['dataCalled'], function (d) {
+    config['dataCalled'].forEach(function (d) {
         var lbl = d['name'];
         var textAnchor = null;
         var xPos = null;
@@ -401,7 +419,7 @@ var renderStackedBarChart = function (config) {
     // base positioning on the xpos/width of the "Dem." label
     var indLabel = barLabels.select('.party.ind')
         .style('left', function() {
-            var indX = parseInt(d3.select(this).style('left'));
+            var indX = parseInt(select(this).style('left'));
 
             var demOffset = valueGap;
             if (CONGRESS[chamber]['winner'] == 'Dem') {

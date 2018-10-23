@@ -1,18 +1,19 @@
 // Babel 7's `"useBuiltIns: "usage"` will automatically insert polyfills
 // https://babeljs.io/docs/en/next/babel-preset-env#usebuiltins
+// However, these Babel polyfills only cover ECMAScript, so some additional
+// polyfills are needed for browser-provided functionality
+import 'promise-polyfill/src/polyfill';
+import 'whatwg-fetch';
 
 import { h, createProjector } from 'maquette';
-import {
-  sortBy,
-  values as getValues,
-  without
-} from 'underscore';
-import request from 'superagent';
+import sortBy from 'lodash.sortby';
+import getValues from 'lodash.values';
+import without from 'lodash.without';
 import commaNumber from 'comma-number';
 
 import './includes/analytics.js';
 import '../js/includes/navbar.js';
-import copy from './includes/copy.js';
+import copyContent from './includes/copy.content.js';
 import { getParameterByName, buildDataURL } from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
 
@@ -82,7 +83,6 @@ let dataTimer = null;
 let stateName = null;
 let statepostal = null;
 let statefaceClass = null;
-let lastUpdated = null;
 let parentScrollAboveIframeTop = null;
 let resultsView = 'key';
 let resultsType = 'Key Results';
@@ -95,7 +95,6 @@ let raceTypes = [
   'Governor'
 ];
 
-window.pymChild = null;
 /*
 * Initialize the graphic.
 */
@@ -119,53 +118,76 @@ var onWindowLoaded = function () {
 };
 
 const getData = function (forceReload) {
-  request.get(dataURL)
-    .set('If-Modified-Since', forceReload ? '' : lastDownballotRequestTime)
-    .end(function (err, res) {
-      // Superagent takes anything outside of `200`-class responses to be errors
-      if (err && ((res && res.statusCode !== 304) || !res)) { throw err; }
-      if (res.body) {
-        lastDownballotRequestTime = new Date().toUTCString();
+  window.fetch(
+    dataURL,
+    {
+      headers: {
+        'If-Modified-Since': forceReload ? '' : lastDownballotRequestTime
+      }
+    }
+  ).then(res => {
+    if (res.status === 304) {
+      // There is no body to decode in a `304` response
+      return new Promise(() => null);
+    } else if (res.ok) {
+      return res.json();
+    } else {
+      throw Error(res.statusText);
+    }
+  }).then(res => {
+    lastDownballotRequestTime = new Date().toUTCString();
 
-        data = res.body.results;
+    if (res) {
+      data = res.results;
 
-        // Remove tabs from navigation if that race type isn't present
-        // Only perform this removal if the standard state file was loaded;
-        // county-level files won't be aware of which race types are available
-        if (data.senate && data.house) {
-          if (Object.keys(data.senate.results).length === 0) {
+      // Remove tabs from navigation if that race type isn't present
+      // Only perform this removal if the standard state file was loaded;
+      // county-level files won't be aware of which race types are available
+      if (data.senate && data.house) {
+        if (Object.keys(data.senate.results).length === 0) {
+          raceTypes = without(raceTypes, 'Senate');
+          raceTypes = without(raceTypes, 'Senate Special');
+        } else if (Object.keys(data.senate.results).length === 1) {
+          const isSpecial = data.senate
+            .results[Object.keys(data.senate.results)[0]][0]
+            .is_special_election;
+          if (isSpecial) {
             raceTypes = without(raceTypes, 'Senate');
+          } else {
             raceTypes = without(raceTypes, 'Senate Special');
-          } else if (Object.keys(data.senate.results).length === 1) {
-            const isSpecial = data.senate
-              .results[Object.keys(data.senate.results)[0]][0]
-              .is_special_election;
-            if (isSpecial) {
-              raceTypes = without(raceTypes, 'Senate');
-            } else {
-              raceTypes = without(raceTypes, 'Senate Special');
-            }
-          }
-
-          if (Object.keys(data.governor.results).length === 0) {
-            raceTypes = without(raceTypes, 'Governor');
           }
         }
 
-        lastUpdated = res.body.last_updated;
+        if (Object.keys(data.governor.results).length === 0) {
+          raceTypes = without(raceTypes, 'Governor');
+        }
       }
-      projector.resume();
-      projector.scheduleRender();
-    });
+
+      document.querySelector('#last-updated-timestamp').innerText = res.last_updated;
+    }
+
+    projector.resume();
+    projector.scheduleRender();
+  }).catch(err => console.warn(err));
 };
 
 const getExtraData = function () {
-  request.get(extraDataURL)
-    .end(function (err, res) {
-      if (err) { throw err; }
-      extraData = res.body;
-      projector.append(resultsWrapper, renderMaquette);
-    });
+  window.fetch(extraDataURL)
+    .then(res => {
+      if (res.status === 304) {
+        // There is no body to decode in a `304` response
+        return new Promise(() => null);
+      } else if (res.ok) {
+        return res.json();
+      } else {
+        throw Error(res.statusText);
+      }
+    }).then(res => {
+      if (res) {
+        extraData = res;
+        return projector.append(resultsWrapper, renderMaquette);
+      }
+    }).catch(err => console.warn(err));
 };
 
 const sortCountyResults = function () {
@@ -235,21 +257,7 @@ const renderMaquette = function () {
         ]),
         renderTabSwitcher()
       ]),
-      renderResults(),
-      renderBigBoardKey(),
-      h('div.footer', [
-        h('p.sources', [
-          'Sources:',
-          ' ',
-          'Electoral results from the AP,',
-          ' ',
-          h('span.timestamp', [ `last updated ${lastUpdated} ET.` ]),
-          ' ',
-          copy.content.ap_uncontested_note,
-          ' ',
-          copy.content.state_data_credit
-        ])
-      ])
+      renderResults()
     ]);
   } else {
     getData();
@@ -291,16 +299,9 @@ const renderTabSwitcher = () => {
   );
 };
 
-const renderBigBoardKey = () => {
-  return h('div.key', {
-    innerHTML: window.bigBoardKey
-  });
-};
-
 const renderMiniBigBoard = (title, boardClass, races, linkRaceType, linkText) => h(
   // Render a big-board-like element for a particular race type
   'div.board',
-  // { classes: { hidden: races.length === 0 } },
   { class: getBoardClasses(boardClass, races) },
   [
     h('h2', [ title,
@@ -354,7 +355,9 @@ const renderResults = function () {
     // Poll-close time is set at a statewide level, so don't worry
     // about which race it's extracted from
     const pollCloseTime = allRaces[0][0].meta.poll_closing;
-    const areThereAnyVotesYet = allRaces.some(race => race.some(result => result.votecount > 0));
+    const areThereAnyVotesYet = allRaces.some(race => race.some(result =>
+      result.votecount > 0 || result.npr_winner
+    ));
 
     const showCountyResults = !STATES_WITHOUT_COUNTY_INFO.includes(allRaces[0][0].statepostal);
 
@@ -443,7 +446,7 @@ const renderResults = function () {
             h('li.label', 'Sort Counties By'),
             availableMetrics.map(metric => renderMetricLi(metric))
           ]),
-          h('table.results-table', [
+          h('table', { class: 'results-table candidates-' + availableCandidates.length }, [
             h('thead', [
               h('tr', [
                 h('th.county', h('div', h('span', 'County'))),
@@ -719,7 +722,7 @@ const renderUncontestedRace = (result, tableClass) => {
         ])
       )
     ]),
-    h('p.precincts', [ copy.content.ap_uncontested_note ])
+    h('p.precincts', [ copyContent.ap_uncontested_note ])
   ]);
 };
 

@@ -6,7 +6,6 @@ import './includes/analytics.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 
 // global vars
-window.pymChild = null;
 var isBopInit = false;
 
 /*

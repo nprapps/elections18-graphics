@@ -5,8 +5,6 @@ import './includes/analytics.js';
 import { renderGetCaughtUp } from './includes/get-caught-up.js';
 import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
 
-window.pymChild = null;
-
 var onWindowLoaded = function () {
   // init pym and render callback
   window.pymChild = new window.pym.Child({
