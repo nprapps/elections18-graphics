@@ -124,6 +124,10 @@
         </div>
 
         <div class="segment">
+            <a id="resize-mmedia" class="btn" href="#">Multimedia (1240px)</a>
+        </div>
+
+        <div class="segment">
             <a id="resize-fluid" class="btn" href="#">Fluid (100%)</a>
         </div>
 
@@ -169,6 +173,7 @@
     <script>
         var resizeMobileEl = document.querySelector('#resize-mobile');
         var resizeDesktopEl = document.querySelector('#resize-desktop');
+        var resizeMmediaEl = document.querySelector('#resize-mmedia');
         var resizeFluidEl = document.querySelector('#resize-fluid');
         var previewWrapperEl = document.querySelector('#preview-wrapper');
         resizeMobileEl.addEventListener('click', function(e) {
@@ -183,18 +188,31 @@
             pymParent.sendWidth();
             window.location.hash = 'desktop';
         });
+        resizeMmediaEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            previewWrapperEl.style.width = '1240px';
+            pymParent.sendWidth();
+            window.location.hash = 'mmedia';
+        });
         resizeFluidEl.addEventListener('click', function(e) {
             e.preventDefault();
             previewWrapperEl.style.width = '100%';
             pymParent.sendWidth();
             window.location.hash = 'fluid';
         });
-        if (window.location.hash == '#mobile') {
-            previewWrapperEl.style.width = '300px';
-        } else if (window.location.hash == '#desktop') {
-            previewWrapperEl.style.width = '730px';
-        } else if (window.location.hash == '#fluid') {
-            previewWrapperEl.style.width = '100%';
+        switch(window.location.hash) {
+            case '#mobile':
+                previewWrapperEl.style.width = '300px';
+                break;
+            case '#desktop':
+                previewWrapperEl.style.width = '730px';
+                break;
+            case '#mmedia':
+                previewWrapperEl.style.width = '1240px';
+                break;
+            default:
+                previewWrapperEl.style.width = '100%';
+                break;
         }
     </script>
     <script src="//pym.nprapps.org/pym.v1.min.js"></script>
