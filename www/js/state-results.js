@@ -490,13 +490,7 @@ const renderMetricLi = function (metric) {
 };
 
 const renderCandidateTH = function (candidate) {
-  return h('th.vote', {
-    classes: {
-      'dem': candidate === 'Clinton',
-      'gop': candidate === 'Trump',
-      'ind': ['Johnson', 'McMullin', 'Stein'].indexOf(candidate) !== -1
-    }
-  }, h('div', h('span', candidate)));
+  return h('th.vote', h('div', h('span', candidate)));
 };
 
 const renderCountyRow = function (results, key, availableCandidates) {
