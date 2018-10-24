@@ -1,12 +1,14 @@
 @import "variables";
 
 html {
-    font: 14px/1.4 Helvetica, Arial, sans-serif;
+    font: 13px/1.4 Helvetica, Arial, sans-serif;
 
     @media screen and (min-width: @screen-big-board-min) { font-size: 18px; }
-    @media screen and (max-width: @screen-md) { font-size: 13px; }
-    @media screen and (max-width: @screen-sm) { font-size: 12px; }
-    @media screen and (max-width: @screen-xs) { font-size: 11px; }
+    @media screen and (max-width: @screen-xl)  { font-size: 14px; }
+    @media screen and (max-width: @screen-lg)  { font-size: 13px; }
+    @media screen and (max-width: @screen-sm)  { font-size: 12px; }
+    @media screen and (max-width: @screen-xs)  { font-size: 13px; }
+    @media screen and (max-width: @screen-xxs) { font-size: 11px; }
 }
 
 body {
@@ -21,7 +23,7 @@ body {
 .board.hidden { display: none; }
 
 .board .results-wrapper {
-    padding: 0 10px;
+    padding: 0;
 
     h1, h2, h3, h4, h5, h6, p { margin: 0; }
 
@@ -122,12 +124,13 @@ body {
         }
 
         .races {
-            width: 100%;
             border-spacing: 0 0.2rem;
+            width: 100%;
 
             td {
-                padding: 0.2rem 0.4rem;
+                box-sizing: content-box;
                 line-height: 1.1;
+                padding: 0.2rem 0.4rem;
 
                 &:nth-child(3) { border-radius: 0.3rem 0 0 0.3rem; }
                 &:nth-child(4) { border-radius: 0 0.3rem 0.3rem 0; }
@@ -147,6 +150,8 @@ body {
                     white-space: nowrap;
                     text-align: center;
 
+                    @media screen and (max-width: @screen-xxs) { font-size: 90%; }
+
                     &:after {
                         content: "% in";
                         font-size: 70%;
@@ -160,24 +165,26 @@ body {
                 }
 
                 .pickup {
-                    width: 4%;
                     vertical-align: middle;
+                    width: 5%;
+                    min-width: 15px;
+
                     img {
                         width: 100%;
                         height: auto;
                     }
                 }
 
-                &.party-change .pickup{
+                &.party-change .pickup {
                     &.dem { color: @dem };
                     &.gop { color: @gop };
                     &.ind { color: @ind };
 
-                    &:after{
+                    &:after {
                         font-weight: 500;
                         content: "+1";
                         font-style: italic;
-                        font-size: 65%;
+                        font-size: 75%;
                     }
                 }
 
@@ -185,7 +192,8 @@ body {
                     color: @gray;
                     text-align: center;
                     white-space: nowrap;
-                    width: 10%;
+                    width: 11%;
+                    min-width: 40px;
 
                     &.dem { color: @dem; }
                     &.gop  { color: @gop; }
@@ -215,7 +223,10 @@ body {
                     &.gop.winner, &.no.winner { background: @gop; color: white; }
                     &.other.winner, &.yes.winner { background: @ind; color: white; }
 
-                    &.uncontested { font-style: italic; }
+                    &.uncontested {
+                        color: @gray-light;
+                        font-style: italic;
+                    }
 
                     .party {
                         font-size: 75%;
@@ -227,6 +238,7 @@ body {
                     &.incumbent {
                         .lname {
                             font-size: 95%;
+                            letter-spacing: 0em;
                             text-transform: uppercase;
 
                             &:after {
@@ -235,13 +247,13 @@ body {
                         }
                     }
 
-                    @media screen and (max-width: @screen-xs) {
+                    @media screen and (max-width: @screen-sm) {
                         .fname { display: none; }
                     }
                 }
 
                 .candidate-total {
-                    width: 7%;
+                    width: 6%;
                     text-align: right;
                     background: transparent;
                     position: relative;
@@ -262,6 +274,10 @@ body {
                         content:"%";
                         font-size: 80%;
                         vertical-align: top;
+
+                        @media screen and (max-width: @screen-xxs) {
+                            font-size: 50%;
+                        }
                     }
                 }
 
@@ -421,7 +437,7 @@ body {
   }
 }
 
-#results-nav-wrapper { margin: 0 10px 20px 10px; }
+#results-nav-wrapper { margin: 0 0 20px 0; }
 
 /* Hide elements from visual display, keep them present for screen readers */
 .screen-reader-only {

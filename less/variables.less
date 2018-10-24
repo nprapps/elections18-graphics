@@ -55,13 +55,44 @@
 
 // Breakpoints
 // --------------------------------------------------
-@screen-xxs:                 290px;  // Sidebar
-@screen-xs:                  480px;  // Extra small screen / phone
-@screen-sm:                  768px;  // Small screen / tablet
+// @screen-xxs:                 290px;  // Sidebar
+// @screen-xs:                  480px;  // Extra small screen / phone
+// @screen-sm:                  768px;  // Small screen / tablet
+// @screen-md:                  992px;  // Medium screen / desktop
+// @screen-lg:                 1200px;  // Large screen / wide desktop
+// @screen-xl:                 1500px;  // Superwide
+// @screen-big-board:          1920px;  // HDTV
+@screen-xxs:                 480px;  // Sidebar
+@screen-xs:                  660px;  // Extra small screen / phone
+@screen-sm:                  800px;  // Small screen / tablet
 @screen-md:                  992px;  // Medium screen / desktop
 @screen-lg:                 1200px;  // Large screen / wide desktop
 @screen-xl:                 1500px;  // Superwide
 @screen-big-board:          1920px;  // HDTV
+
+/* for breakpoint debugging
+@media screen and (max-width: @screen-big-board) {
+    body { background-color: gold; }
+}
+@media screen and (max-width: @screen-xl) {
+    body { background-color: purple; }
+}
+@media screen and (max-width: @screen-lg) {
+    body { background-color: blue; }
+}
+@media screen and (max-width: @screen-md) {
+    body { background-color: green; }
+}
+@media screen and (max-width: @screen-sm) {
+    body { background-color: yellow; }
+}
+@media screen and (max-width: @screen-xs) {
+    body { background-color: orange; }
+}
+@media screen and (max-width: @screen-xxs) {
+    body { background-color: pink; }
+}
+*/
 
 // So media queries don't overlap when required, provide a minimum
 @screen-xs-min:              (@screen-xxs + 1);

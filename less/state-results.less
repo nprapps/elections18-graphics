@@ -7,7 +7,11 @@
 @mm-max-width: 650px;
 
 html {
-    font: 14px/1.4 Helvetica, Arial, sans-serif;
+    // will override the html base font set in board.less
+    // font: 14px/1.4 Helvetica, Arial, sans-serif;
+
+    @media screen and (min-width: @screen-xs-min) and (max-width: @screen-md) { font-size: 13px; }
+    @media screen and (max-width: @screen-xs) { font-size: 11px; }
 }
 
 body {
@@ -24,8 +28,6 @@ a:hover, a:active {
 }
 
 #state-results {
-    margin-left: 10px;
-    margin-right: 10px;
     // max-width: @mm-max-width;
 }
 
@@ -456,18 +458,15 @@ a:hover, a:active {
         }
     }
     .board {
-        font: 14px/1.4 Helvetica, Arial, sans-serif;
-
-        @media screen and (min-width: @screen-big-board-min) { font-size: 18px; }
-        @media screen and (max-width: @screen-md) { font-size: 13px; }
-        @media screen and (max-width: @screen-sm) { font-size: 12px; }
-        @media screen and (max-width: @screen-xs) { font-size: 11px; }
-
         &.governor { min-height: unset; }
         .results .races tr {
-            td { line-height: 1.4; }
+            td { line-height: 1.6; }
             .results-status { font-size: 0.9rem; }
             .state { font-size: 95%; }
+
+            @media screen and (min-width: @screen-xs-min) and (max-width: @screen-md) {
+                .candidate .fname { display: inline; }
+            }
         }
         .results-wrapper { padding: 0; }
     }
