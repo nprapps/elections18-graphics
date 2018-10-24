@@ -132,6 +132,9 @@ body {
                 line-height: 1.1;
                 padding: 0.2rem 0.4rem;
 
+                &:first-child  { padding-left: 0; }
+                &:last-child   { padding-right: 0; }
+
                 &:nth-child(3) { border-radius: 0.3rem 0 0 0.3rem; }
                 &:nth-child(4) { border-radius: 0 0.3rem 0.3rem 0; }
                 &:nth-child(6) { border-radius: 0.3rem 0 0 0.3rem; }
@@ -150,12 +153,17 @@ body {
                     white-space: nowrap;
                     text-align: center;
 
-                    @media screen and (max-width: @screen-xxs) { font-size: 90%; }
+                    @media screen and (max-width: @screen-xxs) {
+                        font-size: 90%;
+                        width: 10%;
+                    }
 
                     &:after {
                         content: "% in";
                         font-size: 70%;
                         vertical-align: top;
+
+                        @media screen and (max-width: @screen-xxs) { content: "%" }
                     }
                 }
 
@@ -168,6 +176,11 @@ body {
                     vertical-align: middle;
                     width: 5%;
                     min-width: 15px;
+
+                    @media screen and (max-width: @screen-xxs) {
+                        padding-right: 0;
+                        width: 15px;
+                    }
 
                     img {
                         width: 100%;
@@ -193,7 +206,7 @@ body {
                     text-align: center;
                     white-space: nowrap;
                     width: 11%;
-                    min-width: 40px;
+                    min-width: 35px;
 
                     &.dem { color: @dem; }
                     &.gop  { color: @gop; }
