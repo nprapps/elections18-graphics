@@ -166,7 +166,7 @@ const renderMaquette = function () {
     sortedRacesPerBucket[bucket] = sortedRaces;
   }
 
-  const breakingIndex = Math.ceil((numberOfRaces + buckets.length) / 2) - Math.ceil(buckets.length / 2);
+  const breakingIndex = Math.ceil((numberOfRaces + buckets.length) / 2) - Math.floor(buckets.length / 2);
   let raceIndex = 0;
   let firstColumn = {};
   let secondColumn = {};
