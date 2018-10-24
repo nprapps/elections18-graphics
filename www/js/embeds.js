@@ -8,9 +8,7 @@ var onWindowLoaded = function () {
     console.log('loaded');
 
   // init pym and render callback
-  window.pymChild = new window.pym.Child({
-      renderCallback: render;
-  });
+  window.pymChild = new window.pym.Child({ });
 };
 
 

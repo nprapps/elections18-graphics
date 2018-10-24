@@ -48,6 +48,7 @@ www/js/rendered/*.js*
 www/board*
 www/bop*
 www/county*
+www/embeds*
 www/map*
 www/state*
 www/get-caught-up*
