@@ -107,10 +107,10 @@ var formatData = function () {
     CONGRESS['house']['label'] = copyBop['label_house'];
     CONGRESS['house']['winner'] = hData['npr_winner'];
 
-    if (hData['Dem']['pickups'] > hData['GOP']['pickups']) {
+    if (hData['Dem']['pickups'] > 0) {
         CONGRESS['house']['pickup_seats'] = hData['Dem']['pickups'];
         CONGRESS['house']['pickup_party'] = 'Dem';
-    } else if (hData['GOP']['pickups'] > hData['Dem']['pickups']) {
+    } else if (hData['GOP']['pickups'] > 0) {
         CONGRESS['house']['pickup_seats'] = hData['GOP']['pickups'];
         CONGRESS['house']['pickup_party'] = 'GOP';
     } else {
@@ -130,10 +130,10 @@ var formatData = function () {
     CONGRESS['senate']['label'] = copyBop['label_senate'];
     CONGRESS['senate']['winner'] = sData['npr_winner'];
 
-    if (sData['Dem']['pickups'] > sData['GOP']['pickups']) {
+    if (sData['Dem']['pickups'] > 0) {
         CONGRESS['senate']['pickup_seats'] = sData['Dem']['pickups'];
         CONGRESS['senate']['pickup_party'] = 'Dem';
-    } else if (sData['GOP']['pickups'] > sData['Dem']['pickups']) {
+    } else if (sData['GOP']['pickups'] > 0) {
         CONGRESS['senate']['pickup_seats'] = sData['GOP']['pickups'];
         CONGRESS['senate']['pickup_party'] = 'GOP';
     } else {
