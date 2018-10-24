@@ -15,7 +15,7 @@
     <td><textarea><p data-pym-liveblog-loader data-child-src="https://apps.npr.org/liveblogs/20181106-elections/child.html" id="responsive-embed-20181106-elections">Loading...</p><script type="text/javascript" src="https://pym.nprapps.org/npr-pym-liveblog-loader.v2.min.js"></script></textarea></td>
     {% else %}
     <td><a href="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/board-{{ state.slug }}#desktop">{{ state.slug }}</a></td>
-    <td><textarea><p data-pym-loader data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/board-{{ state.slug }}/child.html" id="responsive-embed-{{ state.slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script></textarea></td>
+    <td><textarea><p data-pym-loader data-pym-trackscroll data-child-src="https://{{  PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/board-{{ state.slug }}/child.html" id="responsive-embed-{{ state.slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script></textarea></td>
     {% endif %}
 </tr>
 {% endfor %}
@@ -38,7 +38,7 @@
 {% for state in NAVBAR.states %}
 <tr>
     <td><a href="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/state-results/?state={{ state.slug }}#desktop">{{ state.label }}</a></td>
-    <td><textarea><p data-pym-loader data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/state-results/child.html?state={{ state.slug }}" id="responsive-embed-{{ state.slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script></textarea></td>
+    <td><textarea><p data-pym-loader data-pym-trackscroll data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/state-results/child.html?state={{ state.slug }}" id="responsive-embed-{{ state.slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script></textarea></td>
 </tr>
 {% endfor %}
 </table>
