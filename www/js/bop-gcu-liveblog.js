@@ -26,8 +26,14 @@ const addLinkListener = function () {
   const getCaughtUp = document.getElementById('gcu-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
-      const href = e.target.href;
+      // Since this is often the grandchild of the browser window,
+      // determine whether triggered click events can be bubbled up
+      // to the parent Pym
+      const pymToSendEventsTo = (window.pymChild && window.parent.pymChild && window.pymChild !== window.parent.pymChild)
+        ? window.parent.pymChild
+        : window.pymChild;
 
+      const href = e.target.href;
       if (
         window.pymChild &&
         href.includes('npr.org') &&
@@ -37,12 +43,15 @@ const addLinkListener = function () {
         e.preventDefault();
         e.stopPropagation();
         const slug = href.split('/').slice(-1)[0].replace('.html', '');
-        window.pymChild.scrollParentTo(slug);
-      } else if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
+        pymToSendEventsTo.scrollParentToChildEl(slug);
+      } else if (
+        window.pymChild &&
+        isNPRHost(domain)
+      ) {
         // On NPR.org, open external links w/ PJAX (so it doesn't disrupt the persistent audio player)
-        window.pymChild.sendMessage('pjax-navigate', href);
         e.preventDefault();
         e.stopPropagation();
+        pymToSendEventsTo.sendMessage('pjax-navigate', href);
       } else {
         // Otherwise, open external links in a new tab/window
         window.open(href, '_top');
