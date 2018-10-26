@@ -388,6 +388,8 @@ a:hover, a:active {
             &.ind { background-color: @ind; }
         }
 
+
+
         td { vertical-align: middle; }
 
         th, td {
@@ -415,6 +417,11 @@ a:hover, a:active {
             &.vote,
             &.margin {
                 width: 16%;
+            }
+            &.margin {
+                &.dem { color: @dem; }
+                &.gop { color: @gop; }
+                &.ind { color: @ind; }
             }
 
             &.comparison {

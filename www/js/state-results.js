@@ -543,7 +543,7 @@ const renderCountyRow = function (results, key, availableCandidates) {
     ]),
     h('td.amt.precincts', [calculatePrecinctsReporting(results[0]) + '% in']),
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
-    h('td.vote.margin', calculateVoteMargin(keyedResults)),
+    h(renderMarginCell(keyedResults,winner), calculateVoteMargin(keyedResults)),
     h('td.comparison', extraMetric)
   ]);
 };
@@ -574,7 +574,6 @@ const determineWinner = function (keyedResults) {
       winner = result;
     }
   }
-
   return winner;
 };
 
@@ -612,6 +611,15 @@ const calculateVoteMargin = function (keyedResults) {
   }
 
   return prefix + ' +' + Math.round(winnerMargin * 100);
+};
+
+const renderMarginCell = function (result, winner) {
+if(winner == null){
+return 'td.vote.margin';}
+else{
+    if(winner.party === 'Dem'){return 'td.vote.margin.dem';}
+      else if (winner.party === 'GOP'){return 'td.vote.margin.gop';}
+      else {return 'td.vote.margin.ind';}}
 };
 
 const renderRacewideTable = function (results, tableClass) {
