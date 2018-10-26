@@ -14,7 +14,11 @@ import commaNumber from 'comma-number';
 import './includes/analytics.js';
 import '../js/includes/navbar.js';
 import copyContent from './includes/copy.content.js';
-import { getParameterByName, buildDataURL } from './includes/helpers.js';
+import {
+  buildDataURL,
+  getParameterByName,
+  toTitleCase
+} from './includes/helpers.js';
 import { renderRace } from './includes/big-board-core.js';
 
 const resultsWrapper = document.getElementById('state-results');
@@ -72,6 +76,7 @@ const availableMetrics = [
 ];
 
 const STATES_WITHOUT_COUNTY_INFO = [ 'AK' ];
+const NEW_ENGLAND_STATES = ['ME', 'NH', 'VT', 'MA', 'CT', 'RI'];
 
 let data = null;
 let extraData = null;
@@ -530,7 +535,10 @@ const renderCountyRow = function (results, key, availableCandidates) {
 
   return h('tr', [
     h('td.county', [
-      results[0].reportingunitname,
+      // Correct issue where New England counties are all-uppercase
+      // This will be fixed eventually upstream in Elex, as it's a bug therein
+      // https://github.com/newsdev/elex/pull/337
+      NEW_ENGLAND_STATES.includes(results[0].statepostal) ? toTitleCase(results[0].reportingunitname) : results[0].reportingunitname,
       h('span.precincts.mobile', [calculatePrecinctsReporting(results[0]) + '% in'])
     ]),
     h('td.amt.precincts', [calculatePrecinctsReporting(results[0]) + '% in']),
@@ -740,16 +748,6 @@ const onMetricClick = function (e) {
       window.ANALYTICS.trackEvent('county-sort-click', availableMetrics[i]['name']);
     }
   }
-};
-
-const toTitleCase = str => {
-  // Sourced from Sonya Moisset
-  // https://gist.github.com/SonyaMoisset/aa79f51d78b39639430661c03d9b1058
-  str = str.toLowerCase().split(' ');
-  for (var i = 0; i < str.length; i++) {
-    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
-  }
-  return str.join(' ');
 };
 
 const switchResultsView = function (e) {

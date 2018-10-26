@@ -67,6 +67,14 @@ const getHighestPymEmbed = window => {
   }
 };
 
+// Credit Sonya Moisset
+// https://medium.freecodecamp.org/three-ways-to-title-case-a-sentence-in-javascript-676a9175eb27
+const toTitleCase = str =>
+  str.toLowerCase()
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase().concat(word.slice(1)))
+    .join(' ');
+
 export {
   classify,
   getParameterByName,
@@ -74,5 +82,6 @@ export {
   isNPRHost,
   identifyParentHostname,
   buildDataURL,
-  getHighestPymEmbed
+  getHighestPymEmbed,
+  toTitleCase
 };
