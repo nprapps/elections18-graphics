@@ -4,7 +4,7 @@
 // npm libraries
 import './includes/analytics.js';
 import { initBop, renderBop } from './includes/bop.js';
-import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
+import { isNPRHost, identifyParentHostname } from './includes/helpers.js';
 
 // Global vars
 var isBopInit = false;
@@ -28,7 +28,7 @@ var onNavLinkClick = function (e) {
   const domain = identifyParentHostname();
   const url = e.target.href;
 
-  if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
+  if (window.pymChild && isNPRHost(domain)) {
     window.pymChild.sendMessage('pjax-navigate', url);
     e.preventDefault();
     e.stopPropagation();

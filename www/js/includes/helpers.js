@@ -37,11 +37,14 @@ function isLocalhost (hostname) {
 
 function isNPRHost (hostname) {
   // Handle NPR subdomains, too
-  return hostname === 'npr.org' || hostname.endsWith('.npr.org');
+  // However, do not include `apps.npr.org`, since this is our test page,
+  // and it doesn't act like a normal NPR.org page (with PJAX)
+  return (hostname === 'npr.org' || hostname.endsWith('.npr.org')) &&
+    hostname !== 'apps.npr.org';
 }
 
 const identifyParentHostname = function () {
-  return typeof window.pymChild === 'undefined'
+  return window.pymChild
     ? window.location.hostname
     : new URL(window.pymChild.parentUrl).hostname;
 };

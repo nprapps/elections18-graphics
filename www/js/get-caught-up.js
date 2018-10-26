@@ -3,7 +3,7 @@
 
 import './includes/analytics.js';
 import { renderGetCaughtUp } from './includes/get-caught-up.js';
-import { isLocalhost, isNPRHost, identifyParentHostname } from './includes/helpers.js';
+import { isNPRHost, identifyParentHostname } from './includes/helpers.js';
 
 var onWindowLoaded = function () {
   // init pym and render callback
@@ -19,7 +19,7 @@ const addLinkListener = function () {
   const getCaughtUp = document.getElementById('get-caught-up-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
-      if (window.pymChild && (!domain || isNPRHost(domain) || isLocalhost(domain))) {
+      if (window.pymChild && isNPRHost(domain)) {
         window.pymChild.sendMessage('pjax-navigate', e.target.href);
         e.preventDefault();
         e.stopPropagation();

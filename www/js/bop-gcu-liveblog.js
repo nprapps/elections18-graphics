@@ -5,7 +5,7 @@
 import './includes/analytics.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
-import { isLocalhost, isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';
+import { isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';
 
 // global vars
 var isBopInit = false;
