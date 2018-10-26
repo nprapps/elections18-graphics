@@ -225,7 +225,8 @@ body {
 
                 .candidate {
                     font-size: 90%;
-
+                    overflow-x: hidden;
+                    padding-right: 0;
                     width: 30%;
 
                     &.dem { background: @demDim; }
@@ -251,17 +252,27 @@ body {
                     &.incumbent {
                         .lname {
                             font-size: 95%;
-                            letter-spacing: 0em;
+                            letter-spacing: 0rem;
                             text-transform: uppercase;
 
-                            &:after {
-                                content: '*';
-                            }
+                            &:after { content: '*'; }
                         }
                     }
 
                     @media screen and (max-width: @screen-sm) {
                         .fname { display: none; }
+                    }
+
+                    @media screen and (max-width: @screen-xs) {
+                        &:first-child { padding-right: 0; }
+                        &:last-child  { padding-left: 0; }
+
+                        &.longname .lname {
+                            transform:scale(.85,1);
+                            transform-origin: left;
+                            display: block;
+                            max-width: 5rem;
+                        }
                     }
                 }
 

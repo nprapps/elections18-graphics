@@ -338,7 +338,8 @@ const createClassesForBoardCells = result => {
     'no': result.party === 'No',
     'other': !coloredParties.includes(result.party) && result.party !== 'Uncontested',
     'uncontested': result.party === 'Uncontested',
-    'incumbent': result.incumbent
+    'incumbent': result.incumbent,
+    'longname': result.last.length > 8
   };
 };
 
