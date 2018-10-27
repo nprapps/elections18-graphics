@@ -35,18 +35,20 @@ function isLocalhost (hostname) {
   return ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
 }
 
-function isNPRHost (hostname) {
-  // Handle NPR subdomains, too
-  // However, do not include `apps.npr.org`, since this is our test page,
+function shouldUsePJAXForHost (hostname) {
+  // Do not include `apps.npr.org`, since this is our test page,
   // and it doesn't act like a normal NPR.org page (with PJAX)
-  return (hostname === 'npr.org' || hostname.endsWith('.npr.org')) &&
-    hostname !== 'apps.npr.org';
+  return isNPRHost(hostname) && hostname !== 'apps.npr.org';
+}
+
+function isNPRHost (hostname) {
+  return hostname === 'npr.org' || hostname.endsWith('.npr.org');
 }
 
 const identifyParentHostname = function () {
   return window.pymChild
-    ? window.location.hostname
-    : new URL(window.pymChild.parentUrl).hostname;
+    ? new URL(window.pymChild.parentUrl).hostname
+    : window.location.hostname;
 };
 
 const buildDataURL = function (filename) {
@@ -83,6 +85,7 @@ export {
   getParameterByName,
   isLocalhost,
   isNPRHost,
+  shouldUsePJAXForHost,
   identifyParentHostname,
   buildDataURL,
   getHighestPymEmbed,
