@@ -154,7 +154,12 @@ def deploy(slug=''):
         headers={
             'Cache-Control': 'max-age=%i' % app_config.DEFAULT_MAX_AGE
         },
-        ignore=['www/assets/*', 'www/live-data/*']
+        ignore=[
+            'www/assets/*',
+            'www/live-data/*',
+            'www/data/??.json',
+            'www/data/??-counties-*.json'
+        ]
     )
 
     flat.deploy_folder(
