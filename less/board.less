@@ -77,6 +77,7 @@ body {
     .results  {
         font-size: 0.9rem;
         height: 100%;
+
         .clearfix();
 
         .column {
@@ -127,6 +128,10 @@ body {
             border-spacing: 0 0.2rem;
             width: 100%;
 
+            @media screen and (max-width: @screen-xxs) {
+                table-layout: fixed;
+            }
+
             td {
                 box-sizing: content-box;
                 line-height: 1.1;
@@ -139,17 +144,16 @@ body {
                 &:nth-child(4) { border-radius: 0 0.3rem 0.3rem 0; }
                 &:nth-child(6) { border-radius: 0.3rem 0 0 0.3rem; }
                 &:nth-child(7) { border-radius: 0 0.3rem 0.3rem 0; }
-
-                &.candidate-total-spacer {
-                    padding: 0;
-                    width: 1%;
-                }
             }
 
             tr {
+                // needed for terrible table layout hack
+                // https://css-tricks.com/fixing-tables-long-strings/
+                &.structure { visibility: collapse; }
+
                 .results-status {
                     color: #ccc;
-                    width: 11%;
+                    width: 10%;
                     white-space: nowrap;
                     text-align: center;
 
@@ -227,7 +231,7 @@ body {
                     font-size: 90%;
                     overflow-x: hidden;
                     padding-right: 0;
-                    width: 30%;
+                    width: 31%;
 
                     &.dem { background: @demDim; }
                     &.gop, &.no { background: @gopDim; }
@@ -263,21 +267,18 @@ body {
                         .fname { display: none; }
                     }
 
-                    @media screen and (max-width: @screen-xs) {
+                    @media screen and (max-width: @screen-xxs) {
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        width: 28%;
+
                         &:first-child { padding-right: 0; }
                         &:last-child  { padding-left: 0; }
-
-                        &.longname .lname {
-                            transform:scale(.85,1);
-                            transform-origin: left;
-                            display: block;
-                            max-width: 5rem;
-                        }
                     }
                 }
 
                 .candidate-total {
-                    width: 6%;
+                    width: 25px;
                     text-align: right;
                     background: transparent;
                     position: relative;
@@ -306,6 +307,11 @@ body {
                 }
 
                 .candidate-total-spacer + .candidate-total { text-align: left; }
+
+                .candidate-total-spacer {
+                    padding: 0;
+                    width: 1%;
+                }
 
                 // highlight on update
                 &.reporting {

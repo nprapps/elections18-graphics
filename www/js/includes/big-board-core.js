@@ -309,16 +309,29 @@ const renderResultsTable = function (key, column) {
           : key
       )),
       h('table.races', [
+          // needed for terrible table layout hack.
+          // basically, i need a clean row to base the overall table structure on.
+          // https://css-tricks.com/fixing-tables-long-strings/
+          h('tr.structure', [
+            h('th', { scope: 'col', class: 'pickup' }, ''),
+            h('th', { scope: 'col', class: 'state' }, ''),
+            h('th', { scope: 'col', class: 'candidate' }, ''),
+            h('th', { scope: 'col', class: 'candidate-total' }, ''),
+            h('th', { scope: 'col', class: 'candidate-total-spacer' }, ''),
+            h('th', { scope: 'col', class: 'candidate-total' }, ''),
+            h('th', { scope: 'col', class: 'candidates' }, ''),
+            h('th', { scope: 'col', class: 'results-status' }, '')
+        ]),
         h('thead', { class: 'screen-reader-only' }, [
           h('tr', [
             h('th', { scope: 'col', class: 'pickup' }, 'Pick-up?'),
-            h('th', { scope: 'col' }, 'Name'),
-            h('th', { scope: 'col' }, 'Percent reported'),
-            h('th', { scope: 'col' }, 'Candidate one name'),
-            h('th', { scope: 'col' }, 'Candidate one vote percent'),
-            h('th', { scope: 'col' }, ''),
-            h('th', { scope: 'col' }, 'Candidate two vote percent'),
-            h('th', { scope: 'col' }, 'Candidate two name')
+            h('th', { scope: 'col', class: 'state' }, 'Name'),
+            h('th', { scope: 'col', class: 'candidate' }, 'Candidate one name'),
+            h('th', { scope: 'col', class: 'candidate-total' }, 'Candidate one vote percent'),
+            h('th', { scope: 'col', class: 'candidate-total-spacer' }, ''),
+            h('th', { scope: 'col', class: 'candidate-total' }, 'Candidate two vote percent'),
+            h('th', { scope: 'col', class: 'candidates' }, 'Candidate two name'),
+            h('th', { scope: 'col', class: 'results-status' }, 'Percent of precincts reporting')
           ])
         ]),
         races.map(race => renderRace(race))
