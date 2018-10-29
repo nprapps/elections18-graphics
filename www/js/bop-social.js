@@ -3,7 +3,7 @@
 
 // npm libraries
 import './includes/analytics.js';
-import { initBop, renderBop } from '../js/includes/bop.js';
+import { initBop, renderBop } from '../js/includes/bop-s.js';
 
 // global vars
 var isBopInit = false;

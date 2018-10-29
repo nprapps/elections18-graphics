@@ -1,5 +1,16 @@
+
+
+
 {% extends '_base_child.html' %}
 {% block content %}
+
+<div id="results-nav-wrapper">
+    <nav class="results-nav">
+
+        <div class="results-logo">
+            <span class="election-name">Election</span>
+            <span class="election-year">2018</span>
+        </div>
 
 <div id="bop"></div>
 
@@ -10,7 +21,8 @@
 {% endif %}
 
 <div class="footer">
-    {% if COPY.bop.source %}<p>Source: {{ COPY.bop.source|smarty }}</p>{% endif %}
+    {% if COPY.bop.source %}<p>Source: {{ COPY.bop.source|smarty }}{% endif %}
+<img src="https://media.npr.org/chrome_svg/npr-logo.svg" alt="NPR logo" width=50px align=right></p>
     {% if COPY.bop.credit %}<p>Credit: {{ COPY.bop.credit|smarty }}</p>{% endif %}
     <div class="countdown">
         <span class="update-indicator">Next update: <b class="icon icon-spin3"></b> <span class="text"></span></span>
