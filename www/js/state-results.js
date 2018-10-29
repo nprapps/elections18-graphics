@@ -444,6 +444,11 @@ const renderResults = function () {
       const sortKeys = sortCountyResults();
       const availableCandidates = stateResults.map(c => c.last);
 
+      // Given constraints on Maquette, have to generate this `classes`
+      // object here, and it cannot be assigned to `class`
+      const tableClasses = { 'results-table': true };
+      tableClasses[`candidates-${availableCandidates.length}`] = true;
+
       resultsElements = resultsElements.concat(
         h('div.results-counties', {
           classes: {
@@ -462,13 +467,13 @@ const renderResults = function () {
             h('li.label', 'Sort Counties By'),
             availableMetrics.map(metric => renderMetricLi(metric))
           ]),
-          h('table', { class: 'results-table candidates-' + availableCandidates.length }, [
+          h('table', { classes: tableClasses }, [
             h('thead', [
               h('tr', [
                 h('th.county', h('div', h('span', 'County'))),
                 h('th.amt.precincts', h('div', h('span', ''))),
                 availableCandidates.map(cand => renderCandidateTH(cand)),
-                h('th.vote.margin', h('div', h('span', 'Vote margin'))),
+                h('th.vote.margin', { key: 'margin' }, h('div', h('span', 'Vote margin'))),
                 h('th.comparison', h('div', h('span', sortMetric['name'])))
               ])
             ]),
@@ -506,7 +511,13 @@ const renderMetricLi = function (metric) {
 };
 
 const renderCandidateTH = function (candidate) {
-  return h('th.vote', h('div', h('span', candidate)));
+  return h(
+    'th.vote',
+    { key: candidate },
+    h('div',
+      h('span', candidate)
+    )
+  );
 };
 
 const renderCountyRow = function (results, key, availableCandidates) {
@@ -554,7 +565,7 @@ const renderCountyRow = function (results, key, availableCandidates) {
     ]),
     h('td.amt.precincts', [calculatePrecinctsReporting(results[0]) + '% in']),
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
-    h(renderMarginCell(keyedResults,winner), calculateVoteMargin(keyedResults)),
+    h(renderMarginCell(keyedResults, winner), calculateVoteMargin(keyedResults)),
     h('td.comparison', extraMetric)
   ]);
 };
@@ -566,7 +577,8 @@ const renderCountyCell = function (result, winner) {
       'gop': result.party === 'GOP',
       'ind': !['Dem', 'GOP'].includes(result.party),
       'winner': winner === result
-    }
+    },
+    key: result.candidateid
   }, [(result.votepct * 100).toFixed(1) + '%']);
 };
 
