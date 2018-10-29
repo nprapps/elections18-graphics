@@ -83,6 +83,7 @@ let extraData = null;
 let dataURL = null;
 let extraDataURL = null;
 let currentState = null;
+let ballotInitiativesPresent = true;
 let sortMetric = availableMetrics[0];
 let dataTimer = null;
 let stateName = null;
@@ -165,6 +166,12 @@ const getData = function (forceReload) {
 
         if (Object.keys(data.governor.results).length === 0) {
           raceTypes = without(raceTypes, 'Governor');
+        }
+
+        if (Object.keys(data.ballot_measures.results).length === 0) {
+          ballotInitiativesPresent = false;
+          showLegendItem('yes', false);
+          showLegendItem('no', false);
         }
       }
 
@@ -763,6 +770,16 @@ const onMetricClick = function (e) {
   }
 };
 
+const showLegendItem = (itemClass, shouldItBeShown) => {
+  const legend = document.getElementById('board-key');
+  const item = legend.querySelector(`li.${itemClass}`);
+  if (shouldItBeShown) {
+    item.classList.remove('hidden');
+  } else {
+    item.classList.add('hidden');
+  }
+};
+
 const switchResultsView = function (e) {
   // Switch which results tab is being displayed
   projector.stop();
@@ -794,16 +811,12 @@ const switchResultsView = function (e) {
 
   // The legend (shared from the big boards) is mostly irrelevant,
   // except on the Key Results view
-  const legend = document.getElementById('board-key');
-  const UNNECESSARY_LEGEND_ITEMS = ['held', 'yes', 'no', 'precincts', 'runoff'];
+  let unncessaryLegendItems = ['held', 'precincts', 'runoff'];
+  if (ballotInitiativesPresent) { unncessaryLegendItems = unncessaryLegendItems.concat(['yes', 'no']); }
   if (resultsView === 'key') {
-    UNNECESSARY_LEGEND_ITEMS.forEach(cls => {
-      legend.querySelector(`li.${cls}`).classList.remove('hidden');
-    });
+    unncessaryLegendItems.forEach(cls => { showLegendItem(cls, true); });
   } else {
-    UNNECESSARY_LEGEND_ITEMS.forEach(cls => {
-      legend.querySelector(`li.${cls}`).classList.add('hidden');
-    });
+    unncessaryLegendItems.forEach(cls => { showLegendItem(cls, false); });
   }
 
   // Track both which tab is switched to, and what element linked to it
