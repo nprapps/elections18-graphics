@@ -309,18 +309,18 @@ const renderResultsTable = function (key, column) {
           : key
       )),
       h('table.races', [
-          // needed for terrible table layout hack.
-          // basically, i need a clean row to base the overall table structure on.
-          // https://css-tricks.com/fixing-tables-long-strings/
-          h('tr.structure', [
-            h('th', { scope: 'col', class: 'pickup' }, ''),
-            h('th', { scope: 'col', class: 'state' }, ''),
-            h('th', { scope: 'col', class: 'candidate' }, ''),
-            h('th', { scope: 'col', class: 'candidate-total' }, ''),
-            h('th', { scope: 'col', class: 'candidate-total-spacer' }, ''),
-            h('th', { scope: 'col', class: 'candidate-total' }, ''),
-            h('th', { scope: 'col', class: 'candidates' }, ''),
-            h('th', { scope: 'col', class: 'results-status' }, '')
+        // needed for terrible table layout hack.
+        // basically, i need a clean row to base the overall table structure on.
+        // https://css-tricks.com/fixing-tables-long-strings/
+        h('tr.structure', [
+          h('th', { scope: 'col', class: 'pickup' }, ''),
+          h('th', { scope: 'col', class: 'state' }, ''),
+          h('th', { scope: 'col', class: 'candidate' }, ''),
+          h('th', { scope: 'col', class: 'candidate-total' }, ''),
+          h('th', { scope: 'col', class: 'candidate-total-spacer' }, ''),
+          h('th', { scope: 'col', class: 'candidate-total' }, ''),
+          h('th', { scope: 'col', class: 'candidates' }, ''),
+          h('th', { scope: 'col', class: 'results-status' }, '')
         ]),
         h('thead', { class: 'screen-reader-only' }, [
           h('tr', [
