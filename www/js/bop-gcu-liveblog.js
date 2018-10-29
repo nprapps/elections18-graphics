@@ -18,7 +18,7 @@ var onWindowLoaded = function () {
   window.pymChild = new window.pym.Child({
     renderCallback: render
   });
-  setTimeout(addLinkListener, 0);
+  setTimeout(addLinkListener, 1);
 };
 
 const addLinkListener = function () {
@@ -33,7 +33,11 @@ const addLinkListener = function () {
         ? window.parent.pymChild
         : window.pymChild;
 
+      // Send Google Analytics information about which link was clicked
       const href = e.target.href;
+      const paragraphOrBulletText = e.target.parentNode.innerText;
+      window.ANALYTICS.trackEvent('gcu-link-click', `${paragraphOrBulletText} <${href}>`);
+
       if (
         window.pymChild &&
         href.includes('npr.org') &&
