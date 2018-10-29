@@ -16,7 +16,7 @@ const embedGa = () => {
   })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 };
 
-const setupVizAnalytics = () => {
+const trackPageLoad = () => {
   const currentUrl = new URL(window.location.href, true);
   const parentUrl = new URL(currentUrl.query.parentUrl);
   const state = currentUrl.query.state || '';
@@ -56,7 +56,7 @@ const trackEvent = (eventName, label, value) => {
   window.ga('send', eventData);
 };
 
-const completionTracker = () => {
+const trackCompletion = () => {
   // Register a "completion" event when a user scrolls to or past
   // the bottom of an embed's iframe
   let wasIframeBottomVisibleOrPassed = false;
@@ -76,9 +76,9 @@ const completionTracker = () => {
 };
 
 embedGa();
-setupVizAnalytics();
+trackPageLoad();
 window.ANALYTICS = { 'trackEvent': trackEvent };
 window.addEventListener('load', () => {
   // Queue this listener until Pym is ready
-  setTimeout(completionTracker, 0);
+  setTimeout(trackCompletion, 0);
 });
