@@ -55,11 +55,23 @@ const showNavbarIfNotStationEmbed = () => {
   }
 };
 
+const showFooterIfNotOnNPR = () => {
+  // The footer is only necessary if the user is _not_ on NPR.org
+  // Otherwise, the footer is redundant with the main NPR footer
+  const domain = identifyParentHostname();
+  if (!domain || !isNPRHost(domain)) {
+    const footer = document.getElementById('npr-elections-footer');
+    // Some pages don't have the footer included
+    if (footer) { footer.classList.remove('hidden'); }
+  }
+};
+
 // Set the handlers when this ES6 module is imported for its side-effects
 const onLoad = () => {
   // Need to wait briefly, until `window.pymChild` can be instantiated elsewhere
   setTimeout(() => {
     showNavbarIfNotStationEmbed();
+    showFooterIfNotOnNPR();
     setNavBarHandlers();
   }, 1);
 };
