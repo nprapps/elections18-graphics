@@ -25,8 +25,8 @@ const setupVizAnalytics = () => {
     '//' + window.location.hostname +
     window.location.pathname;
 
-  const gaLocation = state ? `${embedUrl}?${state}` : embedUrl;
-  const gaPath = state ? `${window.location.pathname}?${state}` : window.location.pathname;
+  const gaLocation = state ? `${embedUrl}?state=${state}` : embedUrl;
+  const gaPath = state ? `${window.location.pathname}?state=${state}` : window.location.pathname;
 
   // Dimension structure mirrrors that of the standard Visuals team analytics
   const DIMENSION_PARENT_URL = 'dimension1';
