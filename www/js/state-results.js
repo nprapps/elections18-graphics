@@ -792,13 +792,18 @@ const switchResultsView = function (e) {
     window.pymChild.scrollParentTo('state-results');
   }
 
-  // The legend (shared from the big boards) is not relevant except on
-  // the Key Results view, so hide it elsewhere
+  // The legend (shared from the big boards) is mostly irrelevant,
+  // except on the Key Results view
   const legend = document.getElementById('board-key');
+  const UNNECESSARY_LEGEND_ITEMS = ['held', 'yes', 'no', 'precincts', 'runoff'];
   if (resultsView === 'key') {
-    legend.classList.remove('hidden');
+    UNNECESSARY_LEGEND_ITEMS.forEach(cls => {
+      legend.querySelector(`li.${cls}`).classList.remove('hidden');
+    });
   } else {
-    legend.classList.add('hidden');
+    UNNECESSARY_LEGEND_ITEMS.forEach(cls => {
+      legend.querySelector(`li.${cls}`).classList.add('hidden');
+    });
   }
 
   // Track both which tab is switched to, and what element linked to it
