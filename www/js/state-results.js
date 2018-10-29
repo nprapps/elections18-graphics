@@ -614,12 +614,17 @@ const calculateVoteMargin = function (keyedResults) {
 };
 
 const renderMarginCell = function (result, winner) {
-if(winner == null){
-return 'td.vote.margin';}
-else{
-    if(winner.party === 'Dem'){return 'td.vote.margin.dem';}
-      else if (winner.party === 'GOP'){return 'td.vote.margin.gop';}
-      else {return 'td.vote.margin.ind';}}
+  if (winner == null) {
+    return 'td.vote.margin';
+  } else {
+    if (winner.party === 'Dem') {
+      return 'td.vote.margin.dem';
+    } else if (winner.party === 'GOP') {
+      return 'td.vote.margin.gop';
+    } else {
+      return 'td.vote.margin.ind';
+    }
+  }
 };
 
 const renderRacewideTable = function (results, tableClass) {
@@ -785,6 +790,15 @@ const switchResultsView = function (e) {
   const headerHeight = document.getElementById('state-header').offsetHeight;
   if (parentScrollAboveIframeTop < -headerHeight) {
     window.pymChild.scrollParentTo('state-results');
+  }
+
+  // The legend (shared from the big boards) is not relevant except on
+  // the Key Results view, so hide it elsewhere
+  const legend = document.getElementById('board-key');
+  if (resultsView === 'key') {
+    legend.classList.remove('hidden');
+  } else {
+    legend.classList.add('hidden');
   }
 
   // Track both which tab is switched to, and what element linked to it

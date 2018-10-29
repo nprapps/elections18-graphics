@@ -453,17 +453,19 @@ a:hover, a:active {
 }
 
 // big board overrides
-#state-results {
-    .board-key {
-        margin-left: 0;
-        margin-right: 0;
+#board-key {
+    margin-left: 0;
+    margin-right: 0;
 
-        li.time { display: none; }
-        li.yes,
-        li.no {
-            display: block;
-        }
+    li.time { display: none; }
+    li.yes,
+    li.no {
+        display: block;
     }
+
+    &.hidden { display: none; }
+}
+#state-results {
     .board {
         &.governor { min-height: unset; }
         .results .races tr {
