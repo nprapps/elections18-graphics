@@ -76,6 +76,7 @@ const availableMetrics = [
 ];
 
 const STATES_WITHOUT_COUNTY_INFO = [ 'AK' ];
+const STATES_WITH_POTENTIAL_RUNOFFS = [ 'GA', 'LA', 'MS' ];
 const NEW_ENGLAND_STATES = ['ME', 'NH', 'VT', 'MA', 'CT', 'RI'];
 
 let data = null;
@@ -252,6 +253,9 @@ const renderMaquette = function () {
       stateName = anyHouseCandidate.statename;
       statepostal = anyHouseCandidate.statepostal;
       statefaceClass = 'stateface-' + statepostal.toLowerCase();
+      if (!STATES_WITH_POTENTIAL_RUNOFFS.includes(statepostal)) {
+        showLegendItem('runoff', false);
+      }
     }
 
     return h('div.results', [
@@ -813,6 +817,8 @@ const switchResultsView = function (e) {
   // except on the Key Results view
   let unncessaryLegendItems = ['held', 'precincts', 'runoff'];
   if (ballotInitiativesPresent) { unncessaryLegendItems = unncessaryLegendItems.concat(['yes', 'no']); }
+  if (STATES_WITH_POTENTIAL_RUNOFFS.includes(statepostal)) { unncessaryLegendItems = unncessaryLegendItems.concat('runoff'); }
+
   if (resultsView === 'key') {
     unncessaryLegendItems.forEach(cls => { showLegendItem(cls, true); });
   } else {
