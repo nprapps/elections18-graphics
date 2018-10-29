@@ -6,7 +6,7 @@ import './includes/analytics.js';
 import '../js/includes/navbar.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
-import { isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';
+import { shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
 
 // global vars
 var isBopInit = false;
@@ -48,7 +48,7 @@ const addLinkListener = function () {
   const getCaughtUp = document.getElementById('gcu-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
-      if (window.pymChild && isNPRHost(domain)) {
+      if (window.pymChild && shouldUsePJAXForHost(domain)) {
         window.pymChild.sendMessage('pjax-navigate', e.target.href);
         e.preventDefault();
         e.stopPropagation();

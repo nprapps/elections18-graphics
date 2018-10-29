@@ -5,7 +5,7 @@
 import './includes/analytics.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
-import { isNPRHost, identifyParentHostname } from '../js/includes/helpers.js';
+import { shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
 
 // global vars
 var isBopInit = false;
@@ -46,7 +46,7 @@ const addLinkListener = function () {
         pymToSendEventsTo.scrollParentToChildEl(slug);
       } else if (
         window.pymChild &&
-        isNPRHost(domain)
+        shouldUsePJAXForHost(domain)
       ) {
         // On NPR.org, open external links w/ PJAX (so it doesn't disrupt the persistent audio player)
         e.preventDefault();
