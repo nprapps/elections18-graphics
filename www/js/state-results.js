@@ -236,7 +236,6 @@ const sortCountyResults = function () {
 
     return b[1] - a[1];
   });
-
   return values;
 };
 
@@ -554,7 +553,6 @@ const renderCountyRow = function (results, key, availableCandidates) {
   if (sortMetric['append']) {
     extraMetric = extraMetric.toFixed(1) + sortMetric['append'];
   }
-
   return h('tr', [
     h('td.county', [
       // Correct issue where New England counties are all-uppercase
@@ -566,9 +564,19 @@ const renderCountyRow = function (results, key, availableCandidates) {
     h('td.amt.precincts', [calculatePrecinctsReporting(results[0]) + '% in']),
     availableCandidates.map(key => renderCountyCell(keyedResults[key], winner)),
     h(renderMarginCell(keyedResults, winner), calculateVoteMargin(keyedResults)),
-    h('td.comparison', extraMetric)
+    renderComparison(extraMetric)
   ]);
 };
+
+const renderComparison = function(extraMetric){
+  let p_margin = extraMetric.substring(0,1);
+    if (p_margin === "D"){
+      return h('td.comparison.dem', extraMetric);}
+    else if (p_margin === "R"){
+      return h('td.comparison.gop', extraMetric);}
+    else {
+      return h('td.comparison', extraMetric);}
+}
 
 const renderCountyCell = function (result, winner) {
   return h('td.vote', {
