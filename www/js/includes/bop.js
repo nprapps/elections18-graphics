@@ -17,22 +17,15 @@ var CONGRESS = {
     senate: {}
 };
 var DEFAULT_WIDTH = 600;
-var SIDEBAR_THRESHOLD = 280;
-var MOBILE_THRESHOLD = 500;
 var LOAD_INTERVAL = 5000;
 
-var isInitialized = false;
-var isMobile = false;
 var lastUpdated = '';
 var charts = Object.keys(CONGRESS);
-var skipLabels = [ 'label', 'values' ];
 var bopData = [];
-var reloadData = null;
 var graphicWidth = null;
 var timestamp = null;
 var lastRequestTime = '';
 var indicator = null;
-var footnotes = null;
 
 var houseCalled = [];
 var senateCalled = [];
@@ -40,10 +33,9 @@ var senateCalled = [];
 /*
  * Initialize the graphic.
  */
-const initBop = function(containerWidth) {
+const initBop = function (containerWidth) {
     timestamp = select('.footer .timestamp');
     indicator = document.querySelector('.countdown');
-    footnotes = select('.footnotes');
 
     if (!containerWidth) {
         containerWidth = DEFAULT_WIDTH;
@@ -96,10 +88,10 @@ var formatData = function () {
     // redefine based on newly-updated data
     var hData = bopData['house_bop'];
     houseCalled = [
-        { 'name': 'Dem.', 'val': hData['Dem']['seats'], 'isWinner': (hData['npr_winner'] === 'Dem' ? true : false) },
+        { 'name': 'Dem.', 'val': hData['Dem']['seats'], 'isWinner': (hData['npr_winner'] === 'Dem') },
         { 'name': 'Not yet called', 'val': hData['uncalled_races'] },
-        { 'name': 'Ind.', 'val': hData['Other']['seats'], 'isWinner': (hData['npr_winner'] === 'Ind' ? true : false) },
-        { 'name': 'GOP', 'val': hData['GOP']['seats'], 'isWinner': (hData['npr_winner'] === 'GOP' ? true : false) }
+        { 'name': 'Ind.', 'val': hData['Other']['seats'], 'isWinner': (hData['npr_winner'] === 'Ind') },
+        { 'name': 'GOP', 'val': hData['GOP']['seats'], 'isWinner': (hData['npr_winner'] === 'GOP') }
     ];
 
     CONGRESS['house']['total'] = hData['total_seats'];
@@ -120,10 +112,10 @@ var formatData = function () {
 
     var sData = bopData['senate_bop'];
     senateCalled = [
-        { 'name': 'Dem.', 'val': sData['Dem']['seats'], 'isWinner': (sData['npr_winner'] === 'Dem' ? true : false) },
-        { 'name': 'Ind.', 'val': sData['Other']['seats'], 'isWinner': (sData['npr_winner'] === 'Ind' ? true : false) },
+        { 'name': 'Dem.', 'val': sData['Dem']['seats'], 'isWinner': (sData['npr_winner'] === 'Dem') },
+        { 'name': 'Ind.', 'val': sData['Other']['seats'], 'isWinner': (sData['npr_winner'] === 'Ind') },
         { 'name': 'Not yet called', 'val': sData['uncalled_races'] },
-        { 'name': 'GOP', 'val': sData['GOP']['seats'], 'isWinner': (sData['npr_winner'] === 'GOP' ? true : false) }
+        { 'name': 'GOP', 'val': sData['GOP']['seats'], 'isWinner': (sData['npr_winner'] === 'GOP') }
     ];
     CONGRESS['senate']['total'] = sData['total_seats'];
     CONGRESS['senate']['uncalled_races'] = sData['uncalled_races'];
@@ -158,12 +150,6 @@ var formatData = function () {
  * Render the graphic(s). Called by pym with the container width.
  */
 const renderBop = function (containerWidth) {
-    if (containerWidth <= MOBILE_THRESHOLD) {
-        isMobile = true;
-    } else {
-        isMobile = false;
-    }
-
     graphicWidth = containerWidth;
     // LoadData calls redrawChart after ensuring that the data is there
     // for the graphic to render.
@@ -194,7 +180,7 @@ var redrawChart = function () {
         var chartDiv = containerElement.append('div')
             .attr('class', 'chart ' + classify(d));
 
-        chartDiv.on('click', function() {
+        chartDiv.on('click', function () {
             var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
             window.open(thisLink);
         });
@@ -227,7 +213,7 @@ var renderPickups = function (config) {
         var chamberElement = containerElement.append('div')
             .attr('class', 'chamber ' + classify(d));
 
-        chamberElement.on('click', function() {
+        chamberElement.on('click', function () {
             var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
             window.open(thisLink);
         });
@@ -242,7 +228,7 @@ var renderPickups = function (config) {
         var gainElement = chamberElement.append('p')
             .attr('class', 'net-gain');
         gainElement.append('abbr')
-            .attr('class', function() {
+            .attr('class', function () {
                 if (CONGRESS[d]['pickup_party']) {
                     return classify(CONGRESS[d]['pickup_party']);
                 }
@@ -281,8 +267,6 @@ var renderStackedBarChart = function (config) {
     /*
      * Setup
      */
-    var labelColumn = 'label';
-
     var barHeight = 20;
     var valueGap = 6;
 
@@ -299,7 +283,6 @@ var renderStackedBarChart = function (config) {
     // Want to display 50%+1 seats, even for Senate; see discussion:
     // https://github.com/nprapps/elections18-graphics/issues/118
     var majority = Math.floor(half + 1);
-    var roundTicksFactor = 1;
 
     // Calculate actual chart dimensions
     var chartWidth = config['width'] - margins['left'] - margins['right'];
@@ -378,7 +361,6 @@ var renderStackedBarChart = function (config) {
 
     config['dataCalled'].forEach(function (d) {
         var lbl = d['name'];
-        var textAnchor = null;
         var xPos = null;
         var sPos = null; // css for xPos
         var showLabel = true;
@@ -396,7 +378,7 @@ var renderStackedBarChart = function (config) {
             default:
                 xPos = xScale(d['x0'] + ((d['x1'] - d['x0']) / 2)) - 30;
                 sPos = 'left: ' + xPos + 'px; ';
-                if (d['name'] == 'Not yet called' || d['val'] == 0) {
+                if (d['name'] === 'Not yet called' || d['val'] === 0) {
                     showLabel = false;
                 }
                 break;
@@ -417,8 +399,8 @@ var renderStackedBarChart = function (config) {
 
     // shift xPos of independent label
     // base positioning on the xpos/width of the "Dem." label
-    var indLabel = barLabels.select('.party.ind')
-        .style('left', function() {
+    barLabels.select('.party.ind')
+        .style('left', function () {
             var indX = parseInt(select(this).style('left'));
 
             var demOffset = valueGap;
