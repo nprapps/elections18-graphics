@@ -5,6 +5,7 @@ import 'whatwg-fetch';
 // npm libraries
 import { h, createProjector } from 'maquette';
 import { buildDataURL } from './helpers.js';
+import copyBop from './copy.bop.js';
 
 // global vars
 let dataURL = null;
@@ -220,62 +221,97 @@ const renderLeaderboard = function () {
   let bop;
   if (boardTitle.indexOf('House') !== -1) {
     bop = bopData['house_bop'];
-    return renderCongressBOP(bop);
+    return renderCongressBOP(bop, 'house');
   } else if (boardTitle.indexOf('Senate') !== -1) {
     bop = bopData['senate_bop'];
-    return renderCongressBOP(bop);
+    return renderCongressBOP(bop, 'senate');
   } else {
     return h('div.leaderboard', '');
   }
 };
 
-const renderCongressBOP = function (bop) {
+const renderCongressBOP = function (bop, chamber) {
   const demSeats = bop['Dem']['seats'];
   const gopSeats = bop['GOP']['seats'];
   const indSeats = bop['Other']['seats'];
 
-  const demPickups = bop['Dem']['pickups'];
-  const gopPickups = bop['GOP']['pickups'];
-  const indPickups = bop['Other']['pickups'];
+  var netGain = 0;
+  var netGainParty = 'no-change';
+  var netGainPartyLabel = 'No change';
+  var netGainTitle = '';
+  var netGainExplanation = copyBop['pickups_' + chamber];
+
+  if (bop['Dem']['pickups'] > 0) {
+      netGain = bop['Dem']['pickups'];
+      netGainParty = 'dem';
+      netGainPartyLabel = 'Dem.';
+      netGainTitle = copyBop['pickups_' + netGainParty];
+      netGainTitle = netGainTitle.replace('___PICKUPS___', netGain);
+  } else if (bop['GOP']['pickups'] > 0) {
+      netGain = bop['GOP']['pickups'];
+      netGainParty = 'gop';
+      netGainPartyLabel = 'GOP';
+      netGainTitle = copyBop['pickups_' + netGainParty];
+      netGainTitle = netGainTitle.replace('___PICKUPS___', netGain);
+  }
 
   const chamberWinner = bop['npr_winner'];
   const uncalledRaces = bop['uncalled_races'];
 
   return h('div.leaderboard', [
+      h('div.results-header-group.net-gain', [
+        h('h2', { class: 'party ' + netGainParty, title: netGainTitle }, [
+            h('label', [
+                copyBop['pickups_gain']
+            ]),
+            h('abbr', { title: netGainTitle }, [
+                netGain > 0 ? (netGainPartyLabel + '+' + netGain) : netGain
+            ])
+        ])
+      ]),
     h('div.results-header-group.dem', [
       h('h2.party', [
-        chamberWinner === 'Dem' ? h('i.icon.icon-ok') : '',
-        'Dem.: ' + demSeats
-      ]),
-      h('p.detail', [
-        'Net gains: ',
-        h('span.change.party', demPickups > 0 ? '+' + demPickups : demPickups)
+          h('label', [
+              chamberWinner === 'Dem' ? h('i.icon.icon-ok') : '',
+              'Dem.'
+          ]),
+          h('abbr', [
+              demSeats
+          ])
       ])
     ]),
     h('div.results-header-group.gop', [
-      h('h2.party', [
-        chamberWinner === 'GOP' ? h('i.icon.icon-ok') : '',
-        'GOP: ' + gopSeats
-      ]),
-      h('p.detail', [
-        'Net gains: ',
-        h('span.change.party', gopPickups > 0 ? '+' + gopPickups : gopPickups)
-      ])
+        h('h2.party', [
+            h('label', [
+                chamberWinner === 'GOP' ? h('i.icon.icon-ok') : '',
+                'GOP',
+            ]),
+            h('abbr', [
+                gopSeats
+            ])
+        ])
     ]),
     h('div.results-header-group.other', [
-      h('h2.party', 'Ind.: ' + indSeats),
-      h('p.detail', [
-        'Net gains: ',
-        h('span.change.party', indPickups > 0 ? '+' + indPickups : indPickups)
-      ])
+        h('h2.party', [
+            h('label', [
+                'Ind.'
+            ]),
+            h('abbr', [
+                indSeats
+            ])
+        ])
     ]),
     h('div.results-header-group.not-called', [
       h('h2.party', [
-        'Not Yet',
-        h('br'),
-        'Called: ' + uncalledRaces
+          h('label', [
+              'Not Yet Called'
+          ]),
+          h('abbr', [
+              uncalledRaces
+          ])
       ])
     ])
+    // h('p.leaderboard-detail', { innerHTML: netGainExplanation })
   ]);
 };
 
