@@ -21,7 +21,7 @@ var LOAD_INTERVAL = 5000;
 
 var lastUpdated = '';
 var charts = Object.keys(CONGRESS);
-var bopData = [];
+var bopData = null;
 var graphicWidth = null;
 var timestamp = null;
 var lastRequestTime = '';
@@ -45,7 +45,7 @@ const initBop = function (containerWidth) {
     loadData();
     // console.log('YOU TURNED OFF THE REFRESH INTERVAL');
     setInterval(loadData, LOAD_INTERVAL);
-}
+};
 
 /*
  * Load a datafile
@@ -151,9 +151,12 @@ var formatData = function () {
  */
 const renderBop = function (containerWidth) {
     graphicWidth = containerWidth;
-    // LoadData calls redrawChart after ensuring that the data is there
-    // for the graphic to render.
-    loadData();
+    if (bopData) {
+        redrawChart();
+    } else {
+        // This function has a `redrawChart` callback
+        loadData();
+    }
 };
 
 var redrawChart = function () {
