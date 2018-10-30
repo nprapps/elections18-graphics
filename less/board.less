@@ -59,7 +59,7 @@ body {
                     &.last { padding-right: 0; }
                 }
                 @media screen and (max-width: @screen-xs) {
-                    &.last { margin-top: -0.2rem; }
+                    &.last { margin-top: -0.4rem; }
                 }
             }
         }
@@ -113,7 +113,16 @@ body {
             tr {
                 // needed for terrible table layout hack
                 // https://css-tricks.com/fixing-tables-long-strings/
-                &.structure { visibility: collapse; }
+                &.structure {
+                    visibility: collapse;
+
+                    th {
+                        height: 0;
+                        padding: 0;
+
+                        &.results-status::after { content: none; }
+                    }
+                }
 
                 .results-status {
                     color: #ccc;
