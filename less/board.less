@@ -38,42 +38,6 @@ body {
         }
     }
 
-    .results-header {
-        font-size: 1.1rem;
-        overflow: hidden;
-        margin-bottom: 0.5rem;
-
-        h1 {
-            font: 700 2.6rem @gotham;
-            text-transform: uppercase;
-            color: @gray-darker;
-            float: left;
-
-            @media screen and (max-width: @screen-xs) { font-size: 2rem; }
-        }
-
-        h4 {
-        	text-transform: uppercase;
-        	font-weight: normal;
-        	color: @gray-medium;
-        	font-size: 1.3rem;
-        	font-family: @gotham;
-        	margin-bottom: .5rem;
-        }
-
-        .leaderboard {
-            @media screen and (min-width: @screen-md-min) {
-                float: right;
-                display: table;
-            }
-            @media screen and (max-width: @screen-sm) {
-                clear: both;
-                padding-top: 11px;
-                padding-bottom: 11px;
-            }
-        }
-    }
-
     .results  {
         font-size: 0.9rem;
         height: 100%;
@@ -362,49 +326,82 @@ body {
     }
 }
 
-/*.board.governor { min-height: 340px; }*/
-
 .board.house .results .races {
     .state { width: 15%; }
 }
 
 
-/*
- * LEADERBOARD
- */
-.results-header-group {
-	white-space: nowrap;
-    padding: 0 0.7rem 0.07rem 0.7rem;
-	display: inline-block;
-	overflow: hidden;
-	box-sizing: border-box;
+/* RESULTS HEADER AND LEADERBOARD */
+.board .results-wrapper .results-header {
+    font-size: 1.1rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
 
-    &:first-child { padding-left: 0; }
-    &:last-child { padding-right: 0; }
-    &.hidden { display: none; }
+    @media screen and (min-width: @screen-sm-min) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-    img {
-        width: 28%;
-        &.hidden { display: none; }
+    h1 {
+        font: 700 2.6rem @gotham;
+        text-transform: uppercase;
+        color: @gray-darker;
+
+        @media screen and (max-width: @screen-xs) {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    h4 {
+        text-transform: uppercase;
+        font-weight: normal;
+        color: @gray-medium;
+        font-size: 1.3rem;
+        font-family: @gotham;
+        margin-bottom: .5rem;
     }
 }
 
-.board.senate .leaderboard,
-.board.house .leaderboard {
-    display: -webkit-flex;
+.leaderboard {
     display: flex;
-    -webkit-justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
     justify-content: space-between;
     text-align: center;
 
+    @media screen and (max-width: @screen-sm) {
+        max-width: 350px;
+    }
+    @media screen and (min-width: @screen-sm-min) {
+        -webkit-justify-content: flex-end;
+        justify-content: flex-end;
+        max-width: 300px;
+        width: 49%;
+    }
+    @media screen and (min-width: @screen-md-min) {
+        max-width: none;
+    }
+
+    .ballot &,
+    .governor & { display: none; }
+
     .results-header-group {
+        box-sizing: border-box;
+    	display: block;
+    	overflow: hidden;
+        width: 20%;
+
         &:first-child { padding-left: 0; }
         &:last-child { padding-right: 0; }
+        &.hidden { display: none; }
     }
 
     .dem .party { color: @dem; }
     .gop .party { color: @gop; }
     .other .party { color: @ind; }
+    .net .party { color: @gray; }
     .not-called .party { color: @gray-light; }
 
     .dem .party,
@@ -413,40 +410,70 @@ body {
     }
 
     h2 {
-        font-family: @gotham;
-        font-size: 95%;
+        font-weight: normal;
+        line-height: 1;
 
-        .change {
-            font-weight: normal;
-            font-family: @font-family-sans-serif;
-            font-style: italic;
-            font-size: 85%;
+        label {
+            display: block;
+            font-family: @knockout;
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+        abbr {
+            -webkit-font-smoothing: antialiased;
+            display: block;
+            font-family: @gotham;
+            font-weight: 700;
+            font-size: 100%;
+            padding-bottom: 5px;
         }
     }
-    .not-called {
+
+    .net-gain {
+        border-right: 1px solid @gray-lighter;
+        padding-right: 10px;
+
         h2 {
-            font-weight: 400;
-            font-size: 90%;
-            line-height: 1.4rem;
+            color: #666;
+
+            abbr {
+                background-color: #ccc;
+                font-size: 0.9rem;
+                padding: 0.65rem 0;
+                text-decoration: none;
+                white-space: nowrap;
+            }
+
+            label {
+                margin-bottom: 0.2rem;
+                // text-transform: uppercase;
+            }
+
+            &.party.dem abbr  {
+                background-color: @dem;
+                color: #fff;
+            }
+
+            &.party.gop abbr  {
+                background-color: @gop;
+                color: #fff;
+            }
         }
     }
 
-    p.detail {
+    .leaderboard-detail {
+        color: @gray-medium;
         font-family: @font-family-sans-serif;
-        font-size: 80%;
-        color: @gray;
-    }
-
-    @media screen and (min-width: @screen-md-min) {
-        width: 50%;
-        max-width: 500px;
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-        padding-bottom: 0.75rem;
-    }
-    @media screen and (max-width: @screen-sm) {
+        font-size: 1rem;
+        line-height: 1.2;
+        padding-top: 9px;
+        text-align: left;
         width: 100%;
-        max-width: 350px;
+
+        span { font-weight: bold; }
+
+        .dem { color: @dem; }
+        .gop { color: @gop; }
     }
 }
 
