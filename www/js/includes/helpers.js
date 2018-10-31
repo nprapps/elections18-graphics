@@ -63,9 +63,17 @@ const getHighestPymEmbed = window => {
   // For when there may be Pym iframes inside Pym iframes, recursively
   // determine which the highest-level Pym child is (ie,
   // which embed is the child of the overall parent `window`)
+
+  // `iframe`s can only look at `window.parent` if it is of the same host
+  const windowAndParentWindowAreSameDomain = window.pymChild &&
+    new URL(window.pymChild.parentUrl).hostname === document.location.hostname;
+
   if (!window.pymChild) {
     return null;
-  } else if (window.pymChild && !window.parent.pymChild) {
+  } else if (
+    window.pymChild &&
+    (!windowAndParentWindowAreSameDomain || !window.parent.pymChild)
+  ) {
     return window.pymChild;
   } else {
     return window.parent.pymChild;

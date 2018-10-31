@@ -11,7 +11,6 @@ import {
     buildDataURL,
     classify,
     getHighestPymEmbed,
-    identifyParentHostname,
     shouldUsePJAXForHost
 } from './helpers.js';
 import copyBop from './copy.bop.js';
