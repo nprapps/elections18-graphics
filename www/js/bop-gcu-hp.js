@@ -4,6 +4,7 @@
 // npm libraries
 import './includes/analytics.js';
 import '../js/includes/navbar.js';
+import appConfig from './includes/app_config.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
@@ -48,12 +49,31 @@ const addLinkListener = function () {
   const getCaughtUp = document.getElementById('gcu-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
-      if (window.pymChild && shouldUsePJAXForHost(domain)) {
-        window.pymChild.sendMessage('pjax-navigate', e.target.href);
+      const href = e.target.href;
+
+      // Send Google Analytics information about which link was clicked
+      const paragraphOrBulletText = e.target.parentNode.innerText;
+      window.ANALYTICS.trackEvent('gcu-link-click', `${paragraphOrBulletText} <${href}>`);
+
+      if (
+        window.pymChild &&
+        href.includes('npr.org') &&
+        href.includes('/sharecard/')
+      ) {
+        // PJAX navigate straight to the liveblog, skipping the sharecard,
+        // in order to make the UX smoother
+        e.preventDefault();
+        e.stopPropagation();
+        const slug = href.split('/').slice(-1)[0].replace('.html', '');
+        window.pymChild.sendMessage('pjax-navigate', `${appConfig.LIVEBLOG_URL}?post=${slug}`);
+      } else if (window.pymChild && shouldUsePJAXForHost(domain)) {
+        // On NPR.org, open NPR links w/ PJAX (so it doesn't disrupt the persistent audio player)
+        window.pymChild.sendMessage('pjax-navigate', href);
         e.preventDefault();
         e.stopPropagation();
       } else {
-        window.open(e.target.href, '_top');
+        // Open non-NPR links in a new window
+        window.open(href);
       }
     }
   });

@@ -35,6 +35,11 @@ REPOSITORY_ALT_URL = None # 'git@bitbucket.org:nprapps/%s.git' % REPOSITORY_NAME
 # Should stay the same, even if PROJECT_SLUG changes
 ASSETS_SLUG = 'elections18-graphics'
 
+# We need this to make the Get Caught Up functionality work, to
+# redirect sharecard URLs when the GCU module is on the homepage
+# Make sure this URL doesn't contain a trailing query string or anchor
+LIVEBLOG_URL = 'https://www.npr.org/650521908'
+
 
 """
 PYM
