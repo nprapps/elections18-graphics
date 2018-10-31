@@ -5,8 +5,15 @@ import 'whatwg-fetch';
 // npm libraries
 import { scaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
+import URL from 'url-parse';
 import countdown from './countdown';
-import { classify, buildDataURL } from './helpers.js';
+import {
+    buildDataURL,
+    classify,
+    getHighestPymEmbed,
+    identifyParentHostname,
+    shouldUsePJAXForHost
+} from './helpers.js';
 import copyBop from './copy.bop.js';
 
 // Global vars
@@ -164,6 +171,10 @@ var redrawChart = function () {
     var containerElement = select('#bop');
     containerElement.html('');
 
+    const pymToSendNavigationTo = getHighestPymEmbed(window);
+    const domain = pymToSendNavigationTo &&
+        new URL(pymToSendNavigationTo.parentUrl).hostname;
+
     if (copyBop['show_pickups'] === 'yes') {
         containerElement.append('h2')
             .html(copyBop['hed_pickups']);
@@ -185,7 +196,11 @@ var redrawChart = function () {
 
         chartDiv.on('click', function () {
             var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
-            window.open(thisLink);
+            if (shouldUsePJAXForHost(domain) && pymToSendNavigationTo) {
+                pymToSendNavigationTo.sendMessage('pjax-navigate', thisLink);
+            } else {
+                window.open(thisLink, '_top');
+            }
         });
 
         // Render the chart!
@@ -212,13 +227,21 @@ var redrawChart = function () {
 var renderPickups = function (config) {
     var containerElement = select(config['container']);
 
+    const pymToSendNavigationTo = getHighestPymEmbed(window);
+    const domain = pymToSendNavigationTo &&
+        new URL(pymToSendNavigationTo.parentUrl).hostname;
+
     charts.forEach(function (d, i) {
         var chamberElement = containerElement.append('div')
             .attr('class', 'chamber ' + classify(d));
 
         chamberElement.on('click', function () {
             var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
-            window.open(thisLink);
+            if (shouldUsePJAXForHost(domain) && pymToSendNavigationTo) {
+                pymToSendNavigationTo.sendMessage('pjax-navigate', thisLink);
+            } else {
+                window.open(thisLink, '_top');
+            }
         });
 
         chamberElement.append('h3')
