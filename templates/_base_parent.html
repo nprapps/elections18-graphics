@@ -50,7 +50,6 @@
             background-color: #fff;
         }
 
-
         /* Header */
         .parent-header {
             background-color: #ebebeb;
@@ -95,6 +94,14 @@
             margin: 60px 10px 10px 10px;
         }
 
+        /* homepage checkbox */
+        p.homepage {
+            margin: -7px 0 11px 0;
+            font-size: 12px;
+            color: #666;
+        }
+        p.homepage em { color: #999; }
+
         textarea {
             display: block;
             margin-bottom: 20px;
@@ -132,7 +139,6 @@
         </div>
 
         <div class="right">
-
             {% if DEPLOYMENT_TARGET != "production" %}
                 {% if DEPLOYMENT_TARGET != None %}
                 <div class="segment">
@@ -164,6 +170,12 @@
         {% if slug == 'state-results' %}
         <p  class="state-postal-explainer"><em>Replace the <code>TWO_LETTER_STATE_POSTAL_ABBREVIATION</code> text for the state you wish to load (e.g. <code>wv</code> for West Viriginia)</em>.</p>
         {% endif %}
+
+        {% if slug == 'bop-hp' or slug == 'bop-gcu-hp' %}
+        {# bop-hp is the only graphic here that might appear on the homepage OR on a regular story page (boards and state-results excepted) #}
+        <p class="homepage"><input id="homepage" type="checkbox"> This code will be embedded on the NPR homepage.</p>
+        {% endif %}
+
         <textarea id="embed-code" readonly="readonly" rows="10" cols="80">
 <p data-pym-loader data-pym-trackscroll data-child-src="https://{{ PRODUCTION_S3_BUCKET }}/{{ PROJECT_SLUG }}/{{ slug }}/child.html{% if slug == 'state-results' %}?state=TWO_LETTER_STATE_POSTAL_ABBREVIATION{% endif %}" id="responsive-embed-{{ slug }}">Loading...</p><script type="text/javascript" src="{{ PYM['pym_loader_url'] }}"></script>
         </textarea>
@@ -171,11 +183,13 @@
 
 
     <script>
+        var homePageEl = document.querySelector('#homepage');
         var resizeMobileEl = document.querySelector('#resize-mobile');
         var resizeDesktopEl = document.querySelector('#resize-desktop');
         var resizeMmediaEl = document.querySelector('#resize-mmedia');
         var resizeFluidEl = document.querySelector('#resize-fluid');
         var previewWrapperEl = document.querySelector('#preview-wrapper');
+
         resizeMobileEl.addEventListener('click', function(e) {
             e.preventDefault();
             previewWrapperEl.style.width = '300px';
@@ -214,6 +228,18 @@
                 previewWrapperEl.style.width = '100%';
                 break;
         }
+
+        homePageEl.addEventListener('change', function(e) {
+            var textarea = document.getElementById('embed-code');
+            var text = textarea.innerHTML
+            if (this.checked) {
+                text = text.replace('child.html', 'child.html?mode=hp');
+                textarea.innerHTML = text;
+            } else {
+                text = text.replace('?mode=hp', '');
+                textarea.innerHTML = text;
+            }
+        });
     </script>
     <script src="//pym.nprapps.org/pym.v1.min.js"></script>
     <script>

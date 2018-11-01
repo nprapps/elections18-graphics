@@ -7,7 +7,7 @@ import '../js/includes/navbar.js';
 import appConfig from './includes/app_config.js';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
-import { shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
+import { getParameterByName, shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
 
 // global vars
 var isBopInit = false;
@@ -16,6 +16,12 @@ var isBopInit = false;
 * Initialize the graphic.
 */
 var onWindowLoaded = function () {
+    // (if someone clicked the "This code will be embedded
+    // on the NPR homepage." checkbox when pulling the embed code.)
+   if (getParameterByName('mode') == 'hp') {
+       document.body.classList.add('hp');
+   }
+
   // init pym and render callback
   window.pymChild = new window.pym.Child({
     renderCallback: render

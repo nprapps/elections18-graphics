@@ -210,7 +210,9 @@ const renderMaquette = function () {
       h('p', ['Source: AP ', h('span', [
         '(as of ',
         lastUpdated,
-        ' ET)'
+        ' ET)',
+        // add note about independents to Senate footnote
+        boardTitle.indexOf('Senate') !== -1 ? '. ' + copyBop['senate_footnote'] : ''
       ])
       ])
     ])
@@ -311,7 +313,6 @@ const renderCongressBOP = function (bop, chamber) {
           ])
       ])
     ])
-    // h('p.leaderboard-detail', { innerHTML: netGainExplanation })
   ]);
 };
 
