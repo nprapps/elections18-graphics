@@ -45,8 +45,6 @@ var render = function (containerWidth) {
     isBopInit = true;
   // run onresize
   } else {
-      console.log('onresize');
-      bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
     renderBop(bopWidth);
   }
   renderGetCaughtUp(containerWidth);
