@@ -3,6 +3,7 @@
 
 // npm libraries
 import './includes/analytics.js';
+import { select } from 'd3-selection';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
@@ -68,6 +69,9 @@ const addLinkListener = function () {
  * Render
  */
 var render = function (containerWidth) {
+  // delete existing BOP
+  select('#bop').html('');
+
   var bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
 
   // only run the first time

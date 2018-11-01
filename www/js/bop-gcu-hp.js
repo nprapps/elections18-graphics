@@ -5,6 +5,7 @@
 import './includes/analytics.js';
 import '../js/includes/navbar.js';
 import appConfig from './includes/app_config.js';
+import { select } from 'd3-selection';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { getParameterByName, shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
@@ -33,6 +34,9 @@ var onWindowLoaded = function () {
  * Render
  */
 var render = function (containerWidth) {
+  // delete existing BOP
+  select('#bop').html('');
+
   var bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
 
   // only run the first time
@@ -41,6 +45,8 @@ var render = function (containerWidth) {
     isBopInit = true;
   // run onresize
   } else {
+      console.log('onresize');
+      bopWidth = document.getElementById('bop').getBoundingClientRect()['width'];
     renderBop(bopWidth);
   }
   renderGetCaughtUp(containerWidth);
