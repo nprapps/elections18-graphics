@@ -171,7 +171,7 @@
         <p  class="state-postal-explainer"><em>Replace the <code>TWO_LETTER_STATE_POSTAL_ABBREVIATION</code> text for the state you wish to load (e.g. <code>wv</code> for West Viriginia)</em>.</p>
         {% endif %}
 
-        {% if slug == 'bop-hp' or slug == 'bop-gcu-hp' %}
+        {% if slug == 'bop-hp' or slug == 'bop-called-hp' or slug == 'bop-gcu-hp' %}
         {# bop-hp is the only graphic here that might appear on the homepage OR on a regular story page (boards and state-results excepted) #}
         <p class="homepage"><input id="homepage" type="checkbox"> This code will be embedded on the NPR homepage.</p>
         {% endif %}
@@ -183,7 +183,6 @@
 
 
     <script>
-        var homePageEl = document.querySelector('#homepage');
         var resizeMobileEl = document.querySelector('#resize-mobile');
         var resizeDesktopEl = document.querySelector('#resize-desktop');
         var resizeMmediaEl = document.querySelector('#resize-mmedia');
@@ -229,6 +228,8 @@
                 break;
         }
 
+        {% if slug == 'bop-hp' or slug == 'bop-called-hp' or slug == 'bop-gcu-hp' %}
+        var homePageEl = document.querySelector('#homepage');
         homePageEl.addEventListener('change', function(e) {
             var textarea = document.getElementById('embed-code');
             var text = textarea.innerHTML
@@ -240,6 +241,7 @@
                 textarea.innerHTML = text;
             }
         });
+        {% endif %}
     </script>
     <script src="//pym.nprapps.org/pym.v1.min.js"></script>
     <script>
