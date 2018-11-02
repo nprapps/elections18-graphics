@@ -1,26 +1,25 @@
 .board-key {
-    margin: 22px 0 0 0;
-    font-family: @knockout;
-    font-size: 12px;
-    letter-spacing: 0.05em;
+    .clearfix();
     -webkit-font-smoothing: antialiased;
-    text-transform: uppercase;
-    color: @gray;
     border-top: 1px solid @gray-lighter;
+    color: @gray;
+    font-family: @font-family-sans-serif;
+    font-size: 12px;
+    margin: 22px 0 0 0;
     padding-top: 11px;
 
     h3 {
-        margin: 0 0 6px 0;
-        font-size: 14px;
-        font-weight: normal;
         color: @gray-darker;
         float: left;
+        font-family: @knockout;
+        font-size: 14px;
+        font-weight: normal;
+        letter-spacing: 0.05em;
+        margin: 0 0 6px 0;
+        text-transform: uppercase;
     }
 
     ul {
-        list-style-type: none;
-        margin: 0 0 0 35px;
-        padding: 0 0 0 11px;
         border-left: 1px solid @gray-lighter;
         display: -webkit-flex;
         display: flex;
@@ -28,29 +27,32 @@
         flex-direction: row;
         -webkit-flex-wrap: wrap;
         flex-wrap: wrap;
+        list-style-type: none;
+        margin: 0 0 0 35px;
+        padding: 0 0 0 11px;
     }
     li {
+        display: block;
+        line-height: 14px;
         margin: 0 0 6px 0;
         padding: 0;
-        display: block;
         white-space: nowrap;
-        line-height: 14px;
         width: 210px;
     }
     i {
-        font-style: normal;
         display: inline-block;
+        font-style: normal;
         margin-right: 5px;
     }
 
     .dem, .gop, .ind,
     .yes, .no {
         i {
-            height: 10px;
-            width: 1em;
             border-radius: 2px;
             float: left;
             margin-top: 2px;
+            height: 10px;
+            width: 1em;
         }
         .winner {
             border-radius: 2px;
@@ -90,34 +92,33 @@
     }
 
     .time i {
-        letter-spacing: 0.05em;
         color: @gray-light;
-        text-transform: none;
+        font-family: @knockout;
         font-size: 12px;
         font-weight: 500;
+        letter-spacing: 0.05em;
     }
 
     .held i {
-        font-family: @font-family-sans-serif;
-        letter-spacing: 0;
-        font-size: 12px;
         color: @gop;
+        font-size: 12px;
+        letter-spacing: 0;
     }
 
     .precincts i {
         color: @gray;
-        font-family: @font-family-sans-serif;
-        letter-spacing: 0;
         font-size: 12px;
+        letter-spacing: 0;
         text-transform: none;
 
         span {
             font-size: 80%;
-            vertical-align: top;
             margin-left: -0.1em;
+            vertical-align: top;
         }
     }
 }
+
 .board.ballot-measures + .board-key {
     li { width: auto; margin-right: 30px; }
     .dem, .gop, .ind, .incumbent, .pickup, .runoff, .held, .time { display: none; }
