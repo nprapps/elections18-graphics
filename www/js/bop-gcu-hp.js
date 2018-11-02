@@ -83,6 +83,8 @@ const addLinkListener = function () {
         e.stopPropagation();
       } else {
         // Open non-NPR links in a new window
+        e.preventDefault();
+        e.stopPropagation();
         window.open(href);
       }
     }

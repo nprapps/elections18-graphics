@@ -59,6 +59,8 @@ const addLinkListener = function () {
         pymToSendEventsTo.sendMessage('pjax-navigate', href);
       } else {
         // Open non-NPR links in a new window
+        e.preventDefault();
+        e.stopPropagation();
         window.open(href);
       }
     }
