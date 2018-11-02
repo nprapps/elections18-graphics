@@ -262,7 +262,14 @@ const renderCongressBOP = function (bop, chamber) {
 
   return h('div.leaderboard', [
       h('div.results-header-group.net-gain', [
-        h('h2', { class: 'party ' + netGainParty, title: netGainTitle }, [
+        h('h2.party', {
+                classes: {
+                  'party': true,
+                  'dem': netGainParty === 'dem' ? true : false,
+                  'gop': netGainParty === 'gop' ? true : false
+                },
+                title: netGainTitle
+            }, [
             h('label', [
                 copyBop['pickups_gain']
             ]),
