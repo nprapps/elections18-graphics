@@ -4,6 +4,7 @@
 // npm libraries
 import './includes/analytics.js';
 import { select } from 'd3-selection';
+import URL from 'url-parse';
 import { initBop, renderBop } from '../js/includes/bop.js';
 import { renderGetCaughtUp } from '../js/includes/get-caught-up.js';
 import { shouldUsePJAXForHost, identifyParentHostname } from '../js/includes/helpers.js';
@@ -23,7 +24,6 @@ var onWindowLoaded = function () {
 };
 
 const addLinkListener = function () {
-  const domain = identifyParentHostname();
   const getCaughtUp = document.getElementById('gcu-wrapper');
   getCaughtUp.addEventListener('click', function (e) {
     if (e.target && e.target.nodeName === 'A') {
@@ -33,6 +33,9 @@ const addLinkListener = function () {
       const pymToSendEventsTo = (window.pymChild && window.parent.pymChild && window.pymChild !== window.parent.pymChild)
         ? window.parent.pymChild
         : window.pymChild;
+      const pymParentHostname = pymToSendEventsTo
+        ? new URL(pymToSendEventsTo.parentUrl).hostname
+        : null;
 
       // Send Google Analytics information about which link was clicked
       const href = e.target.href;
@@ -51,7 +54,7 @@ const addLinkListener = function () {
         pymToSendEventsTo.scrollParentToChildEl(slug);
       } else if (
         window.pymChild &&
-        shouldUsePJAXForHost(domain)
+        shouldUsePJAXForHost(pymParentHostname)
       ) {
         // On NPR.org, open external links w/ PJAX (so it doesn't disrupt the persistent audio player)
         e.preventDefault();

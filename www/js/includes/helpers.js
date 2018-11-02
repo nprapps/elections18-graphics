@@ -32,7 +32,7 @@ const getParameterByName = function (name) {
 };
 
 function isLocalhost (hostname) {
-  return ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
+  return hostname && ['127.0.0.1', 'localhost', '0.0.0.0'].includes(hostname);
 }
 
 function shouldUsePJAXForHost (hostname) {
@@ -42,7 +42,8 @@ function shouldUsePJAXForHost (hostname) {
 }
 
 function isNPRHost (hostname) {
-  return hostname === 'npr.org' || hostname.endsWith('.npr.org');
+  return hostname &&
+    (hostname === 'npr.org' || hostname.endsWith('.npr.org'));
 }
 
 const identifyParentHostname = function () {
