@@ -184,7 +184,7 @@ var redrawChart = function () {
 
     if (copyBop['show_pickups'] === 'yes') {
         containerElement.append('hed')
-            .html(copyBop['hed_pickups']);
+            .html(copyBop['hed_bars']);
 
         /*containerElement.append('div')
             .attr('class', 'pickups');
