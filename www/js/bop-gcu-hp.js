@@ -50,9 +50,6 @@ var render = function (containerWidth) {
   renderGetCaughtUp(containerWidth);
 };
 
-/*
- * On NPR.org, open links w/ PJAX (so it doesn't disrupt the persistent audio player)
- */
 const addLinkListener = function () {
   // Make sure links open in `_top`
   const domain = identifyParentHostname();
@@ -68,7 +65,8 @@ const addLinkListener = function () {
       if (
         window.pymChild &&
         href.includes('npr.org') &&
-        href.includes('/sharecard/')
+        href.includes('/sharecard/') &&
+        shouldUsePJAXForHost(domain)
       ) {
         // PJAX navigate straight to the liveblog, skipping the sharecard,
         // in order to make the UX smoother
@@ -83,6 +81,8 @@ const addLinkListener = function () {
         e.stopPropagation();
       } else {
         // Open non-NPR links in a new window
+        e.preventDefault();
+        e.stopPropagation();
         window.open(href);
       }
     }
