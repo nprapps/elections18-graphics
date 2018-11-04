@@ -73,14 +73,18 @@ function renderMaquette () {
   } else {
     setTimeout(window.pymChild.sendHeight, 0);
 
-    if (!isValidMarkup) {
+    if (!isValidMarkup && !useDebug) {
+      return h('div', []);
+    } else if (!isValidMarkup && useDebug) {
       return h('div.get-caught-up-wrapper', [
-        h('h2', useDebug ? 'Latest Election Headlines Up [DEBUG]' : 'Latest Election Headlines'),
+        // Can't use 'Latest Election Headlines [DEBUG]',
+        // since that won't fit the single-line space
+        h('h2', 'Election Headlines [DEBUG]'),
         h('p', data)
       ]);
     } else {
       return h('div.get-caught-up-wrapper', [
-        h('h2', useDebug ? 'Latest Election Headlines [DEBUG]' : 'Latest Election Headlines'),
+        h('h2', useDebug ? 'Election Headlines [DEBUG]' : 'Latest Election Headlines'),
 
         // Render intro paragraphs
         ...Object.keys(data)
