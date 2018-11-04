@@ -95,8 +95,8 @@ var formatData = function () {
     var hData = bopData['house_bop'];
     houseCalled = [
         { 'name': 'Dem.', 'val': hData['Dem']['seats'], 'isWinner': (hData['npr_winner'] === 'Dem') },
-        { 'name': 'Not yet called', 'val': hData['uncalled_races'] },
         { 'name': 'Ind.', 'val': hData['Other']['seats'], 'isWinner': (hData['npr_winner'] === 'Ind') },
+        { 'name': 'Not yet called', 'val': hData['uncalled_races'] },
         { 'name': 'GOP', 'val': hData['GOP']['seats'], 'isWinner': (hData['npr_winner'] === 'GOP') }
     ];
 
