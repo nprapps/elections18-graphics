@@ -16,7 +16,7 @@
 
             {% for item in NAVBAR.nav %}
             <li>
-                <a target="_blank" href="{{ item.url }}?live=1">{{ item.label }}</a>
+                <a target="_blank" href="{{ item.url }}">{{ item.label }}</a>
             </li>
             {% endfor %}
 
@@ -30,7 +30,7 @@
                             {% for column in NAVBAR.states|slice(3) %}
                             <div class="group-{{ loop.index }}">
                                 {% for state in column %}
-                                    <p><a target="_blank" href="{{ state.url }}?live=1">{{ state.label }}</a></p>
+                                    <p><a target="_blank" href="{{ state.url }}">{{ state.label }}</a></p>
                                 {% endfor %}
                             </div>
                             {% endfor %}

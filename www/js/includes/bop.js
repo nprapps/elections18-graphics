@@ -194,7 +194,7 @@ var redrawChart = function () {
             .attr('class', 'chart ' + classify(d));
 
         chartDiv.on('click', function () {
-            var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
+            var thisLink = copyBop['board_url_' + classify(d)];
             if (shouldUsePJAXForHost(domain) && pymToSendNavigationTo) {
                 pymToSendNavigationTo.sendMessage('pjax-navigate', thisLink);
             } else {
@@ -235,7 +235,7 @@ var renderPickups = function (config) {
             .attr('class', 'chamber ' + classify(d));
 
         chamberElement.on('click', function () {
-            var thisLink = copyBop['board_url_' + classify(d)] + '?live=1';
+            var thisLink = copyBop['board_url_' + classify(d)];
             if (shouldUsePJAXForHost(domain) && pymToSendNavigationTo) {
                 pymToSendNavigationTo.sendMessage('pjax-navigate', thisLink);
             } else {
