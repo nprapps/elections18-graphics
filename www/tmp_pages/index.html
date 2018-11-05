@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title></title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+
+    
+    
+
+    <style>
+        body {
+            font: 14px/1.4 Helvetica, Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+        h2 {
+            font-size: 14px;
+            margin: 0 0 11px 0;
+        }
+        a, a:link,
+        a:visited {
+            color: #4774CC;
+            text-decoration: none;
+        }
+        a:hover,
+        a:active {
+            color: #bccae5;
+        }
+        a.btn {
+            font-size: 12px;
+            line-height: 28px;
+            margin: 0;
+            float: left;
+            padding: 0 11px;
+            border-radius: 4px;
+            background-color: #f7f7f7;
+            font-weight: bold;
+            -webkit-font-smoothing: antialiased;
+        }
+        a.btn:hover,
+        a.btn:active {
+            background-color: #fff;
+        }
+
+
+        /* Header */
+        .parent-header {
+            background-color: #ebebeb;
+            position: fixed;
+            top: 0px;
+            width: 100%;
+            height: 40px;
+            padding: 10px 5px 0 5px;
+            overflow: hidden;
+        }
+        .parent-header:after { clear: both; }
+        .parent-header .segment {
+            float: left;
+            padding-left: 5px;
+            padding-right: 5px;
+            white-space: nowrap;
+        }
+        .parent-header .right {
+            float: right;
+            margin-right: 15px;
+        }
+        .localhost,
+        a.localhost,
+        a.localhost:visited {
+            color: green;
+        }
+        .staging,
+        a.staging,
+        a.staging:visited {
+            color: orange;
+        }
+        .production,
+        a.production,
+        a.production:visited {
+            color: red;
+        }
+        .resize {
+            background-color: white;
+        }
+        /* Content */
+        .content {
+            margin: 60px 10px 10px 10px;
+        }
+
+        textarea {
+            display: block;
+            margin-bottom: 20px;
+            font-size: 13px;
+            font-family: Courier New, Courier, mono;
+        }
+        #preview-wrapper {
+            border: 2px dashed #ddd;
+            margin-bottom: 20px;
+    }
+
+    </style>
+
+</head>
+<body>
+    <header class="parent-header">
+        <div class="segment">
+            <h1 class="staging">staging</h1>
+        </div>
+
+        <div class="segment">
+            <a id="resize-mobile" class="btn" href="#">Mobile (300px)</a>
+        </div>
+
+        <div class="segment">
+            <a id="resize-desktop" class="btn" href="#">Desktop (730px)</a>
+        </div>
+
+        <div class="segment">
+            <a id="resize-fluid" class="btn" href="#">Fluid (100%)</a>
+        </div>
+
+        <div class="right">
+
+            
+                
+                <div class="segment">
+                    <a class="btn localhost" href="http://localhost:8000/">localhost &raquo;</a>
+                </div>
+                
+
+                
+
+                
+                <div class="segment">
+                    <a class="btn production" href="https://apps.npr.org/elections18-graphics/tmp_pages/" target="_blank">production &raquo;</a>
+                </div>
+                
+            
+        </div>
+    </header>
+
+
+    <div class="content">
+        
+<div id="preview-wrapper">
+
+    <div id='preview'></div>
+
+</div>
+<div id="main-section"></div>
+
+
+        <h2><span class="production">Production</span> embed code (for Seamus and NPR stations)</h2>
+        
+        <textarea id="embed-code" readonly="readonly" rows="10" cols="80">
+<p data-pym-loader data-child-src="https://apps.npr.org/elections18-graphics/tmp_pages/child.html" id="responsive-embed-tmp_pages">Loading...</p><script type="text/javascript" src="https://pym.nprapps.org/npr-pym-loader.v2.min.js"></script>
+        </textarea>
+    </div>
+
+
+    <script>
+        var resizeMobileEl = document.querySelector('#resize-mobile');
+        var resizeDesktopEl = document.querySelector('#resize-desktop');
+        var resizeFluidEl = document.querySelector('#resize-fluid');
+        var previewWrapperEl = document.querySelector('#preview-wrapper');
+        resizeMobileEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            previewWrapperEl.style.width = '300px';
+            pymParent.sendWidth();
+            window.location.hash = 'mobile';
+        });
+        resizeDesktopEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            previewWrapperEl.style.width = '730px';
+            pymParent.sendWidth();
+            window.location.hash = 'desktop';
+        });
+        resizeFluidEl.addEventListener('click', function(e) {
+            e.preventDefault();
+            previewWrapperEl.style.width = '100%';
+            pymParent.sendWidth();
+            window.location.hash = 'fluid';
+        });
+        if (window.location.hash == '#mobile') {
+            previewWrapperEl.style.width = '300px';
+        } else if (window.location.hash == '#desktop') {
+            previewWrapperEl.style.width = '730px';
+        } else if (window.location.hash == '#fluid') {
+            previewWrapperEl.style.width = '100%';
+        }
+    </script>
+    <script src="//pym.nprapps.org/pym.v1.min.js"></script>
+    <script>
+        var onPJAXNavigateMessage = function(url) {
+            console.log('triggering synthetic click');
+            var anchor = document.createElement('a');
+            anchor.style.display = 'none';
+            anchor.setAttribute('href', url);
+            document.getElementById('main-section').appendChild(anchor);
+            anchor.click();
+            anchor.parentNode.removeChild(anchor);
+        }
+
+        var getParameterByName = function(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        var childUrl = 'child.html';
+        var state = getParameterByName('state');
+        if (state) {
+            childUrl = childUrl + '?state=' + state;
+        }
+        var pymParent = new pym.Parent('preview', childUrl, {
+            id: 'tmp_pages',
+            trackscroll: true
+        });
+
+        pymParent.onMessage('pjax-navigate', onPJAXNavigateMessage);
+    </script>
+
+    
+
+</body>
+</html>

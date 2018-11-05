@@ -14,6 +14,9 @@
     padding: 5px;
     text-align: center;
 }
+textarea {
+    width: 300px;
+}
 </style>
 
 <h3><a href="https://docs.google.com/spreadsheets/d/1Eqp-jei3xFMpUOFJFuMHk8zP8WSGtvCwoo1a21vtloo/edit#gid=2069101029">Navbar spreadsheet</a></h3>
@@ -24,62 +27,20 @@
     <th>state</th>
     <th>seamus id</th>
     <th>embed</th>
-    <th>fallback text</th>
+    <th>window title</th>
     <th>preview link</th>
-    <th>done?</th>
+    <th>scheduled?</th>
 </tr>
 {% for state in NAVBAR.states %}
 <tr>
     <td>{{ state.slug }}</td>
     <td><input value="{{ state.seamusid|int }}" /></td>
-    <td><textarea>
-        <div id="responsive-embed-state-results"></div>
-        <script>
-            (function(jQuery) {
-                if (typeof jQuery !== 'undefined' && typeof jQuery.getScript === 'function') {
-
-                    var resultsState = '{{ state.slug }}';
-
-
-                    var getParameterByName = function(name) {
-                        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-                        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                            results = regex.exec(location.search);
-                        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-                    }
-
-                    var onPJAXNavigateMessage = function(url) {
-                        var anchor = document.createElement('a');
-                        anchor.style.display = 'none';
-                        anchor.setAttribute('href', url);
-                        document.getElementById('main-section').appendChild(anchor);
-                        anchor.click();
-                        anchor.parentNode.removeChild(anchor);
-                    }
-
-                    // add randomness to id to support for multiple graphic instances in one story
-                    var el = document.getElementById("responsive-embed-state-results");
-                    el.id = el.id + "-" + Math.random().toString(36).substr(2,5);
-                    jQuery.getScript("https://pym.nprapps.org/pym.v1.min.js").done(function () {
-                        jQuery(function () { // Wait for page load
-                            var childUrl =  'https://apps.npr.org/elections18-graphics/state-results/child.html';
-
-                            var childUrl = childUrl + '?state=' + resultsState;
-
-                            var pymParent = new pym.Parent(el.id, childUrl, {trackscroll: true});
-                            pymParent.onMessage('pjax-navigate', onPJAXNavigateMessage);
-                        });
-                    });
-                } else {
-                    console.error('could not load graphic: jQuery is not on the page.');
-                }
-            })(window.jQuery);
-        </script>
-
+    <td><textarea readonly>
+        <p data-pym-loader data-child-src="https://apps.npr.org/elections18-graphics/state-results/child.html?state={{ state.slug }}" id="responsive-embed-state-results">Loading...</p><script type="text/javascript" src="https://pym.nprapps.org/npr-pym-loader.v2.min.js"></script>
     </textarea></td>
-    <td>{{ state['fallback text'] }}</td>
+    <td><textarea readonly>{{ state['window title'] }}</textarea></td>
     <td><a href="{{ state.url }}?live=1">{{ state.seamusid|int }}</a></td>
-    <td>{% if (state['embed_added']|string|upper == 'TRUE') and (state['fallback_added']|string|upper == 'TRUE') and (state['ios_override_added']|string|upper == 'TRUE') %}DONE{% endif %}</td>
+    <td>{% if (state['scheduled']|string|upper == 'TRUE') %}SCHEDULED{% endif %}</td>
 </tr>
 {% endfor %}
 
@@ -89,9 +50,9 @@
     <td>{{ state.slug }}</td>
     <td><input value="{{ state.seamusid|int }}" /></td>
     <td>DONE</td>
-    <td>{{ state['fallback text'] }}</td>
+    <td>DONE</td>
     <td><a href="{{ state.url }}?live=1">{{ state.seamusid|int }}</a></td>
-    <td>{% if (state['embed_added']|string|upper == 'TRUE') and (state['fallback_added']|string|upper == 'TRUE') and (state['ios_override_added']|string|upper == 'TRUE') %}DONE{% endif %}</td>
+    <td>{% if (state['scheduled']|string|upper == 'TRUE') %}SCHEDULED{% endif %}</td>
 </tr>
 {% endfor %}
 
