@@ -8,11 +8,15 @@ import { initBop, renderBop } from '../js/includes/bop.js';
 
 // global vars
 var isBopInit = false;
+var barHeight = 50;
+
+
 
 /*
 * Initialize the graphic.
 */
 var onWindowLoaded = function () {
+    var barHeight = 50;
      // (if someone clicked the "This code will be embedded
      // on the NPR homepage." checkbox when pulling the embed code.)
     if (getParameterByName('mode') == 'hp') {
@@ -29,10 +33,9 @@ var onWindowLoaded = function () {
  * Render
  */
 var render = function (containerWidth) {
-    containerWidth = 280;
   // only run the first time
   if (!isBopInit) {
-    initBop(containerWidth);
+    initBop(360);
     isBopInit = true;
   // run onresize
   } else {
