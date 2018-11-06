@@ -379,7 +379,7 @@ const renderResults = function () {
     resultsElements = h('div', [
       areThereAnyVotesYet
         ? ''
-        : h('p.poll-closing', `Final polls close at ${pollCloseTime} ET.`),
+        : h('p.poll-closing', `Last polls close at ${pollCloseTime} ET.`),
       renderMiniBigBoard('Senate', 'senate', getValues(data.senate.results).filter(r => !r[0].is_special_election), 'senate', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate results \u203a'),
       renderMiniBigBoard('Senate Special', 'senate senate-special', getValues(data.senate.results).filter(r => r[0].is_special_election), 'senate special', showCountyResults ? 'County-level results \u203a' : 'Detailed Senate Special results \u203a'),
       renderMiniBigBoard('Governor', 'governor', getValues(data.governor.results), 'governor', showCountyResults ? 'County-level results \u203a' : 'Detailed gubernatorial results \u203a'),
