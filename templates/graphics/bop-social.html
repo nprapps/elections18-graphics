@@ -1,17 +1,13 @@
-
-
-
 {% extends '_base_child.html' %}
 {% block content %}
 
-<div id="results-nav-wrapper">
-    <nav class="results-nav">
-
-        <div class="results-logo">
+<div class="overall">
+	<div class=results-logo>
             <span class="election-name">Election</span>
             <span class="election-year">2018</span>
             <span class="title">Races Called So&nbsp;Far</span>
         </div>
+
 
 <div id="bop"></div>
 
@@ -23,7 +19,9 @@
 
 <div class="footer">
     {% if COPY.bop.source %}<p>Source: {{ COPY.bop.source|smarty }}{% endif %}
-<img src="https://media.npr.org/chrome_svg/npr-logo.svg" alt="NPR logo" width=50px align=right></p>
+<span class="image"><img src="https://media.npr.org/chrome_svg/npr-logo.svg" alt="NPR logo" width=50px align="right"></p></span>
     {% if COPY.bop.credit %}<p>Credit: {{ COPY.bop.credit|smarty }}</p>{% endif %}
 </div>
+</div>
+
 {% endblock %}
