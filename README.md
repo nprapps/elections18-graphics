@@ -117,6 +117,12 @@ And trigger the webpack build once to generate the necessary rendered files.
 * [Jinja template language documentation](http://jinja.pocoo.org/docs/2.10/templates/)
 
 
+Elements hidden based on context
+--------------------------------
+
+Certain elements of components are hidden based on what host the graphic is loaded by (specifically, member station websites vs NPR.org). On member stations, the top-level navigation bar is hidden, to prevent users from being taken away from the member station websites. On NPR.org, the NPR footer is hidden, since it's redunant with the main NPR.org footer.
+
+
 Managing Javascript Dependencies
 ---------------------------------
 
