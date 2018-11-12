@@ -26,6 +26,9 @@ What is this?
 
 Contains code for all graphics related to the 2018 General Election results.
 
+[This](https://docs.google.com/drawings/d/1k0Z4Le_vpt5NIF6_BnXyApkum5dLUOFQhRV43bN7Rmo) is a graphical summary of how each component interacts, between the three repositories involved in the experience:
+
+![](https://user-images.githubusercontent.com/4959135/48366425-e01a8380-e67b-11e8-8922-7e5eb9da2f79.png)
 
 Assumptions
 -----------
